@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Dec 2016 21:49:57 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 03 Mar 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data Wrangling</title>
+      <link>/2019/03/03/data-wrangling/</link>
+      <pubDate>Sun, 03 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/03/03/data-wrangling/</guid>
+      <description>hi</description>
+    </item>
     
     <item>
       <title>A Plain Markdown Post</title>
