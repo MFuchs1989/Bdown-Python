@@ -25,7 +25,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     name = "Twitter"
     url = "https://twitter.com/Stat_Michael"
 [[menu.main]]
-    name = "zum Python-Blog"
+    name = "zum R-Blog"
     url = "https://michael-fuchs.netlify.com/"
 
 [params]
