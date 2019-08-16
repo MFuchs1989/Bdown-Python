@@ -18,20 +18,9 @@
       
       <guid>/2019/03/03/data-wrangling/</guid>
       <description>Table of Content1 Introduction21 IntroductionNever stop learning !
-Der Einstieg in das Themenfeld Data Science mit “R / R-Studio” war eine smarte Sache. Nun ist es Zeit und für jeden Data Scientist ratsam, eine weitere Skriptsprache zu erlernen.
+The entry into the field of data science with “R / R-Studio” was a smart matter. Now it’s time and for each Data Scientist advisable to learn another scripting language.
 Let’s start with Python!
 For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.</description>
-    </item>
-    
-    <item>
-      <title>Hello R Markdown</title>
-      <link>/2015/07/23/hello-r-markdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
-      
-      <guid>/2015/07/23/hello-r-markdown/</guid>
-      <description>R MarkdownThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
     </item>
     
   </channel>

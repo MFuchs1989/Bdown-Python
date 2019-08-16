@@ -26,7 +26,7 @@ tags:
 
 Never stop learning !
 
-Der Einstieg in das Themenfeld Data Science mit ["R / R-Studio"]( !!! Link muss noch eingefügt werden !!! ) war eine smarte Sache. Nun ist es Zeit und für jeden Data Scientist ratsam, eine weitere Skriptsprache zu erlernen. 
+The entry into the field of data science with ["R / R-Studio"](https://michael-fuchs.netlify.com/) was a smart matter. Now it's time and for each Data Scientist advisable to learn another scripting language.
 
 Let's start with Python!
 
