@@ -17,10 +17,10 @@
       <pubDate>Sun, 03 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/03/data-wrangling/</guid>
-      <description>Table of Content1 Introduction21 IntroductionNever stop learning !
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the data1 IntroductionNever stop learning !
 The entry into the field of data science with “R / R-Studio” was a smart matter. Now it’s time and for each Data Scientist advisable to learn another scripting language.
 Let’s start with Python!
-For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.</description>
+For this post the dataset flight from the statistic platform “Kaggle” was used.</description>
     </item>
     
     <item>
