@@ -90,6 +90,127 @@ flight.dtypes.head()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p6.png)
 
+#4 Get some statistics
+
+
+```{r, eval=F, echo=T}
+flight.describe()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p7.png)
+
+```{r, eval=F, echo=T}
+flight['Dep_Delay'].agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p8.png)
+
+```{r, eval=F, echo=T}
+flight[['Origin_Airport', 'Departure_Time', 'Dep_Delay', 'Carrier_Delay']].groupby('Origin_Airport').mean().head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p9.png)
+
+
+#5 Select data
+
+#5.1  Easy selection
+
+```{r, eval=F, echo=T}
+flight[['Year']].head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p10.png)
+
+```{r, eval=F, echo=T}
+flight[['Year', 'WeatherDelay']].head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p11.png)
+
+
+```{r, eval=F, echo=T}
+flight[1:4]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p12.png)
+
+
+```{r, eval=F, echo=T}
+flight.loc[1:4, ['Year', 'WeatherDelay', 'Flight_Date']]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p13.png)
+
+```{r, eval=F, echo=T}
+flight.iloc[:,1:5].head()     #iloc = index
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p14.png)
+
+```{r, eval=F, echo=T}
+flight.iloc[1:4,[1,3,5]]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p15.png)
+
+#5.2 Conditional selection
+
+```{r, eval=F, echo=T}
+flight[(flight["Distance"] >= 3000)].shape[0]        
+#Var.1 (here I see how many cases are affected)
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p16.png)
+
+
+```{r, eval=F, echo=T}
+flight[flight.Distance >= 3000].shape[0]           
+#Var.2 (here I see how many cases are affected)
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p17.png)
+
+
+```{r, eval=F, echo=T}
+flight[(flight["Distance"] >= 3000) & (flight["DayOfWeek"] == 1) & (flight["Flight_Date"] == '11/07/2016')]    
+#Var. 1
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p18.png)
+
+
+```{r, eval=F, echo=T}
+flight[(flight.Distance >= 3000) & (flight.DayOfWeek == 1) & (flight.Flight_Date == '11/07/2016')]    #Var.2
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p19.png)
+
+
+```{r, eval=F, echo=T}
+flight[(flight.Origin_Airport == 'ATL') | (flight.Origin_Airport == 'BOS')]['Origin_Airport'].value_counts()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p20.png)
+
+
+```{r, eval=F, echo=T}
+# slow method:
+# flight[(flight.Origin_Airport == 'ATL') | (flight.Origin_Airport == 'BOS') | (flight.Origin_Airport == 'JFK')]
+
+# fast method:
+filter_list = ['ATL', 'BOS', 'JFK']
+flight[flight.Origin_Airport.isin(filter_list)]['Origin_Airport'].value_counts()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p21.png)
+
+
+
+
+
+
+
 
 
 
@@ -102,7 +223,7 @@ flight.dtypes.head()
 hier zum tippen 
 ```
 
-
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
 
 
 
