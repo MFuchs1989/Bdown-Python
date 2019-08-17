@@ -15,11 +15,15 @@ tags:
 + 1 Introduction
 + 2 Loading the libraries and the data
 + 3 Overview of the data
-
-
-
-
-
++ 4 Get some statistics
++ 5 Select data
++ 5.1  Easy selection
++ 5.2 Conditional selection
++ 5.3 Set option
++ 6 Filter
++ 6.1 Normal filter
++ 6.2 Filter with a defined list
++ 7 Panda's query
 
 #1 Introduction
 
@@ -156,32 +160,30 @@ flight.iloc[1:4,[1,3,5]]
 
 #5.2 Conditional selection
 
+Var.1 (here I see how many cases are affected)
 ```{r, eval=F, echo=T}
 flight[(flight["Distance"] >= 3000)].shape[0]        
-#Var.1 (here I see how many cases are affected)
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p16.png)
 
-
+Var.2 (here I see how many cases are affected)
 ```{r, eval=F, echo=T}
 flight[flight.Distance >= 3000].shape[0]           
-#Var.2 (here I see how many cases are affected)
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p17.png)
 
-
+Var. 1
 ```{r, eval=F, echo=T}
 flight[(flight["Distance"] >= 3000) & (flight["DayOfWeek"] == 1) & (flight["Flight_Date"] == '11/07/2016')]    
-#Var. 1
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p18.png)
 
-
+Var.2
 ```{r, eval=F, echo=T}
-flight[(flight.Distance >= 3000) & (flight.DayOfWeek == 1) & (flight.Flight_Date == '11/07/2016')]    #Var.2
+flight[(flight.Distance >= 3000) & (flight.DayOfWeek == 1) & (flight.Flight_Date == '11/07/2016')]    
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p19.png)
@@ -206,10 +208,144 @@ flight[flight.Origin_Airport.isin(filter_list)]['Origin_Airport'].value_counts()
 ![](/post/2019-03-03-data-wrangling_files/p1p21.png)
 
 
+#5.3 Set option
+
+With the set option function one can determine, how many lines and columns should be issued.
+
+```{r, eval=F, echo=T}
+flight.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p22.png)
+
+```{r, eval=F, echo=T}
+pd.set_option('display.max_rows', 2)
+pd.set_option('display.max_columns', 2)
+flight.head(200)
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p23.png)
+
+#6 Filter
+
+#6.1 Normal filter
+
+Select columns containing 'Delay'
+```{r, eval=F, echo=T}
+flight.filter(like='Delay', axis=1).head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+#6.2 Filter with a defined list
+
+Here we creat a list (top 4 airports with max. delay)
+```{r, eval=F, echo=T}
+df = (                              
+    flight
+    [['Origin_Airport', 'Dep_Delay']]
+    .groupby(['Origin_Airport'])
+    .sum()
+    .sort_values(by='Dep_Delay', ascending=False)
+    .reset_index()
+    .head(4)
+)
+
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p24.png)
+
+
+Here we define and apply the defined list
+```{r, eval=F, echo=T}
+mylist = df['Origin_Airport'].tolist()
+mylist
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p25.png)
 
 
 
+```{r, eval=F, echo=T}
+df = flight[(flight['Origin_Airport'].isin(mylist)) & (flight['DayOfWeek']>5)]       
+df = df[['Origin_Airport', 'Distance']]
+df = df.groupby(['Origin_Airport']).agg(['mean', 'median', 'std', 'min', 'max'])
+df
+```
 
+![](/post/2019-03-03-data-wrangling_files/p1p26.png)
+
+Now we have the sum of distance for the top 4 airports with max. delay
+
+
+For a better view:
+```{r, eval=F, echo=T}
+df.columns = df.columns.droplevel()
+df = df.reset_index()
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p27.png)
+
+
+#7 Panda's query
+
+Here are some expressions from the pandas *query function*
+
+
+```{r, eval=F, echo=T}
+flight.query("DayOfWeek > 4").head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p28.png)
+
+
+```{r, eval=F, echo=T}
+flight.query("DayOfWeek > 4  & Origin_Airport == 'BOS'").head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p29.png)
+
+
+```{r, eval=F, echo=T}
+df = flight.set_index(['DayOfWeek'])
+df.query("index < Day").head()             
+#Alternative: df.query("DayOfWeek < Day").head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p30.png)
+
+
+```{r, eval=F, echo=T}
+df.query("index < Day & index > 5").head()            
+#Alternative: df.query("DayOfWeek < Day & DayOfWeek > 5").head()  
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p31.png)
+
+
+```{r, eval=F, echo=T}
+df = flight.set_index(['DayOfWeek', 'Origin_Airport'])
+df.query('DayOfWeek == "6" &  Origin_Airport == "JFK"').head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p32.png)
+
+
+```{r, eval=F, echo=T}
+df[['Scheduled_Arrival', 'Arrival_Time', 'Arrival_Delay']].query("Scheduled_Arrival < Arrival_Time").head() 
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p33.png)
+
+
+```{r, eval=F, echo=T}
+df.query("Origin_Airport in ['JFK', 'DFW'] & Day in [1, 2, 4]").head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p34.png)
 
 
 
