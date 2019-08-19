@@ -51,7 +51,7 @@ flight2 = flight.copy().filter(['Scheduled_Departure', 'Departure_Time'])
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p1.png)
+![](/post/2019-03-06-add-new-columns_files/p2p1.png)
 
 
 
@@ -60,7 +60,7 @@ flight2['new_Delay'] = flight2.Scheduled_Departure - flight2.Departure_Time
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p2.png)
+![](/post/2019-03-06-add-new-columns_files/p2p2.png)
 
 
 #3 If-else statements 
@@ -70,7 +70,7 @@ flight2['new_Delay_txt'] = np.where(flight2['new_Delay']>=0, 'no delay', 'delaye
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p3.png)
+![](/post/2019-03-06-add-new-columns_files/p2p3.png)
 
 
 
@@ -93,7 +93,7 @@ flight2['new_Delay_detailed'] = flight2.apply(new_Delay_detailed, axis = 1)
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p4.png)
+![](/post/2019-03-06-add-new-columns_files/p2p4.png)
 
 
 
@@ -105,7 +105,7 @@ flight2['RowSum_complete'] = flight2.sum(axis=1)
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p5.png)
+![](/post/2019-03-06-add-new-columns_files/p2p5.png)
 
 
 Selected columns:
@@ -114,7 +114,7 @@ flight2['RowSum_selected'] = flight2.filter(['Departure_Time', 'new_Delay']).sum
 flight2.head()
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p6.png)
+![](/post/2019-03-06-add-new-columns_files/p2p6.png)
 
 #6 With a defined list
 
@@ -125,7 +125,7 @@ df = pd.DataFrame({"Person":
 df
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p7.png)
+![](/post/2019-03-06-add-new-columns_files/p2p7.png)
 
 
 The length of the list must correspond to the number of observations of the data record.
@@ -139,7 +139,7 @@ df['Alter'] = Age
 df
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p1p8.png)
+![](/post/2019-03-06-add-new-columns_files/p2p8.png)
 
 
 

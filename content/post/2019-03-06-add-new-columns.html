@@ -37,13 +37,13 @@ import numpy as np</code></pre>
 <pre class="r"><code>flight2 = flight.copy().filter([&#39;Scheduled_Departure&#39;, &#39;Departure_Time&#39;])
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p1.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p1.png" />
 
 </div>
 <pre class="r"><code>flight2[&#39;new_Delay&#39;] = flight2.Scheduled_Departure - flight2.Departure_Time
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p2.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p2.png" />
 
 </div>
 </div>
@@ -52,7 +52,7 @@ flight2.head()</code></pre>
 <pre class="r"><code>flight2[&#39;new_Delay_txt&#39;] = np.where(flight2[&#39;new_Delay&#39;]&gt;=0, &#39;no delay&#39;, &#39;delayed&#39;)
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p3.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p3.png" />
 
 </div>
 </div>
@@ -72,7 +72,7 @@ flight2.head()</code></pre>
 flight2[&#39;new_Delay_detailed&#39;] = flight2.apply(new_Delay_detailed, axis = 1)
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p4.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p4.png" />
 
 </div>
 </div>
@@ -82,14 +82,14 @@ flight2.head()</code></pre>
 <pre class="r"><code>flight2[&#39;RowSum_complete&#39;] = flight2.sum(axis=1)
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p5.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p5.png" />
 
 </div>
 <p>Selected columns:</p>
 <pre class="r"><code>flight2[&#39;RowSum_selected&#39;] = flight2.filter([&#39;Departure_Time&#39;, &#39;new_Delay&#39;]).sum(axis=1)
 flight2.head()</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p6.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p6.png" />
 
 </div>
 </div>
@@ -99,7 +99,7 @@ flight2.head()</code></pre>
                    [&quot;John&quot;, &quot;Myla&quot;, &quot;Lewis&quot;, &quot;John&quot;, &quot;Myla&quot;]})
 df</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p7.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p7.png" />
 
 </div>
 <p>The length of the list must correspond to the number of observations of the data record.</p>
@@ -107,7 +107,7 @@ df</code></pre>
 <pre class="r"><code>df[&#39;Alter&#39;] = Age
 df</code></pre>
 <div class="figure">
-<img src="/post/2019-03-06-add-new-columns_files/p1p8.png" />
+<img src="/post/2019-03-06-add-new-columns_files/p2p8.png" />
 
 </div>
 </div>
