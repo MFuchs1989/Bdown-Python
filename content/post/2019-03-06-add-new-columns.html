@@ -1,0 +1,117 @@
+---
+title: Add new columns
+author: Michael Fuchs
+date: '2019-03-06'
+slug: add-new-columns
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Normal Calculation</li>
+<li>3 If-else statements</li>
+<li>4 Multiple If-else statements</li>
+<li>5 Row Sum</li>
+<li>6 With a defined list</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>There are several ways to generate new variables in Python. Below the most common methods will be shown.</p>
+<p>For this post the dataset <em>flight</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL" class="uri">https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL</a>.</p>
+<pre class="r"><code>import pandas as pd
+import numpy as np</code></pre>
+<pre class="r"><code>flight = pd.read_csv(&quot;path/to/file/flight.csv&quot;)</code></pre>
+</div>
+<div id="normal-calculation" class="section level1">
+<h1>2 Normal Calculation</h1>
+<p>We’ll start with the two columns <em>Scheduled_Departure</em> and <em>Departure_Time</em> from the dataset <strong>flight</strong>.</p>
+<pre class="r"><code>flight2 = flight.copy().filter([&#39;Scheduled_Departure&#39;, &#39;Departure_Time&#39;])
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p1.png" />
+
+</div>
+<pre class="r"><code>flight2[&#39;new_Delay&#39;] = flight2.Scheduled_Departure - flight2.Departure_Time
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p2.png" />
+
+</div>
+</div>
+<div id="if-else-statements" class="section level1">
+<h1>3 If-else statements</h1>
+<pre class="r"><code>flight2[&#39;new_Delay_txt&#39;] = np.where(flight2[&#39;new_Delay&#39;]&gt;=0, &#39;no delay&#39;, &#39;delayed&#39;)
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p3.png" />
+
+</div>
+</div>
+<div id="multiple-if-else-statements" class="section level1">
+<h1>4 Multiple If-else statements</h1>
+<pre class="r"><code>def new_Delay_detailed(df):
+
+    if (df[&#39;new_Delay&#39;] &gt;= 45):
+        return &#39;over time&#39;
+    
+    elif (df[&#39;new_Delay&#39;] &lt; 45) and (df[&#39;new_Delay&#39;] &gt; 0):
+        return &#39;in time&#39;
+              
+    elif (df[&#39;new_Delay&#39;] &lt;= 0):
+        return &#39;delayed&#39;
+
+flight2[&#39;new_Delay_detailed&#39;] = flight2.apply(new_Delay_detailed, axis = 1)
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p4.png" />
+
+</div>
+</div>
+<div id="row-sum" class="section level1">
+<h1>5 Row Sum</h1>
+<p>Complete row:</p>
+<pre class="r"><code>flight2[&#39;RowSum_complete&#39;] = flight2.sum(axis=1)
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p5.png" />
+
+</div>
+<p>Selected columns:</p>
+<pre class="r"><code>flight2[&#39;RowSum_selected&#39;] = flight2.filter([&#39;Departure_Time&#39;, &#39;new_Delay&#39;]).sum(axis=1)
+flight2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p6.png" />
+
+</div>
+</div>
+<div id="with-a-defined-list" class="section level1">
+<h1>6 With a defined list</h1>
+<pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
+                   [&quot;John&quot;, &quot;Myla&quot;, &quot;Lewis&quot;, &quot;John&quot;, &quot;Myla&quot;]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p7.png" />
+
+</div>
+<p>The length of the list must correspond to the number of observations of the data record.</p>
+<pre class="r"><code>Age = ([24, np.nan, 21., 33, 26])</code></pre>
+<pre class="r"><code>df[&#39;Alter&#39;] = Age
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p8.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>As you can see it’s quite easy to generate new columns. This can be done using simple arithmetic or self-defined if-else statements.</p>
+</div>
