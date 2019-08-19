@@ -17,8 +17,7 @@
       <pubDate>Sun, 03 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/03/data-wrangling/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the data4 Get some statistics5 Select data5.1 Easy selection5.2 Conditional selection5.3 Set option6 Filter6.1 Normal filter6.2 Filter with a defined list7 Panda’s query1 IntroductionNever stop learning !
-The entry into the field of data science with “R / R-Studio” was a smart matter.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the data4 Get some statistics5 Select data5.1 Easy selection5.2 Conditional selection5.3 Set option6 Filter6.1 Normal filter6.2 Filter with a defined list7 Panda’s query8 Group by8.1 with size8.2 with count8.2.1 Count Non - Zero Observations8.3 with sum8.4 with nunique8.5 with mean8.</description>
     </item>
     
     <item>

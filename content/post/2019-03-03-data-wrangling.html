@@ -26,6 +26,14 @@ tags:
 <li>6.1 Normal filter</li>
 <li>6.2 Filter with a defined list</li>
 <li>7 Panda’s query</li>
+<li>8 Group by</li>
+<li>8.1 with size</li>
+<li>8.2 with count</li>
+<li>8.2.1 Count Non - Zero Observations</li>
+<li>8.3 with sum</li>
+<li>8.4 with nunique</li>
+<li>8.5 with mean</li>
+<li>8.6 with agg.</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -283,9 +291,150 @@ df.query(&#39;DayOfWeek == &quot;6&quot; &amp;  Origin_Airport == &quot;JFK&quot
 <img src="/post/2019-03-03-data-wrangling_files/p1p34.png" />
 
 </div>
+</div>
+<div id="group-by" class="section level1">
+<h1>8 Group by</h1>
+<pre class="r"><code>flight.groupby(&#39;Origin_Airport&#39;).size().head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p35.png" />
+
+</div>
+<pre class="r"><code>flight.groupby([&#39;Origin_Airport&#39;,&#39;DayOfWeek&#39;]).size().head(17).T</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p36.png" />
+
+</div>
+<pre class="r"><code>flight.groupby([&#39;Origin_Airport&#39;]).get_group(&#39;BOS&#39;).head()               
+#add. Filter on &#39;BOS&#39;</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p37.png" />
+
+</div>
+<div id="with-size" class="section level2">
+<h2>8.1 with size</h2>
+<pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
+                   [&quot;John&quot;, &quot;Myla&quot;, &quot;Lewis&quot;, &quot;John&quot;, &quot;Myla&quot;],
+                   &quot;Age&quot;: [24., np.nan, 21., 33, 26],
+                   &quot;Single&quot;: [False, True, True, True, False]})
+df </code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p38.png" />
+
+</div>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).size()       
+#the size function counts columns (including NAs !!) </code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p39.png" />
+
+</div>
+</div>
+<div id="with-count" class="section level2">
+<h2>8.2 with count</h2>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).count()     
+#the count function counts columns (excluding NAs !!)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p40.png" />
+
+</div>
+<div id="count-non---zero-observations" class="section level3">
+<h3>8.2.1 Count Non - Zero Observations</h3>
+<p><strong>Vertical count</strong></p>
+<pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
+                   [&quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;,                     &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;],
+                    &quot;Verspätung in Min.&quot;: [0, 0, 4., 0, 5, 1, 0, 0, 11, 5, 4, 0, 9]})
+df.head(6)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p41.png" />
+
+</div>
+<pre class="r"><code>df[&#39;Verspätet?&#39;] = np.where(df[&#39;Verspätung in Min.&#39;] &gt; 0, 1, 0)
+df[[&#39;Person&#39;, &#39;Verspätet?&#39;]].groupby([&#39;Person&#39;]).sum()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p42.png" />
+
+</div>
+<p><strong>Horizontal count</strong></p>
+<pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
+                   [&quot;Person 1&quot;, &quot;Person 2&quot;, &quot;Person 3&quot;],
+                   &quot;MZP1&quot;: 
+                   [0, 2, 4],
+                   &quot;MZP2&quot;: 
+                   [0, 3, 6],
+                   &quot;MZP3&quot;: 
+                   [1, 7, 0]})
+df.head() </code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p43.png" />
+
+</div>
+<pre class="r"><code>df2 = df[[&#39;MZP1&#39;, &#39;MZP2&#39;, &#39;MZP3&#39;]]
+df2[&#39;Zwischensumme&#39;] = df.astype(bool).sum(axis=1)
+df2[&#39;Verspätungen&#39;] = df2.Zwischensumme - 1
+df2</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p44.png" />
+
+</div>
+<p><em>astype(bool).sum(axis=1)</em> also counts the index (and categorical variables if any). Therefore <em>select</em> and <em>“Zwischensmme - 1”</em></p>
+<pre class="r"><code>df[&#39;Anzahl Verspätungen&#39;] = df2.Verspätungen
+df = df[[&#39;Person&#39;, &#39;Anzahl Verspätungen&#39;]].sort_values(by=&#39;Anzahl Verspätungen&#39;, ascending=False)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p45.png" />
+
+</div>
+</div>
+</div>
+<div id="with-sum" class="section level2">
+<h2>8.3 with sum</h2>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).sum().reset_index() </code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p46.png" />
+
+</div>
+</div>
+<div id="with-nunique" class="section level2">
+<h2>8.4 with nunique</h2>
+<pre class="r"><code>df.groupby([&#39;Single&#39;]).nunique()       
+#nunique counts characteristics within the respective sorting (without NAs)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p47.png" />
+
+</div>
+</div>
+<div id="with-mean" class="section level2">
+<h2>8.5 with mean</h2>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).mean().reset_index() </code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p48.png" />
+
+</div>
+</div>
+<div id="with-agg." class="section level2">
+<h2>8.6 with agg.</h2>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p49.png" />
+
+</div>
+<pre class="r"><code>df_rank = flight.groupby(&#39;Origin_Airport&#39;)      #another way
+
+df_descriptive = df_rank[&#39;Dep_Delay&#39;].agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()
+
+
+# Renaming Pandas Dataframe Columns
+df_descriptive = df_descriptive.rename(columns={&#39;Origin_Airport&#39;:&#39;Origin Airport&#39;, &#39;mean&#39;:&#39;Mean&#39;,                      &#39;median&#39;:&#39;Median&#39;, &#39;std&#39;:&#39;Standard Deviation&#39;, &#39;min&#39;:&#39;Minimum&#39;, &#39;max&#39;: &#39;Maximum&#39;})
+
+df_descriptive.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p50.png" />
+
+</div>
+<p>HI HI</p>
 <pre class="r"><code>hier zum tippen </code></pre>
 <div class="figure">
 <img src="/post/2019-03-03-data-wrangling_files/p1p.png" />
 
+</div>
 </div>
 </div>
