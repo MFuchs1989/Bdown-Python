@@ -32,7 +32,7 @@ tags:
 + 8.4 with nunique
 + 8.5 with mean
 + 8.6 with agg.
-
++ 9 Conclusion
 
 
 #1 Introduction
@@ -519,7 +519,7 @@ df_descriptive = df_rank['Dep_Delay'].agg(['mean', 'median', 'std', 'min', 'max'
 
 
 # Renaming Pandas Dataframe Columns
-df_descriptive = df_descriptive.rename(columns={'Origin_Airport':'Origin Airport', 'mean':'Mean',                      'median':'Median', 'std':'Standard Deviation', 'min':'Minimum', 'max': 'Maximum'})
+df_descriptive = df_descriptive.rename(columns={'Origin_Airport':'Origin Airport', 'mean':'Mean', 'median':'Median', 'std':'Standard Deviation', 'min':'Minimum', 'max': 'Maximum'})
 
 df_descriptive.head()
 ```
@@ -527,22 +527,9 @@ df_descriptive.head()
 ![](/post/2019-03-03-data-wrangling_files/p1p50.png)
 
 
+#9 Conclusion
 
-
-HI HI
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-hier zum tippen 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+This was a small insight into the topic Data Wrangling with Python.
 
 
 
