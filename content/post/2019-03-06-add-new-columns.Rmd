@@ -1,0 +1,151 @@
+---
+title: Add new columns
+author: Michael Fuchs
+date: '2019-03-06'
+slug: add-new-columns
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Normal Calculation
++ 3 If-else statements 
++ 4 Multiple If-else statements 
++ 5 Row Sum
++ 6 With a defined list
++ 7 Conclusion
+
+
+
+#1 Introduction
+
+There are several ways to generate new variables in Python. Below the most common methods will be shown.
+
+
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+```{r, eval=F, echo=T}
+flight = pd.read_csv("path/to/file/flight.csv")
+```
+
+
+
+#2 Normal Calculation
+
+We'll start with the two columns *Scheduled_Departure* and *Departure_Time* from the dataset **flight**.
+
+
+```{r, eval=F, echo=T}
+flight2 = flight.copy().filter(['Scheduled_Departure', 'Departure_Time'])
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p1.png)
+
+
+
+```{r, eval=F, echo=T}
+flight2['new_Delay'] = flight2.Scheduled_Departure - flight2.Departure_Time
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p2.png)
+
+
+#3 If-else statements 
+
+```{r, eval=F, echo=T}
+flight2['new_Delay_txt'] = np.where(flight2['new_Delay']>=0, 'no delay', 'delayed')
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p3.png)
+
+
+
+#4 Multiple If-else statements 
+
+
+```{r, eval=F, echo=T}
+def new_Delay_detailed(df):
+
+    if (df['new_Delay'] >= 45):
+        return 'over time'
+    
+    elif (df['new_Delay'] < 45) and (df['new_Delay'] > 0):
+        return 'in time'
+              
+    elif (df['new_Delay'] <= 0):
+        return 'delayed'
+
+flight2['new_Delay_detailed'] = flight2.apply(new_Delay_detailed, axis = 1)
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p4.png)
+
+
+
+#5 Row Sum
+
+Complete row:
+```{r, eval=F, echo=T}
+flight2['RowSum_complete'] = flight2.sum(axis=1)
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p5.png)
+
+
+Selected columns:
+```{r, eval=F, echo=T}
+flight2['RowSum_selected'] = flight2.filter(['Departure_Time', 'new_Delay']).sum(axis=1)
+flight2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p6.png)
+
+#6 With a defined list
+
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({"Person":
+                   ["John", "Myla", "Lewis", "John", "Myla"]})
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p7.png)
+
+
+The length of the list must correspond to the number of observations of the data record.
+```{r, eval=F, echo=T}
+Age = ([24, np.nan, 21., 33, 26])
+```
+
+
+```{r, eval=F, echo=T}
+df['Alter'] = Age
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p8.png)
+
+
+
+#7 Conclusion
+
+As you can see it's quite easy to generate new columns. 
+This can be done using simple arithmetic or self-defined if-else statements.
+
+
