@@ -1,0 +1,420 @@
+---
+title: Data Manipulation
+author: 'Michael Fuchs '
+date: '2019-03-12'
+slug: data-manipulation
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+#Table of Content
+
++ 1 Introduction
++ 2 Index
++ 2.1 Resetting index
++ 2.2 Resetting multiindex
++ 2.3 Setting index
++ 3 Modifying Columns
++ 3.1 Rename Columns
++ 3.1.1 add_prefix
++ 3.3 Add columns
++ 3.4 Drop and Delete Columns
++ 3.5 Insert Columns
++ 3.6 Rearrange Columns
++ 4 Modifying Rows
++ 4.1 Round each column
++ 4.2 Round columns differently within a df
++ 5 Replacing Values
++ 5.1 One by One
++ 5.2 Collective replacement
++ 6 Conclusion
+
+
+
+#1 Introduction
+
+Data manipulation is an elementary component in the data science field that requires the most time, among other things. It is therefore worthwhile to be fit in this discipline.
+
+
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+```{r, eval=F, echo=T}
+flight = pd.read_csv("path/to/file/flight.csv")
+```
+
+
+
+#2 Index
+
+
+If you've worked with R before, you may not be used to working with an index. This is common in Python. 
+
+#2.1 Resetting index
+
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]}, index=['a', 'b', 'c'])
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p1.png)
+
+
+
+```{r, eval=F, echo=T}
+df = df.reset_index()
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p2.png)
+
+
+```{r, eval=F, echo=T}
+df.rename(columns ={df.columns[0]: 'ABC'}, inplace = True)
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p3.png)
+
+```{r, eval=F, echo=T}
+df.index.tolist()
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p4.png)
+
+```{r, eval=F, echo=T}
+df['A'].tolist()
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p5.png)
+
+
+
+#2.2 Resetting multiindex
+
+```{r, eval=F, echo=T}
+# Create a multiindex 
+
+
+index = pd.MultiIndex.from_product([[2013, 2014], [1, 2]],
+                                   names=['year', 'visit'])
+columns = pd.MultiIndex.from_product([['Bob', 'Guido', 'Sue'], ['HR', 'Temp']],
+                                     names=['subject', 'type'])
+
+
+data = np.round(np.random.randn(4, 6), 1)
+data[:, ::2] *= 10
+data += 37
+
+# create the DataFrame
+health_data = pd.DataFrame(data, index=index, columns=columns)
+health_data
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p6.png)
+
+
+
+```{r, eval=F, echo=T}
+health_data.columns = health_data.columns.droplevel()
+health_data = health_data.reset_index()
+health_data
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p7.png)
+
+
+
+#2.3 Setting index
+
+Here we have the previously created data frame.
+```{r, eval=F, echo=T}
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p8.png)
+
+
+Now we would like to set an index again.
+```{r, eval=F, echo=T}
+df.set_index([pd.Index([1, 2, 3])])
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p9.png)
+
+
+```{r, eval=F, echo=T}
+df.set_index('ABC')
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p10.png)
+
+
+```{r, eval=F, echo=T}
+df.set_index(['A', 'B'])
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p11.png)
+
+
+#3 Modifying Columns
+
+#3.1 Rename Columns
+
+
+```{r, eval=F, echo=T}
+show_rename = pd.DataFrame({'Name': ['1.Anton', '2.Susi', '3.Moni', '4.Renate'],
+                   'Alter': [32,22,62,44],
+                   'Gehalt': [4700, 2400,4500,2500]})
+show_rename
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p12.png)
+
+
+```{r, eval=F, echo=T}
+show_rename.rename(columns ={show_rename.columns[2]: 'Monatsgehalt'}, inplace = True)
+show_rename
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p13.png)
+
+
+```{r, eval=F, echo=T}
+show_rename = show_rename.rename(columns={'Name':'Mitarbeiter', 'Alter':'Betriebszugehörigkeit'})
+show_rename
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p14.png)
+
+
+```{r, eval=F, echo=T}
+show_rename.columns = ['MA', 'Bzghk.', 'MGe.']
+show_rename
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p15.png)
+
+
+
+#3.1.1 add_prefix
+
+```{r, eval=F, echo=T}
+show_prefix = show_rename.copy()
+show_prefix
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p16.png)
+
+
+```{r, eval=F, echo=T}
+show_prefix.add_prefix('alte_MA_')
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p17.png)
+
+
+#3.3 Add columns
+
+```{r, eval=F, echo=T}
+data = {'country': ['Italy','Spain','Greece','France','Portugal'],
+        'popu': [61, 46, 11, 65, 10],
+        'percent': [0.83,0.63,0.15,0.88,0.14]}
+
+df_MC = pd.DataFrame(data, index=['ITA', 'ESP', 'GRC', 'FRA', 'PRT'])
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p18.png)
+
+
+Add a list as a new column
+```{r, eval=F, echo=T}
+df_MC['capital city'] = ['Rome','Madrid','Athens','Paris','Lisbon']
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p19.png)
+
+
+Add an array as a new column
+```{r, eval=F, echo=T}
+ar = np.array([39,34,30,33,351])
+ar
+df_MC['Calling code'] = ar
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p20.png)
+
+
+Add a Series array as a new column.
+When adding a Series data are automatically aligned based on index.
+```{r, eval=F, echo=T}
+ser = pd.Series(['es','it','fr','pt','gr'], index = ['ESP','ITA','FRA','PRT','GRC'])
+df_MC['Internet domain'] = ser
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p21.png)
+
+
+
+
+#3.4 Drop and Delete Columns
+
+The drop-function don't delete columns.
+```{r, eval=F, echo=T}
+df_MC.drop(columns=['country', 'popu', 'percent'])
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p22.png)
+
+
+```{r, eval=F, echo=T}
+df_MC.head(2)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p23.png)
+
+
+But del-function does this
+```{r, eval=F, echo=T}
+del df_MC['Internet domain']
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p24.png)
+
+
+
+For multiple deletion use drop-function + inplace = True
+```{r, eval=F, echo=T}
+df_MC.drop(["popu", "percent", "Calling code"], axis = 1, inplace = True) 
+df_MC.head(3)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p25.png)
+
+
+#3.5 Insert Columns
+
+Now I want to have my previously deleted column "Internet domain" back at a certain point.
+```{r, eval=F, echo=T}
+ser = pd.Series(['es','it','fr','pt','gr'], index = ['ESP','ITA','FRA','PRT','GRC']) 
+#previously created syntax
+df_MC.insert(1,'Internet domains',ser)
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p26.png)
+
+
+#3.6 Rearrange Columns
+
+```{r, eval=F, echo=T}
+clist = ['capital city','Internet domains','country']
+df_MC = df_MC[clist]
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p27.png)
+
+
+#4 Modifying Rows
+
+```{r, eval=F, echo=T}
+# Preparations
+
+df =(               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Scheduled_Departure': 'mean', 
+          'Dep_Delay': 'mean',
+          'Scheduled_Arrival': 'mean',
+          'Arrival_Delay': 'mean'})                                   
+    .rename(columns={"Scheduled_Departure": "avg_Scheduled_Departure",
+                    "Dep_Delay": "avg_Dep_Delay",
+                    "Scheduled_Arrival": "avg_Scheduled_Arrival",
+                    "Arrival_Delay": "avg_Arrival_Delay"})    
+    .reset_index()                                                          
+)
+
+df.head(5)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p28.png)
+
+
+#4.1 Round each column
+
+```{r, eval=F, echo=T}
+df.round(2).head(2)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p29.png)
+
+
+#4.2 Round columns differently within a df
+
+```{r, eval=F, echo=T}
+df.round({'avg_Scheduled_Departure': 1, 
+          'avg_Dep_Delay': 2,
+         'avg_Scheduled_Arrival':3,
+         'avg_Arrival_Delay':4}).head(2)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p30.png)
+
+
+```{r, eval=F, echo=T}
+decimals = pd.Series([1, 2, 3, 4], index=['avg_Scheduled_Departure', 'avg_Dep_Delay', 'avg_Scheduled_Arrival', 'avg_Arrival_Delay'])
+df.round(decimals).head(2)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p31.png)
+
+
+#5 Replacing Values
+
+#5.1 One by One
+
+```{r, eval=F, echo=T}
+df = flight[['DayOfWeek']] 
+df = df.replace(5, 'Friday')
+df = df.replace(6, 'Saturday')
+#and so on ...
+df.head(5)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p32.png)
+
+
+#5.2 Collective replacement
+
+```{r, eval=F, echo=T}
+df = flight[['DayOfWeek']]
+vals_to_replace = {1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 7:'Sunday'}
+
+df['DayOfWeek'] = df['DayOfWeek'].map(vals_to_replace)
+df.head()
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p33.png)
+
+
+
+#6 Conclusion
+
+This was a small insight into the field of data manipulation.
+In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.
