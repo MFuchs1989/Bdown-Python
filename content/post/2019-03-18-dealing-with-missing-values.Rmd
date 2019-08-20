@@ -1,0 +1,246 @@
+---
+title: Dealing with missing values
+author: Michael Fuchs
+date: '2019-03-18'
+slug: dealing-with-missing-values
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Checking for missing values
++ 3 Deletion of missing values
++ 4 Replace missings with values
++ 4.1 Variant 1
++ 4.2 Variant 2
++ 5 Replace values with missings
++ 5.1 Variant 1
++ 5.2 Variant 2
++ 6 Further imputations
++ 6.1 with mean
++ 6.2 with ffill
++ 6.3  with backfill
++ 7 Conclusion
+
+
+#1 Introduction
+
+In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.
+
+
+
+**Loading the libraries**
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+
+#2 Checking for missing values
+
+```{r, eval=F, echo=T}
+df1 = pd.DataFrame({'Name': ['Anton', np.NaN, 'Moni', 'Renate', 'Justus'],
+                   'Alter': [32,22,62,np.NaN,18],
+                   'Gehalt': [np.NaN, np.NaN,4500,2500,3800]})
+df1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p1.png)
+
+
+
+```{r, eval=F, echo=T}
+df1.isnull().sum()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
+
+
+
+#3 Deletion of missing values
+
+```{r, eval=F, echo=T}
+df_del = df1.copy()
+df_del
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p3.png)
+
+All rows with minimum one NaN will be dropped.
+```{r, eval=F, echo=T}
+df_del.dropna()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p4.png)
+
+
+All rows from the defined columns with a NaN will be dropped. 
+```{r, eval=F, echo=T}
+df_del.dropna(subset=['Name', 'Alter'])
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p5.png)
+
+
+#4 Replace missings with values
+
+#4.1 Variant 1
+
+Missing values from only one column (here "Name") are replaced. 
+```{r, eval=F, echo=T}
+df1_MbyW_Var1 = df1.copy()
+
+df1_MbyW_Var1['Name'].fillna(0, inplace=True)
+df1_MbyW_Var1['Name'] = df1_MbyW_Var1['Name'].fillna(0)
+df1_MbyW_Var1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p6.png)
+
+
+Missing values from the complete dataset will be replaced.
+```{r, eval=F, echo=T}
+df1_MbyW_Var1.fillna(0, inplace=True)
+df1_MbyW_Var1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p7.png)
+
+#4.2 Variant 2
+
+```{r, eval=F, echo=T}
+df1_MbyW_Var2 = df1.copy()
+df1_MbyW_Var2.loc[df1_MbyW_Var2['Gehalt'].isnull(),'Gehalt'] = "Unbekannter Wert"
+df1_MbyW_Var2
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p8.png)
+
+
+
+#5 Replace values with missings
+
+#5.1 Variant 1
+
+Missing values from only one column (here "Gehalt") are replaced.
+```{r, eval=F, echo=T}
+df1_WbyM_Var1 = df1_MbyW_Var1.copy()
+
+df1_WbyM_Var1['Gehalt'] = df1_WbyM_Var1['Gehalt'].replace(0, np.NaN)
+df1_WbyM_Var1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p9.png)
+
+
+Missing values from the complete dataset will be replaced.
+```{r, eval=F, echo=T}
+df1_WbyM_Var1 = df1_WbyM_Var1.replace(0, np.NaN)
+df1_WbyM_Var1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p10.png)
+
+
+
+#5.2 Variant 2
+
+```{r, eval=F, echo=T}
+df1_WbyM_Var2 = df1_MbyW_Var1.copy()
+df1_WbyM_Var2.loc[df1_WbyM_Var2['Alter'] == 0,:'Alter'] = np.NaN
+df1_WbyM_Var2
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p11.png)
+
+
+#6 Further imputations
+
+```{r, eval=F, echo=T}
+df_basic = df1.copy()
+df_basic
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
+
+#6.1 with mean
+
+Here all missing values will be replaced with the mean of the column "Alter".
+
+```{r, eval=F, echo=T}
+df_basic['Alter'].mean()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p13.png)
+
+
+```{r, eval=F, echo=T}
+df_Alter_mean = df_basic['Alter'].fillna(df_basic['Alter'].mean())
+df_Alter_mean
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p14.png)
+
+
+```{r, eval=F, echo=T}
+df_basic['Alter_mean'] = df_Alter_mean
+df_basic
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p15.png)
+
+
+#6.2 with ffill
+
+*ffill* replace the missing values with the nearest preceding non-missing value.
+
+```{r, eval=F, echo=T}
+df_Alter_ffill = df_basic['Alter'].fillna(method='ffill')
+df_Alter_ffill
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p16.png)
+
+
+```{r, eval=F, echo=T}
+df_basic['Alter_ffill'] = df_Alter_ffill
+df_basic
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
+
+
+#6.3  with backfill
+
+*backfill* replace the missing values with the nearest succeeding non-missing value.
+
+
+
+```{r, eval=F, echo=T}
+df_Alter_backfill = df_basic['Alter'].fillna(method='backfill')
+df_Alter_backfill
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p18.png)
+
+
+```{r, eval=F, echo=T}
+df_basic['Alter_backfill'] = df_Alter_backfill
+df_basic
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p19.png)
+
+
+
+
+#7 Conclusion
+
+Depending on the application, missing values can be omitted or replaced by different methods.
+
+
+
