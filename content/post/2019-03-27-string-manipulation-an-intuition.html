@@ -1,0 +1,182 @@
+---
+title: String Manipulation. An intuition.
+author: Michael Fuchs
+date: '2019-03-27'
+slug: string-manipulation-an-intuition
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Separate</li>
+<li>2.1 via map - function</li>
+<li>2.2 via string function</li>
+<li>3 Unite</li>
+<li>3.1 two columns</li>
+<li>3.2 three and more columns</li>
+<li>4 add_prefix</li>
+<li>5 add_suffix</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>It happens again and again that in the course of the planned analysis text variables are unfavorably filled and therefore have to be changed. Here are some useful build in methods for <em>string manipulation</em> from Python.</p>
+<p><strong>Loading the libraries</strong></p>
+<pre class="r"><code>import pandas as pd</code></pre>
+</div>
+<div id="separate" class="section level1">
+<h1>2 Separate</h1>
+</div>
+<div id="via-map---function" class="section level1">
+<h1>2.1 via map - function</h1>
+<p>Map property applies changes to every element of a column</p>
+<pre class="r"><code>string_manipulation = pd.DataFrame({&#39;Name&#39;: [&#39;1.Anton&#39;, &#39;2.Susi&#39;, &#39;3.Moni&#39;, &#39;4.Renate&#39;],
+                     &#39;Alter&#39;: [32,22,62,44],
+                     &#39;Gehalt&#39;: [4700, 2400,4500,2500]})
+string_manipulation</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p1.png" />
+
+</div>
+<pre class="r"><code>show_map = string_manipulation.copy()
+show_map</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p2.png" />
+
+</div>
+<p>Cleanup of the “Name” column</p>
+<pre class="r"><code>show_map.Name = show_map.Name.map(lambda x: x.split(&#39;.&#39;)[1])
+show_map</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p3.png" />
+
+</div>
+<p><strong>Background info how <em>.split</em> works:</strong></p>
+<pre class="r"><code>x = &#39;ich.bin.ein.test&#39;
+y = x.split(&#39;.&#39;)
+print (y)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p4.png" />
+
+</div>
+<pre class="r"><code>z = x.split(&#39;.&#39;)[1]
+print (z)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p5.png" />
+
+</div>
+</div>
+<div id="via-string-function" class="section level1">
+<h1>2.2 via string function</h1>
+<pre class="r"><code>show_str_split = string_manipulation.copy()
+show_str_split</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p6.png" />
+
+</div>
+<pre class="r"><code>new = show_str_split[&quot;Name&quot;].str.split(&quot;.&quot;, n = 1, expand = True) 
+new</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p7.png" />
+
+</div>
+<pre class="r"><code>show_str_split[&quot;MA-Nummer&quot;]= new[0] </code></pre>
+<pre class="r"><code>show_str_split[&quot;MA-Name&quot;]= new[1]</code></pre>
+<pre class="r"><code>show_str_split</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p8.png" />
+
+</div>
+<p>Exclude unnecessary columns</p>
+<pre class="r"><code>small_show_str_split = show_str_split.drop(columns=[&#39;Name&#39;, &#39;MA-Nummer&#39;])
+small_show_str_split</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p9.png" />
+
+</div>
+<p>New arrangement of columns</p>
+<pre class="r"><code>clist = list(small_show_str_split.columns)
+clist_new = clist[-1:]+clist[:-1]
+small_show_str_split = small_show_str_split[clist_new]
+small_show_str_split</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p10.png" />
+
+</div>
+</div>
+<div id="unite" class="section level1">
+<h1>3 Unite</h1>
+</div>
+<div id="two-columns" class="section level1">
+<h1>3.1 two columns</h1>
+<pre class="r"><code>df = pd.DataFrame({&#39;Year&#39;: [&#39;2014&#39;, &#39;2015&#39;], &#39;quarter&#39;: [&#39;q1&#39;, &#39;q2&#39;]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p11.png" />
+
+</div>
+<pre class="r"><code>df[&#39;period&#39;] = df[[&#39;Year&#39;,&#39;quarter&#39;]].apply(lambda x : &#39;{}{}&#39;.format(x[0],x[1]), axis=1)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p12.png" />
+
+</div>
+</div>
+<div id="three-and-more-columns" class="section level1">
+<h1>3.2 three and more columns</h1>
+<pre class="r"><code>df = pd.DataFrame([[&#39;USA&#39;, &#39;Nevada&#39;, &#39;Las Vegas&#39;], [&#39;Brazil&#39;, &#39;Pernambuco&#39;, &#39;Recife&#39;]], columns=[&#39;Country&#39;, &#39;State&#39;, &#39;City&#39;],)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p13.png" />
+
+</div>
+<pre class="r"><code>df[&#39;AllTogether&#39;] = df[[&#39;Country&#39;,&#39;State&#39;, &#39;City&#39;]].apply(lambda x : &#39;{}, 
+                    {} &amp; {}&#39;.format(x[0],x[1],x[2]), axis=1)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p14.png" />
+
+</div>
+</div>
+<div id="add_prefix" class="section level1">
+<h1>4 add_prefix</h1>
+<pre class="r"><code>show_prefix2 = small_show_str_split.copy()
+show_prefix2</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p15.png" />
+
+</div>
+<pre class="r"><code>show_prefix2[&#39;MA-Name&#39;] = show_prefix2[&#39;MA-Name&#39;].apply(lambda x: &quot;{}{}&quot;.format(&#39;MA: &#39;, x))
+show_prefix2</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p16.png" />
+
+</div>
+</div>
+<div id="add_suffix" class="section level1">
+<h1>5 add_suffix</h1>
+<pre class="r"><code>show_suffix = show_prefix2.copy()
+show_suffix</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p17.png" />
+
+</div>
+<pre class="r"><code>show_suffix[&#39;Betriebszugehörigkeit&#39;] = show_suffix[&#39;Betriebszugehörigkeit&#39;].apply(lambda x: &quot;{}{}&quot;.format(x, &#39; Jahre&#39;))
+show_suffix</code></pre>
+<div class="figure">
+<img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p18.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>This was a small insight into the subject of string manipulation.</p>
+</div>
