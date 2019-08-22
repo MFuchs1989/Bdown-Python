@@ -13,8 +13,13 @@ tags:
 #Table of Content
 
 + 1 Introduction
-+ 2
-
++ 2 Python's Pipe - Operator like R's %>%
++ 2.1 Filter and select
++ 2.2 Multiple filter and select
++ 2.3 Sample and sort
++ 2.4 Multiple group by and summarize
++ 2.5 Group by and multiple summarize
++ 3 Conclusion
 
 
 #1 Introduction

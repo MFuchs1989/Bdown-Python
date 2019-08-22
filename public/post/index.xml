@@ -17,10 +17,7 @@
       <pubDate>Thu, 04 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/04/04/python-s-pipe-operator/</guid>
-      <description>Table of Content1 Introduction21 IntroductionAnyone who has ever worked with R probably knows the very useful pipe operator %&amp;gt;%. Python also has a similar one that will be presented in different versions below.
-For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL.
-Loading the libraries and the data
-import pandas as pdflight = pd.</description>
+      <description>Table of Content1 Introduction2 Python’s Pipe - Operator like R’s %&amp;gt;%2.1 Filter and select2.2 Multiple filter and select2.3 Sample and sort2.4 Multiple group by and summarize2.5 Group by and multiple summarize3 Conclusion1 IntroductionAnyone who has ever worked with R probably knows the very useful pipe operator %&amp;gt;%. Python also has a similar one that will be presented in different versions below.</description>
     </item>
     
     <item>
