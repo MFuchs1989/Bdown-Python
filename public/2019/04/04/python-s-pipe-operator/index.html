@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Python&#39;s Pipe - Operator - Michael Fuchs Python</title>
+<meta property="og:title" content="Python&#39;s Pipe - Operator - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Python&#39;s Pipe - Operator</h1>
+
+    
+    <span class="article-date">2019-04-04</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Anyone who has ever worked with R probably knows the very useful pipe operator <em>%&gt;%</em>. Python also has a similar one that will be presented in different versions below.</p>
+<p>For this post the dataset <em>flight</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL" class="uri">https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL</a>.</p>
+<p><strong>Loading the libraries and the data</strong></p>
+<pre class="r"><code>import pandas as pd</code></pre>
+<pre class="r"><code>flight = pd.read_csv(&quot;path/to/file/flight.csv&quot;)</code></pre>
+</div>
+<div id="pythons-pipe---operator-like-rs" class="section level1">
+<h1>2 Python’s Pipe - Operator like R’s %&gt;%</h1>
+<pre class="r"><code>df = (
+    flight
+    [[&#39;DayOfWeek&#39;, &#39;UniqueCarrier&#39;, &#39;Origin_Airport&#39;]]
+)
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p1.png" />
+
+</div>
+</div>
+<div id="filter-and-select" class="section level1">
+<h1>2.1 Filter and select</h1>
+<pre class="r"><code>df = (
+    flight
+    [flight.DayOfWeek &gt; 3]
+    [[&#39;DayOfWeek&#39;, &#39;UniqueCarrier&#39;, &#39;Origin_Airport&#39;]]
+)
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p2.png" />
+
+</div>
+</div>
+<div id="multiple-filter-and-select" class="section level1">
+<h1>2.2 Multiple filter and select</h1>
+<pre class="r"><code>df = (
+    flight
+    [(flight.DayOfWeek &gt; 3) &amp; (flight.Origin_Airport == &#39;JFK&#39;)]
+    [[&#39;DayOfWeek&#39;, &#39;UniqueCarrier&#39;, &#39;Origin_Airport&#39;]]
+)
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p3.png" />
+
+</div>
+</div>
+<div id="sample-and-sort" class="section level1">
+<h1>2.3 Sample and sort</h1>
+<pre class="r"><code>(
+    flight
+    .sample(n=3)
+    .sort_values(&#39;DayOfWeek&#39;)
+    [[&#39;DayOfWeek&#39;, &#39;UniqueCarrier&#39;, &#39;Origin_Airport&#39;]]
+)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p4.png" />
+
+</div>
+</div>
+<div id="multiple-group-by-and-summarize" class="section level1">
+<h1>2.4 Multiple group by and summarize</h1>
+<pre class="r"><code>df = (               
+    flight
+    .groupby([&#39;Origin_Airport&#39;, &#39;DayOfWeek&#39;])
+    .agg({&#39;Scheduled_Departure&#39;: &#39;mean&#39;})                                   
+    # agg = summarize
+    .rename(columns={&quot;Scheduled_Departure&quot;: &quot;avg_Scheduled_Departure&quot;})     
+    # due to agg we have to rename
+    .reset_index()                                                          
+    # agg returns a MultiIndex therefore reset_index()
+    .round({&#39;avg_Scheduled_Departure&#39;: 2})
+)
+
+df.head(12)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p5.png" />
+
+</div>
+</div>
+<div id="group-by-and-multiple-summarize" class="section level1">
+<h1>2.5 Group by and multiple summarize</h1>
+<pre class="r"><code>df = (               
+    flight
+    .groupby([&#39;Origin_Airport&#39;])
+    .agg({&#39;Scheduled_Departure&#39;: &#39;mean&#39;, 
+          &#39;Dep_Delay&#39;: &#39;mean&#39;,
+          &#39;Scheduled_Arrival&#39;: &#39;mean&#39;,
+          &#39;Arrival_Delay&#39;: &#39;mean&#39;})                                   
+    .rename(columns={&quot;Scheduled_Departure&quot;: &quot;avg_Scheduled_Departure&quot;,
+                    &quot;Dep_Delay&quot;: &quot;avg_Dep_Delay&quot;,
+                    &quot;Scheduled_Arrival&quot;: &quot;avg_Scheduled_Arriva&quot;,
+                    &quot;Arrival_Delay&quot;: &quot;avg_Arrival_Delay&quot;})    
+    .reset_index()
+    .round({&#39;avg_Scheduled_Departure&#39;: 2, 
+            &#39;avg_Dep_Delay&#39;: 2,
+            &#39;avg_Scheduled_Arriva&#39;: 2,
+            &#39;avg_Arrival_Delay&#39;:2})
+)
+
+df.head(12)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-04-python-s-pipe-operator_files/p6p6.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>3 Conclusion</h1>
+<p>In my opinion, the Pipe Operator is a very useful feature which can be used in a variety of ways.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

@@ -6,10 +6,22 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 04 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Python&#39;s Pipe - Operator</title>
+      <link>/2019/04/04/python-s-pipe-operator/</link>
+      <pubDate>Thu, 04 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/04/python-s-pipe-operator/</guid>
+      <description>Table of Content1 Introduction21 IntroductionAnyone who has ever worked with R probably knows the very useful pipe operator %&amp;gt;%. Python also has a similar one that will be presented in different versions below.
+For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL.
+Loading the libraries and the data
+import pandas as pdflight = pd.</description>
+    </item>
     
     <item>
       <title>String Manipulation. An intuition.</title>

@@ -1,0 +1,156 @@
+---
+title: Python's Pipe - Operator
+author: Michael Fuchs
+date: '2019-04-04'
+slug: python-s-pipe-operator
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+#Table of Content
+
++ 1 Introduction
++ 2
+
+
+
+#1 Introduction
+
+
+Anyone who has ever worked with R probably knows the very useful pipe operator *%>%*.
+Python also has a similar one that will be presented in different versions below.
+
+
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+
+
+
+**Loading the libraries and the data**
+
+```{r, eval=F, echo=T}
+import pandas as pd
+```
+
+```{r, eval=F, echo=T}
+flight = pd.read_csv("path/to/file/flight.csv")
+```
+
+
+
+#2 Python's Pipe - Operator like R's %>%
+
+
+```{r, eval=F, echo=T}
+df = (
+    flight
+    [['DayOfWeek', 'UniqueCarrier', 'Origin_Airport']]
+)
+
+df.head()
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p1.png)
+
+#2.1 Filter and select
+
+```{r, eval=F, echo=T}
+df = (
+    flight
+    [flight.DayOfWeek > 3]
+    [['DayOfWeek', 'UniqueCarrier', 'Origin_Airport']]
+)
+
+df.head()
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p2.png)
+
+
+#2.2 Multiple filter and select
+
+```{r, eval=F, echo=T}
+df = (
+    flight
+    [(flight.DayOfWeek > 3) & (flight.Origin_Airport == 'JFK')]
+    [['DayOfWeek', 'UniqueCarrier', 'Origin_Airport']]
+)
+
+df.head()
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p3.png)
+
+
+#2.3 Sample and sort
+
+```{r, eval=F, echo=T}
+(
+    flight
+    .sample(n=3)
+    .sort_values('DayOfWeek')
+    [['DayOfWeek', 'UniqueCarrier', 'Origin_Airport']]
+)
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p4.png)
+
+
+#2.4 Multiple group by and summarize
+
+```{r, eval=F, echo=T}
+df = (               
+    flight
+    .groupby(['Origin_Airport', 'DayOfWeek'])
+    .agg({'Scheduled_Departure': 'mean'})                                   
+    # agg = summarize
+    .rename(columns={"Scheduled_Departure": "avg_Scheduled_Departure"})     
+    # due to agg we have to rename
+    .reset_index()                                                          
+    # agg returns a MultiIndex therefore reset_index()
+    .round({'avg_Scheduled_Departure': 2})
+)
+
+df.head(12)
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p5.png)
+
+
+#2.5 Group by and multiple summarize
+
+
+```{r, eval=F, echo=T}
+df = (               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Scheduled_Departure': 'mean', 
+          'Dep_Delay': 'mean',
+          'Scheduled_Arrival': 'mean',
+          'Arrival_Delay': 'mean'})                                   
+    .rename(columns={"Scheduled_Departure": "avg_Scheduled_Departure",
+                    "Dep_Delay": "avg_Dep_Delay",
+                    "Scheduled_Arrival": "avg_Scheduled_Arriva",
+                    "Arrival_Delay": "avg_Arrival_Delay"})    
+    .reset_index()
+    .round({'avg_Scheduled_Departure': 2, 
+            'avg_Dep_Delay': 2,
+            'avg_Scheduled_Arriva': 2,
+            'avg_Arrival_Delay':2})
+)
+
+df.head(12)
+```
+
+![](/post/2019-04-04-python-s-pipe-operator_files/p6p6.png)
+
+
+
+#3 Conclusion
+
+In my opinion, the Pipe Operator is a very useful feature which can be used in a variety of ways.
+
+
+
