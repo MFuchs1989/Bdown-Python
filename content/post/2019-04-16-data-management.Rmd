@@ -1,0 +1,211 @@
+---
+title: Data Management
+author: Michael Fuchs
+date: '2019-04-16'
+slug: data-management
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Join the two dataframes along rows
++ 3 Merge two dataframes
++ 3.1 Merge with inner join
++ 3.2 Merge with outer join
++ 4 Merge multiple data frames
++ 4.1 Preparation
++ 4.2 Merge up to 3 data frames
++ 4.3 Merge more than 3 data frames
++ 5 Conclusion
+
+
+
+#1 Introduction
+
+One of the essential skills of a data scientist is to generate and bring together data from different sources.
+
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+
+
+
+**Loading the libraries and the data**
+
+```{r, eval=F, echo=T}
+import pandas as pd
+```
+
+```{r, eval=F, echo=T}
+flight = pd.read_csv("path/to/file/flight.csv")
+```
+
+
+#2 Join the two dataframes along rows
+
+Note:
+Column names must be the same.
+Original index remains intact.
+```{r, eval=F, echo=T}
+a = flight.iloc[1:4,[8,3,6]]
+b = flight.iloc[293:296,[8,3,6]]
+c = flight.iloc[166:171,[8,3,6]]
+print(a)
+print(b)
+print(c)
+```
+
+![](/post/2019-04-16-data-management_files/p7p1.png)
+
+
+
+```{r, eval=F, echo=T}
+frames = [a, b, c]
+result = pd.concat(frames)      
+#Alternative: result = pd.concat([a, b])
+result
+```
+
+![](/post/2019-04-16-data-management_files/p7p2.png)
+
+
+```{r, eval=F, echo=T}
+result = pd.concat(frames, keys=['Frame1', 'Frame2', 'Frame3'])
+result
+```
+
+![](/post/2019-04-16-data-management_files/p7p3.png)
+
+```{r, eval=F, echo=T}
+result.loc['Frame3']
+```
+
+![](/post/2019-04-16-data-management_files/p7p4.png)
+
+
+
+#3 Merge two dataframes
+
+#3.1 Merge with inner join
+
+
+DayOfWeek 6 included in both
+```{r, eval=F, echo=T}
+pd.merge(a, c, on='DayOfWeek', how='inner')
+```
+
+![](/post/2019-04-16-data-management_files/p7p5.png)
+
+
+
+#3.2 Merge with outer join
+
+What are the differences between the two data frames regarding DayOfWeek?
+```{r, eval=F, echo=T}
+pd.merge(a, c, on='DayOfWeek', how='outer')
+```
+
+![](/post/2019-04-16-data-management_files/p7p6.png)
+
+
+
+#4 Merge multiple data frames
+
+#4.1 Preparation
+
+```{r, eval=F, echo=T}
+a  =(               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Scheduled_Departure': 'mean'})                                   
+    .rename(columns={"Scheduled_Departure": "avg_Scheduled_Departure"})     
+    .reset_index()                                                          
+)
+
+b  =(               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Dep_Delay': 'mean'})                                   
+    .rename(columns={"Dep_Delay": "avg_Dep_Delay"})     
+    .reset_index()                                                          
+)
+
+c  =(               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Scheduled_Arrival': 'mean'})                                   
+    .rename(columns={"Scheduled_Arrival": "avg_Scheduled_Arrival"})     
+    .reset_index()                                                          
+)
+
+d  =(               
+    flight
+    .groupby(['Origin_Airport'])
+    .agg({'Arrival_Delay': 'mean'})                                   
+    .rename(columns={"Arrival_Delay": "avg_Arrival_Delay"})     
+    .reset_index()                                                          
+)
+```
+
+
+```{r, eval=F, echo=T}
+a.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p7.png)
+
+
+```{r, eval=F, echo=T}
+b.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p8.png)
+
+
+```{r, eval=F, echo=T}
+c.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p9.png)
+
+
+```{r, eval=F, echo=T}
+d.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p10.png)
+
+
+
+#4.2 Merge up to 3 data frames
+
+```{r, eval=F, echo=T}
+multiple_merge = pd.merge(pd.merge(a,b,on='Origin_Airport'),c,on='Origin_Airport')
+multiple_merge.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p11.png)
+
+
+
+#4.3 Merge more than 3 data frames
+
+
+```{r, eval=F, echo=T}
+multiple_merge2 = pd.merge(multiple_merge, d, on='Origin_Airport', how='left')
+multiple_merge2.head()
+```
+
+![](/post/2019-04-16-data-management_files/p7p12.png)
+
+
+
+
+#5 Conclusion
+
+In this post, only a few basic data management functions were shown.
+Of course, there are many more ways of meaningfully merging records.
+
+

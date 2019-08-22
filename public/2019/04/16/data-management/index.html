@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Data Management - Michael Fuchs Python</title>
+<meta property="og:title" content="Data Management - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Data Management</h1>
+
+    
+    <span class="article-date">2019-04-16</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Join the two dataframes along rows</li>
+<li>3 Merge two dataframes</li>
+<li>3.1 Merge with inner join</li>
+<li>3.2 Merge with outer join</li>
+<li>4 Merge multiple data frames</li>
+<li>4.1 Preparation</li>
+<li>4.2 Merge up to 3 data frames</li>
+<li>4.3 Merge more than 3 data frames</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>One of the essential skills of a data scientist is to generate and bring together data from different sources.</p>
+<p>For this post the dataset <em>flight</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL" class="uri">https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL</a>.</p>
+<p><strong>Loading the libraries and the data</strong></p>
+<pre class="r"><code>import pandas as pd</code></pre>
+<pre class="r"><code>flight = pd.read_csv(&quot;path/to/file/flight.csv&quot;)</code></pre>
+</div>
+<div id="join-the-two-dataframes-along-rows" class="section level1">
+<h1>2 Join the two dataframes along rows</h1>
+<p>Note: Column names must be the same. Original index remains intact.</p>
+<pre class="r"><code>a = flight.iloc[1:4,[8,3,6]]
+b = flight.iloc[293:296,[8,3,6]]
+c = flight.iloc[166:171,[8,3,6]]
+print(a)
+print(b)
+print(c)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p1.png" />
+
+</div>
+<pre class="r"><code>frames = [a, b, c]
+result = pd.concat(frames)      
+#Alternative: result = pd.concat([a, b])
+result</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p2.png" />
+
+</div>
+<pre class="r"><code>result = pd.concat(frames, keys=[&#39;Frame1&#39;, &#39;Frame2&#39;, &#39;Frame3&#39;])
+result</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p3.png" />
+
+</div>
+<pre class="r"><code>result.loc[&#39;Frame3&#39;]</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p4.png" />
+
+</div>
+</div>
+<div id="merge-two-dataframes" class="section level1">
+<h1>3 Merge two dataframes</h1>
+</div>
+<div id="merge-with-inner-join" class="section level1">
+<h1>3.1 Merge with inner join</h1>
+<p>DayOfWeek 6 included in both</p>
+<pre class="r"><code>pd.merge(a, c, on=&#39;DayOfWeek&#39;, how=&#39;inner&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p5.png" />
+
+</div>
+</div>
+<div id="merge-with-outer-join" class="section level1">
+<h1>3.2 Merge with outer join</h1>
+<p>What are the differences between the two data frames regarding DayOfWeek?</p>
+<pre class="r"><code>pd.merge(a, c, on=&#39;DayOfWeek&#39;, how=&#39;outer&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p6.png" />
+
+</div>
+</div>
+<div id="merge-multiple-data-frames" class="section level1">
+<h1>4 Merge multiple data frames</h1>
+</div>
+<div id="preparation" class="section level1">
+<h1>4.1 Preparation</h1>
+<pre class="r"><code>a  =(               
+    flight
+    .groupby([&#39;Origin_Airport&#39;])
+    .agg({&#39;Scheduled_Departure&#39;: &#39;mean&#39;})                                   
+    .rename(columns={&quot;Scheduled_Departure&quot;: &quot;avg_Scheduled_Departure&quot;})     
+    .reset_index()                                                          
+)
+
+b  =(               
+    flight
+    .groupby([&#39;Origin_Airport&#39;])
+    .agg({&#39;Dep_Delay&#39;: &#39;mean&#39;})                                   
+    .rename(columns={&quot;Dep_Delay&quot;: &quot;avg_Dep_Delay&quot;})     
+    .reset_index()                                                          
+)
+
+c  =(               
+    flight
+    .groupby([&#39;Origin_Airport&#39;])
+    .agg({&#39;Scheduled_Arrival&#39;: &#39;mean&#39;})                                   
+    .rename(columns={&quot;Scheduled_Arrival&quot;: &quot;avg_Scheduled_Arrival&quot;})     
+    .reset_index()                                                          
+)
+
+d  =(               
+    flight
+    .groupby([&#39;Origin_Airport&#39;])
+    .agg({&#39;Arrival_Delay&#39;: &#39;mean&#39;})                                   
+    .rename(columns={&quot;Arrival_Delay&quot;: &quot;avg_Arrival_Delay&quot;})     
+    .reset_index()                                                          
+)</code></pre>
+<pre class="r"><code>a.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p7.png" />
+
+</div>
+<pre class="r"><code>b.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p8.png" />
+
+</div>
+<pre class="r"><code>c.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p9.png" />
+
+</div>
+<pre class="r"><code>d.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p10.png" />
+
+</div>
+</div>
+<div id="merge-up-to-3-data-frames" class="section level1">
+<h1>4.2 Merge up to 3 data frames</h1>
+<pre class="r"><code>multiple_merge = pd.merge(pd.merge(a,b,on=&#39;Origin_Airport&#39;),c,on=&#39;Origin_Airport&#39;)
+multiple_merge.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p11.png" />
+
+</div>
+</div>
+<div id="merge-more-than-3-data-frames" class="section level1">
+<h1>4.3 Merge more than 3 data frames</h1>
+<pre class="r"><code>multiple_merge2 = pd.merge(multiple_merge, d, on=&#39;Origin_Airport&#39;, how=&#39;left&#39;)
+multiple_merge2.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-04-16-data-management_files/p7p12.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post, only a few basic data management functions were shown. Of course, there are many more ways of meaningfully merging records.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

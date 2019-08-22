@@ -6,10 +6,19 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 04 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Data Management</title>
+      <link>/2019/04/16/data-management/</link>
+      <pubDate>Tue, 16 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/16/data-management/</guid>
+      <description>Table of Content1 Introduction2 Join the two dataframes along rows3 Merge two dataframes3.1 Merge with inner join3.2 Merge with outer join4 Merge multiple data frames4.1 Preparation4.2 Merge up to 3 data frames4.3 Merge more than 3 data frames5 Conclusion1 IntroductionOne of the essential skills of a data scientist is to generate and bring together data from different sources.</description>
+    </item>
     
     <item>
       <title>Python&#39;s Pipe - Operator</title>
