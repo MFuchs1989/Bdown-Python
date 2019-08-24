@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>NumPy. An intuition.</title>
+      <link>/2019/05/07/numpy-an-intuition/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/05/07/numpy-an-intuition/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Pivot Tables with Python</title>

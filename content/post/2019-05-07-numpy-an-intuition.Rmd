@@ -1,0 +1,10 @@
+---
+title: NumPy. An intuition.
+author: Michael Fuchs
+date: '2019-05-07'
+slug: numpy-an-intuition
+categories:
+  - R
+tags:
+  - R Markdown
+---
