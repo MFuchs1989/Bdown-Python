@@ -8,3 +8,367 @@ categories:
 tags:
   - R Markdown
 ---
+
+
+#Table of Content
+
++ 1 Introduction
++ 2 Attributes of NumPy Arrays
++ 3 Indexing of Arrays
++ 3.1 Access to individual elements
++ 3.2 via Slicing
++ 3.3 Multidimensional subsets of an Array
++ 4 Reshape
++ 5 Concatenate Arrays
++ 6 Split Arrays
++ 7 UFuncs
++ 7.1 Array-Arithmetik
++ 7.2 Exponential function
++ 7.3 Logarithm
++ 7.4 Comparison operators
++ 8 Aggregation
++ 8.1 Multi-dimensional aggregation
++ 9 Timing of functions
++ 10 Conclusion
+
+
+
+#1 Introduction
+
+NumPy is a library of Python that makes it easy to handle vectors, matrices, or large multidimensional arrays in general. In addition to the data structures, NumPy also offers efficiently implemented functions for numerical calculations.
+
+
+**Loading the libraries**
+```{r, eval=F, echo=T}
+import numpy as np
+```
+
+
+
+
+#2 Attributes of NumPy Arrays
+
+```{r, eval=F, echo=T}
+np.random.seed(0)
+
+x1 = np.random.randint(10, size = 6)
+#One-dimensional array
+x2 = np.random.randint(10, size = (3, 4))
+#Two-dimensional array
+x3 = np.random.randint(10, size = (3, 4, 5))
+#Three-dimensional array
+```
+
+
+
+```{r, eval=F, echo=T}
+print("x3 ndim: ", x3.ndim)
+print("x3 shape: ", x3.shape)
+print("x3 size: ", x3.size)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p1.png)
+
+
+#3 Indexing of Arrays
+
+#3.1 Access to individual elements
+
+```{r, eval=F, echo=T}
+x1
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p2.png)
+
+
+```{r, eval=F, echo=T}
+print(x1[0])
+print(x1[1])
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p3.png)
+
+
+
+```{r, eval=F, echo=T}
+print(x1[-1])
+print(x1[-2])
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p4.png)
+
+
+
+```{r, eval=F, echo=T}
+x2
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p5.png)
+
+
+
+```{r, eval=F, echo=T}
+x2[0, 0]
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p6.png)
+
+
+
+#3.2 via Slicing
+
+
+```{r, eval=F, echo=T}
+x1[:3] #first 3 elements
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p7.png)
+
+
+```{r, eval=F, echo=T}
+x1[3:] #from element 3 onwards
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p8.png)
+
+
+
+```{r, eval=F, echo=T}
+x1[::2] #select every second element
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p9.png)
+
+
+```{r, eval=F, echo=T}
+x1[::-1] #all elements in reverse order
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p10.png)
+
+
+
+#3.3 Multidimensional subsets of an Array
+
+```{r, eval=F, echo=T}
+x2
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p11.png)
+
+
+```{r, eval=F, echo=T}
+x2[:2, :3] #two rows, three columns
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p12.png)
+
+
+#4 Reshape
+
+```{r, eval=F, echo=T}
+RESHAPE = np.arange(1, 10)
+RESHAPE
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p13.png)
+
+
+```{r, eval=F, echo=T}
+RESHAPE.reshape((3, 3))
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p14.png)
+
+
+#5 Concatenate Arrays
+
+```{r, eval=F, echo=T}
+x = np.array([1,2,3])
+y = np.array([3,2,1])
+
+np.concatenate([x, y])
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p15.png)
+
+
+```{r, eval=F, echo=T}
+z = [88, 99, 100]
+
+show_con = np.concatenate([x, y, z])
+show_con
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p16.png)
+
+
+#6 Split Arrays
+
+```{r, eval=F, echo=T}
+x1, x2, x3 = np.split(show_con, [3, 6])
+print(x1, x2, x3)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p17.png)
+
+
+
+#7 UFuncs
+
+#7.1 Array-Arithmetik
+
+```{r, eval=F, echo=T}
+x = np.array([1,2,3])
+
+print("x - 3 =", x - 3)
+print("x + 3 =", x + 3)
+print("x * 2 =", x * 2)
+print("x / 2 =", x / 2)
+print("x ** 2 =", x ** 2)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p18.png)
+
+
+#7.2 Exponential function
+
+
+```{r, eval=F, echo=T}
+x = np.array([1,2,3])
+
+print("e^x =", np.exp(x))
+print("2^x =", np.exp2(x))
+print("3^x =", np.power(3, x))
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p19.png)
+
+
+#7.3 Logarithm
+
+
+```{r, eval=F, echo=T}
+x = np.array([1, 2, 4, 10])
+
+print("x =", x)
+print("ln(x) =", np.log(x))
+print("log2(x) =", np.log2(x))
+print("log10(x) =", np.log10(x))
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p20.png)
+
+
+#7.4 Comparison operators
+
+```{r, eval=F, echo=T}
+x = np.array([1, 2, 3, 4, 5])
+
+x < 3     # less than
+x >= 3    # greater or equal
+x != 3    # unequal 
+x == 3    # equal
+
+print("x < 3", x < 3)
+print("x >= 3", x >= 3)
+print("x != 3", x != 3)
+print("x == 3", x == 3)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p21.png)
+
+
+```{r, eval=F, echo=T}
+np.count_nonzero(x < 6)   
+#how many values are less than 6 ? 
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p22.png)
+
+
+```{r, eval=F, echo=T}
+np.any(x < 8)     
+#are there varlues over 8 ?
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p23.png)
+
+
+```{r, eval=F, echo=T}
+np.all(x < 10)  
+#are all values less than 10 ? 
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p24.png)
+
+
+#8 Aggregation
+
+```{r, eval=F, echo=T}
+MyBigArray = np.random.random(1000000)
+```
+
+
+```{r, eval=F, echo=T}
+print("sum =", np.sum(MyBigArray))
+print("min =", np.min(MyBigArray))
+print("max =", np.max(MyBigArray))
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p25.png)
+
+#8.1 Multi-dimensional aggregation
+
+```{r, eval=F, echo=T}
+MultiArray = np.random.random((3, 4))
+print(MultiArray)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p26.png)
+
+
+```{r, eval=F, echo=T}
+MultiArray.sum()          
+#sum of whole array
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p27.png)
+
+
+```{r, eval=F, echo=T}
+MultiArray.min(axis=0)           
+#min of a column
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p28.png)
+
+
+```{r, eval=F, echo=T}
+MultiArray.max(axis=1)          
+#max of a row
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p29.png)
+
+
+#9 Timing of functions
+
+```{r, eval=F, echo=T}
+test = np.random.random(1000000)
+
+%timeit sum(test)
+%timeit np.sum(test)
+```
+
+![](/post/2019-05-07-numpy-an-intuition_files/p9p30.png)
+
+
+
+#10 Conclusion
+
+NumPy is a very useful library from Python. In my opinion, their use is essential in data science.
+
+
+
+

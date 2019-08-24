@@ -19,6 +19,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -60,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">0 min read</span>
+    <span class="article-duration">3 min read</span>
     
 
     <h1 class="article-title">NumPy. An intuition.</h1>
@@ -70,7 +75,296 @@
     
 
     <div class="article-content">
-      
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Attributes of NumPy Arrays</li>
+<li>3 Indexing of Arrays</li>
+<li>3.1 Access to individual elements</li>
+<li>3.2 via Slicing</li>
+<li>3.3 Multidimensional subsets of an Array</li>
+<li>4 Reshape</li>
+<li>5 Concatenate Arrays</li>
+<li>6 Split Arrays</li>
+<li>7 UFuncs</li>
+<li>7.1 Array-Arithmetik</li>
+<li>7.2 Exponential function</li>
+<li>7.3 Logarithm</li>
+<li>7.4 Comparison operators</li>
+<li>8 Aggregation</li>
+<li>8.1 Multi-dimensional aggregation</li>
+<li>9 Timing of functions</li>
+<li>10 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>NumPy is a library of Python that makes it easy to handle vectors, matrices, or large multidimensional arrays in general. In addition to the data structures, NumPy also offers efficiently implemented functions for numerical calculations.</p>
+<p><strong>Loading the libraries</strong></p>
+<pre class="r"><code>import numpy as np</code></pre>
+</div>
+<div id="attributes-of-numpy-arrays" class="section level1">
+<h1>2 Attributes of NumPy Arrays</h1>
+<pre class="r"><code>np.random.seed(0)
+
+x1 = np.random.randint(10, size = 6)
+#One-dimensional array
+x2 = np.random.randint(10, size = (3, 4))
+#Two-dimensional array
+x3 = np.random.randint(10, size = (3, 4, 5))
+#Three-dimensional array</code></pre>
+<pre class="r"><code>print(&quot;x3 ndim: &quot;, x3.ndim)
+print(&quot;x3 shape: &quot;, x3.shape)
+print(&quot;x3 size: &quot;, x3.size)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p1.png" />
+
+</div>
+</div>
+<div id="indexing-of-arrays" class="section level1">
+<h1>3 Indexing of Arrays</h1>
+</div>
+<div id="access-to-individual-elements" class="section level1">
+<h1>3.1 Access to individual elements</h1>
+<pre class="r"><code>x1</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p2.png" />
+
+</div>
+<pre class="r"><code>print(x1[0])
+print(x1[1])</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p3.png" />
+
+</div>
+<pre class="r"><code>print(x1[-1])
+print(x1[-2])</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p4.png" />
+
+</div>
+<pre class="r"><code>x2</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p5.png" />
+
+</div>
+<pre class="r"><code>x2[0, 0]</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p6.png" />
+
+</div>
+</div>
+<div id="via-slicing" class="section level1">
+<h1>3.2 via Slicing</h1>
+<pre class="r"><code>x1[:3] #first 3 elements</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p7.png" />
+
+</div>
+<pre class="r"><code>x1[3:] #from element 3 onwards</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p8.png" />
+
+</div>
+<pre class="r"><code>x1[::2] #select every second element</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p9.png" />
+
+</div>
+<pre class="r"><code>x1[::-1] #all elements in reverse order</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p10.png" />
+
+</div>
+</div>
+<div id="multidimensional-subsets-of-an-array" class="section level1">
+<h1>3.3 Multidimensional subsets of an Array</h1>
+<pre class="r"><code>x2</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p11.png" />
+
+</div>
+<pre class="r"><code>x2[:2, :3] #two rows, three columns</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p12.png" />
+
+</div>
+</div>
+<div id="reshape" class="section level1">
+<h1>4 Reshape</h1>
+<pre class="r"><code>RESHAPE = np.arange(1, 10)
+RESHAPE</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p13.png" />
+
+</div>
+<pre class="r"><code>RESHAPE.reshape((3, 3))</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p14.png" />
+
+</div>
+</div>
+<div id="concatenate-arrays" class="section level1">
+<h1>5 Concatenate Arrays</h1>
+<pre class="r"><code>x = np.array([1,2,3])
+y = np.array([3,2,1])
+
+np.concatenate([x, y])</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p15.png" />
+
+</div>
+<pre class="r"><code>z = [88, 99, 100]
+
+show_con = np.concatenate([x, y, z])
+show_con</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p16.png" />
+
+</div>
+</div>
+<div id="split-arrays" class="section level1">
+<h1>6 Split Arrays</h1>
+<pre class="r"><code>x1, x2, x3 = np.split(show_con, [3, 6])
+print(x1, x2, x3)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p17.png" />
+
+</div>
+</div>
+<div id="ufuncs" class="section level1">
+<h1>7 UFuncs</h1>
+</div>
+<div id="array-arithmetik" class="section level1">
+<h1>7.1 Array-Arithmetik</h1>
+<pre class="r"><code>x = np.array([1,2,3])
+
+print(&quot;x - 3 =&quot;, x - 3)
+print(&quot;x + 3 =&quot;, x + 3)
+print(&quot;x * 2 =&quot;, x * 2)
+print(&quot;x / 2 =&quot;, x / 2)
+print(&quot;x ** 2 =&quot;, x ** 2)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p18.png" />
+
+</div>
+</div>
+<div id="exponential-function" class="section level1">
+<h1>7.2 Exponential function</h1>
+<pre class="r"><code>x = np.array([1,2,3])
+
+print(&quot;e^x =&quot;, np.exp(x))
+print(&quot;2^x =&quot;, np.exp2(x))
+print(&quot;3^x =&quot;, np.power(3, x))</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p19.png" />
+
+</div>
+</div>
+<div id="logarithm" class="section level1">
+<h1>7.3 Logarithm</h1>
+<pre class="r"><code>x = np.array([1, 2, 4, 10])
+
+print(&quot;x =&quot;, x)
+print(&quot;ln(x) =&quot;, np.log(x))
+print(&quot;log2(x) =&quot;, np.log2(x))
+print(&quot;log10(x) =&quot;, np.log10(x))</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p20.png" />
+
+</div>
+</div>
+<div id="comparison-operators" class="section level1">
+<h1>7.4 Comparison operators</h1>
+<pre class="r"><code>x = np.array([1, 2, 3, 4, 5])
+
+x &lt; 3     # less than
+x &gt;= 3    # greater or equal
+x != 3    # unequal 
+x == 3    # equal
+
+print(&quot;x &lt; 3&quot;, x &lt; 3)
+print(&quot;x &gt;= 3&quot;, x &gt;= 3)
+print(&quot;x != 3&quot;, x != 3)
+print(&quot;x == 3&quot;, x == 3)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p21.png" />
+
+</div>
+<pre class="r"><code>np.count_nonzero(x &lt; 6)   
+#how many values are less than 6 ? </code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p22.png" />
+
+</div>
+<pre class="r"><code>np.any(x &lt; 8)     
+#are there varlues over 8 ?</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p23.png" />
+
+</div>
+<pre class="r"><code>np.all(x &lt; 10)  
+#are all values less than 10 ? </code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p24.png" />
+
+</div>
+</div>
+<div id="aggregation" class="section level1">
+<h1>8 Aggregation</h1>
+<pre class="r"><code>MyBigArray = np.random.random(1000000)</code></pre>
+<pre class="r"><code>print(&quot;sum =&quot;, np.sum(MyBigArray))
+print(&quot;min =&quot;, np.min(MyBigArray))
+print(&quot;max =&quot;, np.max(MyBigArray))</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p25.png" />
+
+</div>
+</div>
+<div id="multi-dimensional-aggregation" class="section level1">
+<h1>8.1 Multi-dimensional aggregation</h1>
+<pre class="r"><code>MultiArray = np.random.random((3, 4))
+print(MultiArray)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p26.png" />
+
+</div>
+<pre class="r"><code>MultiArray.sum()          
+#sum of whole array</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p27.png" />
+
+</div>
+<pre class="r"><code>MultiArray.min(axis=0)           
+#min of a column</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p28.png" />
+
+</div>
+<pre class="r"><code>MultiArray.max(axis=1)          
+#max of a row</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p29.png" />
+
+</div>
+</div>
+<div id="timing-of-functions" class="section level1">
+<h1>9 Timing of functions</h1>
+<pre class="r"><code>test = np.random.random(1000000)
+
+%timeit sum(test)
+%timeit np.sum(test)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-07-numpy-an-intuition_files/p9p30.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>10 Conclusion</h1>
+<p>NumPy is a very useful library from Python. In my opinion, their use is essential in data science.</p>
+</div>
+
     </div>
   </article>
 
@@ -92,6 +386,18 @@
 
     </div>
     
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 

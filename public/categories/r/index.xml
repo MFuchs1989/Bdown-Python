@@ -17,7 +17,7 @@
       <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/05/07/numpy-an-intuition/</guid>
-      <description></description>
+      <description>Table of Content1 Introduction2 Attributes of NumPy Arrays3 Indexing of Arrays3.1 Access to individual elements3.2 via Slicing3.3 Multidimensional subsets of an Array4 Reshape5 Concatenate Arrays6 Split Arrays7 UFuncs7.1 Array-Arithmetik7.2 Exponential function7.3 Logarithm7.4 Comparison operators8 Aggregation8.1 Multi-dimensional aggregation9 Timing of functions10 Conclusion1 IntroductionNumPy is a library of Python that makes it easy to handle vectors, matrices, or large multidimensional arrays in general.</description>
     </item>
     
     <item>
