@@ -1,0 +1,168 @@
+---
+title: Pivot Tables with Python
+author: Michael Fuchs
+date: '2019-04-24'
+slug: pivot-tables-with-python
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Getting an overview of our data
++ 3 Categorizing the data by Year and Region
++ 4 Creating a multi-index pivot table
++ 5 Manipulating the data using aggfunc
++ 6 Applying a custom function to remove outlier
++ 7 Categorizing using string manipulation
++ 8 Conclusion
+
+
+
+#1 Introduction
+
+Many people like to work with pivot tables in Excel. This possibility also exists in Python.
+
+For this post the dataset *WorldHappinessReport* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1bTyuh-sKgDuu4KgT85SVPexQQTZfTIXy>.
+
+
+
+**Loading the libraries and the data**
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+```{r, eval=F, echo=T}
+happy = pd.read_csv("path/to/file/WorldHappinessReport.csv")
+```
+
+
+#2 Getting an overview of our data
+
+
+```{r, eval=F, echo=T}
+happy.head(2)
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p1.png)
+
+
+Getting an overview of our data and checking for missing values:
+```{r, eval=F, echo=T}
+print("Our data has {0} rows and {1} columns".format(happy.shape[0], happy.shape[1]))
+print("Are there missing values? {}".format(happy.isnull().any().any()))
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p2.png)
+
+ 
+#3 Categorizing the data by Year and Region
+
+```{r, eval=F, echo=T}
+pd.pivot_table(happy, index= 'Year', values= "Happiness Score")
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p3.png)
+
+
+```{r, eval=F, echo=T}
+pd.pivot_table(happy, index = 'Region', values="Happiness Score").head()
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p4.png)
+
+#4 Creating a multi-index pivot table
+
+```{r, eval=F, echo=T}
+pd.pivot_table(happy, index = ['Region', 'Year'], values="Happiness Score").head(9)
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p5.png)
+
+
+```{r, eval=F, echo=T}
+pd.pivot_table(happy, index= 'Region', columns='Year', values="Happiness Score")
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p6.png)
+
+
+#5 Manipulating the data using aggfunc
+
+```{r, eval=F, echo=T}
+pd.pivot_table(happy, index= 'Region', values= "Happiness Score", aggfunc= [np.mean, np.median, np.min, np.max, np.std])
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p7.png)
+
+
+#6 Applying a custom function to remove outlier
+
+Here we see how many countries exist in a region
+```{r, eval=F, echo=T}
+happy[['Region', 'Country']].groupby(['Region']).nunique().drop(columns=['Region']).reset_index()
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p8.png)
+
+
+Let’s create a function that only calculates the values that are between the 0.25th and 0.75th quantiles.
+```{r, eval=F, echo=T}
+def remove_outliers(values):
+    mid_quantiles = values.quantile([.25, .75])
+    return np.mean(mid_quantiles)
+
+
+pd.pivot_table(happy, index = 'Region', values="Happiness Score", aggfunc= [np.mean, remove_outliers])
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p9.png)
+
+
+#7 Categorizing using string manipulation
+
+Here for Asia:
+```{r, eval=F, echo=T}
+table = pd.pivot_table(happy, index = 'Region', values="Happiness Score", aggfunc= [np.mean, remove_outliers])
+table[table.index.str.contains('Asia')]
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p10.png)
+
+
+
+Here for Europe:
+```{r, eval=F, echo=T}
+table[table.index.str.contains('Europe')]
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p11.png)
+
+
+
+Now for certain years and regions:
+```{r, eval=F, echo=T}
+table = pd.pivot_table(happy, index = ['Region', 'Year'], values='Happiness Score',aggfunc= [np.mean, remove_outliers])
+
+table.query('Year == [2015, 2017] and Region == ["Sub-Saharan Africa", "Middle East and Northern Africa"]')
+```
+
+![](/post/2019-04-24-pivot-tables-with-python_files/p8p12.png)
+
+
+
+
+#8 Conclusion
+
+As you can see in Python you do not have to do without pivot tables if you like working with them. In my opinion, pivot tables are a great way to get a quick overview of the data and make comparisons between variables.
+
+
+
+
+
+

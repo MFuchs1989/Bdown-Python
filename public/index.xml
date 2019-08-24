@@ -6,10 +6,20 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Pivot Tables with Python</title>
+      <link>/2019/04/24/pivot-tables-with-python/</link>
+      <pubDate>Wed, 24 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/24/pivot-tables-with-python/</guid>
+      <description>Table of Content1 Introduction2 Getting an overview of our data3 Categorizing the data by Year and Region4 Creating a multi-index pivot table5 Manipulating the data using aggfunc6 Applying a custom function to remove outlier7 Categorizing using string manipulation8 Conclusion1 IntroductionMany people like to work with pivot tables in Excel. This possibility also exists in Python.
+For this post the dataset WorldHappinessReport from the statistic platform “Kaggle” was used.</description>
+    </item>
     
     <item>
       <title>Data Management</title>
