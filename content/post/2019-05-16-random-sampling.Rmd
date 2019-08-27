@@ -1,0 +1,103 @@
+---
+title: Random sampling
+author: Michael Fuchs
+date: '2019-05-16'
+slug: random-sampling
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+#Table of Content
+
++ 1 Introduction
++ 2 Preparation
++ 3 Method 1 - Customer Churn Model
++ 4 Method 2 - sklearn
++ 5 Conclusion
+
+
+#1 Introduction
+
+Splitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model. Generally, the training and testing datasets are split in the ratio of 75:25 or 80:20. There are various ways to split the data into two halves. Here I will show two methods to do this.
+
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+
+
+
+**Loading the libraries and the data**
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+```{r, eval=F, echo=T}
+flight = pd.read_csv("path/to/file/flight.csv")
+```
+
+
+#2 Preparation
+
+Für die beiden nachfolgend gezeigten Methoden werden die ersten hundert Zeilen aus dem Datensatz *flight* verwendet.
+```{r, eval=F, echo=T}
+sampling = flight.iloc[0:100,:]
+sampling.shape
+```
+
+![](/post/2019-05-16-random-sampling_files/p10p1.png)
+
+
+
+#3 Method 1 - Customer Churn Model
+
+Die Aufteilung erfolgte hier in einem Verhältnis von 80:20.
+```{r, eval=F, echo=T}
+a=np.random.randn(len(sampling))
+check=a<0.8
+training=sampling[check]
+testing=sampling[~check]
+```
+
+
+```{r, eval=F, echo=T}
+len(training)
+```
+
+![](/post/2019-05-16-random-sampling_files/p10p2.png)
+
+
+```{r, eval=F, echo=T}
+len(testing)
+```
+
+![](/post/2019-05-16-random-sampling_files/p10p3.png)
+
+
+
+#4 Method 2 - sklearn
+
+```{r, eval=F, echo=T}
+from sklearn.model_selection import train_test_split
+train, test = train_test_split(sampling, test_size = 0.2)
+```
+
+
+```{r, eval=F, echo=T}
+len(train)
+```
+
+![](/post/2019-05-16-random-sampling_files/p10p4.png)
+
+```{r, eval=F, echo=T}
+len(test)
+```
+
+![](/post/2019-05-16-random-sampling_files/p10p5.png)
+
+
+#5 Conclusion
+
+Now we are ready for predictive modelling. 

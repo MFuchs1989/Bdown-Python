@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Random sampling</title>
+      <link>/2019/05/16/random-sampling/</link>
+      <pubDate>Thu, 16 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/05/16/random-sampling/</guid>
+      <description>Table of Content1 Introduction2 Preparation3 Method 1 - Customer Churn Model4 Method 2 - sklearn5 Conclusion1 IntroductionSplitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model.</description>
+    </item>
     
     <item>
       <title>NumPy. An intuition.</title>
