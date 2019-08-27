@@ -41,7 +41,8 @@ flight = pd.read_csv("path/to/file/flight.csv")
 
 #2 Preparation
 
-Für die beiden nachfolgend gezeigten Methoden werden die ersten hundert Zeilen aus dem Datensatz *flight* verwendet.
+For the two methods shown below, the first hundred lines from the record *flight* are used.
+
 ```{r, eval=F, echo=T}
 sampling = flight.iloc[0:100,:]
 sampling.shape
@@ -53,7 +54,7 @@ sampling.shape
 
 #3 Method 1 - Customer Churn Model
 
-Die Aufteilung erfolgte hier in einem Verhältnis von 80:20.
+The division took place here in a ratio of 80:20.
 ```{r, eval=F, echo=T}
 a=np.random.randn(len(sampling))
 check=a<0.8

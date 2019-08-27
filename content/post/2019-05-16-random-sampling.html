@@ -32,7 +32,7 @@ import numpy as np</code></pre>
 </div>
 <div id="preparation" class="section level1">
 <h1>2 Preparation</h1>
-<p>Für die beiden nachfolgend gezeigten Methoden werden die ersten hundert Zeilen aus dem Datensatz <em>flight</em> verwendet.</p>
+<p>For the two methods shown below, the first hundred lines from the record <em>flight</em> are used.</p>
 <pre class="r"><code>sampling = flight.iloc[0:100,:]
 sampling.shape</code></pre>
 <div class="figure">
@@ -42,7 +42,7 @@ sampling.shape</code></pre>
 </div>
 <div id="method-1---customer-churn-model" class="section level1">
 <h1>3 Method 1 - Customer Churn Model</h1>
-<p>Die Aufteilung erfolgte hier in einem Verhältnis von 80:20.</p>
+<p>The division took place here in a ratio of 80:20.</p>
 <pre class="r"><code>a=np.random.randn(len(sampling))
 check=a&lt;0.8
 training=sampling[check]
