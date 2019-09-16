@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 30 May 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The use of the groupby function</title>
+      <link>/2019/05/30/the-use-of-the-groupby-function/</link>
+      <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/05/30/the-use-of-the-groupby-function/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Random sampling</title>
@@ -100,7 +109,8 @@ For this post the dataset flight from the statistic platform “Kaggle” was us
       <pubDate>Sun, 03 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/03/data-wrangling/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the data4 Get some statistics5 Select data5.1 Easy selection5.2 Conditional selection5.3 Set option6 Filter6.1 Normal filter6.2 Filter with a defined list7 Panda’s query8 Group by8.1 with size8.2 with count8.2.1 Count Non - Zero Observations8.3 with sum8.4 with nunique8.5 with mean8.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the data4 Get some statistics5 Select data5.1 Easy selection5.2 Conditional selection5.3 Set option6 Filter6.1 Normal filter6.2 Filter with a defined list7 Panda’s query8 Conclusion1 IntroductionNever stop learning !
+The entry into the field of data science with “R / R-Studio” was a smart matter.</description>
     </item>
     
   </channel>
