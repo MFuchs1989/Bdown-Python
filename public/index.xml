@@ -17,7 +17,8 @@
       <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/05/30/the-use-of-the-groupby-function/</guid>
-      <description></description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Group by3.1 with size3.2 with count3.2.1 Count Non - Zero Observations3.3 with sum3.4 with nunique3.5 with mean3.6 with agg.4 Conclusion1 IntroductionGoupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.
+For this post the dataset flight from the statistic platform “Kaggle” was used.</description>
     </item>
     
     <item>
