@@ -89,6 +89,7 @@
 <li>6 Filter</li>
 <li>6.1 Normal filter</li>
 <li>6.2 Filter with a defined list</li>
+<li>6.3 Exclude some columns with a defined list</li>
 <li>7 Panda’s query</li>
 <li>8 Conclusion</li>
 </ul>
@@ -303,6 +304,23 @@ df = df.reset_index()
 df</code></pre>
 <div class="figure">
 <img src="/post/2019-03-03-data-wrangling_files/p1p27.png" />
+
+</div>
+</div>
+<div id="exclude-some-columns-with-a-defined-list" class="section level1">
+<h1>6.3 Exclude some columns with a defined list</h1>
+<pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" />
+
+</div>
+<pre class="r"><code>col_to_exclude = [&#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]
+
+reduced_df = df.drop(col_to_exclude, axis=1)
+reduced_df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" />
 
 </div>
 </div>
