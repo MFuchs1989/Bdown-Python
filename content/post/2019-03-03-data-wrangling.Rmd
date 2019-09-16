@@ -24,15 +24,7 @@ tags:
 + 6.1 Normal filter
 + 6.2 Filter with a defined list
 + 7 Panda's query
-+ 8 Group by
-+ 8.1 with size
-+ 8.2 with count
-+ 8.2.1 Count Non - Zero Observations
-+ 8.3 with sum
-+ 8.4 with nunique
-+ 8.5 with mean
-+ 8.6 with agg.
-+ 9 Conclusion
++ 8 Conclusion
 
 
 #1 Introduction
@@ -245,7 +237,7 @@ Select columns containing 'Delay'
 flight.filter(like='Delay', axis=1).head()
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p23z.png)
 
 
 #6.2 Filter with a defined list
@@ -287,8 +279,8 @@ df
 
 ![](/post/2019-03-03-data-wrangling_files/p1p26.png)
 
-Now we have the sum of distance for the top 4 airports with max. delay
 
+Now we have some statistical values of the variable distance for the top 4 airports with max. delay.
 
 For a better view:
 ```{r, eval=F, echo=T}
@@ -357,195 +349,6 @@ df.query("Origin_Airport in ['JFK', 'DFW'] & Day in [1, 2, 4]").head()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p34.png)
 
-
-#8 Group by
-
-```{r, eval=F, echo=T}
-flight.groupby('Origin_Airport').size().head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p35.png)
-
-
-```{r, eval=F, echo=T}
-flight.groupby(['Origin_Airport','DayOfWeek']).size().head(17).T
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p36.png)
-
-
-```{r, eval=F, echo=T}
-flight.groupby(['Origin_Airport']).get_group('BOS').head()               
-#add. Filter on 'BOS'
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p37.png)
-
-
-
-
-
-##8.1 with size
-
-```{r, eval=F, echo=T}
-df = pd.DataFrame({"Person":
-                   ["John", "Myla", "Lewis", "John", "Myla"],
-                   "Age": [24., np.nan, 21., 33, 26],
-                   "Single": [False, True, True, True, False]})
-df 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p38.png)
-
-
-```{r, eval=F, echo=T}
-df[['Single', 'Age']].groupby(['Single']).size()       
-#the size function counts columns (including NAs !!) 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p39.png)
-
-##8.2 with count
-
-```{r, eval=F, echo=T}
-df[['Single', 'Age']].groupby(['Single']).count()     
-#the count function counts columns (excluding NAs !!)
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p40.png)
-
-
-###8.2.1 Count Non - Zero Observations
-
-**Vertical count**
-
-```{r, eval=F, echo=T}
-df = pd.DataFrame({"Person":
-                   ["Männlich", "Weiblich", "Männlich", "Männlich", "Weiblich", "Männlich", "Weiblich",                     "Männlich", "Weiblich", "Männlich", "Weiblich", "Männlich", "Weiblich"],
-                    "Verspätung in Min.": [0, 0, 4., 0, 5, 1, 0, 0, 11, 5, 4, 0, 9]})
-df.head(6)
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p41.png)
-
-```{r, eval=F, echo=T}
-df['Verspätet?'] = np.where(df['Verspätung in Min.'] > 0, 1, 0)
-df[['Person', 'Verspätet?']].groupby(['Person']).sum()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p42.png)
-
-
-
-**Horizontal count**
-
-```{r, eval=F, echo=T}
-df = pd.DataFrame({"Person":
-                   ["Person 1", "Person 2", "Person 3"],
-                   "MZP1": 
-                   [0, 2, 4],
-                   "MZP2": 
-                   [0, 3, 6],
-                   "MZP3": 
-                   [1, 7, 0]})
-df.head() 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p43.png)
-
-
-```{r, eval=F, echo=T}
-df2 = df[['MZP1', 'MZP2', 'MZP3']]
-df2['Zwischensumme'] = df.astype(bool).sum(axis=1)
-df2['Verspätungen'] = df2.Zwischensumme - 1
-df2
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p44.png)
-
-*astype(bool).sum(axis=1)* also counts the index (and categorical variables if any). Therefore *select* and *"Zwischensmme - 1"*
-
-
-
-```{r, eval=F, echo=T}
-df['Anzahl Verspätungen'] = df2.Verspätungen
-df = df[['Person', 'Anzahl Verspätungen']].sort_values(by='Anzahl Verspätungen', ascending=False)
-df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p45.png)
-
-
-##8.3 with sum
-
-```{r, eval=F, echo=T}
-df[['Single', 'Age']].groupby(['Single']).sum().reset_index() 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p46.png)
-
-
-##8.4 with nunique
-
-```{r, eval=F, echo=T}
-df.groupby(['Single']).nunique()       
-#nunique counts characteristics within the respective sorting (without NAs)
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p47.png)
-
-
-##8.5 with mean
-
-```{r, eval=F, echo=T}
-df[['Single', 'Age']].groupby(['Single']).mean().reset_index() 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p48.png)
-
-
-##8.6 with agg.
-
-```{r, eval=F, echo=T}
-df[['Single', 'Age']].groupby(['Single']).agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p49.png)
-
-```{r, eval=F, echo=T}
-df_rank = flight.groupby('Origin_Airport')      #another way
-
-df_descriptive = df_rank['Dep_Delay'].agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
-
-
-# Renaming Pandas Dataframe Columns
-df_descriptive = df_descriptive.rename(columns={'Origin_Airport':'Origin Airport', 'mean':'Mean', 'median':'Median', 'std':'Standard Deviation', 'min':'Minimum', 'max': 'Maximum'})
-
-df_descriptive.head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p50.png)
-
-
-#9 Conclusion
+#8 Conclusion
 
 This was a small insight into the topic Data Wrangling with Python.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
