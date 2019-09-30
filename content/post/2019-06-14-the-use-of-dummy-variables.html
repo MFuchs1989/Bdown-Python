@@ -1,0 +1,128 @@
+---
+title: The use of dummy variables
+author: Michael Fuchs
+date: '2019-06-14'
+slug: the-use-of-dummy-variables
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Preparation of the dataframe</li>
+<li>4 How to create dummy variables</li>
+<li>5 Use dummy variables in a regression analysis</li>
+<li>6 Dummy variables with more than two characteristics</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In a nutshell: a dummy variable is a numeric variable that represents categorical data. For example, if you want to calculate a linear regression, you need numerical predictors. However, it is very common that categorical variables also make a notable contribution to variance education. Below is shown how to create dummy variables and use them in a regression analysis.</p>
+<p>For this post the dataset <em>Gender discrimination</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1BNv0b0J1KSuSaBUqnXKvEfc1Ic92zqQ7" class="uri">https://drive.google.com/open?id=1BNv0b0J1KSuSaBUqnXKvEfc1Ic92zqQ7</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+import matplotlib.pyplot as plt</code></pre>
+<pre class="r"><code>gender_discrimination = pd.read_csv(&quot;path/to/file/gender_discrimination.csv&quot;)</code></pre>
+</div>
+<div id="preparation-of-the-dataframe" class="section level1">
+<h1>3 Preparation of the dataframe</h1>
+<pre class="r"><code>show_dummy = gender_discrimination[[&#39;Gender&#39;, &#39;Exper&#39;, &#39;Rank&#39;, &#39;Sal95&#39;]]
+vals_to_replace_gender = {0:&#39;Female&#39;, 1:&#39;Male&#39;}
+vals_to_replace_rank = {1:&#39;Assistant&#39;, 2:&#39;Associate&#39;, 3:&#39;Full_Professor&#39;}
+show_dummy[&#39;Gender&#39;] = show_dummy[&#39;Gender&#39;].map(vals_to_replace_gender)
+show_dummy[&#39;Rank&#39;] = show_dummy[&#39;Rank&#39;].map(vals_to_replace_rank)
+show_dummy.columns = [&#39;Gender&#39;, &#39;Years_of_Experiences&#39;, &#39;Job&#39;, &#39;Salary&#39;]
+show_dummy.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p1.png" />
+
+</div>
+</div>
+<div id="how-to-create-dummy-variables" class="section level1">
+<h1>4 How to create dummy variables</h1>
+<pre class="r"><code>dummy_sex = pd.get_dummies(show_dummy[&#39;Gender&#39;], prefix=&quot;sex&quot;)
+dummy_sex.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p2.png" />
+
+</div>
+<p>…and add them to the existing datarame.</p>
+<pre class="r"><code>column_name = show_dummy.columns.values.tolist()
+column_name.remove(&#39;Gender&#39;)
+show_dummy = show_dummy[column_name].join(dummy_sex)
+show_dummy.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p3.png" />
+
+</div>
+</div>
+<div id="use-dummy-variables-in-a-regression-analysis" class="section level1">
+<h1>5 Use dummy variables in a regression analysis</h1>
+<p>In the following it will be examined whether the number of professional years has an influence on the payment.</p>
+<pre class="r"><code>lin_reg = smf.ols(formula=&#39;Salary~Years_of_Experiences&#39;, data=show_dummy).fit()
+lin_reg.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p4.png" />
+
+</div>
+<p>As we can see, we get a R<sup>2</sup> of 10,2%.</p>
+<pre class="r"><code>x = show_dummy[&#39;Years_of_Experiences&#39;]
+y = show_dummy[&#39;Salary&#39;]
+
+plt.scatter(x, y)
+plt.title(&#39;Scatter plot: Years_of_Experiences vs. Salary&#39;)
+plt.xlabel(&#39;Years_of_Experiences&#39;)
+plt.ylabel(&#39;Salary&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p5.png" />
+
+</div>
+<pre class="r"><code>np.corrcoef(x, y)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p6.png" />
+
+</div>
+<p>Now let’s see if the newly created dummy variables (the gender) can improve the result.</p>
+<pre class="r"><code>lin_reg2 = smf.ols(formula=&#39;Salary~Years_of_Experiences+sex_Female+sex_Male&#39;, data=show_dummy).fit()
+lin_reg2.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p7.png" />
+
+</div>
+<p>Yes it could. We get a new R<sup>2</sup> of 16,7%.</p>
+</div>
+<div id="dummy-variables-with-more-than-two-characteristics" class="section level1">
+<h1>6 Dummy variables with more than two characteristics</h1>
+<p>Usually, dummy variables have only two characteristics. However, it can happen that they can have more than two. But this is not a problem. Look at the variable <em>Job</em>:</p>
+<pre class="r"><code>dummy_job = pd.get_dummies(show_dummy[&#39;Job&#39;], prefix=&quot;Job&quot;)
+dummy_job.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p8.png" />
+
+</div>
+<pre class="r"><code>column_name = show_dummy.columns.values.tolist()
+column_name.remove(&#39;Job&#39;)
+show_dummy = show_dummy[column_name].join(dummy_job)
+show_dummy.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p9.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>Creating and using dummy variables is essential in machine learning because it can significantly improve results.</p>
+</div>
