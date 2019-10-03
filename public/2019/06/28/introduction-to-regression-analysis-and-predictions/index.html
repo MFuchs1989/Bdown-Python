@@ -156,7 +156,12 @@ RSE, criteria_mean, error</code></pre>
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p6.png" />
 
 </div>
-<p>Results of parameters: + RSE = 261.452,89 + Mean of actal price = 540.088,14 + Ratio of RSE and criteria_mean = 48,41%</p>
+<p>Results of parameters:</p>
+<ul>
+<li>RSE = 261.452,89</li>
+<li>Mean of actal price = 540.088,14</li>
+<li>Ratio of RSE and criteria_mean = 48,41%</li>
+</ul>
 <pre class="r"><code>HousePrices_SimplReg.head()</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p7.png" />
@@ -200,7 +205,12 @@ RSE, criteria_mean, error</code></pre>
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p11.png" />
 
 </div>
-<p>Results of parameters: + RSE = 257.837.89 + Mean of actal price = 540.088.14 + Ratio of RSE and criteria_mean = 47,74%</p>
+<p>Results of parameters:</p>
+<ul>
+<li>RSE = 257.837.89</li>
+<li>Mean of actal price = 540.088.14</li>
+<li>Ratio of RSE and criteria_mean = 47,74%</li>
+</ul>
 <pre class="r"><code>HousePrices_MultReg.head()</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p12.png" />
@@ -229,7 +239,12 @@ RSE, criteria_mean, error</code></pre>
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p15.png" />
 
 </div>
-<p>Results of parameters: + RSE = 248.923,19 + Mean of actal price = 540.088,14 + Ratio of RSE and criteria_mean = 46,09%</p>
+<p>Results of parameters:</p>
+<ul>
+<li>RSE = 248.923,19</li>
+<li>Mean of actal price = 540.088,14</li>
+<li>Ratio of RSE and criteria_mean = 46,09%</li>
+</ul>
 <p>Below is an overview of the major results of the created models:</p>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p16.png" />
@@ -270,7 +285,12 @@ RSE, criteria_mean, error</code></pre>
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p19.png" />
 
 </div>
-<p>Results of parameters: + RSE = 242.210,56 + Mean of actal price = 534.152,74 + Ratio of RSE and criteria_mean = 45,34%</p>
+<p>Results of parameters:</p>
+<ul>
+<li>RSE = 242.210,56</li>
+<li>Mean of actal price = 534.152,74</li>
+<li>Ratio of RSE and criteria_mean = 45,34%</li>
+</ul>
 <p>Both models are almost identical in comparison. However, the F-values are worse for the split model. This is normal because there was less data available for creating the model. <strong>Important:</strong>: For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.</p>
 <pre class="r"><code>df_testing_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=testing).fit()
 df_testing_model.summary()</code></pre>
@@ -319,6 +339,7 @@ df.head()</code></pre>
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p25.png" />
 
 </div>
+<p>Now let’s plot the comparison of Actual and Predicted values</p>
 <pre class="r"><code>df1 = df.head(30)
 df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
 plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)

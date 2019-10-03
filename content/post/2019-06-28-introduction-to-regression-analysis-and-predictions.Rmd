@@ -129,6 +129,7 @@ RSE, criteria_mean, error
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p6.png)
 
 Results of parameters:
+
 + RSE = 261.452,89
 + Mean of actal price = 540.088,14
 + Ratio of RSE and criteria_mean = 48,41%
@@ -209,6 +210,7 @@ RSE, criteria_mean, error
 
 
 Results of parameters:
+
 + RSE = 257.837.89
 + Mean of actal price = 540.088.14
 + Ratio of RSE and criteria_mean = 47,74%
@@ -262,6 +264,7 @@ RSE, criteria_mean, error
 
 
 Results of parameters:
+
 + RSE = 248.923,19
 + Mean of actal price = 540.088,14
 + Ratio of RSE and criteria_mean = 46,09%
@@ -330,6 +333,7 @@ RSE, criteria_mean, error
 
 
 Results of parameters:
+
 + RSE = 242.210,56
 + Mean of actal price = 534.152,74
 + Ratio of RSE and criteria_mean = 45,34%
@@ -414,7 +418,7 @@ df.head()
 
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p25.png)
 
-
+Now let's plot the comparison of Actual and Predicted values
 
 ```{r, eval=F, echo=T}
 df1 = df.head(30)
