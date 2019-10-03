@@ -291,7 +291,8 @@ RSE, criteria_mean, error</code></pre>
 <li>Mean of actal price = 534.152,74</li>
 <li>Ratio of RSE and criteria_mean = 45,34%</li>
 </ul>
-<p>Both models are almost identical in comparison. However, the F-values are worse for the split model. This is normal because there was less data available for creating the model. <strong>Important:</strong>: For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.</p>
+<p>Both models are almost identical in comparison. However, the F-values are worse for the split model. This is normal because there was less data available for creating the model.</p>
+<p><strong>Important:</strong> For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.</p>
 <pre class="r"><code>df_testing_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=testing).fit()
 df_testing_model.summary()</code></pre>
 <div class="figure">

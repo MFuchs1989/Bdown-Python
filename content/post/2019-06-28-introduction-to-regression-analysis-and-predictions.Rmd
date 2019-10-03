@@ -341,7 +341,9 @@ Results of parameters:
 
 Both models are almost identical in comparison. However, the F-values are worse for the split model.
 This is normal because there was less data available for creating the model.
-**Important:**: For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.
+
+
+**Important:** For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.
 
 
 ```{r, eval=F, echo=T}
