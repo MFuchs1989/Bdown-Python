@@ -1,0 +1,284 @@
+---
+title: Introduction to regression analysis and predictions
+author: Michael Fuchs
+date: '2019-06-28'
+slug: introduction-to-regression-analysis-and-predictions
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Implementing linear regression with the statsmodel library</li>
+<li>3.1 Simple linear Regression</li>
+<li>3.2 Multiple Regression</li>
+<li>3.3 Model validation</li>
+<li>4 Linear Regression with scikit-learn</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Regression analyzes are very common and should therefore be mastered by every data scientist.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn import metrics</code></pre>
+<pre class="r"><code>houce_prices = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+</div>
+<div id="implementing-linear-regression-with-the-statsmodel-library" class="section level1">
+<h1>3 Implementing linear regression with the statsmodel library</h1>
+</div>
+<div id="simple-linear-regression" class="section level1">
+<h1>3.1 Simple linear Regression</h1>
+<pre class="r"><code>HousePrices_SimplReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
+HousePrices_SimplReg.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p1.png" />
+
+</div>
+<pre class="r"><code>x = HousePrices_SimplReg[&#39;sqft_living&#39;]
+y = HousePrices_SimplReg[&#39;price&#39;]
+
+plt.scatter(x, y)
+plt.title(&#39;Scatter plot: sqft_living vs. price&#39;)
+plt.xlabel(&#39;sqft_living&#39;)
+plt.ylabel(&#39;price&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p2.png" />
+
+</div>
+<pre class="r"><code>model1 = smf.ols(formula=&#39;price~sqft_living&#39;, data=HousePrices_SimplReg).fit()</code></pre>
+<pre class="r"><code>model1.params</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p3.png" />
+
+</div>
+<p>The result can be interpreted as follows: price = -43.580,74 + 280,62 * sqft_living</p>
+<pre class="r"><code>model1.rsquared</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p4.png" />
+
+</div>
+<pre class="r"><code>model1.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p5.png" />
+
+</div>
+<pre class="r"><code>price_pred = model1.predict(pd.DataFrame(HousePrices_SimplReg[&#39;sqft_living&#39;]))</code></pre>
+<pre class="r"><code>HousePrices_SimplReg[&#39;price_pred&#39;] = price_pred
+HousePrices_SimplReg[&#39;RSE&#39;] = (HousePrices_SimplReg[&#39;price&#39;] - HousePrices_SimplReg[&#39;price_pred&#39;]) ** 2
+RSEd = HousePrices_SimplReg.sum()[&#39;RSE&#39;]
+RSE = np.sqrt(RSEd/21611)
+criteria_mean = np.mean(HousePrices_SimplReg[&#39;price&#39;])
+error = RSE/criteria_mean
+RSE, criteria_mean, error</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p6.png" />
+
+</div>
+<p>Results of parameters: + RSE = 261.452,89 + Mean of actal price = 540.088,14 + Ratio of RSE and criteria_mean = 48,41%</p>
+<pre class="r"><code>HousePrices_SimplReg.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p7.png" />
+
+</div>
+</div>
+<div id="multiple-regression" class="section level1">
+<h1>3.2 Multiple Regression</h1>
+<p>Now we try to improve the predictive power of the model by adding more predictors. Therefore we’ll have a look at the R-squared, the F-statistic and the Prob (F-statistic).</p>
+<pre class="r"><code>HousePrices_MultReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
+HousePrices_MultReg.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p8.png" />
+
+</div>
+<ul>
+<li>Model 1: price ~ sqft_living</li>
+<li>Model 2: price ~ sqft_living + bedrooms</li>
+<li>Model 3: price ~ sqft_living + bedrooms + yr_built</li>
+</ul>
+<pre class="r"><code>model2 = smf.ols(formula=&#39;price~sqft_living+bedrooms&#39;, data=HousePrices_MultReg).fit()</code></pre>
+<pre class="r"><code>model2.params</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p9.png" />
+
+</div>
+<pre class="r"><code>model2.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p10.png" />
+
+</div>
+<pre class="r"><code>price_pred = model2.predict(HousePrices_MultReg[[&#39;sqft_living&#39;, &#39;bedrooms&#39;]])</code></pre>
+<pre class="r"><code>HousePrices_MultReg[&#39;price_pred&#39;] = price_pred
+HousePrices_MultReg[&#39;RSE&#39;] = (HousePrices_MultReg[&#39;price&#39;] - HousePrices_MultReg[&#39;price_pred&#39;]) ** 2
+RSEd = HousePrices_MultReg.sum()[&#39;RSE&#39;]
+RSE = np.sqrt(RSEd/21610)
+criteria_mean = np.mean(HousePrices_MultReg[&#39;price&#39;])
+error = RSE/criteria_mean
+RSE, criteria_mean, error</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p11.png" />
+
+</div>
+<p>Results of parameters: + RSE = 257.837.89 + Mean of actal price = 540.088.14 + Ratio of RSE and criteria_mean = 47,74%</p>
+<pre class="r"><code>HousePrices_MultReg.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p12.png" />
+
+</div>
+<pre class="r"><code>model3 = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=HousePrices_MultReg).fit()</code></pre>
+<pre class="r"><code>model3.params</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p13.png" />
+
+</div>
+<pre class="r"><code>model3.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p14.png" />
+
+</div>
+<pre class="r"><code>price_pred = model3.predict(HousePrices_MultReg[[&#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]])</code></pre>
+<pre class="r"><code>HousePrices_MultReg[&#39;price_pred&#39;] = price_pred
+HousePrices_MultReg[&#39;RSE&#39;] = (HousePrices_MultReg[&#39;price&#39;] - HousePrices_MultReg[&#39;price_pred&#39;]) ** 2
+RSEd = HousePrices_MultReg.sum()[&#39;RSE&#39;]
+RSE = np.sqrt(RSEd/21609)
+criteria_mean = np.mean(HousePrices_MultReg[&#39;price&#39;])
+error = RSE/criteria_mean
+RSE, criteria_mean, error</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p15.png" />
+
+</div>
+<p>Results of parameters: + RSE = 248.923,19 + Mean of actal price = 540.088,14 + Ratio of RSE and criteria_mean = 46,09%</p>
+<p>Below is an overview of the major results of the created models:</p>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p16.png" />
+
+</div>
+</div>
+<div id="model-validation" class="section level1">
+<h1>3.3 Model validation</h1>
+<p>We saw that model 3 delivered the best values. Therefore, our linear model is trained with this. Afterwards the performance will be measured.</p>
+<pre class="r"><code>a = np.random.randn(len(HousePrices_MultReg))
+check = a &lt; 0.8
+training = HousePrices_MultReg[check]
+testing = HousePrices_MultReg[~check]</code></pre>
+<pre class="r"><code>print(training.shape)
+print(testing.shape)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p17.png" />
+
+</div>
+<p>Let’s train our model</p>
+<pre class="r"><code>model4 = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=training).fit()
+model4.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p18.png" />
+
+</div>
+<p>Now we use the trained model for the predictions:</p>
+<pre class="r"><code>price_pred = model4.predict(testing[[&#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]])</code></pre>
+<p>Check the model performance with the test data:</p>
+<pre class="r"><code>testing[&#39;price_pred&#39;] = price_pred
+testing[&#39;RSE&#39;] = (testing[&#39;price&#39;] - testing[&#39;price_pred&#39;]) ** 2
+RSEd = testing.sum()[&#39;RSE&#39;]
+RSE = np.sqrt(RSEd/4458)
+criteria_mean = np.mean(testing[&#39;price&#39;])
+error = RSE/criteria_mean
+RSE, criteria_mean, error</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p19.png" />
+
+</div>
+<p>Results of parameters: + RSE = 242.210,56 + Mean of actal price = 534.152,74 + Ratio of RSE and criteria_mean = 45,34%</p>
+<p>Both models are almost identical in comparison. However, the F-values are worse for the split model. This is normal because there was less data available for creating the model. <strong>Important:</strong>: For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.</p>
+<pre class="r"><code>df_testing_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=testing).fit()
+df_testing_model.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p20.png" />
+
+</div>
+</div>
+<div id="linear-regression-with-scikit-learn" class="section level1">
+<h1>4 Linear Regression with scikit-learn</h1>
+<p>The library scikit-learn is also very good for training models. A brief insight should give the following example.</p>
+<pre class="r"><code>feature_cols = [&#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]
+x = HousePrices_MultReg[feature_cols]
+y = HousePrices_MultReg[&#39;price&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+lm = LinearRegression()
+lm.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>print(lm.intercept_)
+print(lm.coef_)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p21.png" />
+
+</div>
+<p>The result can be interpreted as follows: price = 4.829.374,95 + 342,68 * sqft_living - 59.209,59 * bedrooms - 2.436,52 * yr_built</p>
+<pre class="r"><code>list(zip(feature_cols, lm.coef_))</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p22.png" />
+
+</div>
+<pre class="r"><code>coeff_df = pd.DataFrame(lm.coef_, feature_cols, columns=[&#39;Coefficient&#39;])  
+coeff_df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p23.png" />
+
+</div>
+<p>Calculation of R<sup>2</sup>:</p>
+<pre class="r"><code>lm.score(trainX, trainY)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p24.png" />
+
+</div>
+<pre class="r"><code>y_pred = lm.predict(testX)</code></pre>
+<pre class="r"><code>df = pd.DataFrame({&#39;Actual&#39;: testY, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p25.png" />
+
+</div>
+<pre class="r"><code>df1 = df.head(30)
+df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
+plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
+plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p26.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p27.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This was a small insight into the creation and use of linear regression models.</p>
+<p>In a subsequent post, the possible measures for the preparation of a linear model training will be shown.</p>
+<p>In a further contribution methods are to be shown how the predictive power of a linear model can be improved.</p>
+</div>
+<div id="source" class="section level1">
+<h1>Source</h1>
+<p>Kumar, A., &amp; Babcock, J. (2017). Python: Advanced Predictive Analytics: Gain practical insights by exploiting data in your business to build advanced predictive modeling applications. Packt Publishing Ltd.</p>
+</div>

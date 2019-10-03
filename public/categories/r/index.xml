@@ -6,10 +6,20 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 14 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to regression analysis and predictions</title>
+      <link>/2019/06/28/introduction-to-regression-analysis-and-predictions/</link>
+      <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/06/28/introduction-to-regression-analysis-and-predictions/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Implementing linear regression with the statsmodel library3.1 Simple linear Regression3.2 Multiple Regression3.3 Model validation4 Linear Regression with scikit-learn5 Conclusion1 IntroductionRegression analyzes are very common and should therefore be mastered by every data scientist.
+For this post the dataset House Sales in King County, USA from the statistic platform “Kaggle” was used.</description>
+    </item>
     
     <item>
       <title>The use of dummy variables</title>
