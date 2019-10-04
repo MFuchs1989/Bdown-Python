@@ -98,7 +98,7 @@ The result can be interpreted as follows: price = -43.580,74 + 280,62 * sqft_liv
 
 
 
-Hereby we get the R^2^
+Hereby we get the R^2^:
 
 ```{r, eval=F, echo=T}
 model1.rsquared
