@@ -16,6 +16,7 @@ tags:
 <ul>
 <li>1 Introduction</li>
 <li>2 Checking for missing values</li>
+<li>2.1 Missing Value Function</li>
 <li>3 Deletion of missing values</li>
 <li>4 Replace missings with values</li>
 <li>4.1 Variant 1</li>
@@ -53,6 +54,40 @@ df1</code></pre>
 
 </div>
 </div>
+<div id="missing-value-function" class="section level1">
+<h1>2.1 Missing Value Function</h1>
+<pre class="r"><code>def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : &#39;Missing Values&#39;, 1 : &#39;% of Total Values&#39;})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        &#39;% of Total Values&#39;, ascending=False).round(1)
+        
+        # Print some summary information
+        print (&quot;Your selected dataframe has &quot; + str(df.shape[1]) + &quot; columns.\n&quot;      
+            &quot;There are &quot; + str(mis_val_table_ren_columns.shape[0]) +
+              &quot; columns that have missing values.&quot;)
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns</code></pre>
+<pre class="r"><code>missing_values_table(df1)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p20.png" />
+
+</div>
+</div>
 <div id="deletion-of-missing-values" class="section level1">
 <h1>3 Deletion of missing values</h1>
 <pre class="r"><code>df_del = df1.copy()
@@ -82,7 +117,6 @@ df_del</code></pre>
 <p>Missing values from only one column (here “Name”) are replaced.</p>
 <pre class="r"><code>df1_MbyW_Var1 = df1.copy()
 
-df1_MbyW_Var1[&#39;Name&#39;].fillna(0, inplace=True)
 df1_MbyW_Var1[&#39;Name&#39;] = df1_MbyW_Var1[&#39;Name&#39;].fillna(0)
 df1_MbyW_Var1</code></pre>
 <div class="figure">
