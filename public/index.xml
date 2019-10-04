@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jul 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Non-linear regression analysis</title>
+      <link>/2019/07/14/non-linear-regression-analysis/</link>
+      <pubDate>Sun, 14 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/07/14/non-linear-regression-analysis/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Data Preparation4 Hypothesis: a non-linear relationship5 Linear model6 Non linear models6.1 Quadratic Function6.2 Exponential Function6.3 Logarithm Function6.4 Polynomials Function7 Conclusion1 IntroductionIn my previous post “Introduction to regression analysis and predictions” I showed how to create linear regression models. But what can be done if the data is not distributed linearly?</description>
+    </item>
     
     <item>
       <title>Introduction to regression analysis and predictions</title>

@@ -1,0 +1,309 @@
+---
+title: Non-linear regression analysis
+author: Michael Fuchs
+date: '2019-07-14'
+slug: non-linear-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Data Preparation</li>
+<li>4 Hypothesis: a non-linear relationship</li>
+<li>5 Linear model</li>
+<li>6 Non linear models</li>
+<li>6.1 Quadratic Function</li>
+<li>6.2 Exponential Function</li>
+<li>6.3 Logarithm Function</li>
+<li>6.4 Polynomials Function</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my previous post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a> I showed how to create linear regression models. But what can be done if the data is not distributed linearly?</p>
+<p>For this post the dataset <em>Auto-mpg</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs" class="uri">https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+import math 
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn import linear_model</code></pre>
+<pre class="r"><code>cars = pd.read_csv(&quot;path/to/file/auto-mpg.csv&quot;)</code></pre>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>3 Data Preparation</h1>
+<pre class="r"><code>cars.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p1.png" />
+
+</div>
+<p>Check the data types:</p>
+<pre class="r"><code>cars.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p2.png" />
+
+</div>
+<p>Convert horsepower from an object to a float:</p>
+<pre class="r"><code>cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
+cars.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p3.png" />
+
+</div>
+<p>Check for missing values:</p>
+<pre class="r"><code>cars.isnull().sum()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p4.png" />
+
+</div>
+<p>Replace the missing values with the mean of column:</p>
+<pre class="r"><code>cars_horsepower_mean = cars[&#39;horsepower&#39;].fillna(cars[&#39;horsepower&#39;].mean())
+cars[&#39;horsepower&#39;] = cars_horsepower_mean
+cars.isnull().sum()    #Check replacement</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p5.png" />
+
+</div>
+</div>
+<div id="hypothesis-a-non-linear-relationship-between-the-variables-mpg-and-horesepower" class="section level1">
+<h1>4 Hypothesis: a non-linear relationship between the variables mpg and horesepower</h1>
+<pre class="r"><code>cars.plot(kind=&#39;scatter&#39;, x=&#39;horsepower&#39;, y=&#39;mpg&#39;, color=&#39;red&#39;)
+plt.xlabel(&#39;Horsepower&#39;)
+plt.ylabel(&#39;Miles per Gallon&#39;)
+plt.title(&#39;Scatter Plot: Horsepower vs. Miles per Gallon&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p6.png" />
+
+</div>
+</div>
+<div id="linear-model" class="section level1">
+<h1>5 Linear model</h1>
+<p>First of all, the two variables ‘mpg’ and ‘horesepower’ are to be investigated with a linear regression model.</p>
+<pre class="r"><code>x = cars[&quot;horsepower&quot;]
+y = cars[&quot;mpg&quot;]
+
+lm = LinearRegression()
+lm.fit(x[:,np.newaxis], y)</code></pre>
+<p>The linear regression model by default requires that x bean array of two dimensions. Therefore we have to use the np.newaxis-function.</p>
+<pre class="r"><code>cars.plot(kind=&#39;scatter&#39;, x=&#39;horsepower&#39;, y=&#39;mpg&#39;, color=&#39;red&#39;)
+plt.plot(x, lm.predict(x[:,np.newaxis]), color=&#39;blue&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p7.png" />
+
+</div>
+<p>Calculation of R<sup>2</sup></p>
+<pre class="r"><code>lm.score(x[:,np.newaxis], y)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p8.png" />
+
+</div>
+<p>Calculation of further parameters:</p>
+<pre class="r"><code>y_pred = lm.predict(x[:,np.newaxis])
+
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p9.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p10.png" />
+
+</div>
+</div>
+<div id="non-linear-models" class="section level1">
+<h1>6 Non linear models</h1>
+</div>
+<div id="quadratic-function" class="section level1">
+<h1>6.1 Quadratic Function</h1>
+<p>We now try using different methods of transformation, applied to the predictor, to improve the model results.</p>
+<pre class="r"><code>x = cars[&quot;horsepower&quot;] * cars[&quot;horsepower&quot;]
+y = cars[&quot;mpg&quot;]
+
+lm = LinearRegression()
+lm.fit(x[:,np.newaxis], y)</code></pre>
+<p>Calculation of R<sup>2</sup> and further parameters:</p>
+<pre class="r"><code>lm.score(x[:,np.newaxis], y)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p11.png" />
+
+</div>
+<pre class="r"><code>y_pred = lm.predict(x[:,np.newaxis])
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p12.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p13.png" />
+
+</div>
+<p>Conclusion: Poorer values than with the linear function. Let’s try exponential function.</p>
+</div>
+<div id="exponential-function" class="section level1">
+<h1>6.2 Exponential Function</h1>
+<pre class="r"><code>x = (cars[&quot;horsepower&quot;]) ** 3
+y = cars[&quot;mpg&quot;]
+
+lm = LinearRegression()
+lm.fit(x[:,np.newaxis], y)</code></pre>
+<p>Calculation of R<sup>2</sup> and further parameters:</p>
+<pre class="r"><code>lm.score(x[:,np.newaxis], y)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p14.png" />
+
+</div>
+<pre class="r"><code>y_pred = lm.predict(x[:,np.newaxis])
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p15.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p16.png" />
+
+</div>
+<p>Conclusion: even worse values than in the previous two functions. Since the relationship looks non-linear, let’s try it with a log-transformation.</p>
+</div>
+<div id="logarithm-function" class="section level1">
+<h1>6.3 Logarithm Function</h1>
+<pre class="r"><code>x = np.log(cars[&#39;horsepower&#39;])
+y = cars[&quot;mpg&quot;]
+
+
+lm = LinearRegression()
+lm.fit(x[:,np.newaxis], y)</code></pre>
+<p>Calculation of R<sup>2</sup> and further parameters:</p>
+<pre class="r"><code>lm.score(x[:,np.newaxis], y)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p17.png" />
+
+</div>
+<pre class="r"><code>y_pred = lm.predict(x[:,np.newaxis])
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p18.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p19.png" />
+
+</div>
+<p>Conclusion: The model parameters have improved significantly with the use of the log function. Let’s see if we can further increase this with the polynomial function.</p>
+</div>
+<div id="polynomials-function" class="section level1">
+<h1>6.4 Polynomials Function</h1>
+<pre class="r"><code>x = (cars[&quot;horsepower&quot;])
+y = cars[&quot;mpg&quot;]
+
+poly = PolynomialFeatures(degree=2)
+x_ = poly.fit_transform(x[:,np.newaxis])
+
+lm = linear_model.LinearRegression()
+lm.fit(x_, y)</code></pre>
+<p>R<sup>2</sup>:</p>
+<pre class="r"><code>lm.score(x_, y)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p20.png" />
+
+</div>
+<p>Intercept and coefficients:</p>
+<pre class="r"><code>print(lm.intercept_)
+print(lm.coef_)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p21.png" />
+
+</div>
+<p>The result can be interpreted as follows: mpg = 56,40 - 0,46 * horsepower + 0,001 * horsepower<sup>2</sup></p>
+<p>Further model parameters:</p>
+<pre class="r"><code>y_pred = lm.predict(x_)
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p22.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p23.png" />
+
+</div>
+<p>Now the degree of the polynomial function is increased until no improvement of the model can be recorded:</p>
+<pre class="r"><code>x = (cars[&quot;horsepower&quot;])
+y = cars[&quot;mpg&quot;]
+
+poly = PolynomialFeatures(degree=6)
+x_ = poly.fit_transform(x[:,np.newaxis])
+lm = linear_model.LinearRegression()
+lm.fit(x_, y)</code></pre>
+<p>R<sup>2</sup>:</p>
+<pre class="r"><code>print(lm.score(x_, y))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p24.png" />
+
+</div>
+<p>Intercept and coefficients:</p>
+<pre class="r"><code>print(lm.intercept_)
+print(lm.coef_)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p25.png" />
+
+</div>
+<p>The result can be interpreted as follows: mpg = -150,46 + 1,07 * horsepower -2,34 * horsepower<sup>2</sup> + 2,5 * horsepower<sup>3</sup> - 1,42 * horsepower<sup>4</sup> + 4,14 * horsepower<sup>5</sup> - 4,82 * horsepower<sup>6</sup></p>
+<p>Further model parameters:</p>
+<pre class="r"><code>y_pred = lm.predict(x_)
+df = pd.DataFrame({&#39;Actual&#39;: y, &#39;Predicted&#39;: y_pred})
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p26.png" />
+
+</div>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(y, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(y, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(y, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p27.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post it was shown how model performance in non-linear contexts could be improved by using different transformation functions.</p>
+<p>Finally, here is an overview of the created models and their parameters:</p>
+<div class="figure">
+<img src="/post/2019-07-14-non-linear-regression-analysis_files/p14p28.png" />
+
+</div>
+</div>
