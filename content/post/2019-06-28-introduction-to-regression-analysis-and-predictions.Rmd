@@ -54,7 +54,7 @@ houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
 
 #3.1 Simple linear Regression
 
-
+Subsequently, a simple linear regression with the variables 'price' and 'sqft_living' is to be performed.
 
 ```{r, eval=F, echo=T}
 HousePrices_SimplReg = houce_prices[['price', 'sqft_living']]
@@ -85,6 +85,7 @@ model1 = smf.ols(formula='price~sqft_living', data=HousePrices_SimplReg).fit()
 ```
 
 
+The coefficients of the model are obtained in the following way:
 
 ```{r, eval=F, echo=T}
 model1.params
@@ -96,6 +97,9 @@ model1.params
 The result can be interpreted as follows: price = -43.580,74 + 280,62 * sqft_living
 
 
+
+Hereby we get the R^2^
+
 ```{r, eval=F, echo=T}
 model1.rsquared
 ```
@@ -103,6 +107,7 @@ model1.rsquared
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p4.png)
 
 
+With the summary function all model parameters can be displayed:
 
 ```{r, eval=F, echo=T}
 model1.summary()
@@ -110,11 +115,12 @@ model1.summary()
 
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p5.png)
 
+With the perdict function, predictions can now be made based on the model created.
 
 ```{r, eval=F, echo=T}
 price_pred = model1.predict(pd.DataFrame(HousePrices_SimplReg['sqft_living']))
 ```
-
+For an assessment how well our model fits the data the following parameters are calculated:
 
 ```{r, eval=F, echo=T}
 HousePrices_SimplReg['price_pred'] = price_pred
@@ -319,6 +325,18 @@ price_pred = model4.predict(testing[['sqft_living', 'bedrooms', 'yr_built']])
 
 Check the model performance with the test data:
 
+**Important:** For the calculation shown below, the *Df residuals* from the test record must be used. These can be determined as follows.
+
+
+```{r, eval=F, echo=T}
+df_testing_model = smf.ols(formula='price~sqft_living+bedrooms+yr_built', data=testing).fit()
+df_testing_model.summary()
+```
+
+![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p20.png)
+
+
+Model performance:
 ```{r, eval=F, echo=T}
 testing['price_pred'] = price_pred
 testing['RSE'] = (testing['price'] - testing['price_pred']) ** 2
@@ -342,16 +360,6 @@ Results of parameters:
 Both models are almost identical in comparison. However, the F-values are worse for the split model.
 This is normal because there was less data available for creating the model.
 
-
-**Important:** For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.
-
-
-```{r, eval=F, echo=T}
-df_testing_model = smf.ols(formula='price~sqft_living+bedrooms+yr_built', data=testing).fit()
-df_testing_model.summary()
-```
-
-![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p20.png)
 
 
 
@@ -382,6 +390,9 @@ print(lm.coef_)
 The result can be interpreted as follows: 
 price = 4.829.374,95 + 342,68 * sqft_living - 59.209,59 * bedrooms - 2.436,52 * yr_built
 
+
+
+The coefficients can also be displayed more beautifully in the following two ways:
 
 ```{r, eval=F, echo=T}
 list(zip(feature_cols, lm.coef_))

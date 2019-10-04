@@ -45,6 +45,7 @@ from sklearn import metrics</code></pre>
 </div>
 <div id="simple-linear-regression" class="section level1">
 <h1>3.1 Simple linear Regression</h1>
+<p>Subsequently, a simple linear regression with the variables ‘price’ and ‘sqft_living’ is to be performed.</p>
 <pre class="r"><code>HousePrices_SimplReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
 HousePrices_SimplReg.head()</code></pre>
 <div class="figure">
@@ -64,23 +65,28 @@ plt.show()</code></pre>
 
 </div>
 <pre class="r"><code>model1 = smf.ols(formula=&#39;price~sqft_living&#39;, data=HousePrices_SimplReg).fit()</code></pre>
+<p>The coefficients of the model are obtained in the following way:</p>
 <pre class="r"><code>model1.params</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p3.png" />
 
 </div>
 <p>The result can be interpreted as follows: price = -43.580,74 + 280,62 * sqft_living</p>
+<p>Hereby we get the R<sup>2</sup></p>
 <pre class="r"><code>model1.rsquared</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p4.png" />
 
 </div>
+<p>With the summary function all model parameters can be displayed:</p>
 <pre class="r"><code>model1.summary()</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p5.png" />
 
 </div>
+<p>With the perdict function, predictions can now be made based on the model created.</p>
 <pre class="r"><code>price_pred = model1.predict(pd.DataFrame(HousePrices_SimplReg[&#39;sqft_living&#39;]))</code></pre>
+<p>For an assessment how well our model fits the data the following parameters are calculated:</p>
 <pre class="r"><code>HousePrices_SimplReg[&#39;price_pred&#39;] = price_pred
 HousePrices_SimplReg[&#39;RSE&#39;] = (HousePrices_SimplReg[&#39;price&#39;] - HousePrices_SimplReg[&#39;price_pred&#39;]) ** 2
 RSEd = HousePrices_SimplReg.sum()[&#39;RSE&#39;]
@@ -210,6 +216,14 @@ model4.summary()</code></pre>
 <p>Now we use the trained model for the predictions:</p>
 <pre class="r"><code>price_pred = model4.predict(testing[[&#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]])</code></pre>
 <p>Check the model performance with the test data:</p>
+<p><strong>Important:</strong> For the calculation shown below, the <em>Df residuals</em> from the test record must be used. These can be determined as follows.</p>
+<pre class="r"><code>df_testing_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=testing).fit()
+df_testing_model.summary()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p20.png" />
+
+</div>
+<p>Model performance:</p>
 <pre class="r"><code>testing[&#39;price_pred&#39;] = price_pred
 testing[&#39;RSE&#39;] = (testing[&#39;price&#39;] - testing[&#39;price_pred&#39;]) ** 2
 RSEd = testing.sum()[&#39;RSE&#39;]
@@ -228,13 +242,6 @@ RSE, criteria_mean, error</code></pre>
 <li>Ratio of RSE and criteria_mean = 45,34%</li>
 </ul>
 <p>Both models are almost identical in comparison. However, the F-values are worse for the split model. This is normal because there was less data available for creating the model.</p>
-<p><strong>Important:</strong> For the calculation shown above, the Df residuals from the test record must be used. These can be determined as follows.</p>
-<pre class="r"><code>df_testing_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=testing).fit()
-df_testing_model.summary()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p20.png" />
-
-</div>
 </div>
 <div id="linear-regression-with-scikit-learn" class="section level1">
 <h1>4 Linear Regression with scikit-learn</h1>
@@ -252,6 +259,7 @@ print(lm.coef_)</code></pre>
 
 </div>
 <p>The result can be interpreted as follows: price = 4.829.374,95 + 342,68 * sqft_living - 59.209,59 * bedrooms - 2.436,52 * yr_built</p>
+<p>The coefficients can also be displayed more beautifully in the following two ways:</p>
 <pre class="r"><code>list(zip(feature_cols, lm.coef_))</code></pre>
 <div class="figure">
 <img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p22.png" />
