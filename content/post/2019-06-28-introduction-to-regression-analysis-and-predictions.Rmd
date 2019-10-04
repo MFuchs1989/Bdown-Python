@@ -54,7 +54,7 @@ houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
 
 #3.1 Simple linear Regression
 
-Subsequently, a simple linear regression with the variables 'price' and 'sqft_living' is to be performed.
+Following, a simple linear regression with the variables 'price' and 'sqft_living' is to be performed.
 
 ```{r, eval=F, echo=T}
 HousePrices_SimplReg = houce_prices[['price', 'sqft_living']]
