@@ -1,0 +1,175 @@
+---
+title: Dealing with highly correlated features
+author: Michael Fuchs
+date: '2019-07-28'
+slug: dealing-with-highly-correlated-features
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Preparation</li>
+<li>4 Correlations with the output variable</li>
+<li>5 Identification of highly correlated features</li>
+<li>6 Removing highly correlated features</li>
+<li>6.1 Selecting numerical variables</li>
+<li>6.2 Train / Test Split</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>One of the points to remember about data pre-processing for regression analysis is multicollinearity. This post is about finding highly correlated predictors within a dataframe.</p>
+<p>For this post the dataset <em>Auto-mpg</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs" class="uri">https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import VarianceThreshold</code></pre>
+<pre class="r"><code>cars = pd.read_csv(&quot;path/to/file/auto-mpg.csv&quot;)</code></pre>
+</div>
+<div id="preparation" class="section level1">
+<h1>3 Preparation</h1>
+<pre class="r"><code># convert categorial variables to numerical
+# replace missing values with columns&#39;mean
+
+cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
+cars_horsepower_mean = cars[&#39;horsepower&#39;].fillna(cars[&#39;horsepower&#39;].mean())
+cars[&#39;horsepower&#39;] = cars_horsepower_mean</code></pre>
+<p>When we talk about correlation it’s easy to get a first glimpse with a heatmap:</p>
+<pre class="r"><code>plt.figure(figsize=(8,6))
+cor = cars.corr()
+sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p1.png" />
+
+</div>
+<p>Definition of the predictors and the criterion:</p>
+<pre class="r"><code>predictors = cars.drop([&#39;mpg&#39;, &#39;car name&#39;], axis = 1) 
+criterion = cars[&quot;mpg&quot;]</code></pre>
+<pre class="r"><code>predictors.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p2.png" />
+
+</div>
+</div>
+<div id="correlations-with-the-output-variable" class="section level1">
+<h1>4 Correlations with the output variable</h1>
+<p>To get an idea which Variables maybe import for our model:</p>
+<pre class="r"><code>threshold = 0.5
+
+
+cor_criterion = abs(cor[&quot;mpg&quot;])
+
+relevant_features = cor_criterion[cor_criterion&gt;threshold]
+relevant_features = relevant_features.reset_index()
+relevant_features.columns = [&#39;Variables&#39;, &#39;Correlation&#39;]
+relevant_features = relevant_features.sort_values(by=&#39;Correlation&#39;, ascending=False)
+relevant_features</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p3.png" />
+
+</div>
+</div>
+<div id="identification-of-highly-correlated-features" class="section level1">
+<h1>5 Identification of highly correlated features</h1>
+<p>One model assumption of linear regression analysis is to avoid multicollinearity. This function is to find high correlations:</p>
+<pre class="r"><code>threshold = 0.8
+
+def high_cor_function(df):
+    cor = df.corr()
+    corrm = np.corrcoef(df.transpose())
+    corr = corrm - np.diagflat(corrm.diagonal())
+    print(&quot;max corr:&quot;,corr.max(), &quot;, min corr: &quot;, corr.min())
+    c1 = cor.stack().sort_values(ascending=False).drop_duplicates()
+    high_cor = c1[c1.values!=1]    
+    thresh = threshold 
+    display(high_cor[high_cor&gt;thresh])</code></pre>
+<pre class="r"><code>high_cor_function(predictors)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p4.png" />
+
+</div>
+</div>
+<div id="removing-highly-correlated-features" class="section level1">
+<h1>6 Removing highly correlated features</h1>
+</div>
+<div id="selecting-numerical-variables" class="section level1">
+<h1>6.1 Selecting numerical variables</h1>
+<pre class="r"><code>cars.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p5.png" />
+
+</div>
+<p>Here we see that the dataframe ‘cars’ originaly have 9 columns and 398 observations. With the following snippet we just select numerical variables:</p>
+<pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+numerical_columns = list(cars.select_dtypes(include=num_col).columns)
+cars_data = cars[numerical_columns]</code></pre>
+<pre class="r"><code>cars_data.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p6.png" />
+
+</div>
+<pre class="r"><code>cars_data.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p7.png" />
+
+</div>
+<p>As you can see, one column (Here ‘car name’) were dropped.</p>
+</div>
+<div id="train-test-split" class="section level1">
+<h1>6.2 Train / Test Split</h1>
+<p><strong>It is important to mention here that, in order to avoid overfitting, feature selection should only be applied to the training set.</strong></p>
+<pre class="r"><code>x = cars_data.drop(&#39;mpg&#39;, axis=1)
+y = cars_data[&#39;mpg&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>correlated_features = set()
+correlation_matrix = cars_data.corr()</code></pre>
+<pre class="r"><code>threshold = 0.90
+
+for i in range(len(correlation_matrix .columns)):
+    for j in range(i):
+        if abs(correlation_matrix.iloc[i, j]) &gt; threshold:
+            colname = correlation_matrix.columns[i]
+            correlated_features.add(colname)</code></pre>
+<p>Number of columns in the dataset, with correlation value of greater than 0.9 with at least 1 other column:</p>
+<pre class="r"><code>len(correlated_features)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p8.png" />
+
+</div>
+<p>With the following code we receive the names of these features:</p>
+<pre class="r"><code>print(correlated_features)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p9.png" />
+
+</div>
+<p>Finally, the identified features are excluded:</p>
+<pre class="r"><code>trainX_clean = trainX.drop(labels=correlated_features, axis=1)
+testX_clean = testX.drop(labels=correlated_features, axis=1)
+
+
+
+# Even possibe without assignment to a specific object:
+
+## trainX.drop(labels=correlated_features, axis=1, inplace=True)
+## testX.drop(labels=correlated_features, axis=1, inplace=True)</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>This post has shown, how to identify highly correlated variables and exclude them for further use.</p>
+</div>
