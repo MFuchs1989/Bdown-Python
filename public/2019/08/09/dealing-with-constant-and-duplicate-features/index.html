@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Dealing with constant and duplicate features - Michael Fuchs Python</title>
+<meta property="og:title" content="Dealing with constant and duplicate features - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Dealing with constant and duplicate features</h1>
+
+    
+    <span class="article-date">2019-08-09</span>
+    
+
+    <div class="article-content">
+      <p>#Table of Content</p>
+
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Removing Constant features</li>
+<li>4 Removing Quasi-Constant features</li>
+<li>5 Removing Duplicate Features</li>
+<li>6 Conclusion</li>
+</ul>
+
+<p>#1 Introduction</p>
+
+<p>In addition to <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">&ldquo;removing highly correlated features&rdquo;</a> as one of the data pre processing steps we also have to take care of constant and duplicate features. Constant features have a variance close to zero and duplicate features are too similar to other variables in the record. Therefore, when pre-processing data for regression analysis, its existence should be checked and, if so, excluded.</p>
+
+<p>For this post the dataset <em>Santandar Customer Satisfaction</em> (only the train-part) from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">&ldquo;Kaggle&rdquo;</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
+
+<p>#2 Loading the libraries and the data</p>
+
+<pre><code class="language-r,">import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import VarianceThreshold
+</code></pre>
+
+<pre><code class="language-r,">santandar_data = pd.read_csv(&quot;path/to/file/santandar.csv&quot;)
+</code></pre>
+
+<pre><code class="language-r,">santandar_data.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p1.png" alt="" /></p>
+
+<p>#3 Removing Constant features</p>
+
+<p>Constant features provide no information that can help for further analysis. Therefore we have to remove them from the dataframe. We can find the constant features using the &lsquo;VarianceThreshold&rsquo; function of Python&rsquo;s Scikit Learn Library.</p>
+
+<p>As we can see in the output of the code shown above, we have 371 columns and over 76 thousand observations.</p>
+
+<pre><code class="language-r,">x = santandar_data.drop(['TARGET', 'ID'], axis = 1)
+y = santandar_data['TARGET']
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2, random_state=45)
+</code></pre>
+
+<p>As already mentioned in the post <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">&ldquo;Dealing with highly correlated features&rdquo;</a> it is important that, in order to avoid overfitting, <strong>feature selection should only be applied to the training set</strong>.</p>
+
+<pre><code class="language-r,">trainX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p2.png" alt="" /></p>
+
+<p>Next we will use VarianceThreshold function to remove constant features.</p>
+
+<pre><code class="language-r,">constant_filter = VarianceThreshold(threshold=0)
+</code></pre>
+
+<p>In the next step, we need to simply apply this filter to our training set as shown in the following:</p>
+
+<pre><code class="language-r,">constant_filter.fit(trainX)
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p3.png" alt="" /></p>
+
+<p>Now we want to get all the features that are not constant (features we want to keep):</p>
+
+<pre><code class="language-r,">len(trainX.columns[constant_filter.get_support()])
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p4.png" alt="" /></p>
+
+<p>Similarly, you can find the number of constant features with the help of the following code:</p>
+
+<pre><code class="language-r,">constant_columns = [column for column in trainX.columns
+                    if column not in trainX.columns[constant_filter.get_support()]]
+
+print(len(constant_columns))
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p5.png" alt="" /></p>
+
+<p>As we can see, there are 35 variables with zero variance.
+We can also print their column name:</p>
+
+<pre><code class="language-r,">
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p6.png" alt="" /></p>
+
+<p>In the last step these 35 variables have to be removed from the training and test part.
+We can do this as follows:</p>
+
+<pre><code class="language-r,">constant_columns_to_remove = [i.strip() for i in constant_columns]
+</code></pre>
+
+<pre><code class="language-r,">trainX = trainX.drop(constant_columns_to_remove, axis=1)
+trainX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p7.png" alt="" /></p>
+
+<pre><code class="language-r,">testX = testX.drop(constant_columns_to_remove, axis=1)
+testX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p8.png" alt="" /></p>
+
+<p>#4 Removing Quasi-Constant features</p>
+
+<p>Quasi-constant features are the features that are almost constant. Where we have chosen a variance threshold of 0 at constant features, we can now adjust this arbitrarily. The procedure is almost the same as the previous one. It is recommended to examine the quasi-Constant features in the already reduced training and test data set.</p>
+
+<p>Instead of passing again 0 as the value for the threshold parameter, we now will pass 0.01, which means that if the variance of the values in a column is less than 0.01, remove that column.</p>
+
+<pre><code class="language-r,">qconstant_filter = VarianceThreshold(threshold=0.01)
+</code></pre>
+
+<pre><code class="language-r,">qconstant_filter.fit(trainX)
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p9.png" alt="" /></p>
+
+<pre><code class="language-r,">len(trainX.columns[qconstant_filter.get_support()])
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p10.png" alt="" /></p>
+
+<pre><code class="language-r,">qconstant_columns = [column for column in trainX.columns
+                    if column not in trainX.columns[qconstant_filter.get_support()]]
+
+print(len(qconstant_columns))
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p11.png" alt="" /></p>
+
+<p>63 columns were identified as quasi-Constant features. We can request these column names of this variables again with the following command:</p>
+
+<pre><code class="language-r,">for column in qconstant_columns:
+    print(column)
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p12.png" alt="" /></p>
+
+<p>Afterwards they will be removed as well.</p>
+
+<pre><code class="language-r,">qconstant_columns_to_remove = [i.strip() for i in qconstant_columns]
+</code></pre>
+
+<pre><code class="language-r,">trainX = trainX.drop(qconstant_columns_to_remove, axis=1)
+trainX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p13.png" alt="" /></p>
+
+<pre><code class="language-r,">testX = testX.drop(qconstant_columns_to_remove, axis=1)
+testX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p14.png" alt="" /></p>
+
+<p>#5 Removing Duplicate Features</p>
+
+<p>As a final step we dedicate ourselves to the duplicate features.
+Hereby the procedure is a little different because we have no suitable function from the Scikit-learn library available.</p>
+
+<pre><code class="language-r,">trainX_T = trainX.T
+trainX_T.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p15.png" alt="" /></p>
+
+<p>In the following way we will receive the number of duplicate features:</p>
+
+<pre><code class="language-r,">print(trainX_T.duplicated().sum())
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p16.png" alt="" /></p>
+
+<p>In the following way we will receive the number of features we will keep for further analysis:</p>
+
+<pre><code class="language-r,">unique_features = trainX_T.drop_duplicates(keep='first').T
+unique_features.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p17.png" alt="" /></p>
+
+<p>Now we define a list of duplicate features we have to remove:</p>
+
+<pre><code class="language-r,">duplicated_features = [dup_col for dup_col in testX.columns if dup_col not in unique_features.columns]
+duplicated_features
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p18.png" alt="" /></p>
+
+<p>&hellip; and remove them:</p>
+
+<pre><code class="language-r,">trainX = trainX.drop(duplicated_features, axis=1)
+trainX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p19.png" alt="" /></p>
+
+<pre><code class="language-r,">testX = testX.drop(duplicated_features, axis=1)
+testX.shape
+</code></pre>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p20.png" alt="" /></p>
+
+<p>#6 Conclusion</p>
+
+<p>As we can see in the following overview, a dataset can be greatly reduced by identifying and excluding duplicate features or some with zero variance.</p>
+
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p21.png" alt="" /></p>
+
+<p>There are several advantages of performing feature selection before training machine learning models:</p>
+
+<ul>
+<li>Models with less number of features have higher explainability</li>
+<li>Fewer features lead to enhanced generalization which in turn reduces overfitting</li>
+<li>Models with fewer features are less prone to errors</li>
+<li>Training time of models with fewer features is significantly lower</li>
+</ul>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

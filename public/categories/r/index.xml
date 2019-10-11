@@ -6,10 +6,21 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 09 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dealing with constant and duplicate features</title>
+      <link>/2019/08/09/dealing-with-constant-and-duplicate-features/</link>
+      <pubDate>Fri, 09 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/08/09/dealing-with-constant-and-duplicate-features/</guid>
+      <description>#Table of Content
+ 1 Introduction 2 Loading the libraries and the data 3 Removing Constant features 4 Removing Quasi-Constant features 5 Removing Duplicate Features 6 Conclusion  #1 Introduction
+In addition to &amp;ldquo;removing highly correlated features&amp;rdquo; as one of the data pre processing steps we also have to take care of constant and duplicate features. Constant features have a variance close to zero and duplicate features are too similar to other variables in the record.</description>
+    </item>
     
     <item>
       <title>Dealing with highly correlated features</title>
