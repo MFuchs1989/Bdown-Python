@@ -46,7 +46,7 @@ import matplotlib.pyplot as plt
 
 
 ```{r, eval=F, echo=T}
-df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra',                          'Svenja', 'Karl', 'Karsten'],
+df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra', 'Svenja', 'Karl', 'Karsten'],
                    'age': [24,22,30,21,20,23,22,20,24,20,22],
                    'salary': [4700,2400,4500,2500,3000,2700,3200,4000,7500,3600,2800]})
 df
@@ -89,7 +89,7 @@ In statistics, if a data distribution is approximately normal then about 68% of 
 Therefore, if you have any data point that is more than 3 times the standard deviation, then those points are very likely to be outliers.
 
 ```{r, eval=F, echo=T}
-df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra',                          'Svenja', 'Karl', 'Karsten'],
+df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra', 'Svenja', 'Karl', 'Karsten'],
                    'age': [24,22,138,21,20,23,22,30,24,20,22],
                    'salary': [4700,2400,4500,2500,3000,2700,3200,4000,150000,3600,2800]})
 df
@@ -199,7 +199,7 @@ In addition to the Z-score method, outliers can also be identified using the IQR
 
 
 ```{r, eval=F, echo=T}
-df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra',                          'Svenja', 'Karl', 'Karsten'],
+df = pd.DataFrame({'name': ['Anton', 'Susi', 'Moni', 'Renate', 'Otto', 'Karl', 'Sven', 'Sandra', 'Svenja', 'Karl', 'Karsten'],
                    'age': [24,22,138,21,20,23,22,30,24,20,22],
                    'salary': [4700,2400,4500,2500,3000,2700,3200,4000,150000,3600,2800]})
 df
