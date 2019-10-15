@@ -6,10 +6,20 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 20 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dealing with outliers</title>
+      <link>/2019/08/20/dealing-with-outliers/</link>
+      <pubDate>Tue, 20 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/08/20/dealing-with-outliers/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Boxplots - Method4 Z-score method5 IQR method5.1 Detect outlier for column ‘age’5.2 Detect outlier for column ‘salary’5.3 Remove outlier from dataframe6 Conclusion1 IntroductionNext to “higly correlated” and “constant” features outlier detection is also a central element of data pre-processing.
+In statistics, outliers are data points that do not belong to any particular population.</description>
+    </item>
     
     <item>
       <title>Dealing with constant and duplicate features</title>

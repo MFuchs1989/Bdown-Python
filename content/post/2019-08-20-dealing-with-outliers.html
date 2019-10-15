@@ -1,0 +1,252 @@
+---
+title: Dealing with outliers
+author: Michael Fuchs
+date: '2019-08-20'
+slug: dealing-with-outliers
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Boxplots - Method</li>
+<li>4 Z-score method</li>
+<li>5 IQR method</li>
+<li>5.1 Detect outlier for column ‘age’</li>
+<li>5.2 Detect outlier for column ‘salary’</li>
+<li>5.3 Remove outlier from dataframe</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Next to <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“higly correlated”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“constant”</a> features outlier detection is also a central element of data pre-processing.</p>
+<p>In statistics, outliers are data points that do not belong to any particular population.</p>
+<p>In the following three methods of outlier detection are presented.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt</code></pre>
+</div>
+<div id="boxplots---method" class="section level1">
+<h1>3 Boxplots - Method</h1>
+<pre class="r"><code>df = pd.DataFrame({&#39;name&#39;: [&#39;Anton&#39;, &#39;Susi&#39;, &#39;Moni&#39;, &#39;Renate&#39;, &#39;Otto&#39;, &#39;Karl&#39;, &#39;Sven&#39;, &#39;Sandra&#39;,                          &#39;Svenja&#39;, &#39;Karl&#39;, &#39;Karsten&#39;],
+                   &#39;age&#39;: [24,22,30,21,20,23,22,20,24,20,22],
+                   &#39;salary&#39;: [4700,2400,4500,2500,3000,2700,3200,4000,7500,3600,2800]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p1.png" />
+
+</div>
+<p>A very simple way to recognize outlier is to use boxplots. We pay attention to data points that are outside the upper and lower whiskers.</p>
+<pre class="r"><code>sns.boxplot(data=df[&#39;age&#39;])</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p2.png" />
+
+</div>
+<pre class="r"><code>sns.boxplot(data=df[&#39;salary&#39;])</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p3.png" />
+
+</div>
+</div>
+<div id="z-score-method" class="section level1">
+<h1>4 Z-score method</h1>
+<p>In statistics, if a data distribution is approximately normal then about 68% of the data points lie within one standard deviation (sd) of the mean and about 95% are within two standard deviations, and about 99.7% lie within three standard deviations.</p>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p1s.png" />
+
+</div>
+<p>Therefore, if you have any data point that is more than 3 times the standard deviation, then those points are very likely to be outliers.</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;name&#39;: [&#39;Anton&#39;, &#39;Susi&#39;, &#39;Moni&#39;, &#39;Renate&#39;, &#39;Otto&#39;, &#39;Karl&#39;, &#39;Sven&#39;, &#39;Sandra&#39;,                          &#39;Svenja&#39;, &#39;Karl&#39;, &#39;Karsten&#39;],
+                   &#39;age&#39;: [24,22,138,21,20,23,22,30,24,20,22],
+                   &#39;salary&#39;: [4700,2400,4500,2500,3000,2700,3200,4000,150000,3600,2800]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p4.png" />
+
+</div>
+<pre class="r"><code>df.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p5.png" />
+
+</div>
+<p>Let’s define the function:</p>
+<pre class="r"><code>def outliers_z_score(df):
+    threshold = 3
+
+    mean = np.mean(df)
+    std = np.std(df)
+    z_scores = [(y - mean) / std for y in df]
+    return np.where(np.abs(z_scores) &gt; threshold)</code></pre>
+<p>For the further proceeding we just need numerical colunns:</p>
+<pre class="r"><code>my_list = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+num_columns = list(df.select_dtypes(include=my_list).columns)
+numerical_columns = df[num_columns]
+numerical_columns.head(3)</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p6.png" />
+
+</div>
+<p>Now we apply the defined function to all numerical columns:</p>
+<pre class="r"><code>outlier_list = numerical_columns.apply(lambda x: outliers_z_score(x))
+outlier_list</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p7.png" />
+
+</div>
+<p>To get our dataframe tidy, we have to create a list with the detected outliers and remove them from the original dataframe.</p>
+<pre class="r"><code>columns_new = [&#39;Rows_to_exclude&#39;]
+
+df_of_outlier = pd.DataFrame(outlier_list, columns=columns_new)
+
+df_of_outlier</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p8.png" />
+
+</div>
+<pre class="r"><code>df_of_outlier[&#39;Rows_to_exclude&#39;] = df_of_outlier[&#39;Rows_to_exclude&#39;].astype(str)
+df_of_outlier.Rows_to_exclude = df_of_outlier.Rows_to_exclude.map(lambda x: x.split(&#39;,&#39;)[0])
+df_of_outlier = df_of_outlier.Rows_to_exclude.str.extract(&#39;(\d+)&#39;)
+df_of_outlier.columns = [&#39;Rows_to_exclude&#39;]
+df_of_outlier[&#39;Rows_to_exclude&#39;] = df_of_outlier[&#39;Rows_to_exclude&#39;].astype(int)
+outlier_list_final = df_of_outlier[&#39;Rows_to_exclude&#39;].tolist()
+outlier_list_final</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p9.png" />
+
+</div>
+<pre class="r"><code>filter_rows_to_excluse = df.index.isin(outlier_list_final)</code></pre>
+<pre class="r"><code>df_without_outliers = df[~filter_rows_to_excluse]
+
+df_without_outliers</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p10.png" />
+
+</div>
+<pre class="r"><code>df_without_outliers.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p11.png" />
+
+</div>
+<p>As we can see the two outliers were removed from the dataframe.</p>
+</div>
+<div id="iqr-method" class="section level1">
+<h1>5 IQR method</h1>
+<p>In addition to the Z-score method, outliers can also be identified using the IQR method. This has the advantage that it uses robust parameters for the calculation.</p>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p2s.png" />
+
+</div>
+<pre class="r"><code>df = pd.DataFrame({&#39;name&#39;: [&#39;Anton&#39;, &#39;Susi&#39;, &#39;Moni&#39;, &#39;Renate&#39;, &#39;Otto&#39;, &#39;Karl&#39;, &#39;Sven&#39;, &#39;Sandra&#39;,                          &#39;Svenja&#39;, &#39;Karl&#39;, &#39;Karsten&#39;],
+                   &#39;age&#39;: [24,22,138,21,20,23,22,30,24,20,22],
+                   &#39;salary&#39;: [4700,2400,4500,2500,3000,2700,3200,4000,150000,3600,2800]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p12.png" />
+
+</div>
+<pre class="r"><code>df.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p13.png" />
+
+</div>
+</div>
+<div id="detect-outlier-for-column-age" class="section level1">
+<h1>5.1 Detect outlier for column ‘age’</h1>
+<pre class="r"><code>column_to_be_examined = df[&#39;age&#39;]</code></pre>
+<pre class="r"><code>sorted_list = sorted(column_to_be_examined)</code></pre>
+<pre class="r"><code>q1, q3= np.percentile(sorted_list,[25,75])
+
+print(q1)
+print(q3)</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p14.png" />
+
+</div>
+<pre class="r"><code>iqr = q3 - q1
+print(iqr)</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p15.png" />
+
+</div>
+<pre class="r"><code>lower_bound = q1 -(1.5 * iqr) 
+upper_bound = q3 +(1.5 * iqr) 
+
+print(lower_bound)
+print(upper_bound)</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p16.png" />
+
+</div>
+<pre class="r"><code>outlier_col_age = df[(column_to_be_examined &lt; lower_bound) | (column_to_be_examined &gt; upper_bound)]  
+outlier_col_age</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p17.png" />
+
+</div>
+</div>
+<div id="detect-outlier-for-column-salary" class="section level1">
+<h1>5.2 Detect outlier for column ‘salary’</h1>
+<pre class="r"><code>column_to_be_examined = df[&#39;salary&#39;]
+sorted_list = sorted(column_to_be_examined)
+q1, q3= np.percentile(sorted_list,[25,75])
+iqr = q3 - q1
+lower_bound = q1 -(1.5 * iqr) 
+upper_bound = q3 +(1.5 * iqr) 
+outlier_col_salary = df[(column_to_be_examined &lt; lower_bound) | (column_to_be_examined &gt; upper_bound)]  
+outlier_col_salary</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p18.png" />
+
+</div>
+</div>
+<div id="remove-outlier-from-dataframe" class="section level1">
+<h1>5.3 Remove outlier from dataframe</h1>
+<pre class="r"><code>outlier_col_age = outlier_col_age.reset_index()
+outlier_list_final_col_age = outlier_col_age[&#39;index&#39;].tolist()
+outlier_list_final_col_age</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p19.png" />
+
+</div>
+<pre class="r"><code>outlier_col_salary = outlier_col_salary.reset_index()
+outlier_list_final_col_salary = outlier_col_salary[&#39;index&#39;].tolist()
+outlier_list_final_col_salary</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p20.png" />
+
+</div>
+<pre class="r"><code>outlier_list_final = np.concatenate((outlier_list_final_col_age, outlier_list_final_col_salary), axis=None)
+outlier_list_final</code></pre>
+<pre class="r"><code>filter_rows_to_excluse = df.index.isin(outlier_list_final)</code></pre>
+<pre class="r"><code>df_without_outliers = df[~filter_rows_to_excluse]</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p21.png" />
+
+</div>
+<pre class="r"><code>df_without_outliers</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p22.png" />
+
+</div>
+<pre class="r"><code>df_without_outliers.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-08-20-dealing-with-outliers_files/p17p23.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>Outlier in a dataframe can lead to strong distortions in predictions. It is therefore essential to examine your data for outlier or influential values before training machine learning models.</p>
+</div>
