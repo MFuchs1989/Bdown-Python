@@ -194,7 +194,7 @@ As we can see the two outliers were removed from the dataframe.
 #5 IQR method
 
 In addition to the Z-score method, outliers can also be identified using the IQR method. 
-Here we look at which data points are outside the whiskers (1.5 x IQR).
+Here we look at which data points are outside the whiskers.
 This method has the advantage, that it uses robust parameters for the calculation.
 
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p2s.png)
