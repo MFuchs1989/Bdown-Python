@@ -64,7 +64,7 @@ In the following, three of the most important scaling methods are presented:
 
 #3.1 Standard Scaler
 
-The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1.
+The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1. If you want to know wheather your data is normal distributet have a look at this post: ["Check for normal distribution"](https://michael-fuchs-python.netlify.com/2019/09/13/check-for-normal-distribution/)
 
 The mean and standard deviation are calculated for the feature and then the feature is scaled based on:
 
