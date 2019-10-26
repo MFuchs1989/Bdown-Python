@@ -299,6 +299,7 @@ robust_scaler = pd.DataFrame(features, columns = col_names)
 
 
 
+Now the plots in comparison:
 
 
 ```{r, eval=F, echo=T}
