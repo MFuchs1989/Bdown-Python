@@ -1,0 +1,342 @@
+---
+title: Feature Scaling with Scikit-Learn
+author: Michael Fuchs
+date: '2019-08-31'
+slug: feature-scaling-with-scikit-learn
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries and the data
++ 3 Scaling methods
++ 3.1 Standard Scaler
++ 3.2 Min-Max Scaler
++ 3.3 Robust Scaler
++ 3.4 Comparison of the previously shown scaling methods
++ 4 Conclusion
+
+
+#1 Introduction
+
+
+Feature scaling can be an important part for many machine learning algorithms. It's a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range. Sometimes, it also helps in speeding up the calculations in an algorithm.
+
+
+#2 Loading the libraries
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+matplotlib.style.use('ggplot')
+
+
+#For chapter 3.1
+from sklearn.preprocessing import StandardScaler
+#For chapter 3.2
+from sklearn.preprocessing import MinMaxScaler
+#For chapter 3.3
+from sklearn.preprocessing import RobustScaler
+
+
+
+
+pd.set_option('float_format', '{:f}'.format)
+```
+
+
+#3 Scaling methods
+
+
+In the following, three of the most important scaling methods are presented:
+
++ Standard Scaler
++ Min-Max Scaler
++ Robust Scaler
+
+
+#3.1 Standard Scaler
+
+The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1.
+
+The mean and standard deviation are calculated for the feature and then the feature is scaled based on:
+
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png)
+
+
+```{r, eval=F, echo=T}
+np.random.seed(1)
+
+df = pd.DataFrame({
+    'Col_1': np.random.normal(0, 2, 30000),
+    'Col_2': np.random.normal(5, 3, 30000),
+    'Col_3': np.random.normal(-5, 5, 30000)
+})
+
+df.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p1.png)
+
+
+
+```{r, eval=F, echo=T}
+col_names = df.columns
+features = df[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p2.png)
+
+
+
+```{r, eval=F, echo=T}
+scaled_features.describe()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p3.png)
+
+
+
+```{r, eval=F, echo=T}
+fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title('Before Scaling')
+sns.kdeplot(df['Col_1'], ax=ax1)
+sns.kdeplot(df['Col_2'], ax=ax1)
+sns.kdeplot(df['Col_3'], ax=ax1)
+ax2.set_title('After Standard Scaler')
+sns.kdeplot(scaled_features['Col_1'], ax=ax2)
+sns.kdeplot(scaled_features['Col_2'], ax=ax2)
+sns.kdeplot(scaled_features['Col_3'], ax=ax2)
+plt.show()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png)
+
+
+
+
+
+#3.2 Min-Max Scaler
+
+The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:
+
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png)
+
+It essentially shrinks the range such that the range is now between 0 and 1. This scaler works better for cases in which the standard scaler might not work so well. If the distribution is not Gaussian or the standard deviation is very small, the Min-Max Scaler works better. However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler (shown below).
+
+
+
+```{r, eval=F, echo=T}
+np.random.seed(1)
+
+df = pd.DataFrame({
+    # positive skew
+    'Col_1': np.random.chisquare(8, 1000),
+    # negative skew 
+    'Col_2': np.random.beta(8, 2, 1000) * 40,
+    # no skew
+    'Col_3': np.random.normal(50, 3, 1000)
+})
+
+df.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p5.png)
+
+
+
+```{r, eval=F, echo=T}
+col_names = df.columns
+features = df[col_names]
+
+scaler = MinMaxScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p6.png)
+
+
+
+
+```{r, eval=F, echo=T}
+fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title('Before Scaling')
+sns.kdeplot(df['Col_1'], ax=ax1)
+sns.kdeplot(df['Col_2'], ax=ax1)
+sns.kdeplot(df['Col_3'], ax=ax1)
+ax2.set_title('After Min-Max Scaling')
+sns.kdeplot(scaled_features['Col_1'], ax=ax2)
+sns.kdeplot(scaled_features['Col_2'], ax=ax2)
+sns.kdeplot(scaled_features['Col_3'], ax=ax2)
+plt.show()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png)
+
+
+
+
+
+
+
+#3.3 Robust Scaler
+
+The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:
+    
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png)
+
+Of course this means it is using the less of the data for scaling so it’s more suitable for when there are outliers in the data.
+
+
+```{r, eval=F, echo=T}
+np.random.seed(1)
+
+df = pd.DataFrame({
+    # Distribution with lower outliers
+    'Col_1': np.concatenate([np.random.normal(20, 1, 1000), np.random.normal(1, 1, 25)]),
+    # Distribution with higher outliers
+    'Col_2': np.concatenate([np.random.normal(30, 1, 1000), np.random.normal(50, 1, 25)]),
+})
+
+df.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p8.png)
+
+
+```{r, eval=F, echo=T}
+col_names = df.columns
+features = df[col_names]
+
+scaler = RobustScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p9.png)
+
+
+
+
+```{r, eval=F, echo=T}
+fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title('Before Scaling')
+sns.kdeplot(df['Col_1'], ax=ax1)
+sns.kdeplot(df['Col_2'], ax=ax1)
+
+ax2.set_title('After Robust Scaling')
+sns.kdeplot(scaled_features['Col_1'], ax=ax2)
+sns.kdeplot(scaled_features['Col_2'], ax=ax2)
+
+plt.show()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png)
+
+
+
+
+#3.4 Comparison of the previously shown scaling methods
+
+```{r, eval=F, echo=T}
+np.random.seed(32)
+
+df = pd.DataFrame({
+    # Distribution with lower outliers
+    'Col_1': np.concatenate([np.random.normal(20, 1, 1000), np.random.normal(1, 1, 25)]),
+    # Distribution with higher outliers
+    'Col_2': np.concatenate([np.random.normal(30, 1, 1000), np.random.normal(50, 1, 25)]),
+})
+
+df.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p11.png)
+
+
+
+```{r, eval=F, echo=T}
+col_names = df.columns
+features = df[col_names]
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+standard_scaler = pd.DataFrame(features, columns = col_names)
+
+
+col_names = df.columns
+features = df[col_names]
+scaler = MinMaxScaler().fit(features.values)
+features = scaler.transform(features.values)
+min_max_scaler = pd.DataFrame(features, columns = col_names)
+
+
+col_names = df.columns
+features = df[col_names]
+scaler = RobustScaler().fit(features.values)
+features = scaler.transform(features.values)
+robust_scaler = pd.DataFrame(features, columns = col_names)
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png)
+
+
+
+
+```{r, eval=F, echo=T}
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(ncols=4, figsize=(15, 7))
+
+ax1.set_title('Before Scaling')
+sns.kdeplot(df['Col_1'], ax=ax1)
+sns.kdeplot(df['Col_2'], ax=ax1)
+
+ax2.set_title('After Standard Scaler')
+sns.kdeplot(standard_scaler['Col_1'], ax=ax2)
+sns.kdeplot(standard_scaler['Col_2'], ax=ax2)
+
+ax3.set_title('After Min-Max Scaling')
+sns.kdeplot(min_max_scaler['Col_1'], ax=ax3)
+sns.kdeplot(min_max_scaler['Col_2'], ax=ax3)
+
+ax4.set_title('After Robust Scaling')
+sns.kdeplot(robust_scaler['Col_1'], ax=ax4)
+sns.kdeplot(robust_scaler['Col_2'], ax=ax4)
+
+plt.show()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png)
+
+
+
+#4 Conclusion
+
+As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.
+
+
+
+
+
+
+

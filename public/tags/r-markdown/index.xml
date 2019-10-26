@@ -6,10 +6,19 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 31 Aug 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Feature Scaling with Scikit-Learn</title>
+      <link>/2019/08/31/feature-scaling-with-scikit-learn/</link>
+      <pubDate>Sat, 31 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/08/31/feature-scaling-with-scikit-learn/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Scaling methods3.1 Standard Scaler3.2 Min-Max Scaler3.3 Robust Scaler3.4 Comparison of the previously shown scaling methods4 Conclusion1 IntroductionFeature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range.</description>
+    </item>
     
     <item>
       <title>Dealing with outliers</title>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Feature Scaling with Scikit-Learn - Michael Fuchs Python</title>
+<meta property="og:title" content="Feature Scaling with Scikit-Learn - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Feature Scaling with Scikit-Learn</h1>
+
+    
+    <span class="article-date">2019-08-31</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Scaling methods</li>
+<li>3.1 Standard Scaler</li>
+<li>3.2 Min-Max Scaler</li>
+<li>3.3 Robust Scaler</li>
+<li>3.4 Comparison of the previously shown scaling methods</li>
+<li>4 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Feature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range. Sometimes, it also helps in speeding up the calculations in an algorithm.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+matplotlib.style.use(&#39;ggplot&#39;)
+
+
+#For chapter 3.1
+from sklearn.preprocessing import StandardScaler
+#For chapter 3.2
+from sklearn.preprocessing import MinMaxScaler
+#For chapter 3.3
+from sklearn.preprocessing import RobustScaler
+
+
+
+
+pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
+</div>
+<div id="scaling-methods" class="section level1">
+<h1>3 Scaling methods</h1>
+<p>In the following, three of the most important scaling methods are presented:</p>
+<ul>
+<li>Standard Scaler</li>
+<li>Min-Max Scaler</li>
+<li>Robust Scaler</li>
+</ul>
+</div>
+<div id="standard-scaler" class="section level1">
+<h1>3.1 Standard Scaler</h1>
+<p>The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1.</p>
+<p>The mean and standard deviation are calculated for the feature and then the feature is scaled based on:</p>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png" />
+
+</div>
+<pre class="r"><code>np.random.seed(1)
+
+df = pd.DataFrame({
+    &#39;Col_1&#39;: np.random.normal(0, 2, 30000),
+    &#39;Col_2&#39;: np.random.normal(5, 3, 30000),
+    &#39;Col_3&#39;: np.random.normal(-5, 5, 30000)
+})
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p1.png" />
+
+</div>
+<pre class="r"><code>col_names = df.columns
+features = df[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p2.png" />
+
+</div>
+<pre class="r"><code>scaled_features.describe()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p3.png" />
+
+</div>
+<pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title(&#39;Before Scaling&#39;)
+sns.kdeplot(df[&#39;Col_1&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_2&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_3&#39;], ax=ax1)
+ax2.set_title(&#39;After Standard Scaler&#39;)
+sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
+sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
+sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png" />
+
+</div>
+</div>
+<div id="min-max-scaler" class="section level1">
+<h1>3.2 Min-Max Scaler</h1>
+<p>The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:</p>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png" />
+
+</div>
+<p>It essentially shrinks the range such that the range is now between 0 and 1. This scaler works better for cases in which the standard scaler might not work so well. If the distribution is not Gaussian or the standard deviation is very small, the Min-Max Scaler works better. However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler (shown below).</p>
+<pre class="r"><code>np.random.seed(1)
+
+df = pd.DataFrame({
+    # positive skew
+    &#39;Col_1&#39;: np.random.chisquare(8, 1000),
+    # negative skew 
+    &#39;Col_2&#39;: np.random.beta(8, 2, 1000) * 40,
+    # no skew
+    &#39;Col_3&#39;: np.random.normal(50, 3, 1000)
+})
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p5.png" />
+
+</div>
+<pre class="r"><code>col_names = df.columns
+features = df[col_names]
+
+scaler = MinMaxScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p6.png" />
+
+</div>
+<pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title(&#39;Before Scaling&#39;)
+sns.kdeplot(df[&#39;Col_1&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_2&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_3&#39;], ax=ax1)
+ax2.set_title(&#39;After Min-Max Scaling&#39;)
+sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
+sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
+sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png" />
+
+</div>
+</div>
+<div id="robust-scaler" class="section level1">
+<h1>3.3 Robust Scaler</h1>
+<p>The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:</p>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png" />
+
+</div>
+<p>Of course this means it is using the less of the data for scaling so it’s more suitable for when there are outliers in the data.</p>
+<pre class="r"><code>np.random.seed(1)
+
+df = pd.DataFrame({
+    # Distribution with lower outliers
+    &#39;Col_1&#39;: np.concatenate([np.random.normal(20, 1, 1000), np.random.normal(1, 1, 25)]),
+    # Distribution with higher outliers
+    &#39;Col_2&#39;: np.concatenate([np.random.normal(30, 1, 1000), np.random.normal(50, 1, 25)]),
+})
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p8.png" />
+
+</div>
+<pre class="r"><code>col_names = df.columns
+features = df[col_names]
+
+scaler = RobustScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p9.png" />
+
+</div>
+<pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
+
+ax1.set_title(&#39;Before Scaling&#39;)
+sns.kdeplot(df[&#39;Col_1&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_2&#39;], ax=ax1)
+
+ax2.set_title(&#39;After Robust Scaling&#39;)
+sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
+sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
+
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png" />
+
+</div>
+</div>
+<div id="comparison-of-the-previously-shown-scaling-methods" class="section level1">
+<h1>3.4 Comparison of the previously shown scaling methods</h1>
+<pre class="r"><code>np.random.seed(32)
+
+df = pd.DataFrame({
+    # Distribution with lower outliers
+    &#39;Col_1&#39;: np.concatenate([np.random.normal(20, 1, 1000), np.random.normal(1, 1, 25)]),
+    # Distribution with higher outliers
+    &#39;Col_2&#39;: np.concatenate([np.random.normal(30, 1, 1000), np.random.normal(50, 1, 25)]),
+})
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p11.png" />
+
+</div>
+<pre class="r"><code>col_names = df.columns
+features = df[col_names]
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+standard_scaler = pd.DataFrame(features, columns = col_names)
+
+
+col_names = df.columns
+features = df[col_names]
+scaler = MinMaxScaler().fit(features.values)
+features = scaler.transform(features.values)
+min_max_scaler = pd.DataFrame(features, columns = col_names)
+
+
+col_names = df.columns
+features = df[col_names]
+scaler = RobustScaler().fit(features.values)
+features = scaler.transform(features.values)
+robust_scaler = pd.DataFrame(features, columns = col_names)</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" />
+
+</div>
+<pre class="r"><code>fig, (ax1, ax2, ax3, ax4) = plt.subplots(ncols=4, figsize=(15, 7))
+
+ax1.set_title(&#39;Before Scaling&#39;)
+sns.kdeplot(df[&#39;Col_1&#39;], ax=ax1)
+sns.kdeplot(df[&#39;Col_2&#39;], ax=ax1)
+
+ax2.set_title(&#39;After Standard Scaler&#39;)
+sns.kdeplot(standard_scaler[&#39;Col_1&#39;], ax=ax2)
+sns.kdeplot(standard_scaler[&#39;Col_2&#39;], ax=ax2)
+
+ax3.set_title(&#39;After Min-Max Scaling&#39;)
+sns.kdeplot(min_max_scaler[&#39;Col_1&#39;], ax=ax3)
+sns.kdeplot(min_max_scaler[&#39;Col_2&#39;], ax=ax3)
+
+ax4.set_title(&#39;After Robust Scaling&#39;)
+sns.kdeplot(robust_scaler[&#39;Col_1&#39;], ax=ax4)
+sns.kdeplot(robust_scaler[&#39;Col_2&#39;], ax=ax4)
+
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion</h1>
+<p>As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
