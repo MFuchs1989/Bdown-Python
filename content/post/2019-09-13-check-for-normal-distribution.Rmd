@@ -1,0 +1,54 @@
+---
+title: Check for normal distribution
+author: Michael Fuchs
+date: '2019-09-13'
+slug: check-for-normal-distribution
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries and the data
++ 3 
+
+
+
+
+
+#1 Introduction
+
+In my previous ["post"](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/) the question came up of how to check its data on normal distribution. There are several possibilities for this:
+
+
+#2 Loading the libraries
+
+```{r, eval=F, echo=T}
+
+```
+
+
+#3 
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-09-13-check-for-normal-distribution_files/p19p.png)
+
+
