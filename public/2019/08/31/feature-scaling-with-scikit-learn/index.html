@@ -112,8 +112,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import RobustScaler
 
 
-
-
 pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 </div>
 <div id="scaling-methods" class="section level1">
@@ -313,10 +311,6 @@ features = df[col_names]
 scaler = RobustScaler().fit(features.values)
 features = scaler.transform(features.values)
 robust_scaler = pd.DataFrame(features, columns = col_names)</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" />
-
-</div>
 <pre class="r"><code>fig, (ax1, ax2, ax3, ax4) = plt.subplots(ncols=4, figsize=(15, 7))
 
 ax1.set_title(&#39;Before Scaling&#39;)
@@ -337,7 +331,7 @@ sns.kdeplot(robust_scaler[&#39;Col_2&#39;], ax=ax4)
 
 plt.show()</code></pre>
 <div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png" />
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" />
 
 </div>
 </div>
