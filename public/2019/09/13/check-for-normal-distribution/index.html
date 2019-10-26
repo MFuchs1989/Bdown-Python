@@ -19,6 +19,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -60,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">0 min read</span>
+    <span class="article-duration">3 min read</span>
     
 
     <h1 class="article-title">Check for normal distribution</h1>
@@ -70,7 +75,140 @@
     
 
     <div class="article-content">
-      
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Visual Normality Checks</li>
+<li>3.1 Quantile-Quantile Plot</li>
+<li>3.2 Histogram Plot</li>
+<li>4 Statistical Normality Tests</li>
+<li>4.1 Shapiro-Wilk Test</li>
+<li>4.2 D’Agostino’s K<sup>2</sup> Test</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my previous <a href="https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/">“post”</a> the question came up of how to check its data on normal distribution. There are several possibilities for this.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import pylab 
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+#For Chapter 4.1
+from scipy.stats import shapiro
+#For Chapter 4.2
+from scipy.stats import normaltest</code></pre>
+</div>
+<div id="visual-normality-checks" class="section level1">
+<h1>3 Visual Normality Checks</h1>
+<pre class="r"><code>np.random.seed(1)
+
+df = pd.DataFrame({
+    &#39;Col_1&#39;: np.random.normal(0, 2, 30000),
+    &#39;Col_2&#39;: np.random.normal(5, 3, 30000),
+    &#39;Col_3&#39;: np.random.normal(-5, 5, 30000)
+})
+
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p1.png" />
+
+</div>
+</div>
+<div id="quantile-quantile-plot" class="section level1">
+<h1>3.1 Quantile-Quantile Plot</h1>
+<p>A popular plot for checking the distribution of a data sample is the quantile-quantile plot, Q-Q plot, or QQ plot for short.A perfect match for the distribution will be shown by a line of dots on a 45-degree angle from the bottom left of the plot to the top right. Often a line is drawn on the plot to help make this expectation clear. Deviations by the dots from the line shows a deviation from the expected distribution.</p>
+<pre class="r"><code>stats.probplot(df[&#39;Col_1&#39;], dist=&quot;norm&quot;, plot=pylab)
+pylab.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p2.png" />
+
+</div>
+</div>
+<div id="histogram-plot" class="section level1">
+<h1>3.2 Histogram Plot</h1>
+<p>A simple and commonly used plot to quickly check the distribution of a sample of data is the histogram.</p>
+<pre class="r"><code>bins = np.linspace(-20, 20, 100)
+
+plt.hist(df[&#39;Col_1&#39;], bins, alpha=0.5, label=&#39;Col_1&#39;)
+plt.hist(df[&#39;Col_2&#39;], bins, alpha=0.5, label=&#39;Col_2&#39;)
+plt.hist(df[&#39;Col_3&#39;], bins, alpha=0.5, label=&#39;Col_3&#39;)
+plt.legend(loc=&#39;upper right&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p3.png" />
+
+</div>
+</div>
+<div id="statistical-normality-tests" class="section level1">
+<h1>4 Statistical Normality Tests</h1>
+<p>A normal distribution can also be examined with statistical tests. Pyhton’s SciPy library contains two of the best known methods.</p>
+<p>In the SciPy implementation of these tests, you can interpret the p value as follows.</p>
+<ul>
+<li>p &lt;= alpha: reject H0, not normal</li>
+<li>p &gt; alpha: fail to reject H0, normal</li>
+</ul>
+</div>
+<div id="shapiro-wilk-test" class="section level1">
+<h1>4.1 Shapiro-Wilk Test</h1>
+<p>The Shapiro-Wilk test evaluates a data sample and quantifies how likely it is that the data was drawn from a Gaussian distribution.</p>
+<pre class="r"><code>shapiro(df[&#39;Col_1&#39;])</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p4.png" />
+
+</div>
+<pre class="r"><code>stat, p = shapiro(df[&#39;Col_1&#39;])</code></pre>
+<pre class="r"><code>print(&#39;Statistics=%.3f, p=%.3f&#39; % (stat, p))</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p5.png" />
+
+</div>
+<pre class="r"><code>alpha = 0.05
+if p &gt; alpha:
+ print(&#39;Sample looks Gaussian (fail to reject H0)&#39;)
+else:
+ print(&#39;Sample does not look Gaussian (reject H0)&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p6.png" />
+
+</div>
+</div>
+<div id="dagostinos-k2-test" class="section level1">
+<h1>4.2 D’Agostino’s K<sup>2</sup> Test</h1>
+<p>The D’Agostino’s K<sup>2</sup> test calculates summary statistics from the data, namely kurtosis and skewness, to determine if the data distribution departs from the normal distribution,</p>
+<pre class="r"><code>normaltest(df[&#39;Col_1&#39;])</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p7.png" />
+
+</div>
+<pre class="r"><code>stat, p = normaltest(df[&#39;Col_1&#39;])</code></pre>
+<pre class="r"><code>print(&#39;Statistics=%.3f, p=%.3f&#39; % (stat, p))</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p8.png" />
+
+</div>
+<pre class="r"><code>alpha = 0.05
+if p &gt; alpha:
+ print(&#39;Sample looks Gaussian (fail to reject H0)&#39;)
+else:
+ print(&#39;Sample does not look Gaussian (reject H0)&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p9.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post several ways were presented to check normal distribution. You can do this using graphical representations or statistical tests. I would always recommend several methods to use for the determination.</p>
+</div>
+
     </div>
   </article>
 
@@ -92,6 +230,18 @@
 
     </div>
     
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 
