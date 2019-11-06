@@ -19,6 +19,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -60,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">0 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">Wrapper methods</h1>
@@ -70,7 +75,299 @@
     
 
     <div class="article-content">
-      
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Wrap up: Filter methods</li>
+<li>4 Wrapper methods</li>
+<li>4.1 Data Preparation</li>
+<li>4.1.1 Check for missing values</li>
+<li>4.1.2 Removing highly correlated features</li>
+<li>4.1.3 SelectKBest</li>
+<li>4.2 Syntax for wrapper methods</li>
+<li>4.2.1 Forward Feature Selection</li>
+<li>4.2.2 Backward Elimination</li>
+<li>4.2.3 Recursive Feature Elimination (RFE)</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Feature selection is pretty important in machine learning primarily because it serves as a fundamental technique to direct the use of variables to what’s most efficient and effective for a given machine learning system.</p>
+<p>There are three types of feature selection:</p>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20s1.png" />
+
+</div>
+<p>In the following, we will discuss different wrapper methods. Before that, however, there is a short theoretical wrap-up to the filter methods. The embedded methods will be treated in a subsequent publication.</p>
+<p>For this post the dataset <em>Santandar Customer Satisfaction</em> (only the train-part) from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.ensemble import RandomForestRegressor
+
+#for chapter 4.1.3
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_regression
+#for chapter 4.2.1 and 4.2.2
+from mlxtend.feature_selection import SequentialFeatureSelector
+#for chapter 4.2.3
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression</code></pre>
+<pre class="r"><code>santandar_data = pd.read_csv(&quot;path/to/file/santandar.csv&quot;)</code></pre>
+<pre class="r"><code>santandar_data.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p1.png" />
+
+</div>
+</div>
+<div id="wrap-up-filter-methods" class="section level1">
+<h1>3 Wrap up: Filter methods</h1>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20s2.png" />
+
+</div>
+<p>Image Source: <a href="https://www.analyticsvidhya.com/">“Analytics Vidhya”</a></p>
+<p>Filter methods relies on the general uniqueness of the data to be evaluated and pick feature subset, not including any mining algorithm. Filter method uses the exact assessment criterion which includes distance, information, consistency and dependency.</p>
+<p>The following filter methods should be considered when creating your regression model:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“Highly correlated features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Constant features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Duplicate features”</a></li>
+<li>SelectKBest (see section 4.1.3 below)</li>
+</ul>
+</div>
+<div id="wrapper-methods" class="section level1">
+<h1>4 Wrapper methods</h1>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20s3.png" />
+
+</div>
+<p>For wrapper methods, the feature selection process is based on a specific machine learning algorithm that is to be applied to a particular record. It follows a greedy search approach by evaluating all possible combinations of features based on the evaluation criterion.</p>
+<p><strong>Difference between filter and wrapper methods</strong></p>
+<p>Well, it might get confusing at times to differentiate between filter and wrapper methods in terms of their functionalities. Let’s take a look at what points they differ from each other:</p>
+<ul>
+<li><p>Filter methods do not incorporate a machine learning model in order to determine if a feature is good or bad whereas wrapper methods use a machine learning model and train it the feature to decide if it is essential for the final model or not.</p></li>
+<li><p>Filter methods are much faster compared to wrapper methods as they do not involve training the models. On the other hand, wrapper methods are computationally costly, and in the case of massive datasets, wrapper methods are probably not the most effective feature selection method to consider.</p></li>
+<li><p>Filter methods may fail to find the best subset of features in situations when there is not enough data to model the statistical correlation of the features, but wrapper methods can always provide the best subset of features because of their exhaustive nature.</p></li>
+<li><p>Using features from wrapper methods in your final machine learning model can lead to overfitting as wrapper methods already train machine learning models with the features and it affects the true power of learning.</p></li>
+</ul>
+<p><strong>Types of wrapper methods</strong></p>
+<p>In the following, three wrapper methods will be presented:</p>
+<p><em>Forward Selection</em></p>
+<p>The procedure starts with an empty set of features. The best of the original features is determined and added to the reduced set. At each subsequent iteration, the best of the remaining original attributes is added to the set.</p>
+<p><em>Backward Elimination</em></p>
+<p>The procedure starts with the full set of features. At each step, it removes the worst attribute remaining in the set.</p>
+<p><em>Recursive Feature Elimination</em></p>
+<p>The procedure is almost the same as in the case of backward elimination. Almost … The advantage of RFE is that it works much faster.</p>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>4.1 Data Preparation</h1>
+</div>
+<div id="check-for-missing-values" class="section level1">
+<h1>4.1.1 Check for missing values</h1>
+<pre class="r"><code>def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : &#39;Missing Values&#39;, 1 : &#39;% of Total Values&#39;})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        &#39;% of Total Values&#39;, ascending=False).round(1)
+        
+        # Print some summary information
+        print (&quot;Your selected dataframe has &quot; + str(df.shape[1]) + &quot; columns.\n&quot;      
+            &quot;There are &quot; + str(mis_val_table_ren_columns.shape[0]) +
+              &quot; columns that have missing values.&quot;)
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns</code></pre>
+<pre class="r"><code>missing_values_table(santandar_data)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p2.png" />
+
+</div>
+<p>As we can see there are no missing values.</p>
+</div>
+<div id="removing-highly-correlated-features" class="section level1">
+<h1>4.1.2 Removing highly correlated features</h1>
+<pre class="r"><code># Only numerical variables are considered here
+num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+numerical_columns = list(santandar_data.select_dtypes(include=num_col).columns)
+santandar = santandar_data[numerical_columns]
+
+# Train / Test Split
+x = santandar.drop([&#39;ID&#39;, &#39;TARGET&#39;], axis=1)
+y = santandar[&#39;TARGET&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+
+# Removing highly correlated features (here &gt; .9)
+correlated_features = set()
+correlation_matrix = santandar.corr()
+
+threshold = 0.90
+
+for i in range(len(correlation_matrix .columns)):
+    for j in range(i):
+        if abs(correlation_matrix.iloc[i, j]) &gt; threshold:
+            colname = correlation_matrix.columns[i]
+            correlated_features.add(colname)
+
+# Exclusion of identified features
+trainX_clean = trainX.drop(labels=correlated_features, axis=1)
+testX_clean = testX.drop(labels=correlated_features, axis=1)
+
+trainX_clean.shape, testX_clean.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p3.png" />
+
+</div>
+<p>Originally, the record had 371 columns. After the exclusion of highly correlated variables we come up to 203 columns.</p>
+</div>
+<div id="selectkbest" class="section level1">
+<h1>4.1.3 SelectKBest</h1>
+<p>As already mentioned several times, wrapper methods are computationally expensive. Therefore, it is worthwhile to use the filter method SelectKBest to select the k best features.</p>
+<pre class="r"><code>selector = SelectKBest(score_func=f_regression, k=20)
+
+selector.fit(trainX_clean, trainY)
+
+vector_names = list(trainX_clean.columns[selector.get_support(indices=True)])
+print(vector_names)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p4.png" />
+
+</div>
+<p>The k determines how many best features should be output. Then the output features are assigned to a new test and train X.</p>
+<pre class="r"><code>trainX_best = trainX_clean[vector_names]
+testX_best = testX_clean[vector_names]
+
+print(trainX_best.shape)
+print(testX_best.shape)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p5.png" />
+
+</div>
+<p>To simplify matters, the twenty selected columns are limited to 10.000 lines.</p>
+<pre class="r"><code>trainX_reduced = trainX_best.iloc[0:10000,]
+testX_reduced = testX_best.iloc[0:10000,]
+trainY_reduced = trainY.iloc[0:10000,]
+testY_reduced = testY.iloc[0:10000,]
+
+print(trainX_reduced.shape)
+print(testX_reduced.shape)
+print(trainY_reduced.shape)
+print(testY_reduced.shape)</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p6.png" />
+
+</div>
+</div>
+<div id="syntax-for-wrapper-methods" class="section level1">
+<h1>4.2 Syntax for wrapper methods</h1>
+</div>
+<div id="forward-feature-selection" class="section level1">
+<h1>4.2.1 Forward Feature Selection</h1>
+<pre class="r"><code>feature_selector = SequentialFeatureSelector(RandomForestRegressor(n_jobs=-1),
+           k_features=5,
+           forward=True,
+           verbose=2,
+           scoring=&#39;r2&#39;,
+           cv=4)</code></pre>
+<p>With k_features we determine how many features from the remaining twenty should be selected. Here: 5</p>
+<pre class="r"><code>features = feature_selector.fit(np.array(trainX_reduced), trainY_reduced)</code></pre>
+<p>The following 5 features were selected by the algorithm:</p>
+<pre class="r"><code>filtered_features= trainX_reduced.columns[list(features.k_feature_idx_)]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p7.png" />
+
+</div>
+<p>Then these selected features can be assigned to a new X again.</p>
+<pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
+New_test_x = testX_reduced[filtered_features]</code></pre>
+</div>
+<div id="backward-elimination" class="section level1">
+<h1>4.2.2 Backward Elimination</h1>
+<p>The backward elimination functions almost identically from the syntax. the only difference is that the parameter forward is set to false.</p>
+<pre class="r"><code>feature_selector = SequentialFeatureSelector(RandomForestRegressor(n_jobs=-1),
+           k_features=5,
+           forward=False,
+           verbose=2,
+           scoring=&#39;r2&#39;,
+           cv=4)</code></pre>
+<pre class="r"><code>features = feature_selector.fit(np.array(trainX_reduced), trainY_reduced)</code></pre>
+<pre class="r"><code>filtered_features= trainX_reduced.columns[list(features.k_feature_idx_)]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p8.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
+New_test_x = testX_reduced[filtered_features]</code></pre>
+</div>
+<div id="recursive-feature-elimination-rfe" class="section level1">
+<h1>4.2.3 Recursive Feature Elimination (RFE)</h1>
+<p>The syntax for RFE is now a little different but not particularly complicated. The parameter determining the number of features to extract is here n_features_to_select.</p>
+<pre class="r"><code>lr = LinearRegression()
+
+rfe = RFE(lr, n_features_to_select=5)
+rfe.fit(trainX_reduced,trainY_reduced)</code></pre>
+<p>With the following two codes we get a statement about which given feature seems to be the best one for the final model:</p>
+<pre class="r"><code>rfe.support_</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p9.png" />
+
+</div>
+<pre class="r"><code> rfe.ranking_</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p10.png" />
+
+</div>
+<p>For better interpretability, you can simply print the following overview. RFE_support indicates if a feature has been selected (true) or not (false). The ranking is self-explanatory.</p>
+<p>If a feature was identified as most suitable, it has an RFE_support ‘true’ and RFE_ranking ‘1’</p>
+<pre class="r"><code>Columns = trainX_reduced.columns
+RFE_support = rfe.support_
+RFE_ranking = rfe.ranking_
+
+dataset = pd.DataFrame({&#39;Columns&#39;: Columns, &#39;RFE_support&#39;: RFE_support, &#39;RFE_ranking&#39;: RFE_ranking}, columns=[&#39;Columns&#39;, &#39;RFE_support&#39;, &#39;RFE_ranking&#39;])
+dataset</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p11.png" />
+
+</div>
+<p>With the following syntax the final features can be output and assigned to a new x.</p>
+<pre class="r"><code>df = dataset[(dataset[&quot;RFE_support&quot;] == True) &amp; (dataset[&quot;RFE_ranking&quot;] == 1)]
+filtered_features = df[&#39;Columns&#39;]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2019-09-27-wrapper-methods_files/p20p12.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
+New_test_x = testX_reduced[filtered_features]</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This post discussed the differences between filter methods and wrapper methods. Furthermore, three wrapper methods were shown how they can be used to determine the best features out of a record.</p>
+<p>One final note: the wrapper methods shown served as feature selection for regression models. For classification tasks you have to change some parameters. I’ll show in a later post.</p>
+</div>
+
     </div>
   </article>
 
@@ -93,7 +390,22 @@
     </div>
     
 
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>
