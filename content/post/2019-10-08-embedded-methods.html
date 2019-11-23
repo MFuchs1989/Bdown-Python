@@ -1,0 +1,305 @@
+---
+title: Embedded methods
+author: Michael Fuchs
+date: '2019-10-08'
+slug: embedded-methods
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Embedded methods</li>
+<li>3.1 Ridge Regression</li>
+<li>3.2 Lasso Regression</li>
+<li>3.3 Elastic Net</li>
+<li>4 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21s1.png" />
+
+</div>
+<p>Image Source: <a href="https://www.analyticsvidhya.com/">“Analytics Vidhya”</a></p>
+<p>Embedded methods are iterative in a sense that takes care of each iteration of the model training process and carefully extract those features which contribute the most to the training for a particular iteration. Regularization methods are the most commonly used embedded methods which penalize a feature given a coefficient threshold.</p>
+<p>Regularization is a technique which makes slight modifications to the learning algorithm such that the model generalizes better. L1 (LASSO) and L2 (Ridge) are the most common types of regularization. These update the general cost function by adding another term known as the regularization term. In addition to ridge and lasso, another embedded method will be shown in this post: Elastic Net. This is a combination between a lasso and a ridge regression.</p>
+<p>For this post the dataset <em>Auto-mpg</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs" class="uri">https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import ElasticNet
+
+import matplotlib.pyplot as plt</code></pre>
+<pre class="r"><code>cars = pd.read_csv(&quot;auto-mpg.csv&quot;)
+cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
+cars_horsepower_mean = cars[&#39;horsepower&#39;].fillna(cars[&#39;horsepower&#39;].mean())
+cars[&#39;horsepower&#39;] = cars_horsepower_mean
+
+cars.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p1.png" />
+
+</div>
+<p>For a better performance of the algorithms it is always advisable to scale the predictors. The ridge, lasso and elastic net algithithm from scikit learn have a built-in function for this. Have a look <a href="https://scikit-learn.org/stable/index.html">“here”</a> for further information.</p>
+<pre class="r"><code>#Selection of the predictors and the target variable
+x = cars.drop([&#39;mpg&#39;, &#39;car name&#39;], axis = 1) 
+y = cars[&quot;mpg&quot;]
+
+#Scaling of the features
+col_names = x.columns
+features = x[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features_x = pd.DataFrame(features, columns = col_names)
+scaled_features_x.head()
+
+#Train Test Split
+trainX, testX, trainY, testY = train_test_split(scaled_features_x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="embedded-methods" class="section level1">
+<h1>3 Embedded methods</h1>
+<p>In short, ridge regression and lasso are regression techniques optimized for prediction, rather than inference. Normal regression gives you unbiased regression coefficients. Ridge and lasso regression allow you to regularize (shrink) coefficients. This means that the estimated coefficients are pushed towards 0, to make them work better on new data-sets. This allows you to use complex models and avoid over-fitting at the same time.</p>
+<p>For both ridge and lasso you have to set a so called meta-parameter that defines how aggressive regularization is performed. Meta-parameters are usually chosen by cross-validation. For Ridge regression the meta-parameter is often called alpha or L2; it simply defines regularization strength. For LASSO the meta-parameter is often called lambda, or L1. In contrast to Ridge, the LASSO regularization will actually set less-important predictors to 0 and help you with choosing the predictors that can be left out of the model. The two methods are combined in Elastic Net Regularization. Here, both parameters can be set, with L2 defining regularization strength and L1 the desired sparseness of results.</p>
+<p>First of all let’s start with a simple linear regression model. If you are not familiar yet with linear regression and its parameter and metrics have a look at <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“here”</a></p>
+<pre class="r"><code>lm = LinearRegression()
+lm.fit(trainX, trainY)
+
+print(&#39;Training score (R²): {}&#39;.format(lm.score(trainX, trainY)))
+print(&#39;Test score (R²): {}&#39;.format(lm.score(testX, testY)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p2.png" />
+
+</div>
+<pre class="r"><code>y_pred = lm.predict(testX)
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p3.png" />
+
+</div>
+<pre class="r"><code>lm_coef = lm.coef_
+df = list(zip(col_names, lm_coef))
+df = pd.DataFrame(df, columns=[&#39;Features&#39;, &#39;Coefficient&#39;])
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p4.png" />
+
+</div>
+<p>For a quick overview of the strengths of the individual coefficients it is good to visualize them.</p>
+<pre class="r"><code>plt.figure(figsize = (8,6))
+coef_plot = pd.Series(lm.coef_, index = col_names)
+coef_plot.plot(kind=&#39;barh&#39;)
+plt.title(&#39;Simple linear regression&#39;)
+plt.xlabel(&#39;Coefficients&#39;)
+plt.ylabel(&#39;Predictors&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p5.png" />
+
+</div>
+</div>
+<div id="ridge-regression" class="section level1">
+<h1>3.1 Ridge Regression</h1>
+<p>The ridge regression syntax (as well as those of lasso and elastic net) is analogous to linear regression. Here are two short sentences about how ridge works:</p>
+<ul>
+<li>It shrinks the parameters, therefore it is mostly used to prevent multicollinearity.</li>
+<li>It reduces the model complexity by coefficient shrinkage.</li>
+</ul>
+<pre class="r"><code>ridge_reg = Ridge(alpha=10, fit_intercept=True)
+
+ridge_reg.fit(trainX, trainY)
+
+print(&#39;Training score (R²): {}&#39;.format(ridge_reg.score(trainX, trainY)))
+print(&#39;Test score (R²): {}&#39;.format(ridge_reg.score(testX, testY)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p6.png" />
+
+</div>
+<pre class="r"><code>y_pred = ridge_reg.predict(testX)
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p7.png" />
+
+</div>
+<pre class="r"><code>ridge_coef = ridge_reg.coef_
+df = list(zip(col_names, ridge_coef))
+df = pd.DataFrame(df, columns=[&#39;Features&#39;, &#39;Coefficient&#39;])
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p8.png" />
+
+</div>
+<p>Next to the metrics of performance we plot the strengths of the individual coefficients again. Here are two ways to do so.</p>
+<pre class="r"><code># Plot the coefficients
+plt.plot(range(len(col_names)), ridge_coef)
+plt.xticks(range(len(col_names)), col_names.values, rotation=60) 
+plt.margins(0.02)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p9.png" />
+
+</div>
+<pre class="r"><code>plt.figure(figsize = (8,6))
+coef_plot = pd.Series(ridge_reg.coef_, index = col_names)
+coef_plot.plot(kind=&#39;barh&#39;)
+plt.title(&#39;Ridge regression&#39;)
+plt.xlabel(&#39;Coefficients&#39;)
+plt.ylabel(&#39;Predictors&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p10.png" />
+
+</div>
+</div>
+<div id="lasso-regression" class="section level1">
+<h1>3.2 Lasso Regression</h1>
+<p>Lasso Regression is generally used when we have more number of features, because it automatically does feature selection.</p>
+<pre class="r"><code>lasso_reg = Lasso(alpha=0.3, fit_intercept=True)
+
+lasso_reg.fit(trainX, trainY)
+
+print(&#39;Training score (R²): {}&#39;.format(lasso_reg.score(trainX, trainY)))
+print(&#39;Test score (R²): {}&#39;.format(lasso_reg.score(testX, testY)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p11.png" />
+
+</div>
+<pre class="r"><code>y_pred = lasso_reg.predict(testX)
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p12.png" />
+
+</div>
+<pre class="r"><code>lasso_coef = lasso_reg.coef_
+df = list(zip(col_names, lasso_coef))
+df = pd.DataFrame(df, columns=[&#39;Features&#39;, &#39;Coefficient&#39;])
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p13.png" />
+
+</div>
+<pre class="r"><code># Plot the coefficients
+plt.plot(range(len(col_names)), lasso_coef)
+plt.xticks(range(len(col_names)), col_names.values, rotation=60) 
+plt.margins(0.02)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p14.png" />
+
+</div>
+<pre class="r"><code>plt.figure(figsize = (8,6))
+coef_plot = pd.Series(lasso_reg.coef_, index = col_names)
+coef_plot.plot(kind=&#39;barh&#39;)
+plt.title(&#39;Lasso regression&#39;)
+plt.xlabel(&#39;Coefficients&#39;)
+plt.ylabel(&#39;Predictors&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p15.png" />
+
+</div>
+</div>
+<div id="elastic-net" class="section level1">
+<h1>3.3 Elastic Net</h1>
+<p>Elastic Net is a combination of ridge regression and lasso regression.</p>
+<pre class="r"><code>ElaNet_reg = ElasticNet()
+
+ElaNet_reg.fit(trainX, trainY)
+
+print(&#39;Training score (R²): {}&#39;.format(lasso_reg.score(trainX, trainY)))
+print(&#39;Test score (R²): {}&#39;.format(lasso_reg.score(testX, testY)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p16.png" />
+
+</div>
+<pre class="r"><code>y_pred = ElaNet_reg.predict(testX)
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p17.png" />
+
+</div>
+<pre class="r"><code>ElaNet_coef = ElaNet_reg.coef_
+df = list(zip(col_names, ElaNet_coef))
+df = pd.DataFrame(df, columns=[&#39;Features&#39;, &#39;Coefficient&#39;])
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p18.png" />
+
+</div>
+<pre class="r"><code># Plot the coefficients
+plt.plot(range(len(col_names)), ElaNet_coef)
+plt.xticks(range(len(col_names)), col_names.values, rotation=60) 
+plt.margins(0.02)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p19.png" />
+
+</div>
+<pre class="r"><code>plt.figure(figsize = (8,6))
+coef_plot = pd.Series(ElaNet_reg.coef_, index = col_names)
+coef_plot.plot(kind=&#39;barh&#39;)
+plt.title(&#39;Lasso regression&#39;)
+plt.xlabel(&#39;Coefficients&#39;)
+plt.ylabel(&#39;Predictors&#39;)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p20.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion</h1>
+<p>Within my latest post <a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“Wrapper methods”</a> I described how they work and how they are differentiated from filter methods. But what’s the difference between wrapper methods and embedded methods?</p>
+<p>The difference from embedded methods to wrapper methods is that an intrinsic model building metric is used during learning. Furthermore embedded methods use algorithms that have built-in feature selection methods.</p>
+<p>I also gave this overview of the three types of feature selection:</p>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21s2.png" />
+
+</div>
+<p>Let’s summarize again…</p>
+<p>In previous publications we treated filter methods:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“Highly correlated features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Constant features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Duplicate features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“SelectKBest (chapter 4.1.3)”</a></li>
+</ul>
+<p>Then we went over to the wrapper methods:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“Wrapper methods”</a></li>
+</ul>
+<p>Finally we showed here how the three best known embedded methods work.</p>
+<p>In addition to the explained syntax, the delimitation of the methods was also discussed.</p>
+</div>

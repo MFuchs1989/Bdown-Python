@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Embedded methods</title>
+      <link>/2019/10/08/embedded-methods/</link>
+      <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/10/08/embedded-methods/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Embedded methods3.1 Ridge Regression3.2 Lasso Regression3.3 Elastic Net4 Conclusion1 IntroductionImage Source: “Analytics Vidhya”
+Embedded methods are iterative in a sense that takes care of each iteration of the model training process and carefully extract those features which contribute the most to the training for a particular iteration. Regularization methods are the most commonly used embedded methods which penalize a feature given a coefficient threshold.</description>
+    </item>
     
     <item>
       <title>Wrapper methods</title>
