@@ -6,10 +6,22 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 08 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Roadmap for Regression Analysis</title>
+      <link>/2019/10/14/roadmap-for-regression-analysis/</link>
+      <pubDate>Mon, 14 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/10/14/roadmap-for-regression-analysis/</guid>
+      <description>Table of Content1 Introduction2 Roadmap for Regression Analysis3 Conclusion1 IntroductionIn my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
+2 Roadmap for Regression AnalysisHere are the links to the individual topics.
+Data pre-processing:
+“Handling Missing Values”“Dealing with outliers”“The use of dummy variables”“Feature Scaling”Feature Selection:</description>
+    </item>
     
     <item>
       <title>Embedded methods</title>

@@ -1,0 +1,79 @@
+---
+title: Roadmap for Regression Analysis
+author: Michael Fuchs
+date: '2019-10-14'
+slug: roadmap-for-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+#Table of Content
+
+  + 1 Introduction
+  + 2 Roadmap for Regression Analysis
+  + 3 Conclusion
+
+
+
+#1 Introduction
+
+
+In my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
+
+
+
+#2 Roadmap for Regression Analysis
+
+
+![](/post/2019-10-14-roadmap-for-regression-analysis_files/p22p1.png)
+
+
+Here are the links to the individual topics.
+
+
+**Data pre-processing:**
+
++ ["Handling Missing Values"](https://michael-fuchs-python.netlify.com/2019/03/18/dealing-with-missing-values/)
++ ["Dealing with outliers"](https://michael-fuchs-python.netlify.com/2019/08/20/dealing-with-outliers/)
++ ["The use of dummy variables"](https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/)
++ ["Feature Scaling"](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/)
+
+
+**Feature Selection:**
+
+Filter methods:
+
++ ["Dealing with highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/)
++ ["Dealing with constant features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ ["Dealing with duplicate features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ ["SelectKBest"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
+
+
+Wrapper methods:
+
++ ["Forward Feature Selection"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
++ ["Backward Elimination"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
++ ["Recursive Feature Elimination (RFE)"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
+
+
+Embedded methods:
+
++ ["Ridge"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Lasso"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
+
+
+
+
+#3 Conclusion
+
+The methods mentioned in the listed posts show how to improve regression models.
+
+The focus of the upcoming publications will be on algorithms for classification problems.
+
+
+
+
