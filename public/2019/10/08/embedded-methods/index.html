@@ -145,7 +145,7 @@ trainX, testX, trainY, testY = train_test_split(scaled_features_x, y, test_size 
 <h1>3 Embedded methods</h1>
 <p>In short, ridge regression and lasso are regression techniques optimized for prediction, rather than inference. Normal regression gives you unbiased regression coefficients. Ridge and lasso regression allow you to regularize (shrink) coefficients. This means that the estimated coefficients are pushed towards 0, to make them work better on new data-sets. This allows you to use complex models and avoid over-fitting at the same time.</p>
 <p>For both ridge and lasso you have to set a so called meta-parameter that defines how aggressive regularization is performed. Meta-parameters are usually chosen by cross-validation. For Ridge regression the meta-parameter is often called alpha or L2; it simply defines regularization strength. For LASSO the meta-parameter is often called lambda, or L1. In contrast to Ridge, the LASSO regularization will actually set less-important predictors to 0 and help you with choosing the predictors that can be left out of the model. The two methods are combined in Elastic Net Regularization. Here, both parameters can be set, with L2 defining regularization strength and L1 the desired sparseness of results.</p>
-<p>First of all let’s start with a simple linear regression model. If you are not familiar yet with linear regression and its parameter and metrics have a look at <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“here”</a></p>
+<p>First of all let’s start with a simple linear regression model. If you are not familiar yet with linear regression and its parameter and metrics have a look <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“here”</a></p>
 <pre class="r"><code>lm = LinearRegression()
 lm.fit(trainX, trainY)
 
@@ -219,7 +219,7 @@ df</code></pre>
 <img src="/post/2019-10-08-embedded-methods_files/p21p8.png" />
 
 </div>
-<p>Next to the metrics of performance we plot the strengths of the individual coefficients again. Here are two ways to do so.</p>
+<p>Next to the metrics of performance, we plot the strengths of the individual coefficients again. Here are two ways to do so.</p>
 <pre class="r"><code># Plot the coefficients
 plt.plot(range(len(col_names)), ridge_coef)
 plt.xticks(range(len(col_names)), col_names.values, rotation=60) 
@@ -364,7 +364,7 @@ plt.show()</code></pre>
 <ul>
 <li><a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“Wrapper methods”</a></li>
 </ul>
-<p>Finally we showed here how the three best known embedded methods work.</p>
+<p>Finally we showed in this post the three best known embedded methods work.</p>
 <p>In addition to the explained syntax, the delimitation of the methods was also discussed.</p>
 </div>
 

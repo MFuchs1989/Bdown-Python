@@ -105,7 +105,7 @@ For both ridge and lasso you have to set a so called meta-parameter that defines
 
 
 First of all let's start with a simple linear regression model. 
-If you are not familiar yet with linear regression and its parameter and metrics have a look at ["here"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
+If you are not familiar yet with linear regression and its parameter and metrics have a look ["here"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
 
 
 ```{r, eval=F, echo=T}
@@ -191,7 +191,7 @@ df
 ```
 ![](/post/2019-10-08-embedded-methods_files/p21p8.png)
 
-Next to the metrics of performance we plot the strengths of the individual coefficients again. Here are two ways to do so.
+Next to the metrics of performance, we plot the strengths of the individual coefficients again. Here are two ways to do so.
 
 ```{r, eval=F, echo=T}
 # Plot the coefficients
@@ -367,7 +367,7 @@ Then we went over to the wrapper methods:
 + ["Wrapper methods"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
 
 
-Finally we showed here how the three best known embedded methods work.
+Finally we showed in this post the three best known embedded methods work.
 
 In addition to the explained syntax, the delimitation of the methods was also discussed.
 
