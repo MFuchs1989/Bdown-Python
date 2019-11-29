@@ -94,7 +94,7 @@ For a detailed description have a look at this pandas read_csv documentation ["h
 
 Another very popular format is json. This usually looks like this:
 
-![](/2019-03-01-read-and-write-to-files_files/p23s1.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23s1.png)
 
 
 
@@ -107,7 +107,7 @@ To illustrate this example, we use a kaggle record of data from twitter.
 df = pd.read_csv("df.csv", sep=";")
 ```
 
-![](/2019-03-01-read-and-write-to-files_files/p23p1.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23p1.png)
 
 
 
@@ -115,7 +115,7 @@ df = pd.read_csv("df.csv", sep=";")
 
 From time to time it also happens that files are made available to you as text files as the below picture shows. 
 
-![](/2019-03-01-read-and-write-to-files_files/p23s2.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23s2.png)
 
 
 Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn't matter. We can read this file in two ways.
@@ -144,7 +144,7 @@ for x in f:
 df.head()
 ```
 
-![](/2019-03-01-read-and-write-to-files_files/p23p2.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23p2.png)
 
 This method is a good approach for smaller data sets.
 If the data set is too large, the processing time could increase dramatically.
@@ -169,7 +169,7 @@ df.figures = df.figures.map(lambda x: x.split('}')[0])
 df.head()
 ```
 
-![](/2019-03-01-read-and-write-to-files_files/p23p3.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23p3.png)
 
 
 Hereby I used the map function in combination with lambda function to bring the data in the correct shape. How map works and can be used exactly see in this publication ["publication (String Manipulation. An intuition.)"](https://michael-fuchs-python.netlify.com/2019/03/27/string-manipulation-an-intuition/) of mine
@@ -194,7 +194,7 @@ df.drop(["timestamp_epoch2", "new_timestamp_epoch", "new_timestamp_epoch_round",
 df.head()
 ```
 
-![](/2019-03-01-read-and-write-to-files_files/p23p4.png)
+![](post/2019-03-01-read-and-write-to-files_files/p23p4.png)
 
 
 Voilà !

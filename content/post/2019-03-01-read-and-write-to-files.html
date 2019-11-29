@@ -64,13 +64,13 @@ import datetime</code></pre>
 <h1>4 To read json files</h1>
 <p>Another very popular format is json. This usually looks like this:</p>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23s1.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23s1.png" />
 
 </div>
 <p>Also for this pandas offers a quite simple possibility. To illustrate this example, we use a kaggle record of data from twitter.</p>
 <pre class="r"><code>df = pd.read_csv(&quot;df.csv&quot;, sep=&quot;;&quot;)</code></pre>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23p1.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23p1.png" />
 
 </div>
 </div>
@@ -78,7 +78,7 @@ import datetime</code></pre>
 <h1>5 To read text files</h1>
 <p>From time to time it also happens that files are made available to you as text files as the below picture shows.</p>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23s2.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23s2.png" />
 
 </div>
 <p>Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn’t matter. We can read this file in two ways.</p>
@@ -102,7 +102,7 @@ for x in f:
 
 df.head()</code></pre>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23p2.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23p2.png" />
 
 </div>
 <p>This method is a good approach for smaller data sets. If the data set is too large, the processing time could increase dramatically.</p>
@@ -120,7 +120,7 @@ df.figures = df.figures.map(lambda x: x.split(&#39;}&#39;)[0])
 
 df.head()</code></pre>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23p3.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23p3.png" />
 
 </div>
 <p>Hereby I used the map function in combination with lambda function to bring the data in the correct shape. How map works and can be used exactly see in this publication <a href="https://michael-fuchs-python.netlify.com/2019/03/27/string-manipulation-an-intuition/">“publication (String Manipulation. An intuition.)”</a> of mine</p>
@@ -138,7 +138,7 @@ df.drop([&quot;timestamp_epoch2&quot;, &quot;new_timestamp_epoch&quot;, &quot;ne
 
 df.head()</code></pre>
 <div class="figure">
-<img src="/2019-03-01-read-and-write-to-files_files/p23p4.png" />
+<img src="post/2019-03-01-read-and-write-to-files_files/p23p4.png" />
 
 </div>
 <p>Voilà !</p>
