@@ -1,0 +1,248 @@
+---
+title: Read and write to files
+author: Michael Fuchs
+date: '2019-03-01'
+slug: read-and-write-to-files
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+#Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries
++ 3 Reading csv-files
++ 4 To read json files
++ 5 To read text files
++ 5.1 with a for loop
++ 5.2 with read_csv
++ 5.2.1 **Convert epoch** time to DateTime
++ 5.2.2 **Write to csv**
++ 6 How to read further data types
++ 7 Conclusion
+
+
+
+
+#1 Introduction
+
+
+One funcion you always need to work with data is to import the records you want to analyze.
+This publication will show how to load data from different data types for further processing or analysis. The standard library pandas offers a wide range of possibilities.
+
+For this post the dataset *twitter* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as a self-created record as a text format called *some_TEXT_data_as_JSON*. A copy of the records is available here <https://drive.google.com/open?id=1SlMGezY-JBRD74dnxL43zFvppw3iYqPK> (twitter) and here <https://drive.google.com/open?id=1NmRdbk71o_5ZvavcZjFmUT9GtmzXV7Bc> (some_TEXT_data_as_JSON).
+
+
+#2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import json
+import datetime
+```
+
+
+#3 Reading csv-files
+
+
+Probably the most used file format is the **csv**-file.
+We can simply load csv files with the following syntax: 
+
+```{r, eval=F, echo=T}
+df = pd.read_csv("df.csv")
+```
+
+
+Please note that an appropriate path to the location of the file (see example below) is given if necessary.
+
+```{r, eval=F, echo=T}
+df = pd.read_csv("path/to/file/df.csv")
+```
+
+
+Most of the csv files should be easy to read in this way. 
+However, there are always situations in which the csv file is stored with, for example, another delimiter. By default this "," within the pd.read_csv function. To change this we have to add the 'sep' argument: 
+
+```{r, eval=F, echo=T}
+df = pd.read_csv("df.csv", sep=";")
+```
+
+
+There are a couple of other ways to read csv files with pandas read_csv-function:
+
++ Read csv file without header row
++ Skip rows but keep header
++ Read data and specify missing values or set an index column
++ Read csv File from External URL
++ Skip Last 5 Rows While Importing csv
++ Read only first 5 or more rows
++ Read only specific columns or rows
++ Change column type while importing csv
+
+...
+
+
+For a detailed description have a look at this pandas read_csv documentation ["here"](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
+
+
+
+#4 To read json files
+
+Another very popular format is json. This usually looks like this:
+
+![](/2019-03-01-read-and-write-to-files_files/p23s1.png)
+
+
+
+
+Also for this pandas offers a quite simple possibility.
+To illustrate this example, we use a kaggle record of data from twitter.
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv("df.csv", sep=";")
+```
+
+![](/2019-03-01-read-and-write-to-files_files/p23p1.png)
+
+
+
+#5 To read text files
+
+From time to time it also happens that files are made available to you as text files as the below picture shows. 
+
+![](/2019-03-01-read-and-write-to-files_files/p23s2.png)
+
+
+Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn't matter. We can read this file in two ways.
+
+
+#5.1 with a for loop
+
+Here you have to know which column names are contained in the file.
+
+
+```{r, eval=F, echo=T}
+f = open("some_TEXT_data_as_JSON.json", "r")
+firstLine = 1
+for x in f:
+    y = json.loads(x)
+    
+    if firstLine == 1:
+        df = pd.DataFrame([[y['timestamp_epoch'], y['device_id'], y['figures']]], columns=['timestamp_epoch', 'device_id', 'figures'])
+        firstLine = 0
+        continue
+    
+    df2 = pd.DataFrame([[y['timestamp_epoch'], y['device_id'], y['figures']]], columns=['timestamp_epoch', 'device_id', 'figures'])
+    frames = [df, df2]
+    df = pd.concat(frames,ignore_index=True, sort=False)
+
+df.head()
+```
+
+![](/2019-03-01-read-and-write-to-files_files/p23p2.png)
+
+This method is a good approach for smaller data sets.
+If the data set is too large, the processing time could increase dramatically.
+
+
+
+#5.2 with read_csv
+
+Alternatively you can use the read_csv function.
+In this case, you have to note that you still give the other file format (here json).
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('some_TEXT_data_as_JSON.json', sep=":", header=None)
+df.columns = ['to_delete', 'timestamp_epoch', 'device_id', 'figures']
+df.drop(["to_delete"], axis = 1, inplace = True) 
+df.timestamp_epoch = df.timestamp_epoch.map(lambda x: x.split(',')[0])
+df.device_id = df.device_id.map(lambda x: x.split(',')[0])
+df.figures = df.figures.map(lambda x: x.split('}')[0])
+
+
+df.head()
+```
+
+![](/2019-03-01-read-and-write-to-files_files/p23p3.png)
+
+
+Hereby I used the map function in combination with lambda function to bring the data in the correct shape. How map works and can be used exactly see in this publication ["publication (String Manipulation. An intuition.)"](https://michael-fuchs-python.netlify.com/2019/03/27/string-manipulation-an-intuition/) of mine
+
+
+
+#5.2.1 Convert epoch time to DateTime
+
+
+As you may have noticed, the column timestamp_epoch contains an epoch notation, which is not necessarily readable for everyone. Therefore, it is worth to reshape them accordingly.
+
+
+```{r, eval=F, echo=T}
+df['timestamp_epoch2'] = df.timestamp_epoch.astype(float)
+df['new_timestamp_epoch'] = df.timestamp_epoch2 / 1000
+df['new_timestamp_epoch_round'] = df.new_timestamp_epoch.round()
+df['new_timestamp_epoch_round'] = df.new_timestamp_epoch_round.astype(int)
+df['final'] = df.new_timestamp_epoch_round.map(lambda x: datetime.datetime.utcfromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
+df['DateTime'] = pd.to_datetime(df['final'])
+df.drop(["timestamp_epoch2", "new_timestamp_epoch", "new_timestamp_epoch_round", "final"], axis = 1, inplace = True) 
+
+df.head()
+```
+
+![](/2019-03-01-read-and-write-to-files_files/p23p4.png)
+
+
+Voilà !
+
+
+#5.2.2 Write to csv
+
+At this point, the question arises how the newly prepared data record can be easily stored.
+Almost every "read_from" has a "write_to" command.
+Let's do so with our dataframe:
+
+```{r, eval=F, echo=T}
+df.to_csv('NewDataFrame.csv')
+```
+
+
+
+This data set is now saved to the previously set path or any one that can be integrated in this command.
+
+
+#6 How to read further data types
+
+
+In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:
+
+
++ Excel (pd.read_excel())
++ HTML (pd.read_html())
++ Feather (pd.read_feather())
++ Parquet (pd.read_parquet())
++ SAS (pd.read_sas())
++ SQL (pd.read_sql())
++ Google BigQuery (pd.gbq())
++ STATA (pd.read_stata())
++ Clipboard (pd.read_clipboard())
+
+
+
+#7 Conclusion
+
+In this post various ways and possibilities were shown to read different data formats in python. 
+
+
+
+
+
+
+
+
+
+

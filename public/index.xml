@@ -221,6 +221,15 @@ The entry into the field of data science with “R / R-Studio” was a smart mat
     </item>
     
     <item>
+      <title>Read and write to files</title>
+      <link>/2019/03/01/read-and-write-to-files/</link>
+      <pubDate>Fri, 01 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/03/01/read-and-write-to-files/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Reading csv-files4 To read json files5 To read text files5.1 with a for loop5.2 with read_csv5.2.1 Convert epoch time to DateTime5.2.2 Write to csv6 How to read further data types7 Conclusion1 IntroductionOne funcion you always need to work with data is to import the records you want to analyze.</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
