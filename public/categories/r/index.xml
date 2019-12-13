@@ -6,10 +6,19 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 31 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Logistic Regression</title>
+      <link>/2019/10/31/introduction-to-logistic-regression/</link>
+      <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/10/31/introduction-to-logistic-regression/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Descriptive statistics3.1 Mean values of the features3.2 Description of the target variable3.3 Description of the predictor variables4 Data pre-processing4.1 Conversion of the target variable4.2 Creation of dummy variables4.3 Feature Selection5 Logistic Regression with the statsmodel library6 Logistic Regression with scikit-learn6.1 Over-sampling using SMOTE6.2 Model Fitting6.</description>
+    </item>
     
     <item>
       <title>Roadmap for Regression Analysis</title>
