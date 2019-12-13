@@ -60,19 +60,19 @@ sns.set(style="whitegrid", color_codes=True)
 from sklearn.model_selection import train_test_split
 
 
-#for chapter 3.3 ANPASSUNG 
+#for chapter 4.3  
 from sklearn.feature_selection import RFE
 
-#for chapter 3.3 and 5.2ANPASSUNG
+#for chapter 4.3 and 6.2
 from sklearn.linear_model import LogisticRegression
 
-#for chapter 4ANPASSUNG
+#for chapter 5
 import statsmodels.api as sm
 
-#for chapter 5.1ANPASSUNG
+#for chapter 6.1
 from imblearn.over_sampling import SMOTE
 
-#for chapter 5.3ANPASSUNG
+#for chapter 6.3
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
