@@ -123,7 +123,7 @@ For this post the dataset House Sales in King County, USA from the statistic pla
       <pubDate>Fri, 14 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/06/14/the-use-of-dummy-variables/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Preparation of the dataframe4 How to create dummy variables5 Use dummy variables in a regression analysis6 Dummy variables with more than two characteristics7 Conclusion1 IntroductionIn a nutshell: a dummy variable is a numeric variable that represents categorical data. For example, if you want to calculate a linear regression, you need numerical predictors.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Preparation of the dataframe4 How to create dummy variables5 Use dummy variables in a regression analysis6 Dummy variables with more than two characteristics7 How to deal with multiple categorical features in a dataset8 Conclusion1 IntroductionIn a nutshell: a dummy variable is a numeric variable that represents categorical data.</description>
     </item>
     
     <item>

@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">2 min read</span>
+    <span class="article-duration">3 min read</span>
     
 
     <h1 class="article-title">The use of dummy variables</h1>
@@ -84,7 +84,8 @@
 <li>4 How to create dummy variables</li>
 <li>5 Use dummy variables in a regression analysis</li>
 <li>6 Dummy variables with more than two characteristics</li>
-<li>7 Conclusion</li>
+<li>7 How to deal with multiple categorical features in a dataset</li>
+<li>8 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -186,8 +187,48 @@ show_dummy.head()</code></pre>
 
 </div>
 </div>
+<div id="how-to-deal-with-multiple-categorical-features-in-a-dataset" class="section level1">
+<h1>7 How to deal with multiple categorical features in a dataset</h1>
+<p>To show how to create dummy variables in a data set that contains many categorical variables, we reload the data set ‘gender_discrimination’ and prepare it as shown in step 3 again.</p>
+<pre class="r"><code>gender_discrimination = pd.read_csv(&quot;gender_discrimination.csv&quot;)
+show_dummy = gender_discrimination[[&#39;Gender&#39;, &#39;Exper&#39;, &#39;Rank&#39;, &#39;Sal95&#39;]]
+vals_to_replace_gender = {0:&#39;Female&#39;, 1:&#39;Male&#39;}
+vals_to_replace_rank = {1:&#39;Assistant&#39;, 2:&#39;Associate&#39;, 3:&#39;Full_Professor&#39;}
+show_dummy[&#39;Gender&#39;] = show_dummy[&#39;Gender&#39;].map(vals_to_replace_gender)
+show_dummy[&#39;Rank&#39;] = show_dummy[&#39;Rank&#39;].map(vals_to_replace_rank)
+show_dummy.columns = [&#39;Gender&#39;, &#39;Years_of_Experiences&#39;, &#39;Job&#39;, &#39;Salary&#39;]
+show_dummy.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s1.png" />
+
+</div>
+<p>In the first step, we select all categorical variables. Then we create dummy variables for each categorical variable. In the end, we combine all dummy and non-categorical variables and exclude unnecessary columns from the final data set.</p>
+<pre class="r"><code>#Just select the categorical variables
+cat_col = [&#39;object&#39;]
+cat_columns = list(show_dummy.select_dtypes(include=cat_col).columns)
+cat_data = show_dummy[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(show_dummy[var], prefix=var)
+    show_dummy=show_dummy.join(cat_list)
+
+    
+data_vars=show_dummy.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+show_dummy_final=show_dummy[to_keep]
+show_dummy_final.columns.values</code></pre>
+<div class="figure">
+<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s2.png" />
+
+</div>
+<p>Voilà !</p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
+<h1>8 Conclusion</h1>
 <p>Creating and using dummy variables is essential in machine learning because it can significantly improve results.</p>
 </div>
 

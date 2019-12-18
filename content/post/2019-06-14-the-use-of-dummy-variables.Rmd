@@ -18,7 +18,8 @@ tags:
 + 4 How to create dummy variables
 + 5 Use dummy variables in a regression analysis
 + 6 Dummy variables with more than two characteristics
-+ 7 Conclusion
++ 7 How to deal with multiple categorical features in a dataset
++ 8 Conclusion
 
 
 
@@ -166,10 +167,56 @@ show_dummy.head()
 
 ![](/post/2019-06-14-the-use-of-dummy-variables_files/p12p9.png)
 
+#7 How to deal with multiple categorical features in a dataset
+
+To show how to create dummy variables in a data set that contains many categorical variables, we reload the data set 'gender_discrimination' and prepare it as shown in step 3 again.
 
 
+```{r, eval=F, echo=T}
+gender_discrimination = pd.read_csv("gender_discrimination.csv")
+show_dummy = gender_discrimination[['Gender', 'Exper', 'Rank', 'Sal95']]
+vals_to_replace_gender = {0:'Female', 1:'Male'}
+vals_to_replace_rank = {1:'Assistant', 2:'Associate', 3:'Full_Professor'}
+show_dummy['Gender'] = show_dummy['Gender'].map(vals_to_replace_gender)
+show_dummy['Rank'] = show_dummy['Rank'].map(vals_to_replace_rank)
+show_dummy.columns = ['Gender', 'Years_of_Experiences', 'Job', 'Salary']
+show_dummy.head()
+```
 
-#7 Conclusion
+![](/post/2019-06-14-the-use-of-dummy-variables_files/p12s1.png)
+
+In the first step, we select all categorical variables.
+Then we create dummy variables for each categorical variable.
+In the end, we combine all dummy and non-categorical variables and exclude unnecessary columns from the final data set.
+
+
+```{r, eval=F, echo=T}
+#Just select the categorical variables
+cat_col = ['object']
+cat_columns = list(show_dummy.select_dtypes(include=cat_col).columns)
+cat_data = show_dummy[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(show_dummy[var], prefix=var)
+    show_dummy=show_dummy.join(cat_list)
+
+    
+data_vars=show_dummy.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+show_dummy_final=show_dummy[to_keep]
+show_dummy_final.columns.values
+```
+
+![](/post/2019-06-14-the-use-of-dummy-variables_files/p12s2.png)
+
+Voilà !
+
+
+#8 Conclusion
 
 Creating and using dummy variables is essential in machine learning because it can significantly improve results.
 
