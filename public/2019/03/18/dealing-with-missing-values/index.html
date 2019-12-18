@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">4 min read</span>
     
 
     <h1 class="article-title">Dealing with missing values</h1>
@@ -81,6 +81,7 @@
 <li>1 Introduction</li>
 <li>2 Checking for missing values</li>
 <li>2.1 Missing Value Function</li>
+<li>2.2 Visualization of missing values</li>
 <li>3 Deletion of missing values</li>
 <li>4 Replace missings with values</li>
 <li>4.1 Variant 1</li>
@@ -98,9 +99,13 @@
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.</p>
+<p>For chapter 2.2 of this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
 <p><strong>Loading the libraries</strong></p>
 <pre class="r"><code>import pandas as pd
-import numpy as np</code></pre>
+import numpy as np
+
+#relevant for chapter 2.2
+import missingno as msno</code></pre>
 </div>
 <div id="checking-for-missing-values" class="section level1">
 <h1>2 Checking for missing values</h1>
@@ -151,6 +156,45 @@ df1</code></pre>
 <img src="/post/2019-03-18-dealing-with-missing-values_files/p4p20.png" />
 
 </div>
+</div>
+<div id="visualization-of-missing-values" class="section level1">
+<h1>2.2 Visualization of missing values</h1>
+<p>To demonstrate the following visualization, we load the data set mentioned under introduction and select some specific columns for this case. Furthermore we create some missing values for demonstration purposes.</p>
+<pre class="r"><code>#load the data frame
+house = pd.read_csv(&quot;houce_prices.csv&quot;)
+
+#select some specific columns for this case
+house = house[[&#39;bedrooms&#39;, &#39;floors&#39;, &#39;yr_built&#39;, &#39;grade&#39;]]
+
+#create some missing values for demonstration
+house[&#39;grade&#39;] = house[&#39;grade&#39;].replace(10, np.NaN)
+house[&#39;grade&#39;] = house[&#39;grade&#39;].replace(5, np.NaN)
+house[&#39;yr_built&#39;] = house[&#39;yr_built&#39;].replace(2003, np.NaN)
+house[&#39;yr_built&#39;] = house[&#39;yr_built&#39;].replace(2004, np.NaN)
+house[&#39;floors&#39;] = house[&#39;floors&#39;].replace(3, np.NaN)
+house[&#39;floors&#39;] = house[&#39;floors&#39;].replace(3.5, np.NaN)
+house[&#39;bedrooms&#39;] = house[&#39;bedrooms&#39;].replace(6, np.NaN)
+house[&#39;bedrooms&#39;] = house[&#39;bedrooms&#39;].replace(1, np.NaN)
+
+#have a look at the missing values generated
+#here we use the previously defined function fro chapter 2.1
+missing_values_table(house)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-18-dealing-with-missing-values_files/p4s1.png" />
+
+</div>
+<p>Now we generate a plot in which we can see missing values per column:</p>
+<pre class="r"><code>len = len(house)
+mask = house.isnull()
+
+
+nullable_columns = house.columns[mask.any()].tolist()
+msno.matrix(house[nullable_columns].sample(len))</code></pre>
+<div class="figure">
+<img src="/post/2019-03-18-dealing-with-missing-values_files/p4s2.png" />
+
+</div>
+<p>White lines represent a missing value.</p>
 </div>
 <div id="deletion-of-missing-values" class="section level1">
 <h1>3 Deletion of missing values</h1>

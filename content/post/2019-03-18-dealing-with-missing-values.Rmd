@@ -14,6 +14,7 @@ tags:
 + 1 Introduction
 + 2 Checking for missing values
 + 2.1 Missing Value Function
++ 2.2 Visualization of missing values
 + 3 Deletion of missing values
 + 4 Replace missings with values
 + 4.1 Variant 1
@@ -32,12 +33,16 @@ tags:
 
 In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.
 
+For chapter 2.2 of this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
 
 
 **Loading the libraries**
 ```{r, eval=F, echo=T}
 import pandas as pd
 import numpy as np
+
+#relevant for chapter 2.2
+import missingno as msno
 ```
 
 
@@ -100,6 +105,49 @@ missing_values_table(df1)
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p20.png)
 
+#2.2 Visualization of missing values
+
+To demonstrate the following visualization, we load the data set mentioned under introduction and select some specific columns for this case. Furthermore we create some missing values for demonstration purposes.
+
+
+```{r, eval=F, echo=T}
+#load the data frame
+house = pd.read_csv("houce_prices.csv")
+
+#select some specific columns for this case
+house = house[['bedrooms', 'floors', 'yr_built', 'grade']]
+
+#create some missing values for demonstration
+house['grade'] = house['grade'].replace(10, np.NaN)
+house['grade'] = house['grade'].replace(5, np.NaN)
+house['yr_built'] = house['yr_built'].replace(2003, np.NaN)
+house['yr_built'] = house['yr_built'].replace(2004, np.NaN)
+house['floors'] = house['floors'].replace(3, np.NaN)
+house['floors'] = house['floors'].replace(3.5, np.NaN)
+house['bedrooms'] = house['bedrooms'].replace(6, np.NaN)
+house['bedrooms'] = house['bedrooms'].replace(1, np.NaN)
+
+#have a look at the missing values generated
+#here we use the previously defined function fro chapter 2.1
+missing_values_table(house)
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4s1.png)
+
+Now we generate a plot in which we can see missing values per column:
+
+```{r, eval=F, echo=T}
+len = len(house)
+mask = house.isnull()
+
+
+nullable_columns = house.columns[mask.any()].tolist()
+msno.matrix(house[nullable_columns].sample(len))
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4s2.png)
+
+White lines represent a missing value.
 
 
 #3 Deletion of missing values

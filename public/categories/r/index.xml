@@ -197,7 +197,7 @@ For this post the dataset WorldHappinessReport from the statistic platform “Ka
       <pubDate>Mon, 18 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/18/dealing-with-missing-values/</guid>
-      <description>Table of Content1 Introduction2 Checking for missing values2.1 Missing Value Function3 Deletion of missing values4 Replace missings with values4.1 Variant 14.2 Variant 25 Replace values with missings5.1 Variant 15.2 Variant 26 Further imputations6.1 with mean6.2 with ffill6.3 with backfill7 Conclusion1 IntroductionIn the real world, there is virtually no record that has no missing values.</description>
+      <description>Table of Content1 Introduction2 Checking for missing values2.1 Missing Value Function2.2 Visualization of missing values3 Deletion of missing values4 Replace missings with values4.1 Variant 14.2 Variant 25 Replace values with missings5.1 Variant 15.2 Variant 26 Further imputations6.1 with mean6.2 with ffill6.3 with backfill7 Conclusion1 IntroductionIn the real world, there is virtually no record that has no missing values.</description>
     </item>
     
     <item>
