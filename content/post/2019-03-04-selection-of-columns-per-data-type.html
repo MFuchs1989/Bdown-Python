@@ -1,0 +1,80 @@
+---
+title: Selection of columns per data type
+author: Michael Fuchs
+date: '2019-03-04'
+slug: selection-of-columns-per-data-type
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Selection of numeric variables</li>
+<li>4 Selection of categorical variables</li>
+<li>5 Conclusion</li>
+</ul>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In some situations it is necessary to select all columns of a certain data type. For example if you want to convert all categorical variables into dummy variables in order to be able to calculate a regression.</p>
+<p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd</code></pre>
+<pre class="r"><code>bank = pd.read_csv(&quot;path/to/file/bank.csv&quot;, sep=&quot;;&quot;)
+
+bank.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p1.png" />
+
+</div>
+<pre class="r"><code>bank.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p2.png" />
+
+</div>
+</div>
+<div id="selection-of-numeric-variables" class="section level1">
+<h1>3 Selection of numeric variables</h1>
+<p>Only numerical variables will be considered here:</p>
+<pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+numerical_columns = list(bank.select_dtypes(include=num_col).columns)
+bank_numeric = bank[numerical_columns]</code></pre>
+<pre class="r"><code>bank_numeric.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p3.png" />
+
+</div>
+<pre class="r"><code>bank_numeric.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p4.png" />
+
+</div>
+</div>
+<div id="selection-of-categorical-variables" class="section level1">
+<h1>4 Selection of categorical variables</h1>
+<p>Only categorical variables will be considered here:</p>
+<pre class="r"><code>obj_col = [&#39;object&#39;]
+object_columns = list(bank.select_dtypes(include=obj_col).columns)
+bank_categorical = bank[object_columns]</code></pre>
+<pre class="r"><code>bank_categorical.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p5.png" />
+
+</div>
+<pre class="r"><code>bank_categorical.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-04-selection-of-columns-per-data-type_files/p26p6.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This publication showed how to selectively select numeric or categorical variables.</p>
+</div>
