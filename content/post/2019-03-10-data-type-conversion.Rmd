@@ -299,12 +299,12 @@ Here is a short list of the most common directives:
 
 ![](/post/2019-03-10-data-type-conversion_files/p25s1.png)
 
-You can find the full list of directives ["here"](https://strftime.org/)
+You can find the full list of directives ["here"](https://strftime.org/).
 
 
 #7 Conclusion
 
-In this post we saw the different types of data and how to convert them to any other
+In this post we saw the different types of data and how to convert them to any other.
 
 
 
