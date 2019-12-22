@@ -58,9 +58,9 @@ cars = pd.read_csv("path/to/file/auto-mpg.csv")
 
 **Numeric:**
 
-+ integer: Positive or negative whole numbers (without a fractional part)
-+ float: Any real number with a floating point representation in which a fractional component is denoted by a decimal symbol or scientific notation
-+ complex number: A number with a real and imaginary component represented as x+zj. x and z are floats and j is -1(square root of -1 called an imaginary number)
++ 'integer': Positive or negative whole numbers (without a fractional part)
++ 'float': Any real number with a floating point representation in which a fractional component is denoted by a decimal symbol or scientific notation
++ 'complex number': A number with a real and imaginary component represented as x+zj. x and z are floats and j is -1(square root of -1 called an imaginary number)
 
 
 **Boolean**
@@ -70,9 +70,9 @@ Data with one of two built-in values 'True' or 'False.'
 
 **Sequence Type**
 
-+ string: A string value is a collection of one or more characters put in single, double or triple quotes.
-+ list : A list object is an ordered collection of one or more data items, not necessarily of the same type, put in square brackets.
-+ tuple: A Tuple object is an ordered collection of one or more data items, not necessarily of the same type, put in parentheses.
++ 'string': A string value is a collection of one or more characters put in single, double or triple quotes.
++ 'list' : A list object is an ordered collection of one or more data items, not necessarily of the same type, put in square brackets.
++ 'tuple': A Tuple object is an ordered collection of one or more data items, not necessarily of the same type, put in parentheses.
 
 
 **Dictionary**
