@@ -20,9 +20,9 @@ tags:
 + 4.1 Conversion of a single variable
 + 4.1.1 float64 to float32
 + 4.1.2 float to int
-+5 Conversion of multiple variables
-+6 Conversion of date and time variables
-+7 Conclusion
++ 5 Conversion of multiple variables
++ 6 Conversion of date and time variables
++ 7 Conclusion
 
 
 
