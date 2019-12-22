@@ -210,6 +210,15 @@ For this post the dataset WorldHappinessReport from the statistic platform “Ka
     </item>
     
     <item>
+      <title>Data type conversion</title>
+      <link>/2019/03/10/data-type-conversion/</link>
+      <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/03/10/data-type-conversion/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Overview of the exisitng data types4 Type Conversion4.1 Conversion of a single variable4.1.1 float64 to float324.1.2 float to int +5 Conversion of multiple variables +6 Conversion of date and time variables +7 Conclusion1 IntroductionIt will always happen that you have an incorrect or unsuitable data type and you have to change it.</description>
+    </item>
+    
+    <item>
       <title>Add new columns</title>
       <link>/2019/03/06/add-new-columns/</link>
       <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>

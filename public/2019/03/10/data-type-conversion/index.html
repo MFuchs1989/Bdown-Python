@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Data type conversion - Michael Fuchs Python</title>
+<meta property="og:title" content="Data type conversion - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Data type conversion</h1>
+
+    
+    <span class="article-date">2019-03-10</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Overview of the exisitng data types</li>
+<li>4 Type Conversion</li>
+<li>4.1 Conversion of a single variable</li>
+<li>4.1.1 float64 to float32</li>
+<li>4.1.2 float to int +5 Conversion of multiple variables +6 Conversion of date and time variables +7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>It will always happen that you have an incorrect or unsuitable data type and you have to change it. It is therefore worthwhile to familiarize yourself with the conversion methods that exist in python.</p>
+<p>For this post the dataset <em>Auto-mpg</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs" class="uri">https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+#for chapter XY
+from datetime import datetime</code></pre>
+<pre class="r"><code>cars = pd.read_csv(&quot;path/to/file/auto-mpg.csv&quot;)</code></pre>
+</div>
+<div id="overview-of-the-exisitng-data-types" class="section level1">
+<h1>3 Overview of the exisitng data types</h1>
+<p><strong>Numeric:</strong></p>
+<ul>
+<li>integer: Positive or negative whole numbers (without a fractional part)</li>
+<li>float: Any real number with a floating point representation in which a fractional component is denoted by a decimal symbol or scientific notation</li>
+<li>complex number: A number with a real and imaginary component represented as x+zj. x and z are floats and j is -1(square root of -1 called an imaginary number)</li>
+</ul>
+<p><strong>Boolean</strong></p>
+<p>Data with one of two built-in values ‘True’ or ‘False.’</p>
+<p><strong>Sequence Type</strong></p>
+<ul>
+<li>string: A string value is a collection of one or more characters put in single, double or triple quotes.</li>
+<li>list : A list object is an ordered collection of one or more data items, not necessarily of the same type, put in square brackets.</li>
+<li>tuple: A Tuple object is an ordered collection of one or more data items, not necessarily of the same type, put in parentheses.</li>
+</ul>
+<p><strong>Dictionary</strong></p>
+<p>A dictionary object is an unordered collection of data in a key:value pair form. A collection of such pairs is enclosed in curly brackets. For example: {1:“Sven”, 2:“Tom”, 3:“Eva”, 4: “Will”}</p>
+<p>You can check data types in python like this:</p>
+<pre class="r"><code>type(1234)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p1.png" />
+
+</div>
+<pre class="r"><code>type(55.50)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p2.png" />
+
+</div>
+<pre class="r"><code>type(6+4j)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p3.png" />
+
+</div>
+<pre class="r"><code>type(&quot;hello&quot;)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p4.png" />
+
+</div>
+<pre class="r"><code>type([1,2,3,4])</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p5.png" />
+
+</div>
+<pre class="r"><code>type((1,2,3,4))</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p6.png" />
+
+</div>
+<pre class="r"><code>type({1:&quot;one&quot;, 2:&quot;two&quot;, 3:&quot;three&quot;})</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p7.png" />
+
+</div>
+</div>
+<div id="type-conversion" class="section level1">
+<h1>4 Type Conversion</h1>
+<p>First of all let’s have a look at the data types of our dataframe <em>cars</em>:</p>
+<pre class="r"><code>cars.dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p8.png" />
+
+</div>
+</div>
+<div id="conversion-of-a-single-variable" class="section level1">
+<h1>4.1 Conversion of a single variable</h1>
+</div>
+<div id="float64-to-float32" class="section level1">
+<h1>4.1.1 float64 to float32</h1>
+<p>Conversions can be done within the same typ (here from float 64 to 32):</p>
+<pre class="r"><code>cars[&#39;mpg&#39;].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p9.png" />
+
+</div>
+<pre class="r"><code>cars[&#39;mpg&#39;] = cars[&#39;mpg&#39;].astype(&#39;float32&#39;)
+cars[&#39;mpg&#39;].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p10.png" />
+
+</div>
+</div>
+<div id="float-to-int" class="section level1">
+<h1>4.1.2 float to int</h1>
+<p>Conversions can also be made into any other data types:</p>
+<pre class="r"><code>cars[&#39;mpg&#39;].head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p11.png" />
+
+</div>
+<pre class="r"><code>cars[&#39;mpg&#39;] = cars[&#39;mpg&#39;].astype(&#39;int64&#39;)
+
+cars[&#39;mpg&#39;].head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p12.png" />
+
+</div>
+</div>
+<div id="object-to-numeric-float-and-int" class="section level1">
+<h1>4.1.3 object to numeric (float and int)</h1>
+<p>As you can see in the overview of the data types of the dataframe, the variable horsepower was loaded as an object. This should actually be an int. From this we now convert them into a numerical variable. astype () does not always work if, for example, there are stings under the objects. Here you can use the pandas function .to_numeric.</p>
+<pre class="r"><code>cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
+
+cars[&#39;horsepower&#39;].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p13.png" />
+
+</div>
+<pre class="r"><code>cars[&#39;horsepower&#39;].head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p14.png" />
+
+</div>
+<p>As previously mentioned, horsepower is actually an int. If we tried to convert it with the conventional syntax (“cars [‘horsepower’] = cars [‘horsepower’]. astype (‘int64’)”) we would get the following error message: “ValueError: Cannot convert non-finite values (NA or inf) to integer”. This is because the variable horsepower contains NA or inf … Since Python version 0.24 pandas has gained the ability to hold integer dtypes with missing values. Just write the first letter of int as capital letter:</p>
+<pre class="r"><code>cars[&#39;horsepower&#39;] = cars[&#39;horsepower&#39;].astype(&#39;Int64&#39;)
+
+cars[&#39;horsepower&#39;].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p15.png" />
+
+</div>
+<pre class="r"><code>cars[&#39;horsepower&#39;].head()</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p16.png" />
+
+</div>
+</div>
+<div id="conversion-of-multiple-variables" class="section level1">
+<h1>5 Conversion of multiple variables</h1>
+<pre class="r"><code>cars[[&#39;cylinders&#39;, &#39;weight&#39;]].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p17.png" />
+
+</div>
+<pre class="r"><code>cars[[&#39;cylinders&#39;, &#39;weight&#39;]] = cars[[&#39;cylinders&#39;, &#39;weight&#39;]].astype(&#39;int32&#39;)
+cars[[&#39;cylinders&#39;, &#39;weight&#39;]].dtypes</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p18.png" />
+
+</div>
+</div>
+<div id="conversion-of-date-and-time-variables" class="section level1">
+<h1>6 Conversion of date and time variables</h1>
+<pre class="r"><code>df = pd.DataFrame({&#39;year&#39;: [2015, 2016],
+                   &#39;month&#39;: [2, 3],
+                   &#39;day&#39;: [4, 5],
+                   &#39;hour&#39;: [9, 11],
+                   &#39;minutes&#39;: [22, 50],
+                   &#39;seconds&#39;: [12, 8]})
+
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p19.png" />
+
+</div>
+<pre class="r"><code>pd.to_datetime(df)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p20.png" />
+
+</div>
+<p>At least the year, the month and the day must be given here. One of the other three variables can be omitted at will. But month and day are not always numerical. The datetime library is ideal for these cases. Here are three examples of how differently formatted dates can be brought into a uniform format:</p>
+<pre class="r"><code>date_string1 = &#39;Wednesday, June 6, 2018&#39;
+date_string2 = &#39;6/6/18&#39;
+date_string3 = &#39;06-06-2018&#39;
+
+
+date_date1 = datetime.strptime(date_str1, &#39;%A, %B %d, %Y&#39;)
+date_date2 = datetime.strptime(date_str2, &#39;%m/%d/%y&#39;)
+date_date3 = datetime.strptime(date_str3, &#39;%m-%d-%Y&#39;)
+
+
+print(date_date1)
+print(date_date2)
+print(date_date3)</code></pre>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p21.png" />
+
+</div>
+<p>Here is a short list of the most common directives:</p>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25s1.png" />
+
+</div>
+<p>You can find the full list of directives <a href="https://strftime.org/">“here”</a></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<div class="figure">
+<img src="/post/2019-03-10-data-type-conversion_files/p25p.png" />
+
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
