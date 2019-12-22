@@ -43,7 +43,7 @@ For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](http
 import pandas as pd
 import numpy as np
 
-#for chapter XY
+#for chapter 6
 from datetime import datetime
 ```
 
