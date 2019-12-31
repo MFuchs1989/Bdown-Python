@@ -17,7 +17,7 @@
       <pubDate>Fri, 15 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/15/multinomial-logistic-regression/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Multinomial logistic regression with scikit-learn1 IntroductionIn my previous post, I explained how the logistic regression works. Short wrap up: we used a logistic regression to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes. And this is the content this publication is about.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Multinomial logistic regression with scikit-learn4 Multinomial Logit with the statsmodel library5 Conclusion1 IntroductionIn my previous post, I explained how the logistic regression works. Short wrap up: we used a logistic regression to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes.</description>
     </item>
     
     <item>

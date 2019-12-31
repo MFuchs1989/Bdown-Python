@@ -263,7 +263,6 @@ How to interpret the results exactly can be read ["here"](https://www.statsmodel
 
 #5 Conclusion
 
-
 This publication showed how the Multinomial Logistic Regression can be used to predict multiple classes. Furthermore, the use and interpretation of the probability information was discussed.
 
 

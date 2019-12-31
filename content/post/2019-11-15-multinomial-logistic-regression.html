@@ -17,6 +17,8 @@ tags:
 <li>1 Introduction</li>
 <li>2 Loading the libraries and the data</li>
 <li>3 Multinomial logistic regression with scikit-learn</li>
+<li>4 Multinomial Logit with the statsmodel library</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -39,7 +41,7 @@ from sklearn.metrics import accuracy_score
 from sklearn import preprocessing
 
 
-#for chapter XY
+#for chapter 4
 import statsmodels.api as sm
 
 #for readable figures
@@ -138,8 +140,58 @@ integerMapping</code></pre>
 <img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p11.png" />
 
 </div>
+<p>Now it’s time for our plausibility check whether the classes were predicted correctly. If the result of subtraction is 0, it was a correct estimate of the model.</p>
+<pre class="r"><code>df[&#39;check&#39;] = df[&#39;label_actual&#39;] - df[&#39;label_pred&#39;]
+df.head(7)</code></pre>
 <div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p.png" />
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p12.png" />
 
 </div>
+<p>For better orientation, we give the observations descriptive names and delete unnecessary columns.</p>
+<pre class="r"><code>df[&#39;correct_prediction?&#39;] = np.where(df[&#39;check&#39;] == 0, &#39;True&#39;, &#39;False&#39;)
+df = df.drop([&#39;label_pred&#39;, &#39;label_actual&#39;, &#39;check&#39;], axis=1)
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p13.png" />
+
+</div>
+<p>Now we can use the generated “values” to manually calculate the accuracy again.</p>
+<pre class="r"><code>true_predictions = df[(df[&quot;correct_prediction?&quot;] == &#39;True&#39;)].shape[0]
+false_predictions = df[(df[&quot;correct_prediction?&quot;] == &#39;False&#39;)].shape[0]
+total = df[&quot;correct_prediction?&quot;].shape[0]
+
+print(&#39;manual calculated Accuracy is:&#39;, (true_predictions / total * 100))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p14.png" />
+
+</div>
+<p>Let’s take finally a look at the probabilities of the mispredicted classes.</p>
+<pre class="r"><code>wrong_pred = df[(df[&quot;correct_prediction?&quot;] == &#39;False&#39;)]
+wrong_pred</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p15.png" />
+
+</div>
+<p>We see we were close to the right class both times.</p>
+</div>
+<div id="multinomial-logit-with-the-statsmodel-library" class="section level1">
+<h1>4 Multinomial Logit with the statsmodel library</h1>
+<p>To get the p-values of the model created above we have to use the statsmodel library again.</p>
+<pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
+y = iris[&#39;species&#39;]</code></pre>
+<pre class="r"><code>x = sm.add_constant(x, prepend = False)
+
+mnlogit_mod = sm.MNLogit(y, x)
+mnlogit_fit = mnlogit_mod.fit()
+
+print (mnlogit_fit.summary())</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p16.png" />
+
+</div>
+<p>How to interpret the results exactly can be read <a href="https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.MNLogit.html">“here”</a>.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This publication showed how the Multinomial Logistic Regression can be used to predict multiple classes. Furthermore, the use and interpretation of the probability information was discussed.</p>
 </div>
