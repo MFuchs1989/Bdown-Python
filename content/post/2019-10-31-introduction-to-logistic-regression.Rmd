@@ -315,7 +315,7 @@ With the regression model from the statsmodel library I would like to find out w
 
 ```{r, eval=F, echo=T}
 model = sm.Logit(trainY, new_train_x)
-model_fit = logit_model.fit()
+model_fit = model.fit()
 
 print(model_fit.summary())
 ```

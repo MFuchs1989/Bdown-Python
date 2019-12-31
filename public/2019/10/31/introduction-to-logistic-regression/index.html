@@ -315,7 +315,7 @@ new_test_x = testX[filtered_features]</code></pre>
 <h1>5 Logistic Regression with the statsmodel library</h1>
 <p>With the regression model from the statsmodel library I would like to find out which of the remaining variables are significant.</p>
 <pre class="r"><code>model = sm.Logit(trainY, new_train_x)
-model_fit = logit_model.fit()
+model_fit = model.fit()
 
 print(model_fit.summary())</code></pre>
 <div class="figure">
