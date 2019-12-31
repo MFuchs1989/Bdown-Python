@@ -1,0 +1,10 @@
+---
+title: Multinomial logistic regression
+author: Michael Fuchs
+date: '2019-11-15'
+slug: multinomial-logistic-regression
+categories:
+  - R
+tags:
+  - R Markdown
+---

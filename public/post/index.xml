@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 31 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 Nov 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Multinomial logistic regression</title>
+      <link>/2019/11/15/multinomial-logistic-regression/</link>
+      <pubDate>Fri, 15 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/11/15/multinomial-logistic-regression/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Introduction to Logistic Regression</title>
