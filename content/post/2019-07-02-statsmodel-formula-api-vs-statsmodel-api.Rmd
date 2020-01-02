@@ -41,10 +41,10 @@ For this post the dataset *House Sales in King County, USA* from the statistic p
 import pandas as pd
 import numpy as np
 
-#for chapter XY
+#for chapter 3
 import statsmodels.formula.api as smf
 
-#for chapter XY
+#for chapter 4
 import statsmodels.api as sm
 ```
 
