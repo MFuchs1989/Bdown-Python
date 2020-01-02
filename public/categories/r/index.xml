@@ -117,6 +117,16 @@ In statistics, outliers are data points that do not belong to any particular pop
     </item>
     
     <item>
+      <title>statsmodel.formula.api vs statsmodel.api</title>
+      <link>/2019/07/02/statsmodel-formula-api-vs-statsmodel-api/</link>
+      <pubDate>Tue, 02 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/07/02/statsmodel-formula-api-vs-statsmodel-api/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 The statsmodel.formula.api4 The statsmodel.api5 Conclusion1 IntroductionImage Source: “Statsmodels.org”
+In my last post “Introduction to regression analysis and predictions” I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).</description>
+    </item>
+    
+    <item>
       <title>Introduction to regression analysis and predictions</title>
       <link>/2019/06/28/introduction-to-regression-analysis-and-predictions/</link>
       <pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate>

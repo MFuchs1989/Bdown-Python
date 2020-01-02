@@ -1,0 +1,176 @@
+---
+title: statsmodel.formula.api vs statsmodel.api
+author: Michael Fuchs
+date: '2019-07-02'
+slug: statsmodel-formula-api-vs-statsmodel-api
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries and the data
++ 3 The statsmodel.formula.api
++ 4 The statsmodel.api
++ 5 Conclusion
+
+
+
+#1 Introduction
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28s1.png)
+
+Image Source: ["Statsmodels.org"](https://www.statsmodels.org/stable/index.html) 
+
+
+
+In my last post ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/) I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).
+
+
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
+
+
+
+#2 Loading the libraries and the data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+#for chapter XY
+import statsmodels.formula.api as smf
+
+#for chapter XY
+import statsmodels.api as sm
+```
+
+
+```{r, eval=F, echo=T}
+houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
+```
+
+
+As a simplified example, only the features 'sqft_living', 'bedrooms' & 'yr_built' and the target variable 'price' from the data set are used.
+
+```{r, eval=F, echo=T}
+mult_reg = houce_prices[['price', 'sqft_living', 'bedrooms', 'yr_built']]
+mult_reg.head()
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p1.png)
+
+
+
+#3 The statsmodel.formula.api
+
+
+As we know from the post ["Introduction to regression analysis and predictions (chapter 3.2, model3)"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), the predictors in the statsmodel formula api must be enumerated individually.
+
+
+```{r, eval=F, echo=T}
+SMF_model = smf.ols(formula='price~sqft_living+bedrooms+yr_built', data=mult_reg).fit()
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png)
+
+Let's print the summary:
+
+```{r, eval=F, echo=T}
+print(SMF_model.summary())
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png)
+
+
+OK, as in ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), we get an R^2^ of .54.
+
+```{r, eval=F, echo=T}
+print('R2: ', SMF_model.rsquared)
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png)
+
+
+But what is the difference between the statsmodel.formula.api and the statsmodel.api ??
+
+
+#4 The statsmodel.api
+
+
+The main difference between smf and sm is that the predictors no longer have to be enumerated individually. They can be assigned to an object as in the scikit-learn library. This can be extremely helpful, especially with large data sets that have many variables.
+
+
+```{r, eval=F, echo=T}
+x = mult_reg.drop('price', axis=1)
+y = mult_reg['price']
+
+SM_model = sm.OLS(y, x).fit()
+```
+
+
+Let's print the summary again:
+
+
+```{r, eval=F, echo=T}
+print(SM_model.summary())
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png)
+
+Mh wait a minute ... why do we get an R^2^ of .84 this time??
+
+
+The reason is that in statsmodel.formula.api a constant is automatically added to the data and an intercept in fitted. In statsmodels.api, you have to add a constant yourself! You can do that using the .add_constant() function.
+
+
+```{r, eval=F, echo=T}
+x_new = sm.add_constant(x)
+
+x_new.head()
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p6.png)
+
+Let's create our model again...
+
+```{r, eval=F, echo=T}
+SM_model_2 = sm.OLS(y, x_new).fit()
+```
+
+..and print the results:
+
+```{r, eval=F, echo=T}
+print(SM_model_2.summary())
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p7.png)
+
+
+Perfect, we get an R^2^ of .54 again.
+
+
+```{r, eval=F, echo=T}
+print('R2: ', SM_model_2.rsquared)
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p8.png)
+
+
+#5 Conclusion
+
+
+The main difference between the statsmodel.formula.api (smf) and the statsmodel.api (sm) was discussed in this post.
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>statsmodel.formula.api vs statsmodel.api - Michael Fuchs Python</title>
+<meta property="og:title" content="statsmodel.formula.api vs statsmodel.api - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">statsmodel.formula.api vs statsmodel.api</h1>
+
+    
+    <span class="article-date">2019-07-02</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 The statsmodel.formula.api</li>
+<li>4 The statsmodel.api</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28s1.png" />
+
+</div>
+<p>Image Source: <a href="https://www.statsmodels.org/stable/index.html">“Statsmodels.org”</a></p>
+<p>In my last post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a> I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+#for chapter XY
+import statsmodels.formula.api as smf
+
+#for chapter XY
+import statsmodels.api as sm</code></pre>
+<pre class="r"><code>houce_prices = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+<p>As a simplified example, only the features ‘sqft_living’, ‘bedrooms’ &amp; ‘yr_built’ and the target variable ‘price’ from the data set are used.</p>
+<pre class="r"><code>mult_reg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
+mult_reg.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p1.png" />
+
+</div>
+</div>
+<div id="the-statsmodel.formula.api" class="section level1">
+<h1>3 The statsmodel.formula.api</h1>
+<p>As we know from the post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions (chapter 3.2, model3)”</a>, the predictors in the statsmodel formula api must be enumerated individually.</p>
+<pre class="r"><code>SMF_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=mult_reg).fit()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png" />
+
+</div>
+<p>Let’s print the summary:</p>
+<pre class="r"><code>print(SMF_model.summary())</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png" />
+
+</div>
+<p>OK, as in <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a>, we get an R<sup>2</sup> of .54.</p>
+<pre class="r"><code>print(&#39;R2: &#39;, SMF_model.rsquared)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png" />
+
+</div>
+<p>But what is the difference between the statsmodel.formula.api and the statsmodel.api ??</p>
+</div>
+<div id="the-statsmodel.api" class="section level1">
+<h1>4 The statsmodel.api</h1>
+<p>The main difference between smf and sm is that the predictors no longer have to be enumerated individually. They can be assigned to an object as in the scikit-learn library. This can be extremely helpful, especially with large data sets that have many variables.</p>
+<pre class="r"><code>x = mult_reg.drop(&#39;price&#39;, axis=1)
+y = mult_reg[&#39;price&#39;]
+
+SM_model = sm.OLS(y, x).fit()</code></pre>
+<p>Let’s print the summary again:</p>
+<pre class="r"><code>print(SM_model.summary())</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png" />
+
+</div>
+<p>Mh wait a minute … why do we get an R<sup>2</sup> of .84 this time??</p>
+<p>The reason is that in statsmodel.formula.api a constant is automatically added to the data and an intercept in fitted. In statsmodels.api, you have to add a constant yourself! You can do that using the .add_constant() function.</p>
+<pre class="r"><code>x_new = sm.add_constant(x)
+
+x_new.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p6.png" />
+
+</div>
+<p>Let’s create our model again…</p>
+<pre class="r"><code>SM_model_2 = sm.OLS(y, x_new).fit()</code></pre>
+<p>..and print the results:</p>
+<pre class="r"><code>print(SM_model_2.summary())</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p7.png" />
+
+</div>
+<p>Perfect, we get an R<sup>2</sup> of .54 again.</p>
+<pre class="r"><code>print(&#39;R2: &#39;, SM_model_2.rsquared)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p8.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>The main difference between the statsmodel.formula.api (smf) and the statsmodel.api (sm) was discussed in this post.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
