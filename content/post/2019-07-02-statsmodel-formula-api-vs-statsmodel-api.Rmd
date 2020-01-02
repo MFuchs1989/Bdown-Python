@@ -75,7 +75,6 @@ As we know from the post ["Introduction to regression analysis and predictions (
 SMF_model = smf.ols(formula='price~sqft_living+bedrooms+yr_built', data=mult_reg).fit()
 ```
 
-![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png)
 
 Let's print the summary:
 
@@ -83,7 +82,7 @@ Let's print the summary:
 print(SMF_model.summary())
 ```
 
-![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png)
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png)
 
 
 OK, as in ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), we get an R^2^ of .54.
@@ -92,7 +91,7 @@ OK, as in ["Introduction to regression analysis and predictions"](https://michae
 print('R2: ', SMF_model.rsquared)
 ```
 
-![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png)
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png)
 
 
 But what is the difference between the statsmodel.formula.api and the statsmodel.api ??
@@ -119,9 +118,15 @@ Let's print the summary again:
 print(SM_model.summary())
 ```
 
-![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png)
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png)
 
 Mh wait a minute ... why do we get an R^2^ of .84 this time??
+
+```{r, eval=F, echo=T}
+print('R2: ', SM_model.rsquared)
+```
+
+![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png)
 
 
 The reason is that in statsmodel.formula.api a constant is automatically added to the data and an intercept in fitted. In statsmodels.api, you have to add a constant yourself! You can do that using the .add_constant() function.

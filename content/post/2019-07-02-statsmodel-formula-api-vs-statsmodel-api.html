@@ -54,20 +54,16 @@ mult_reg.head()</code></pre>
 <h1>3 The statsmodel.formula.api</h1>
 <p>As we know from the post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions (chapter 3.2, model3)”</a>, the predictors in the statsmodel formula api must be enumerated individually.</p>
 <pre class="r"><code>SMF_model = smf.ols(formula=&#39;price~sqft_living+bedrooms+yr_built&#39;, data=mult_reg).fit()</code></pre>
-<div class="figure">
-<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png" />
-
-</div>
 <p>Let’s print the summary:</p>
 <pre class="r"><code>print(SMF_model.summary())</code></pre>
 <div class="figure">
-<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png" />
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png" />
 
 </div>
 <p>OK, as in <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a>, we get an R<sup>2</sup> of .54.</p>
 <pre class="r"><code>print(&#39;R2: &#39;, SMF_model.rsquared)</code></pre>
 <div class="figure">
-<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png" />
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png" />
 
 </div>
 <p>But what is the difference between the statsmodel.formula.api and the statsmodel.api ??</p>
@@ -82,10 +78,15 @@ SM_model = sm.OLS(y, x).fit()</code></pre>
 <p>Let’s print the summary again:</p>
 <pre class="r"><code>print(SM_model.summary())</code></pre>
 <div class="figure">
-<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png" />
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png" />
 
 </div>
 <p>Mh wait a minute … why do we get an R<sup>2</sup> of .84 this time??</p>
+<pre class="r"><code>print(&#39;R2: &#39;, SM_model.rsquared)</code></pre>
+<div class="figure">
+<img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png" />
+
+</div>
 <p>The reason is that in statsmodel.formula.api a constant is automatically added to the data and an intercept in fitted. In statsmodels.api, you have to add a constant yourself! You can do that using the .add_constant() function.</p>
 <pre class="r"><code>x_new = sm.add_constant(x)
 
