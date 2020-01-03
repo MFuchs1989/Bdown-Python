@@ -1,0 +1,237 @@
+---
+title: Types of Encoder
+author: Michael Fuchs
+date: '2019-06-16'
+slug: types-of-encoder
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Encoder for predictor variables</li>
+<li>3.1 One Hot Encoder</li>
+<li>3.1.1 via scikit-learn</li>
+<li>3.1.2 via pandas</li>
+<li>3.2 Ordinal Encoder</li>
+<li>4 Encoder for target variables</li>
+<li>4.1 Label Binarizer</li>
+<li>4.2 Label Encoding</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29s1.png" />
+
+</div>
+<p>As mentioned in my previous <a href="https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/">“post”</a>, before you can start modeling, a lot of preparatory work is often necessary when preparing the data. In this post the most common encoding algorithms from the scikit-learn library will be presented and how they are to be used.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+#for chapter 3.1.1
+from sklearn.preprocessing import OneHotEncoder
+#for chapter 3.2
+from sklearn.preprocessing import OrdinalEncoder
+#for chapter 4.1
+from sklearn.preprocessing import LabelBinarizer
+#for chapter 4.2
+from sklearn.preprocessing import LabelEncoder</code></pre>
+<pre class="r"><code>df = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],
+                   &#39;Emotional_State&#39;: [&#39;good&#39;, &#39;bad&#39;, &#39;neutral&#39;, &#39;very_good&#39;, &#39;excellent&#39;],
+                   &#39;Age&#39;: [32,22,62,44, 54],
+                   &#39;Salary&#39;: [4700, 2400,4500,2500, 3500],
+                   &#39;Purchased&#39;: [&#39;Yes&#39;, &#39;No&#39;, &#39;No&#39;, &#39;Yes&#39;, &#39;No&#39;]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p1.png" />
+
+</div>
+</div>
+<div id="encoder-for-predictor-variables" class="section level1">
+<h1>3 Encoder for predictor variables</h1>
+</div>
+<div id="one-hot-encoder" class="section level1">
+<h1>3.1 One Hot Encoder</h1>
+<p>I already wrote about the functioning and creation of dummy variables in my post <a href="https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/">“The use of dummy variables”</a>. In scikit-learn this function is known as One Hot Encoding.</p>
+</div>
+<div id="via-scikit-learn" class="section level1">
+<h1>3.1.1 via scikit-learn</h1>
+<p>In a nutshell One Hot Encoder encode categorical features as a one-hot numeric array:</p>
+<pre class="r"><code>encoder = OneHotEncoder()
+
+OHE = encoder.fit_transform(df.Job.values.reshape(-1,1)).toarray()
+df_OH = pd.DataFrame(OHE, columns = [&quot;Job_&quot; + str(encoder.categories_[0][i]) 
+                                     for i in range(len(encoder.categories_[0]))])
+
+
+df_OH_final = pd.concat([df, df_OH], axis=1)
+df_OH_final</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p2.png" />
+
+</div>
+</div>
+<div id="via-pandas" class="section level1">
+<h1>3.1.2 via pandas</h1>
+<pre class="r"><code>df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p3.png" />
+
+</div>
+<p>You can also create dummy variables with the .get_dummies function from pandas. I think this method is more practical because it uses less syntax.</p>
+<pre class="r"><code>df_dummies = pd.get_dummies(df, prefix=[&#39;Job&#39;], columns=[&#39;Job&#39;])
+df_dummies</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p4.png" />
+
+</div>
+<p>How to use this function in data analysis is explained in detail in this <a href="https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/">“post”</a>.</p>
+</div>
+<div id="ordinal-encoder" class="section level1">
+<h1>3.2 Ordinal Encoder</h1>
+<p>In some cases, categorical variables follow a certain order (in our example here, this is the column ‘Emotional_State’).</p>
+<pre class="r"><code>df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p5.png" />
+
+</div>
+<p>Hereby One hot encoding would result in the loss of valuable information (ranking). Here you can see how the Ordinal Encoder from scikit-learn works:</p>
+<pre class="r"><code>encoder = OrdinalEncoder()
+
+ord_Emotional_State = encoder.fit_transform(df.Emotional_State.values.reshape(-1,1))
+ord_Emotional_State</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p6.png" />
+
+</div>
+<p>Now we insert the generated array into the existing dataframe:</p>
+<pre class="r"><code>df[&#39;ord_Emotional_State&#39;] = num_Emotional_State
+df[&#39;ord_Emotional_State&#39;] = df[&#39;ord_Emotional_State&#39;].astype(&#39;int64&#39;)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p7.png" />
+
+</div>
+<p>But in my opinion Ordinal Encoder from scikit-learn has a big disadvantage. The order is assigned arbitrarily:</p>
+<pre class="r"><code>df[[&#39;Emotional_State&#39;, &#39;ord_Emotional_State&#39;]].sort_values(by=&#39;ord_Emotional_State&#39;, ascending=False)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p8.png" />
+
+</div>
+<p>The assigned order makes little sense in reality. I would therefore suggest the following method. A sensible order is first defined and then mapped to the desired variable:</p>
+<pre class="r"><code>Emotional_State_dict = {&#39;bad&#39; : 0,
+                        &#39;neutral&#39; : 1,
+                        &#39;good&#39; : 2,
+                        &#39;very_good&#39; : 3,
+                        &#39;excellent&#39; : 4}
+
+df[&#39;Emotional_State_Ordinal&#39;] = df.Emotional_State.map(Emotional_State_dict)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p9.png" />
+
+</div>
+<p>Now we have a sensible order:</p>
+<pre class="r"><code>df[[&#39;Emotional_State&#39;, &#39;Emotional_State_Ordinal&#39;]].sort_values(by=&#39;Emotional_State_Ordinal&#39;, ascending=False)</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p10.png" />
+
+</div>
+</div>
+<div id="encoder-for-target-variables" class="section level1">
+<h1>4 Encoder for target variables</h1>
+<p>Before that, we looked at which encoding methods make sense for predictor variables. Now let’s look at which ones make sense for target variables.</p>
+</div>
+<div id="label-binarizer" class="section level1">
+<h1>4.1 Label Binarizer</h1>
+<p>Let’s have a look at the original dataframe.</p>
+<pre class="r"><code>df = df.drop([&#39;ord_Emotional_State&#39;, &#39;Emotional_State_Ordinal&#39;], axis=1)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p11.png" />
+
+</div>
+<p>The Label Binarizer function from scikit-learn is able to convert binary variables (variables with only two classes) into numerical values (0 &amp; 1).</p>
+<pre class="r"><code>encoder = LabelBinarizer()
+
+encoded_Purchased = encoder.fit_transform(df.Purchased.values.reshape(-1,1))
+encoded_Purchased</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p12.png" />
+
+</div>
+<p>Now we are integrating this array back into our data set:</p>
+<pre class="r"><code>df[&#39;Purchased_Encoded&#39;] = encoded_Purchased
+df[&#39;Purchased_Encoded&#39;] = df[&#39;Purchased_Encoded&#39;].astype(&#39;int64&#39;)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p13.png" />
+
+</div>
+</div>
+<div id="label-encoding" class="section level1">
+<h1>4.2 Label Encoding</h1>
+<p>Unfortunately the label binarizer is no longer sufficient to prepare the data for multiclass classification algorithms. Hereby we need Label Encoding. In the following example, the column ‘Job’ should be our target variable.</p>
+<pre class="r"><code>df = df[[&#39;Emotional_State&#39;, &#39;Salary&#39;, &#39;Purchased&#39;, &#39;Job&#39;]]
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p14.png" />
+
+</div>
+<p>The Label Encoder now generates a numerical value for each individual class within this categorical variable.</p>
+<pre class="r"><code>encoder = LabelEncoder()
+
+df[&#39;Job_Encoded&#39;] = encoder.fit_transform(df.Job)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p15.png" />
+
+</div>
+<p>The syntax below shows which class has been assigned which value.</p>
+<pre class="r"><code>target = df[&#39;Job&#39;]   
+integerEncoded = encoder.fit_transform(target)
+integerMapping=dict(zip(target,integerEncoded))
+integerMapping</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p16.png" />
+
+</div>
+<p>You can also use the .inverse_transform function to find out which classes have been assigned the values (here) 0 and 1.</p>
+<pre class="r"><code>encoder.inverse_transform([0, 1])</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p17.png" />
+
+</div>
+<p>Finally, it is shown how to apply the .inverse_transform function to an entire column and add it back to the original dataframe.</p>
+<pre class="r"><code>target_encoded = df[&#39;Job_Encoded&#39;]
+invers_transformed = encoder.inverse_transform(target_encoded)
+df[&#39;Job_Invers_Transformed&#39;] = invers_transformed
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-06-16-types-of-encoder_files/p29p18.png" />
+
+</div>
+<p>I would not recommend the use of this encoder for predictor variables, because the assigned order (0 &lt; 1 &lt; 2 &lt; 3 …) could have an incorrect influence on the model. Use One Hot Encoding instead.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>Here is a brief overview of which encoding methods are available and when to use them:</p>
+<ul>
+<li><p>One Hot Encoder: Generates additional features by transforming categorical variables and converts them into numerical values.</p></li>
+<li><p>Ordinal Encoder: Transforms categorical variables into numerical ones and puts them in a meaningful order.</p></li>
+<li><p>Label Binarizer: Transforms a categorical target variable into a binary numeric value.</p></li>
+<li><p>Label Encoding: Transforms the classes of a multiclass categorical target variable into a numeric value.</p></li>
+</ul>
+</div>
