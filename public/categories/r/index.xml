@@ -38,7 +38,7 @@
       <description>Table of Content1 Introduction2 Roadmap for Regression Analysis3 Conclusion1 IntroductionIn my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
 2 Roadmap for Regression AnalysisHere are the links to the individual topics.
 Data pre-processing:
-“Handling Missing Values”“Dealing with outliers”“The use of dummy variables”“Feature Scaling”Feature Selection:</description>
+“Handling Missing Values”“Dealing with outliers”“Feature Encoding”“Feature Scaling”Feature Selection:</description>
     </item>
     
     <item>

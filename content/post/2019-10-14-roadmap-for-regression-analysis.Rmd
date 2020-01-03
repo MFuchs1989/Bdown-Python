@@ -38,7 +38,7 @@ Here are the links to the individual topics.
 
 + ["Handling Missing Values"](https://michael-fuchs-python.netlify.com/2019/03/18/dealing-with-missing-values/)
 + ["Dealing with outliers"](https://michael-fuchs-python.netlify.com/2019/08/20/dealing-with-outliers/)
-+ ["The use of dummy variables"](https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/)
++ ["Feature Encoding"](https://michael-fuchs-python.netlify.com/2019/06/16/types-of-encoder/)
 + ["Feature Scaling"](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/)
 
 
