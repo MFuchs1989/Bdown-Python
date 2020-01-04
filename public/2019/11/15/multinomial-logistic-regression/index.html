@@ -81,6 +81,9 @@
 <li>1 Introduction</li>
 <li>2 Loading the libraries and the data</li>
 <li>3 Multinomial logistic regression with scikit-learn</li>
+<li>3.1 Fit the model</li>
+<li>3.2 Model validation</li>
+<li>3.3 Calculated probabilities</li>
 <li>4 Multinomial Logit with the statsmodel library</li>
 <li>5 Conclusion</li>
 </ul>
@@ -101,8 +104,14 @@ import pandas as pd
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from sklearn import preprocessing
+
+#for chapter 3.2
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 
 #for chapter 4
@@ -123,10 +132,16 @@ pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 <pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
 y = iris[&#39;species&#39;]
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="fit-the-model" class="section level1">
+<h1>3.1 Fit the model</h1>
 <p>Here comes the Multinomial Logistic Regression:</p>
 <pre class="r"><code>log_reg = LogisticRegression(solver=&#39;newton-cg&#39;, multi_class=&#39;multinomial&#39;)
 log_reg.fit(trainX, trainY)
 y_pred = log_reg.predict(testX)</code></pre>
+</div>
+<div id="model-validation" class="section level1">
+<h1>3.2 Model validation</h1>
 <p>Let’s print the accuracy and error rate:</p>
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))
 print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY, y_pred)))</code></pre>
@@ -134,6 +149,36 @@ print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY, y_pred)))</c
 <img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p2.png" />
 
 </div>
+<p>Let’s have a look at the scores from cross validation:</p>
+<pre class="r"><code>clf = LogisticRegression(solver=&#39;newton-cg&#39;, multi_class=&#39;multinomial&#39;)
+scores = cross_val_score(clf, trainX, trainY, cv=5)
+scores</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z1.png" />
+
+</div>
+<pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std() * 2))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z2.png" />
+
+</div>
+<p>Let’s have a look at the confusion matrix:</p>
+<pre class="r"><code>confusion_matrix = confusion_matrix(testY, y_pred)
+print(confusion_matrix)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z3.png" />
+
+</div>
+<p>If you have many variables, it makes sense to plot the confusion matrix:</p>
+<pre class="r"><code>plt.matshow(confusion_matrix, cmap=plt.cm.gray)
+plt.show()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png" />
+
+</div>
+</div>
+<div id="calculated-probabilities" class="section level1">
+<h1>3.3 Calculated probabilities</h1>
 <p>We also have the opportunity to get the probabilities of the predicted classes:</p>
 <pre class="r"><code>probability = log_reg.predict_proba(testX)
 probability</code></pre>

@@ -14,6 +14,9 @@ tags:
 + 1 Introduction
 + 2 Loading the libraries and the data
 + 3 Multinomial logistic regression with scikit-learn
++ 3.1 Fit the model
++ 3.2 Model validation
++ 3.3 Calculated probabilities
 + 4 Multinomial Logit with the statsmodel library
 + 5 Conclusion
 
@@ -39,8 +42,14 @@ import pandas as pd
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from sklearn import preprocessing
+
+#for chapter 3.2
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 
 #for chapter 4
@@ -76,6 +85,8 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
 
+#3.1 Fit the model
+
 Here comes the Multinomial Logistic Regression: 
 
 ```{r, eval=F, echo=T}
@@ -83,6 +94,9 @@ log_reg = LogisticRegression(solver='newton-cg', multi_class='multinomial')
 log_reg.fit(trainX, trainY)
 y_pred = log_reg.predict(testX)
 ```
+
+
+#3.2 Model validation
 
 
 Let's print the accuracy and error rate:
@@ -94,6 +108,42 @@ print('Error rate: {:.2f}'.format(1 - accuracy_score(testY, y_pred)))
 
 ![](/post/2019-11-15-multinomial-logistic-regression_files/p27p2.png)
 
+Let's have a look at the scores from cross validation:
+
+```{r, eval=F, echo=T}
+clf = LogisticRegression(solver='newton-cg', multi_class='multinomial')
+scores = cross_val_score(clf, trainX, trainY, cv=5)
+scores
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z1.png)
+
+```{r, eval=F, echo=T}
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z2.png)
+
+Let's have a look at the confusion matrix:
+
+```{r, eval=F, echo=T}
+confusion_matrix = confusion_matrix(testY, y_pred)
+print(confusion_matrix)
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z3.png)
+
+If you have many variables, it makes sense to plot the confusion matrix:
+
+```{r, eval=F, echo=T}
+plt.matshow(confusion_matrix, cmap=plt.cm.gray)
+plt.show()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png)
+
+
+#3.3 Calculated probabilities
 
 
 We also have the opportunity to get the probabilities of the predicted classes:
