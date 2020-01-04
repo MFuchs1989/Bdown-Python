@@ -32,6 +32,7 @@ tags:
 <li>6.3.1 Confusion matrix</li>
 <li>6.3.2 Further metrics</li>
 <li>6.3.3 ROC / AUC</li>
+<li>6.3.4 Cross Validation</li>
 <li>7 Conclusion</li>
 <li>8 Description of the dataframe</li>
 </ul>
@@ -76,7 +77,8 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
-from sklearn.metrics import roc_curve</code></pre>
+from sklearn.metrics import roc_curve
+from sklearn.model_selection import cross_val_score</code></pre>
 <pre class="r"><code>bank = pd.read_csv(&quot;bank.csv&quot;, sep = &#39;;&#39;)
 bank = bank.rename(columns={&#39;y&#39;:&#39;final_subscribed&#39;})
 bank.head().T</code></pre>
@@ -396,9 +398,9 @@ plt.xlabel(&#39;Predicted label&#39;)</code></pre>
 <p>Based on the values from the confusion matrix, the following metrics can be calculated:</p>
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY_final, y_pred)))
 print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY_final, y_pred)))
-print(&#39;Precision: {:.2f}&#39;.format(metrics.precision_score(testY_final, y_pred)))
-print(&#39;Recall: {:.2f}&#39;.format(metrics.recall_score(testY_final, y_pred)))
-print(&#39;f1_score: {:.2f}&#39;.format(metrics.f1_score(testY_final, y_pred)))</code></pre>
+print(&#39;Precision: {:.2f}&#39;.format(precision_score(testY_final, y_pred)))
+print(&#39;Recall: {:.2f}&#39;.format(recall_score(testY_final, y_pred)))
+print(&#39;f1_score: {:.2f}&#39;.format(f1_score(testY_final, y_pred)))</code></pre>
 <div class="figure">
 <img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p18.png" />
 
@@ -433,12 +435,35 @@ plt.show()</code></pre>
 <p>The receiver operating characteristic (ROC) curve is another common tool used with binary classifiers. It shows the tradeoff between sensitivity and specificity. The dotted line represents the ROC curve of a purely random classifier; a good classifier stays as far away from that line as possible. This means that the top left corner of the chart is the “ideal” point - a false positive rate of zero and a true positive rate of one. This is not very realistic, but it means that a larger area under the curve (AUC) is usually better.</p>
 <p>We can calculate AUC as follows:</p>
 <pre class="r"><code>y_pred_proba = logreg.predict_proba(testX_final)[::,1]
-metrics.roc_auc_score(testY_final, y_pred_proba)</code></pre>
+roc_auc_score(testY_final, y_pred_proba)</code></pre>
 <div class="figure">
 <img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p22.png" />
 
 </div>
 <p>AUC score 1 represents perfect classifier, and 0.5 represents a worthless classifier.</p>
+</div>
+<div id="cross-validation" class="section level1">
+<h1>6.3.4 Cross Validation</h1>
+<p>Another option for model evaluation is the use of Cross Validation (CV).</p>
+<p>With CV we try to validate the stability of the machine learning model-how well it would generalize to new data. It needs to be sure that the model has got most of the patterns from the data correct, and its not picking up too much on the noise, or in other words its low on bias and variance.</p>
+<p>Here is an overview how Cross Valitation works:</p>
+<div class="figure">
+<img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z1.png" />
+
+</div>
+<pre class="r"><code>clf = LogisticRegression()
+scores = cross_val_score(clf, trainX_final, trainY_final, cv=5)
+scores</code></pre>
+<div class="figure">
+<img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z2.png" />
+
+</div>
+<p>We see that the accuracy values do not have a high variance. That’s good !</p>
+<pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std() * 2))</code></pre>
+<div class="figure">
+<img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z3.png" />
+
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>

@@ -30,6 +30,7 @@ tags:
 + 6.3.1 Confusion matrix
 + 6.3.2 Further metrics
 + 6.3.3 ROC / AUC
++ 6.3.4 Cross Validation
 + 7 Conclusion
 + 8 Description of the dataframe
 
@@ -80,6 +81,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
+from sklearn.model_selection import cross_val_score
 ```
 
 
@@ -509,9 +511,9 @@ Based on the values from the confusion matrix, the following metrics can be calc
 ```{r, eval=F, echo=T}
 print('Accuracy: {:.2f}'.format(accuracy_score(testY_final, y_pred)))
 print('Error rate: {:.2f}'.format(1 - accuracy_score(testY_final, y_pred)))
-print('Precision: {:.2f}'.format(metrics.precision_score(testY_final, y_pred)))
-print('Recall: {:.2f}'.format(metrics.recall_score(testY_final, y_pred)))
-print('f1_score: {:.2f}'.format(metrics.f1_score(testY_final, y_pred)))
+print('Precision: {:.2f}'.format(precision_score(testY_final, y_pred)))
+print('Recall: {:.2f}'.format(recall_score(testY_final, y_pred)))
+print('f1_score: {:.2f}'.format(f1_score(testY_final, y_pred)))
 ```
 
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p18.png)
@@ -557,7 +559,7 @@ We can calculate AUC as follows:
 
 ```{r, eval=F, echo=T}
 y_pred_proba = logreg.predict_proba(testX_final)[::,1]
-metrics.roc_auc_score(testY_final, y_pred_proba)
+roc_auc_score(testY_final, y_pred_proba)
 ```
 
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p22.png)
@@ -565,6 +567,35 @@ metrics.roc_auc_score(testY_final, y_pred_proba)
 
 AUC score 1 represents perfect classifier, and 0.5 represents a worthless classifier.
 
+
+#6.3.4 Cross Validation
+
+Another option for model evaluation is the use of Cross Validation (CV).
+
+With CV we try to validate the stability of the machine learning model-how well it would generalize to new data. It needs to be sure that the model has got most of the patterns from the data correct, and its not picking up too much on the noise, or in other words its low on bias and variance.
+
+Here is an overview how Cross Valitation works:
+
+
+![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z1.png)
+
+
+```{r, eval=F, echo=T}
+clf = LogisticRegression()
+scores = cross_val_score(clf, trainX_final, trainY_final, cv=5)
+scores
+```
+
+![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z2.png)
+
+
+We see that the accuracy values do not have a high variance. That's good !
+
+```{r, eval=F, echo=T}
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+```
+
+![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z3.png)
 
 
 
