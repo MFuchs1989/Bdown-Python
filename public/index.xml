@@ -6,10 +6,20 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 30 Nov 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Decision Trees</title>
+      <link>/2019/11/30/introduction-to-decision-trees/</link>
+      <pubDate>Sat, 30 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/11/30/introduction-to-decision-trees/</guid>
+      <description>Table of Content1 Introduction2 Background information on decision trees3 Loading the libraries and the data4 Decision Trees with scikit-learn5 Visualization of the decision tree6 Model evaluation7 Model improvement7.1 Hyperparameter optimization via Grid Search8 Conclusion1 IntroductionAfter “Multinomial logistic regression” we come to a further multiple class classifier: Decision Trees.
+For this post the dataset Iris from the statistic platform “Kaggle” was used.</description>
+    </item>
     
     <item>
       <title>Multinomial logistic regression</title>
