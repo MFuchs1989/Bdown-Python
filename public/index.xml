@@ -31,6 +31,15 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
     </item>
     
     <item>
+      <title>Introduction to Support Vector Machines</title>
+      <link>/2019/11/08/introduction-to-support-vector-machines/</link>
+      <pubDate>Fri, 08 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/11/08/introduction-to-support-vector-machines/</guid>
+      <description>Table of Content1 Introduction2 Background information on Support Vector Machines3 Loading the libraries and the data4 Data pre-processing5 SVM with scikit-learn5.1 Model Fitting5.2 Model evaluation6 Kernel SVM with Scikit-Learn6.1 Polynomial Kernel6.2 Gaussian Kernel6.3 Sigmoid Kernel7 Hyperparameter optimization via Grid Search8 Conclusion1 IntroductionIn addition to “Logistic Regression”, there is another very well-known algorithm for binary classifications: the Support Vector Machine (SVM).</description>
+    </item>
+    
+    <item>
       <title>Introduction to Logistic Regression</title>
       <link>/2019/10/31/introduction-to-logistic-regression/</link>
       <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>

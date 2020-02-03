@@ -1,0 +1,263 @@
+---
+title: Introduction to Support Vector Machines
+author: Michael Fuchs
+date: '2019-11-08'
+slug: introduction-to-support-vector-machines
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Background information on Support Vector Machines</li>
+<li>3 Loading the libraries and the data</li>
+<li>4 Data pre-processing</li>
+<li>5 SVM with scikit-learn</li>
+<li>5.1 Model Fitting</li>
+<li>5.2 Model evaluation</li>
+<li>6 Kernel SVM with Scikit-Learn</li>
+<li>6.1 Polynomial Kernel</li>
+<li>6.2 Gaussian Kernel</li>
+<li>6.3 Sigmoid Kernel</li>
+<li>7 Hyperparameter optimization via Grid Search</li>
+<li>8 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In addition to <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a>, there is another very well-known algorithm for binary classifications: the Support Vector Machine (SVM).</p>
+<p>For this post the dataset <em>Breast Cancer Wisconsin (Diagnostic)</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU" class="uri">https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU</a>.</p>
+</div>
+<div id="background-information-on-support-vector-machines" class="section level1">
+<h1>2 Background information on Support Vector Machines</h1>
+<p><strong>What is Support Vector Machine?</strong></p>
+<p>“Support Vector Machine” (SVM) is a supervised machine learning algorithm which can be used for both classification or regression problems.</p>
+<p>However, SVM is mostly used in classification problems.</p>
+<p>Like logistic regression, SVM is one of the binary classification algorithms. However, both LogReg and SVM can also be used for multiple classification problems. This will be dealt with in a separate post.</p>
+<p>The core idea of SVM is to find a maximum marginal hyperplane (MMH) that best divides the dataset into classes (see picture below).</p>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p1.png" />
+
+</div>
+<p><em>Support Vectors</em></p>
+<p>The support vectors are the data points, which are closest to the so called hyperplane. These points will define the separating line better by calculating margins.</p>
+<p><em>Hyperplane</em></p>
+<p>A hyperplane is a decision plane which separates between a set of objects having different class memberships.</p>
+<p><em>Margin</em></p>
+<p>The margin is the gap between the two lines on the closest class points. This is calculated as the perpendicular distance from the line to support vectors or closest points. If the margin is larger in between the classes, then it is considered a good margin, a smaller margin is a bad margin.</p>
+<p>Some problems can’t be solved using linear hyperplane, as shown in the following figure:</p>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p2.png" />
+
+</div>
+<p>In such situation, SVM uses a kernel trick to transform the input space to a higher dimensional space as shown here:</p>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p3.png" />
+
+</div>
+<p>Jiapu Zhang provides <a href="https://www.longdom.org/open-access/a-complete-list-of-kernels-used-in-support-vector-machines-2167-0501-1000195.pdf">“here”</a> a complete list of kernels used in SVMs.</p>
+<p>There are several pos and cons for the use of Support Vector Machines:</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>SVM works relatively well when there is clear margin of separation between classes.</li>
+<li>Effective in high dimensional spaces.</li>
+<li>Still effective in cases where number of dimensions is greater than the number of samples.</li>
+<li>Uses a subset of training points in the decision function (called support vectors), so it is also memory efficient.</li>
+<li>Versatile: different Kernel functions can be specified for the decision function. Common kernels are provided, but it is also possible to specify custom kernels.</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>SVM algorithm is not suitable for large data sets.</li>
+<li>SVM does not perform very well, when the data set has more noise i.e. target classes are overlapping.</li>
+<li>If the number of features is much greater than the number of samples, avoid over-fitting in choosing Kernel functions and regularization term is crucial.</li>
+<li>SVMs do not directly provide probability estimates, these are calculated using an expensive five-fold cross-validation.</li>
+</ul>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>3 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+#Chapter 5.1
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+#Chapter 5.2
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+from sklearn.model_selection import cross_val_score
+#Chapter 7
+from sklearn.model_selection import GridSearchCV</code></pre>
+<pre class="r"><code>cancer = pd.read_csv(&quot;path/to/file/breast_cancer.csv&quot;)</code></pre>
+<pre class="r"><code>cancer.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p4.png" />
+
+</div>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<p>The target variable is then converted into numerical values.</p>
+<pre class="r"><code>vals_to_replace = {&#39;B&#39;:&#39;0&#39;, &#39;M&#39;:&#39;1&#39;}
+cancer[&#39;diagnosis&#39;] = cancer[&#39;diagnosis&#39;].map(vals_to_replace)
+cancer[&#39;diagnosis&#39;] = cancer.diagnosis.astype(&#39;int64&#39;)
+cancer.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p5.png" />
+
+</div>
+</div>
+<div id="svm-with-scikit-learn" class="section level1">
+<h1>5 SVM with scikit-learn</h1>
+</div>
+<div id="model-fitting" class="section level1">
+<h1>5.1 Model Fitting</h1>
+<p>In the case of a simple Support Vector Machine we simply set this parameter as “linear” since simple SVMs can only classify linearly separable data. We will see non-linear kernels in chapter 6.</p>
+<p>The variables ‘id’ and ‘Unnamed: 32’ are excluded because the ID is not profitable and Unnamed: 32 only contains missing values.</p>
+<pre class="r"><code>x = cancer.drop([&#39;id&#39;, &#39;diagnosis&#39;, &#39;Unnamed: 32&#39;], axis=1)
+y = cancer[&#39;diagnosis&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+
+clf = SVC(kernel=&#39;linear&#39;)
+clf.fit(trainX, trainY)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p6.png" />
+
+</div>
+<pre class="r"><code>y_pred = clf.predict(testX)</code></pre>
+</div>
+<div id="model-evaluation" class="section level1">
+<h1>5.2 Model evaluation</h1>
+<p>For the model evaluation we start again with the confusion matrix</p>
+<pre class="r"><code>confusion_matrix = confusion_matrix(testY, y_pred)
+print(confusion_matrix)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p7.png" />
+
+</div>
+<p>Some more metrics follow:</p>
+<pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))
+print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY, y_pred)))
+print(&#39;Precision: {:.2f}&#39;.format(precision_score(testY, y_pred)))
+print(&#39;Recall: {:.2f}&#39;.format(recall_score(testY, y_pred)))
+print(&#39;f1_score: {:.2f}&#39;.format(f1_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p8.png" />
+
+</div>
+<p>Okay, let’s see what the cross validation results for.</p>
+<pre class="r"><code>clf = SVC(kernel=&#39;linear&#39;)
+scores = cross_val_score(clf, trainX, trainY, cv=5)
+scores</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p9.png" />
+
+</div>
+<pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std() * 2))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p10.png" />
+
+</div>
+<p>Using cross validation, we achieved an accuracy rate of 0.96. Previously it was only 0.90. Before we get into hyper-parameter optimization, let’s see if using a different kernel can improve the accuracy of the classification.</p>
+</div>
+<div id="kernel-svm-with-scikit-learn" class="section level1">
+<h1>6 Kernel SVM with Scikit-Learn</h1>
+</div>
+<div id="polynomial-kernel" class="section level1">
+<h1>6.1 Polynomial Kernel</h1>
+<p>In the case of polynomial kernel, you also have to pass a value for the degree parameter of the SVM class. This basically is the degree of the polynomial. Take a look at how we can use a polynomial kernel to implement kernel SVM. Finally, the accuracy rate is calculated again.</p>
+<pre class="r"><code>clf_poly = SVC(kernel=&#39;poly&#39;, degree=8)
+clf_poly.fit(trainX, trainY)
+y_pred = clf_poly.predict(testX)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p11.png" />
+
+</div>
+<p>At 0.88 we are slightly worse than with the linear kernel.</p>
+</div>
+<div id="gaussian-kernel" class="section level1">
+<h1>6.2 Gaussian Kernel</h1>
+<p>If the gaussian kernel is to be used, “rbf” must be entered as kernel:</p>
+<pre class="r"><code>clf_rbf = SVC(kernel=&#39;rbf&#39;)
+clf_rbf.fit(trainX, trainY)
+y_pred = clf_rbf.predict(testX)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p12.png" />
+
+</div>
+<p>Here the accuracy rate is slightly higher but still lower than of the linear kernel</p>
+</div>
+<div id="sigmoid-kernel" class="section level1">
+<h1>6.3 Sigmoid Kernel</h1>
+<p>If the sigmoid kernel is to be used, “sigmoid” must be entered as kernel:</p>
+<pre class="r"><code>clf_sigmoid = SVC(kernel=&#39;sigmoid&#39;)
+clf_sigmoid.fit(trainX, trainY)
+y_pred = clf_sigmoid.predict(testX)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p13.png" />
+
+</div>
+<p>The accuracy rate is very bad.</p>
+</div>
+<div id="hyperparameter-optimization-via-grid-search" class="section level1">
+<h1>7 Hyperparameter optimization via Grid Search</h1>
+<p>Since the use of the linear kernel has yielded the best results so far, an attempt is made to optimize the hypter parameters in this kernel.</p>
+<pre class="r"><code>param_grid = {&#39;C&#39;: [0.1, 1, 10, 100, 1000],  
+              &#39;gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001], 
+              &#39;kernel&#39;: [&#39;linear&#39;]} </code></pre>
+<pre class="r"><code>grid = GridSearchCV(SVC(), param_grid, cv = 5, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY) </code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p14.png" />
+
+</div>
+<p>With best_params_ we get the best fitting values:</p>
+<pre class="r"><code>print(grid.best_params_) </code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p15.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_estimator_) </code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p16.png" />
+
+</div>
+<p>We can also use the model trained with GridSearch (here “grid”) to predict the test data set:</p>
+<pre class="r"><code>grid_predictions = grid.predict(testX) </code></pre>
+<p>Now let’s see if the optimization has achieved anything:</p>
+<pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p17.png" />
+
+</div>
+<p>Yeah, accuracy of 0.96 !</p>
+<p>With GridSearch we can also compare all available kernels with corresponding hyper parameters. Use this syntax to do so:</p>
+<pre class="r"><code>param_grid_full = [
+  {&#39;kernel&#39;: [&#39;linear&#39;], &#39;C&#39;: [1, 10, 100, 1000]},
+  {&#39;kernel&#39;: [&#39;rbf&#39;], &#39;C&#39;: [1, 10, 100, 1000], &#39;gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001]},
+  {&#39;kernel&#39;: [&#39;sigmoid&#39;], &#39;C&#39;: [1, 10, 100, 1000], &#39;gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001]},
+  {&#39;kernel&#39;: [&#39;poly&#39;], &#39;C&#39;: [1, 10, 100, 1000], &#39;gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001], &#39;degree&#39;: [2, 4, 5, 6, 7, 8, 10]},
+ ]
+
+grid_full = GridSearchCV(SVC(), param_grid_full, cv = 3, scoring=&#39;accuracy&#39;) 
+grid_full.fit(trainX, trainY) </code></pre>
+<p>It should be noted that this is very computationally intensive.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>This post showed how to use Support Vector Machines with different kernels and how to measure their performance. Furthermore, the improvement of the models was discussed.</p>
+</div>
