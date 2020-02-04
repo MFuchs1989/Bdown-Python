@@ -25,7 +25,7 @@ tags:
 
 ![](/post/2019-11-15-multinomial-logistic-regression_files/p27s1.png)
 
-In my previous post, I explained how the logistic regression works. Short wrap up: we used a logistic regression to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes. And this is the content this publication is about.
+In my previous posts, I explained how ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) and ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/) works. Short wrap up: we used a logistic regression or a support vector machine to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes. And this is the content this publication is about.
 
 
 For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
