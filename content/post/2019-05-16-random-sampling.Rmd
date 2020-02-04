@@ -17,6 +17,7 @@ tags:
 + 3 Split-Methods
 + 3.1 Customer Churn Model
 + 3.2 Train-Test Split via scikit-learn
++ 4 Train-Test-Validation Split
 + 5 Conclusion
 
 
