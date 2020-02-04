@@ -61,6 +61,7 @@ tags:
 <img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p3.png" />
 
 </div>
+<p>Now the two classes can be easily separated from each other again.</p>
 <p>Jiapu Zhang provides <a href="https://www.longdom.org/open-access/a-complete-list-of-kernels-used-in-support-vector-machines-2167-0501-1000195.pdf">“here”</a> a complete list of kernels used in SVMs.</p>
 <p>There are several pos and cons for the use of Support Vector Machines:</p>
 <p><strong>Pros:</strong></p>
@@ -84,18 +85,18 @@ tags:
 <pre class="r"><code>import pandas as pd
 import numpy as np
 
-#Chapter 5.1
+# for chapter 5.1
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
-#Chapter 5.2
+# for chapter 5.2
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.model_selection import cross_val_score
-#Chapter 7
+# for chapter 7
 from sklearn.model_selection import GridSearchCV</code></pre>
 <pre class="r"><code>cancer = pd.read_csv(&quot;path/to/file/breast_cancer.csv&quot;)</code></pre>
 <pre class="r"><code>cancer.head()</code></pre>
@@ -103,6 +104,7 @@ from sklearn.model_selection import GridSearchCV</code></pre>
 <img src="/post/2019-11-08-introduction-to-support-vector-machines_files/p31p4.png" />
 
 </div>
+<p>The data set used contains 31 columns which contain information about tumors in the tissue. The column ‘diagnosis’ describes whether these tumors are benign (B) or malignant (M). Let’s try to create a classification model.</p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4 Data pre-processing</h1>
