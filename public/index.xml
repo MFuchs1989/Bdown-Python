@@ -189,7 +189,7 @@ For this post the dataset flight from the statistic platform “Kaggle” was us
       <pubDate>Thu, 16 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/05/16/random-sampling/</guid>
-      <description>Table of Content1 Introduction2 Preparation3 Method 1 - Customer Churn Model4 Method 2 - sklearn5 Conclusion1 IntroductionSplitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model.</description>
+      <description>Table of Content1 Introduction2 Preparation3 Split-Methods3.1 Customer Churn Model3.2 Train-Test Split via scikit-learn5 Conclusion1 IntroductionSplitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model.</description>
     </item>
     
     <item>

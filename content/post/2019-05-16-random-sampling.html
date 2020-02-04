@@ -16,8 +16,9 @@ tags:
 <ul>
 <li>1 Introduction</li>
 <li>2 Preparation</li>
-<li>3 Method 1 - Customer Churn Model</li>
-<li>4 Method 2 - sklearn</li>
+<li>3 Split-Methods</li>
+<li>3.1 Customer Churn Model</li>
+<li>3.2 Train-Test Split via scikit-learn</li>
 <li>5 Conclusion</li>
 </ul>
 </div>
@@ -40,8 +41,11 @@ sampling.shape</code></pre>
 
 </div>
 </div>
-<div id="method-1---customer-churn-model" class="section level1">
-<h1>3 Method 1 - Customer Churn Model</h1>
+<div id="split-methods" class="section level1">
+<h1>3 Split-Methods</h1>
+</div>
+<div id="customer-churn-model" class="section level1">
+<h1>3.1 Customer Churn Model</h1>
 <p>The division took place here in a ratio of 80:20.</p>
 <pre class="r"><code>a=np.random.randn(len(sampling))
 check=a&lt;0.8
@@ -58,8 +62,8 @@ testing=sampling[~check]</code></pre>
 
 </div>
 </div>
-<div id="method-2---sklearn" class="section level1">
-<h1>4 Method 2 - sklearn</h1>
+<div id="train-test-split-via-scikit-learn" class="section level1">
+<h1>3.2 Train-Test Split via scikit-learn</h1>
 <pre class="r"><code>from sklearn.model_selection import train_test_split
 train, test = train_test_split(sampling, test_size = 0.2)</code></pre>
 <pre class="r"><code>len(train)</code></pre>
@@ -70,6 +74,39 @@ train, test = train_test_split(sampling, test_size = 0.2)</code></pre>
 <pre class="r"><code>len(test)</code></pre>
 <div class="figure">
 <img src="/post/2019-05-16-random-sampling_files/p10p5.png" />
+
+</div>
+</div>
+<div id="train-test-validation-split" class="section level1">
+<h1>4 Train-Test-Validation Split</h1>
+<p>Particular in the deep learning area (for example artificial neural networks), it is necessary to hold back part of the data set for validation purposes in addition to the training and test part.We can also do this with the train test split function shown above from scikit-learn. You only have to use this function twice in a row and change the percentage of the division. Let’s see here with the self-generated sample data set:</p>
+<pre class="r"><code>df = pd.DataFrame(np.random.randint(0,100,size=(10000, 4)), columns=[&#39;Var1&#39;, &#39;Var2&#39;, &#39;Var3&#39;, &#39;Target_Var&#39;])
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-05-16-random-sampling_files/p10p6.png" />
+
+</div>
+<pre class="r"><code>df.shape</code></pre>
+<div class="figure">
+<img src="/post/2019-05-16-random-sampling_files/p10p7.png" />
+
+</div>
+<p>Ok we have generated 4 columns with 10k rows each.</p>
+<p>Now we assign the predictors and the criterion to an object. This is a common step to train a machine learning model and could have already done with the previous methods as well.</p>
+<pre class="r"><code>x = df.drop(&#39;Target_Var&#39;, axis=1)
+y = df[&#39;Target_Var&#39;]</code></pre>
+<p>Now we use the train_test_split function twice. First split with 80:20, second with 75:25.</p>
+<pre class="r"><code>trainX_FULL, testX, trainY_FULL, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>trainX, validationX, trainY, validationY = train_test_split(trainX_FULL, trainY_FULL, test_size = 0.25)</code></pre>
+<p>As a result, we receive a training part of 6,000 observations and a validation and test part of 2,000 observations each:</p>
+<pre class="r"><code>print(trainX.shape)
+print(validationX.shape)
+print(testX.shape)
+print(trainY.shape)
+print(validationY.shape)
+print(testY.shape)</code></pre>
+<div class="figure">
+<img src="/post/2019-05-16-random-sampling_files/p10p8.png" />
 
 </div>
 </div>
