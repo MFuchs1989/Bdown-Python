@@ -31,6 +31,15 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
     </item>
     
     <item>
+      <title>Introduction to SGD Classifier</title>
+      <link>/2019/11/11/introduction-to-sgd-classifier/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/11/11/introduction-to-sgd-classifier/</guid>
+      <description>Table of Content1 Introduction2 Background information on SGD Classifiers3 Loading the libraries and the data4 Data pre-processing5 SGDClassifier5.1 Logistic Regression with SGD training5.2 Linear SVM with SGD training6 Model improvement6.1 Performance comparison of the different linear models6.2 GridSearch7 Conclusion1 IntroductionThe name Stochastic Gradient Descent - Classifier (SGD-Classifier) might mislead some user to think that SGD is a classifier.</description>
+    </item>
+    
+    <item>
       <title>Introduction to Support Vector Machines</title>
       <link>/2019/11/08/introduction-to-support-vector-machines/</link>
       <pubDate>Fri, 08 Nov 2019 00:00:00 +0000</pubDate>
