@@ -95,7 +95,7 @@ Embedded methods are iterative in a sense that takes care of each iteration of t
       <pubDate>Sat, 31 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/08/31/feature-scaling-with-scikit-learn/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Scaling methods3.1 Standard Scaler3.2 Min-Max Scaler3.3 Robust Scaler3.4 Comparison of the previously shown scaling methods4 Conclusion1 IntroductionFeature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Scaling methods3.1 Standard Scaler3.2 Min-Max Scaler3.3 Robust Scaler3.4 Comparison of the previously shown scaling methods4 Feature Scaling in practice5 Conclusion1 IntroductionFeature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range.</description>
     </item>
     
     <item>

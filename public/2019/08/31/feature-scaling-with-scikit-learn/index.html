@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">4 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Feature Scaling with Scikit-Learn</h1>
@@ -85,7 +85,8 @@
 <li>3.2 Min-Max Scaler</li>
 <li>3.3 Robust Scaler</li>
 <li>3.4 Comparison of the previously shown scaling methods</li>
-<li>4 Conclusion</li>
+<li>4 Feature Scaling in practice</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -111,6 +112,8 @@ from sklearn.preprocessing import MinMaxScaler
 #For chapter 3.3
 from sklearn.preprocessing import RobustScaler
 
+#For chapter 4
+from sklearn.model_selection import train_test_split
 
 pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 </div>
@@ -336,8 +339,51 @@ plt.show()</code></pre>
 
 </div>
 </div>
+<div id="feature-scaling-in-practice" class="section level1">
+<h1>4 Feature Scaling in practice</h1>
+<p>In practice, not the complete data record is usually scaled There are two reasons for this:</p>
+<ol style="list-style-type: decimal">
+<li><p>In the case of large data sets, it makes little sense with regard to the storage capacity (RAM) to reserve another scaled data set.</p></li>
+<li><p>To train supervised machine learning algorithms, the data sets are usually divided into training and test parts. It is common to only scale the training part. The metrics used to scale the training part are then applied to the test part. This should prevent that the test part for evaluating an algorithm is really unseen.</p></li>
+</ol>
+<p>Sounds complicated, but it’s totally easy to implement.</p>
+<p>First of all we create a random dataframe.</p>
+<pre class="r"><code>df = pd.DataFrame(np.random.randint(0,100,size=(10000, 4)), columns=[&#39;Var1&#39;, &#39;Var2&#39;, &#39;Var3&#39;, &#39;Target_Var&#39;])
+df.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png" />
+
+</div>
+<p>Then we split it as if we wanted to train a machine learning model. If you want to know how the train-test-split function works, have a look at this post of mine: <a href="https://michael-fuchs-python.netlify.com/2019/05/16/random-sampling/">“Random sampling”</a></p>
+<pre class="r"><code>x = df.drop(&#39;Target_Var&#39;, axis=1)
+y = df[&#39;Target_Var&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<p>Now the scaling is used (here StandardScaler):</p>
+<pre class="r"><code>sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)</code></pre>
+<p>We save the scaler on an object, adapt this object to the training part and transform the trainX and testX part with the metrics obtained. Here we have the scaled features:</p>
+<pre class="r"><code>trainX_scaled</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png" />
+
+</div>
+<p>You can also save yourself a step in the syntax if you don’t use the fit &amp; transform function individually but together:</p>
+<pre class="r"><code>sc=StandardScaler()
+
+trainX_scaled = sc.fit_transform(trainX)
+testX_scaled = sc.transform(testX)</code></pre>
+<pre class="r"><code>trainX_scaled</code></pre>
+<div class="figure">
+<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p15.png" />
+
+</div>
+</div>
 <div id="conclusion" class="section level1">
-<h1>4 Conclusion</h1>
+<h1>5 Conclusion</h1>
 <p>As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.</p>
 </div>
 
