@@ -347,17 +347,32 @@ With GridSearch we can also compare all available kernels with corresponding hyp
 
 ```{r, eval=F, echo=T}
 param_grid_full = [
-  {'kernel': ['linear'], 'C': [1, 10, 100, 1000]},
-  {'kernel': ['rbf'], 'C': [1, 10, 100, 1000], 'gamma': [1, 0.1, 0.01, 0.001, 0.0001]},
-  {'kernel': ['sigmoid'], 'C': [1, 10, 100, 1000], 'gamma': [1, 0.1, 0.01, 0.001, 0.0001]},
-  {'kernel': ['poly'], 'C': [1, 10, 100, 1000], 'gamma': [1, 0.1, 0.01, 0.001, 0.0001], 'degree': [2, 4, 5, 6, 7, 8, 10]},
+  {'kernel': ['linear'], 'C': [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]},
+  {'kernel': ['rbf'], 'C': [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000], 
+    'gamma': [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]},
+  {'kernel': ['sigmoid'], 'C': [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000], 
+    'gamma': [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]},
  ]
 
-grid_full = GridSearchCV(SVC(), param_grid_full, cv = 3, scoring='accuracy') 
+grid_full = GridSearchCV(SVC(), param_grid_full, cv = 10, scoring='accuracy') 
 grid_full.fit(trainX, trainY) 
 
 ```
+![](/post/2019-11-08-introduction-to-support-vector-machines_files/p31p18.png)
 
+```{r, eval=F, echo=T}
+print(grid_full.best_params_) 
+```
+![](/post/2019-11-08-introduction-to-support-vector-machines_files/p31p19.png)
+
+```{r, eval=F, echo=T}
+grid_predictions = grid_full.predict(testX) 
+
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
+```
+![](/post/2019-11-08-introduction-to-support-vector-machines_files/p31p20.png)
+
+Although we could not further increase the accuracy with the large grid search procedure. The output of the best parameters shows that the kernel 'rbf' with the corresponding C and gamma is the model of choice.
 It should be noted that this is very computationally intensive.
 
 
