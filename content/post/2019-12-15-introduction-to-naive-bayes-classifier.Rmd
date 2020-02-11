@@ -32,7 +32,11 @@ tags:
 
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33s1.png)
 
+
+
 Now in the series of multiple classifiers we come to a very easy to use probability model: The Naive Bayes Classifier.
+
+Due to the fact that this algorithm has hardly any hyperparameters, it is recommended to always use the Naive Bayes Classifier first in the event of classification problems. If this does not give satisfactory results, however, more complex algorithms should be used.
 
 For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf>.
 
