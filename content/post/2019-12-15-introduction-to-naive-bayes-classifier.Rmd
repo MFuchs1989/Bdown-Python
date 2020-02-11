@@ -50,14 +50,17 @@ The scikit-learn library includes three naive Bayes variants based on the same n
 
 
 *Gaussian Naive Bayes*
+
 Perhaps the easiest naive Bayes classifier to understand is Gaussian naive Bayes Classifier. When the predictors take up a continuous value and are not discrete, we assume that these values are sampled from a gaussian distribution. 
 
 
 *Multinomial Naive Bayes*
+
 The assumption about Gaussian just described is by no means the only simple assumption that could be used to specify the generative distribution for each label. Another very useful example is multinomial naive Bayes, where the features are assumed to be generated from a simple multinomial distribution. The multinomial distribution describes the probability of observing counts among a number of categories, and thus multinomial naive Bayes is most appropriate for features that represent counts or count rates.
 The idea is precisely the same as before, except that instead of modeling the data distribution with the best-fit Gaussian, we model the data distribuiton with a best-fit multinomial distribution.
 
 *Bernoulli Naive Bayes*
+
 This is similar to the multinomial naive bayes but the predictors are boolean variables. The parameters that we use to predict the class variable take up only values Yes or No.
 
 
