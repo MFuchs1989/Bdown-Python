@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Dec 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to Naive Bayes Classifier</title>
+      <link>/2019/12/15/introduction-to-naive-bayes-classifier/</link>
+      <pubDate>Sun, 15 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/12/15/introduction-to-naive-bayes-classifier/</guid>
+      <description>Table of Content1 Introduction2 Background information on Naive Bayes Classifier3 Loading the libraries and the data4 Data pre-processing5 Naive Bayes in scikit-learn5.1 Binary Classification5.1.1 Gaussian Naive Bayes5.1.2 Bernoulli Naive Bayes5.2 Multiple Classification5.2.1 Gaussian Naive Bayes5.2.2 Multinomial Naive Bayes6 Conclusion1 IntroductionNow in the series of multiple classifiers we come to a very easy to use probability model: The Naive Bayes Classifier.</description>
+    </item>
     
     <item>
       <title>Introduction to Decision Trees</title>
