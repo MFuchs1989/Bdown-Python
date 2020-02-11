@@ -18,10 +18,10 @@ tags:
 + 3 Loading the libraries and the data
 + 4 Data pre-processing
 + 5 Naive Bayes in scikit-learn
-+ 5.1 Binary Classification
++ 5.1 **Binary Classification**
 + 5.1.1 Gaussian Naive Bayes
 + 5.1.2 Bernoulli Naive Bayes
-+ 5.2 Multiple Classification
++ 5.2 **Multiple Classification**
 + 5.2.1 Gaussian Naive Bayes
 + 5.2.2 Multinomial Naive Bayes
 + 6 Conclusion
