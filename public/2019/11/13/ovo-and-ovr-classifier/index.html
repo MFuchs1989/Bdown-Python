@@ -19,6 +19,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -60,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">4 min read</span>
     
 
     <h1 class="article-title">OvO and OvR Classifier</h1>
@@ -74,9 +79,17 @@
 <h1>Table of Content</h1>
 <ul>
 <li>1 Introduction</li>
-<li>2 Background information on Naive Bayes Classifier</li>
+<li>2 Background information on OvO and OvR</li>
 <li>3 Loading the libraries and the data</li>
-<li>4</li>
+<li>4 OvO/OvR with Logistic Regression</li>
+<li>4.1 One-vs-Rest</li>
+<li>4.2 One-vs-One</li>
+<li>4.3 Grid Search</li>
+<li>5 OvO/OvR with SVM</li>
+<li>5.1 One-vs-Rest</li>
+<li>5.2 One-vs-One</li>
+<li>5.3 Grid Search</li>
+<li>6 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -85,21 +98,195 @@
 <img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p1.png" />
 
 </div>
-<p>We already know from my previous posts how to train a binary classifier using <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> or <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a>.</p>
+<p>We already know from my previous posts how to train a binary classifier using <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> or <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a>. We have learned that these machine learning algorithms are strictly binary classifiers. But we can also use this for multiple classification problems. How we can do this will be explained in the following publication.</p>
 <p>For this post the dataset <em>MNIST</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk" class="uri">https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk</a>.</p>
 </div>
-<div id="background-information-on-naive-bayes-classifier" class="section level1">
-<h1>2 Background information on Naive Bayes Classifier</h1>
+<div id="background-information-on-ovo-and-ovr" class="section level1">
+<h1>2 Background information on OvO and OvR</h1>
+<p>First of all, let me briefly explain the idea behind One-vs-One and One-vs-Rest classification. Say we have a classification problem and there are N distinct classes. In this case, we’ll have to train a multiple classifier instead of a binary one.</p>
+<p>But we can also force python to train a couple of binary models to solve this classification problem. In Scikit Learn we have two options for this, which are briefly explained below.</p>
+<p><strong>One-vs-One (OvO)</strong></p>
+<p>Hereby the number of generated models depending on the number of classes where N is the number of classes.</p>
+<p><span class="math display">\[  N = \frac{N(N-1)}{2}  \]</span></p>
+<p>If N is 10 as shown in our example below the total of the learned model is 45 according to the mentioned formula. In this method, every single class will be paired one by one with other class. At the end of the classification training, each classification is given one vote for the winning class. The highest votes will determine which class the test dataset belongs to.</p>
+<p><strong>One-vs-Rest (OvR)</strong></p>
+<p>Unlike One-vs-One, One-vs-Rest produced the same amount of learned models with the number of classes. Is this (as in the example below) 10, the number of learned models is also 10. In this method, every class is paired with the remaining classes.</p>
+<p>The only thing we really have to do now compared to multiple classifiers is to run N binary classifiers from just one. And that’s it.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
 <h1>3 Loading the libraries and the data</h1>
-</div>
-<div id="section" class="section level1">
-<h1>4</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.multiclass import OneVsOneClassifier
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
+from sklearn.model_selection import GridSearchCV</code></pre>
+<pre class="r"><code>mnist = pd.read_csv(&#39;path/to/file/mnist_train.csv&#39;)
+mnist</code></pre>
 <div class="figure">
-<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p.png" />
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p2.png" />
 
 </div>
+<pre class="r"><code>x = mnist.drop(&#39;label&#39;, axis=1)
+y = mnist[&#39;label&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="ovoovr-with-logistic-regression" class="section level1">
+<h1>4 OvO/OvR with Logistic Regression</h1>
+<p>Using OvO / OvR is fairly simple. See the usual training procedure here with Logistic Regression:</p>
+</div>
+<div id="one-vs-rest" class="section level1">
+<h1>4.1 One-vs-Rest</h1>
+<pre class="r"><code>OvR_clf = OneVsRestClassifier(LogisticRegression())
+OvR_clf.fit(trainX, trainY)
+
+y_pred = OvR_clf.predict(testX)
+
+print(&#39;Accuracy of OvR Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p3.png" />
+
+</div>
+</div>
+<div id="one-vs-one" class="section level1">
+<h1>4.2 One-vs-One</h1>
+<pre class="r"><code>OvO_clf = OneVsOneClassifier(LogisticRegression())
+OvO_clf.fit(trainX, trainY)
+
+y_pred = OvO_clf.predict(testX)
+
+print(&#39;Accuracy of OvO Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p4.png" />
+
+</div>
+</div>
+<div id="grid-search" class="section level1">
+<h1>4.3 Grid Search</h1>
+<p>We even can use grid search to determine optimal hyperparameter:</p>
+<p><strong>OvR</strong></p>
+<pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [100, 10, 1, 0.1, 0.01, 0.001, 0.0001]}]
+
+OvR_clf = OneVsRestClassifier(LogisticRegression())
+
+grid = GridSearchCV(OvR_clf, tuned_parameters, cv=3, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>print(grid.best_score_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p5.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_params_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p6.png" />
+
+</div>
+<pre class="r"><code>grid_predictions = grid.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p7.png" />
+
+</div>
+<p><strong>OvO</strong></p>
+<pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [100, 10, 1, 0.1, 0.01, 0.001, 0.0001]}]
+
+
+OvO_clf = OneVsOneClassifier(LogisticRegression())
+
+grid = GridSearchCV(OvO_clf, tuned_parameters, cv=3, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>print(grid.best_score_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p8.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_params_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p9.png" />
+
+</div>
+<pre class="r"><code>grid_predictions = grid.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p10.png" />
+
+</div>
+</div>
+<div id="ovoovr-with-svm" class="section level1">
+<h1>5 OvO/OvR with SVM</h1>
+<p>The same procedure works with SVM as well.</p>
+</div>
+<div id="one-vs-rest-1" class="section level1">
+<h1>5.1 One-vs-Rest</h1>
+<pre class="r"><code>OvR_SVC_clf = OneVsRestClassifier(SVC())
+
+OvR_SVC_clf.fit(trainX, trainY)
+
+y_pred = OvR_SVC_clf.predict(testX)
+
+print(&#39;Accuracy of OvR Classifier with SVC: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p11.png" />
+
+</div>
+</div>
+<div id="one-vs-one-1" class="section level1">
+<h1>5.2 One-vs-One</h1>
+<pre class="r"><code>OvO_SVC_clf = OneVsOneClassifier(SVC())
+
+OvO_SVC_clf.fit(trainX, trainY)
+
+y_pred = OvO_SVC_clf.predict(testX)
+
+print(&#39;Accuracy of OvO Classifier with SVC: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p12.png" />
+
+</div>
+</div>
+<div id="grid-search-1" class="section level1">
+<h1>5.3 Grid Search</h1>
+<p>GridSearch also works with this method:</p>
+<p><strong>OvR</strong></p>
+<pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [0.1, 1, 10, 100, 1000],
+                     &#39;estimator__gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001], 
+                     &#39;estimator__kernel&#39;: [&#39;linear&#39;]}]
+
+
+OvR_SVC_clf = OneVsRestClassifier(SVC())
+
+grid = GridSearchCV(OvR_SVC_clf, tuned_parameters, cv=3, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY)</code></pre>
+<p><strong>OvO</strong></p>
+<pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [0.1, 1, 10, 100, 1000],
+                     &#39;estimator__gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001], 
+                     &#39;estimator__kernel&#39;: [&#39;linear&#39;]}]
+
+
+OvO_SVC_clf = OneVsOneClassifier(SVC())
+
+grid = GridSearchCV(OvO_SVC_clf, tuned_parameters, cv=3, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY)</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>This publication showed how to make binary classifiers (such as LogReg or SVM) multiple using the OvO and OvR method.</p>
 </div>
 
     </div>
@@ -124,7 +311,22 @@
     </div>
     
 
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>

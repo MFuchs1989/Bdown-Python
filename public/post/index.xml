@@ -45,9 +45,7 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
       <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/13/ovo-and-ovr-classifier/</guid>
-      <description>Table of Content1 Introduction2 Background information on Naive Bayes Classifier3 Loading the libraries and the data41 IntroductionWe already know from my previous posts how to train a binary classifier using “Logistic Regression” or “Support Vector Machines”.
-For this post the dataset MNIST from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk.
-2 Background information on Naive Bayes Classifier3 Loading the libraries and the data4</description>
+      <description>Table of Content1 Introduction2 Background information on OvO and OvR3 Loading the libraries and the data4 OvO/OvR with Logistic Regression4.1 One-vs-Rest4.2 One-vs-One4.3 Grid Search5 OvO/OvR with SVM5.1 One-vs-Rest5.2 One-vs-One5.3 Grid Search6 Conclusion1 IntroductionWe already know from my previous posts how to train a binary classifier using “Logistic Regression” or “Support Vector Machines”. We have learned that these machine learning algorithms are strictly binary classifiers.</description>
     </item>
     
     <item>
