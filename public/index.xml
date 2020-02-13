@@ -40,6 +40,17 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
     </item>
     
     <item>
+      <title>OvO and OvR Classifier</title>
+      <link>/2019/11/13/ovo-and-ovr-classifier/</link>
+      <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/11/13/ovo-and-ovr-classifier/</guid>
+      <description>Table of Content1 Introduction2 Background information on Naive Bayes Classifier3 Loading the libraries and the data41 IntroductionWe already know from my previous posts how to train a binary classifier using “Logistic Regression” or “Support Vector Machines”.
+For this post the dataset MNIST from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk.
+2 Background information on Naive Bayes Classifier3 Loading the libraries and the data4</description>
+    </item>
+    
+    <item>
       <title>Introduction to SGD Classifier</title>
       <link>/2019/11/11/introduction-to-sgd-classifier/</link>
       <pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate>

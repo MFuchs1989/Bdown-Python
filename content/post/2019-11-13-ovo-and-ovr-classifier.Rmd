@@ -1,0 +1,72 @@
+---
+title: OvO and OvR Classifier
+author: Michael Fuchs
+date: '2019-11-13'
+slug: ovo-and-ovr-classifier
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+#Table of Content
+
++ 1 Introduction
++ 2 Background information on Naive Bayes Classifier
++ 3 Loading the libraries and the data
++ 4 
+
+
+
+#1 Introduction
+
+![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p1.png)
+
+We already know from my previous posts how to train a binary classifier using ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) or ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/).
+
+
+For this post the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
+
+
+#2 Background information on Naive Bayes Classifier
+
+
+
+
+#3 Loading the libraries and the data
+
+
+```{r, eval=F, echo=T}
+
+```
+
+
+```{r, eval=F, echo=T}
+
+```
+
+
+
+
+#4
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p.png)
+
+
+
