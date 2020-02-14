@@ -19,6 +19,8 @@ tags:
 + 3 Loading the libraries and the data
 + 4 KNN - Model Fitting and Evaluation
 + 5 Determination of K and Model Improvement
++ 6 Conclusion
+
 
 #1 Introduction
 
