@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Dec 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Introduction to KNN Classifier</title>
+      <link>/2019/12/27/introduction-to-knn-classifier/</link>
+      <pubDate>Fri, 27 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/12/27/introduction-to-knn-classifier/</guid>
+      <description>Table of Content1 Introduction2 Background information on KNN3 Loading the libraries and the data4 KNN - Model Fitting and Evaluation5 Determination of K and Model Improvement1 IntroductionK Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms. The KNN algorithm can be used for both classification (binary and multiple) and regression problems.</description>
+    </item>
     
     <item>
       <title>Introduction to Naive Bayes Classifier</title>

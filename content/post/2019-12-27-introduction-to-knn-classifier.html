@@ -1,0 +1,190 @@
+---
+title: Introduction to KNN Classifier
+author: Michael Fuchs
+date: '2019-12-27'
+slug: introduction-to-knn-classifier
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Background information on KNN</li>
+<li>3 Loading the libraries and the data</li>
+<li>4 KNN - Model Fitting and Evaluation</li>
+<li>5 Determination of K and Model Improvement</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>K Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms. The KNN algorithm can be used for both classification (binary and multiple) and regression problems.</p>
+<p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
+</div>
+<div id="background-information-on-knn" class="section level1">
+<h1>2 Background information on KNN</h1>
+<p>In general we can say KNN is a non-parametric and lazy learning algorithm.</p>
+<p>Non-parametric means there is no assumption for underlying data distribution. But this will be very helpful in practice where most of the real world datasets do not follow mathematical theoretical assumptions.</p>
+<p>Lazy Learning means there is no need for learning or training of the model and all of the data points used at the time of prediction. Lazy learners wait until the last minute before classifying any data point. In comparison to that eager learners will construct with given training points a generalized model before performing prediction on given new points to classify.</p>
+<p><strong>Curse of Dimensionality</strong></p>
+<p>K Nearest Neighbor performs better with a lower number of features than a large number of features. You can say that when the number of features increases than it requires much more data. Increase in dimension also leads to the problem of overfitting. To avoid overfitting, the needed data will need to grow exponentially as you increase the number of dimensions. This problem of higher dimension is known as the Curse of Dimensionality.</p>
+<p><strong>How does the KNN algorithm work?</strong></p>
+<p>In KNN, K is the number of nearest neighbors. KNN works as described in the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Computes the distance between the new data point with every training example.</li>
+<li>For computing the distance measures such as Euclidean distance, Manhattan or Hamming distance will be used.</li>
+<li>Model picks K entries in the database which are closest to the new data point.</li>
+<li>Then it does the majority vote i.e the most common class/label among those K entries will be the class of the new data point.</li>
+</ol>
+<p>I have shown the individual steps visually below:</p>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p1.png" />
+
+</div>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p2.png" />
+
+</div>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p3.png" />
+
+</div>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>The training phase of K-nearest neighbor classification is much faster compared to other classification algorithms.</li>
+<li>There is no need to train a model for generalization, That is why KNN is known as the simple and instance-based learning algorithm.</li>
+<li>KNN can be useful in case of nonlinear data.</li>
+<li>It can be used with the regression problem. Output value for the object is computed by the average of k closest neighbors value.</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>The testing phase of K-nearest neighbor classification is slower and costlier in terms of time and memory.</li>
+<li>It requires large memory for storing the entire training dataset for prediction.</li>
+<li>Euclidean distance is sensitive to magnitudes.</li>
+<li>The features with high magnitudes will weight more than features with low magnitudes.</li>
+<li>KNN also not suitable for large dimensional data.</li>
+</ul>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>3 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+from sklearn.model_selection import cross_val_score
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import GridSearchCV</code></pre>
+<pre class="r"><code>iris = pd.read_csv(&quot;path/to/file/Iris_Data.csv&quot;)
+
+iris</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p4.png" />
+
+</div>
+</div>
+<div id="knn---model-fitting-and-evaluation" class="section level1">
+<h1>4 KNN - Model Fitting and Evaluation</h1>
+<p>As always, we split the data set into a training and a test part.</p>
+<pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
+y = iris[&#39;species&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<p>With the parameter n_neighbors we determine the number of K. Here we just set K to 7 and look at the accuracy rate.</p>
+<pre class="r"><code>knn_clf = KNeighborsClassifier(n_neighbors=7)
+
+knn_clf.fit(trainX, trainY)
+
+y_pred = knn_clf.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p5.png" />
+
+</div>
+<p>Ok, accuracy rate of .90. Not so bad. Let’s evaluate our model with cross validation technique.</p>
+<pre class="r"><code>knn_clf = KNeighborsClassifier(n_neighbors=5)
+
+scores = cross_val_score(knn_clf, trainX, trainY, cv=10, scoring=&#39;accuracy&#39;)
+print(scores)</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p6.png" />
+
+</div>
+<p>As we can see, there is still room for improvement.</p>
+</div>
+<div id="determination-of-k-and-model-improvement" class="section level1">
+<h1>5 Determination of K and Model Improvement</h1>
+<p>With the following for loop we have the respective accuracy rate output for different K’s (here K:1-33).</p>
+<pre class="r"><code>k_range = range(1, 33)
+scores = {}
+scores_list = []
+
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(trainX, trainY)
+    y_pred = knn.predict(testX)
+    scores[k] = accuracy_score(testY, y_pred)
+    scores_list.append(accuracy_score(testY, y_pred))</code></pre>
+<p>Let’s plot the results:</p>
+<pre class="r"><code>plt.plot(k_range, scores_list)
+plt.xlabel(&#39;Value of K for KNN&#39;)
+plt.ylabel(&#39;Testing Accuracy&#39;)</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p7.png" />
+
+</div>
+<p>As we can see, K = 7 was probably set a little too low in the first model. It seems that we get the best accuracy value for K = 8. Let’s check this with Grid Search.</p>
+<pre class="r"><code>k_range = list(range(1,33))
+weight_options = [&quot;uniform&quot;, &quot;distance&quot;]
+
+knn_clf = KNeighborsClassifier()
+param_grid = dict(n_neighbors=k_range, weights=weight_options)
+
+grid = GridSearchCV(knn_clf, param_grid, cv=10, scoring=&#39;accuracy&#39;)
+grid.fit(trainX, trainY)</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p8.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_params_)</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p9.png" />
+
+</div>
+<p>We were right with our assumption. Let’s set K to 8.</p>
+<pre class="r"><code>knn_clf = KNeighborsClassifier(n_neighbors=8, weights=&#39;distance&#39;)
+
+knn_clf.fit(trainX, trainY)
+
+y_pred = knn_clf.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p10.png" />
+
+</div>
+<p>We can also use the trained grid model right away, as this saved the best values.</p>
+<pre class="r"><code>grid_predictions = grid.predict(testX) 
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p11.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>This publication explains what the K Nearest Neighbor Classifier is and how we can use it to solve classification problems. Furthermore, the determination of K was discussed.</p>
+</div>
