@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Grid Search - Michael Fuchs Python</title>
+<meta property="og:title" content="Grid Search - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Grid Search</h1>
+
+    
+    <span class="article-date">2019-11-04</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Background information on Grid Searach</li>
+<li>3 Loading the libraries and the data</li>
+<li>4 Data pre-processing</li>
+<li>5 LogReg</li>
+<li>6 Grid Search</li>
+<li>6.1 Grid Search with LogReg</li>
+<li>6.2 Grid Search with other machine learning algorithms</li>
+<li>6.3 Grid Search with more than one estimator</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Grid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. This is significant as the performance of the entire machine learning model is based on the hyper parameter values specified.</p>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p1.png" />
+
+</div>
+<p>For this post the dataset <em>Breast Cancer Wisconsin (Diagnostic)</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU" class="uri">https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU</a>.</p>
+</div>
+<div id="background-information-on-grid-searach" class="section level1">
+<h1>2 Background information on Grid Searach</h1>
+<p><strong>Grid Search for hyperparameter optimization</strong></p>
+<p>A model hyperparameter is a characteristic of a model that is external to the model and whose value cannot be estimated from data. The value of the hyperparameter has to be set before the learning process begins. For example, c in Support Vector Machines, k in k-Nearest Neighbors, the number of hidden layers in Neural Networks.</p>
+<p>In contrast, a parameter is an internal characteristic of the model and its value can be estimated from data. Example, beta coefficients of linear/logistic regression or support vectors in Support Vector Machines.</p>
+<p>In a nutshell Grid Search is used to find the optimal hyperparameters of a model which results in the most ‘accurate’ predictions.</p>
+<p><strong>Why should I use it?</strong></p>
+<p>If you work with machine learning, you know what a nightmare it is to stipulate values for hyper parameters. There are methods, such as GridSearchCV of the scikit-learn bibliothek that have been implemented, in order to automate this process and make life a little bit easier for machine learning users.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>3 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+# For chapter 4
+from sklearn.model_selection import train_test_split
+
+# For chapter 5
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# For chapter 6
+from sklearn.model_selection import GridSearchCV
+
+# For chapter 6.3
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier</code></pre>
+<pre class="r"><code>cancer = pd.read_csv(&quot;path/to/file/breast_cancer.csv&quot;)
+
+cancer.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p2.png" />
+
+</div>
+<p>The data set used contains 31 columns which contain information about tumors in the tissue. The column ‘diagnosis’ describes whether these tumors are benign (B) or malignant (M). Let’s try to create a classification model.</p>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<p>The target variable is then converted into numerical values.</p>
+<pre class="r"><code>vals_to_replace = {&#39;B&#39;:&#39;0&#39;, &#39;M&#39;:&#39;1&#39;}
+cancer[&#39;diagnosis&#39;] = cancer[&#39;diagnosis&#39;].map(vals_to_replace)
+cancer[&#39;diagnosis&#39;] = cancer.diagnosis.astype(&#39;int64&#39;)
+cancer.head()</code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p3.png" />
+
+</div>
+</div>
+<div id="logreg" class="section level1">
+<h1>5 LogReg</h1>
+<p>With Grid Search we can optimize hyper parameters of all possible algorithms. Here we use <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“logistic regression”</a> based on the previous <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“post”</a>.</p>
+<p>First we implement a simple log reg model and then we look at whether the accuracy can be improved with the optimized hyperparameters</p>
+<pre class="r"><code>logreg = LogisticRegression()
+logreg.fit(trainX, trainY)
+
+y_pred = logreg.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p4.png" />
+
+</div>
+</div>
+<div id="grid-search" class="section level1">
+<h1>6 Grid Search</h1>
+<p>Now let’s use Grid Search with the logistic regression model. I mostly use accuracy as scoring. However, other values such as recall or precision can also be very important. It is therefore worth reading a little deeper into this topic.</p>
+<p>Recall and Precision are useful metrics when working with unbalanced datasets (i.e., there are a lot of samples with label ‘0’, but much fewer samples with label ‘1’. Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.</p>
+</div>
+<div id="grid-search-with-logreg" class="section level1">
+<h1>6.1 Grid Search with LogReg</h1>
+<pre class="r"><code>grid_values = {&#39;penalty&#39;: [&#39;l1&#39;, &#39;l2&#39;],&#39;C&#39;:[0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]}
+
+clf = LogisticRegression()
+
+grid = GridSearchCV(clf, grid_values, cv = 10, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY) 
+
+print(grid.best_params_) </code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p5.png" />
+
+</div>
+<p>Here we see pest parameters.</p>
+<pre class="r"><code>grid_predictions = grid.predict(testX) 
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p6.png" />
+
+</div>
+</div>
+<div id="grid-search-with-other-machine-learning-algorithms" class="section level1">
+<h1>6.2 Grid Search with other machine learning algorithms</h1>
+<p>As already mentioned, grid search can be used with all possible machine learning algorithms. Below is a list of the well-known algorithms I used this method:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">“SGD Classifier”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">“OvO and OvR Classifier”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/">“Decision Trees”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/">“KNN Classifier”</a></li>
+</ul>
+</div>
+<div id="grid-search-with-more-than-one-estimator" class="section level1">
+<h1>6.3 Grid Search with more than one estimator</h1>
+<p>We can also use Grid Search with multiple estimator:</p>
+<pre class="r"><code># Just initialize the pipeline with any estimator you like 
+pipe = Pipeline(steps=[(&#39;estimator&#39;, LogisticRegression())])
+
+# Add a dict of estimator and estimator related parameters in this list
+params_grid = [{
+                &#39;estimator&#39;:[LogisticRegression()],
+                &#39;estimator__penalty&#39;: [&#39;l1&#39;, &#39;l2&#39;],
+                &#39;estimator__C&#39;: [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]
+                },
+                {
+                &#39;estimator&#39;:[SVC()],
+                &#39;estimator__C&#39;: [0.1, 1, 10, 100, 1000],
+                &#39;estimator__gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001],
+                &#39;estimator__kernel&#39;: [&#39;linear&#39;],
+                },
+                {
+                &#39;estimator&#39;: [DecisionTreeClassifier()],
+                &#39;estimator__criterion&#39;: [&quot;gini&quot;, &quot;entropy&quot;],
+                &#39;estimator__min_samples_split&#39;: [2, 5, 10, 15, 20],
+                &#39;estimator__max_depth&#39;: [None, 2, 3, 5, 7, 10],
+                &#39;estimator__min_samples_leaf&#39;: [1, 3, 5, 7, 10],
+                &#39;estimator__max_leaf_nodes&#39;: [None, 3, 5, 7, 10, 15, 20],
+                }
+              ]
+
+grid = GridSearchCV(pipe, params_grid, cv=5, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY) 
+
+print(grid.best_params_) </code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p7.png" />
+
+</div>
+<pre class="r"><code>grid_predictions = grid.predict(testX) 
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-04-grid-search_files/p36p8.png" />
+
+</div>
+<p>As we can see, the use of support vector machines gives the best results for this classification problem.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post, the functionality and application of Grid Search was shown. Have fun creating machine learning models with optimized hyperparameters.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
