@@ -184,7 +184,7 @@ print(grid.best_params_) </code></pre>
 <img src="/post/2019-11-04-grid-search_files/p36p5.png" />
 
 </div>
-<p>Here we see pest parameters.</p>
+<p>Here we see best parameters.</p>
 <pre class="r"><code>grid_predictions = grid.predict(testX) 
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
@@ -192,6 +192,7 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions))
 <img src="/post/2019-11-04-grid-search_files/p36p6.png" />
 
 </div>
+<p>Unfortunately, we have not further improved the accuracy in this case.</p>
 </div>
 <div id="grid-search-with-other-machine-learning-algorithms" class="section level1">
 <h1>6.2 Grid Search with other machine learning algorithms</h1>

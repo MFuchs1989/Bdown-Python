@@ -143,7 +143,7 @@ print(grid.best_params_)
 
 ![](/post/2019-11-04-grid-search_files/p36p5.png)
 
-Here we see pest parameters.
+Here we see best parameters.
 
 ```{r, eval=F, echo=T}
 grid_predictions = grid.predict(testX) 
@@ -152,6 +152,9 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 ```
 
 ![](/post/2019-11-04-grid-search_files/p36p6.png)
+
+
+Unfortunately, we have not further improved the accuracy in this case.
 
 
 #6.2 Grid Search with other machine learning algorithms
