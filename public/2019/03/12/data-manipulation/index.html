@@ -418,7 +418,7 @@ df</code></pre>
 <img src="/post/2019-03-12-data-manipulation_files/p3p34.png" />
 
 </div>
-<p>We want to check the names where the columns ‘Gehalt’ is NaN.</p>
+<p>We want to check the names where the column ‘Gehalt’ is NaN.</p>
 <pre class="r"><code>df[df[&quot;Gehalt&quot;].isnull() &amp; (df[&quot;Name&quot;] == &#39;Anton&#39;)]</code></pre>
 <div class="figure">
 <img src="/post/2019-03-12-data-manipulation_files/p3p35.png" />
@@ -432,7 +432,7 @@ df</code></pre>
 
 </div>
 <p>We can also use multiple conditions for filtering and replacement.</p>
-<p>The code below shows a selective selection of the name (here Moni) for which no age is available, and then replaces the salary with 3.000 for this hit.</p>
+<p>The code below shows a selection of the name (here Moni) for which no age is available. Now we want to replaces the NaNs for the salary.</p>
 <pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter.isna()), 3000, df.Gehalt)
 df</code></pre>
 <div class="figure">
