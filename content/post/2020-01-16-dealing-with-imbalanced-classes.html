@@ -26,6 +26,7 @@ tags:
 <li>6.2 NearMiss</li>
 <li>7 Penalize Algorithms</li>
 <li>8 Tree-Based Algorithms</li>
+<li>9 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -69,7 +70,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier</code></pre>
 <pre class="r"><code>bank = pd.read_csv(&quot;bank.csv&quot;, sep = &#39;;&#39;)
 bank = bank.rename(columns={&#39;y&#39;:&#39;final_subscribed&#39;})</code></pre>
-<p>Here we see that our target variable * final_subscribed * is distributed differently.</p>
+<p>Here we see that our target variable <em>final_subscribed</em> is distributed differently.</p>
 <pre class="r"><code>sns.countplot(x=&#39;final_subscribed&#39;, data=bank, palette=&#39;hls&#39;)
 print(plt.show())
 print(bank[&#39;final_subscribed&#39;].value_counts())</code></pre>

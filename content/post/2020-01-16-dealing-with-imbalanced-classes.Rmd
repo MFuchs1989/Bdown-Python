@@ -25,7 +25,7 @@ tags:
 + 6.2 NearMiss
 + 7 Penalize Algorithms
 + 8 Tree-Based Algorithms
-
++ 9 Conclusion
 
 
 
@@ -80,7 +80,7 @@ bank = bank.rename(columns={'y':'final_subscribed'})
 ```
 
 
-Here we see that our target variable * final_subscribed * is distributed differently.
+Here we see that our target variable *final_subscribed* is distributed differently.
 
 
 ```{r, eval=F, echo=T}
