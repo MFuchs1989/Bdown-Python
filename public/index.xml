@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dealing with imbalanced classes</title>
+      <link>/2020/01/16/dealing-with-imbalanced-classes/</link>
+      <pubDate>Thu, 16 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/01/16/dealing-with-imbalanced-classes/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Data pre-processing4 Logistic Regression5 Resampling methods5.1 Oversampling5.2 Undersampling6 ML Algorithms for imbalanced datasets6.1 SMOTE (Synthetic Minority Over-sampling Technique)6.2 NearMiss7 Penalize Algorithms8 Tree-Based Algorithms1 IntroductionThe validation metric ‚Accuracy‘ is a surprisingly common problem in machine learning (specifically in classification), occurring in datasets with a disproportionate ratio of observations in each class.</description>
+    </item>
     
     <item>
       <title>Introduction to KNN Classifier</title>
