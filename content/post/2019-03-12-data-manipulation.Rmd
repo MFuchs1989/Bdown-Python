@@ -30,6 +30,7 @@ tags:
 + 5 Replacing Values
 + 5.1 One by One
 + 5.2 Collective replacement
++ 5.3 Conditional replacement
 + 6 Conclusion
 
 
@@ -412,6 +413,64 @@ df.head()
 
 ![](/post/2019-03-12-data-manipulation_files/p3p33.png)
 
+
+#5.3 Conditional replacement
+
+For an example of conditional replacement have a look at this dataframe:
+
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Name': ['Anton', 'Anton', 'Moni', 'Moni', 'Justus'],
+                   'Alter': [32,22,np.NaN,62,18],
+                   'Gehalt': [np.NaN, np.NaN,np.NaN,np.NaN,500]})
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p34.png)
+
+We want to check the names where the columns 'Gehalt' is NaN. 
+
+
+```{r, eval=F, echo=T}
+df[df["Gehalt"].isnull() & (df["Name"] == 'Anton')]
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3p35.png)
+
+Here we go !
+Now we want to replace exspecially these NaNs with a salary of 2.000 for Anton.
+
+
+```{r, eval=F, echo=T}
+df['Gehalt'] = np.where((df.Name == 'Anton'), 2000, df.Gehalt)
+df
+```
+
+
+![](/post/2019-03-12-data-manipulation_files/p3p36.png)
+
+We can also use multiple conditions for filtering and replacement.
+
+The code below shows a selective selection of the name (here Moni) for which no age is available, and then replaces the salary with 3.000 for this hit.
+
+```{r, eval=F, echo=T}
+df['Gehalt'] = np.where((df.Name == 'Moni') & (df.Alter.isna()), 3000, df.Gehalt)
+df
+```
+
+
+![](/post/2019-03-12-data-manipulation_files/p3p37.png)
+
+
+Finally we replace the hits that we find under Moni with an age greater than 50.
+
+```{r, eval=F, echo=T}
+df['Gehalt'] = np.where((df.Name == 'Moni') & (df.Alter > 50), 4000, df.Gehalt)
+df
+```
+
+
+![](/post/2019-03-12-data-manipulation_files/p3p38.png)
 
 
 #6 Conclusion

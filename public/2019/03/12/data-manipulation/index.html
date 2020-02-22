@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">4 min read</span>
     
 
     <h1 class="article-title">Data Manipulation</h1>
@@ -96,6 +96,7 @@
 <li>5 Replacing Values</li>
 <li>5.1 One by One</li>
 <li>5.2 Collective replacement</li>
+<li>5.3 Conditional replacement</li>
 <li>6 Conclusion</li>
 </ul>
 </div>
@@ -403,6 +404,46 @@ df[&#39;DayOfWeek&#39;] = df[&#39;DayOfWeek&#39;].map(vals_to_replace)
 df.head()</code></pre>
 <div class="figure">
 <img src="/post/2019-03-12-data-manipulation_files/p3p33.png" />
+
+</div>
+</div>
+<div id="conditional-replacement" class="section level1">
+<h1>5.3 Conditional replacement</h1>
+<p>For an example of conditional replacement have a look at this dataframe:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Anton&#39;, &#39;Anton&#39;, &#39;Moni&#39;, &#39;Moni&#39;, &#39;Justus&#39;],
+                   &#39;Alter&#39;: [32,22,np.NaN,62,18],
+                   &#39;Gehalt&#39;: [np.NaN, np.NaN,np.NaN,np.NaN,500]})
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-12-data-manipulation_files/p3p34.png" />
+
+</div>
+<p>We want to check the names where the columns ‘Gehalt’ is NaN.</p>
+<pre class="r"><code>df[df[&quot;Gehalt&quot;].isnull() &amp; (df[&quot;Name&quot;] == &#39;Anton&#39;)]</code></pre>
+<div class="figure">
+<img src="/post/2019-03-12-data-manipulation_files/p3p35.png" />
+
+</div>
+<p>Here we go ! Now we want to replace exspecially these NaNs with a salary of 2.000 for Anton.</p>
+<pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Anton&#39;), 2000, df.Gehalt)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-12-data-manipulation_files/p3p36.png" />
+
+</div>
+<p>We can also use multiple conditions for filtering and replacement.</p>
+<p>The code below shows a selective selection of the name (here Moni) for which no age is available, and then replaces the salary with 3.000 for this hit.</p>
+<pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter.isna()), 3000, df.Gehalt)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-12-data-manipulation_files/p3p37.png" />
+
+</div>
+<p>Finally we replace the hits that we find under Moni with an age greater than 50.</p>
+<pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter &gt; 50), 4000, df.Gehalt)
+df</code></pre>
+<div class="figure">
+<img src="/post/2019-03-12-data-manipulation_files/p3p38.png" />
 
 </div>
 </div>
