@@ -1,0 +1,10 @@
+---
+title: Introduction to Perceptron Algorithm
+author: Michael Fuchs
+date: '2019-11-14'
+slug: introduction-to-perceptron-algorithm
+categories:
+  - R
+tags:
+  - R Markdown
+---
