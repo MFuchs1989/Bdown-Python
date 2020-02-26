@@ -11,4 +11,195 @@ tags:
 
 
 
-<p>test</p>
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Background information on Perceptron Algorithm</li>
+<li>3 Loading the libraries and the data</li>
+<li>4 Perceptron - Model Fitting and Evaluation</li>
+<li>5 Hyperparameter optimization via Grid Search</li>
+<li>6 OvO/OvR with the Perceptron</li>
+<li>7 Perceptron with SGD training</li>
+<li>8 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>I already wrote about <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a>. I also showed how to optimize these linear classifiers using <a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">“SGD training”</a> and how to use the <a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">“OneVersusRest and OneVersusAll”</a> Classifier to convert binary classifiers to multiple classifiers. Let’s come to a further binary classifier: the Perceptron.</p>
+<p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
+</div>
+<div id="background-information-on-perceptron-algorithm" class="section level1">
+<h1>2 Background information on Perceptron Algorithm</h1>
+<p>In machine learning, the perceptron is an algorithm for supervised learning of binary classifiers. It’s a type of linear classifier, i.e. a classification algorithm that makes its predictions based on a linear predictor function combining a set of weights with the feature vector.</p>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38s1.png" />
+
+</div>
+<p><strong>Components:</strong></p>
+<ul>
+<li><p>Input: All the feature becomes the input for a perceptron. We denote the input of a perceptron by [x1, x2, x3, ..,xn], here x represent the feature value and n represent the total number of features.</p></li>
+<li><p>Weights: Weights are the values that are computed over the time of training the model. Initial we start the value of weights with some initial value and these values get updated for each training error. We represent the weights for perceptron by [w1,w2,w3, ..,wn].</p></li>
+<li><p>BIAS: A bias neuron allows a classifier to shift the decision boundary left or right. In an algebraic term, the bias neuron allows a classifier to translate its decision boundary and helps to training the model faster and with better quality.</p></li>
+<li><p>Weighted Summation: Weighted Summation is the sum of value that we get after the multiplication of each weight [wn] associated the each feature value[xn].</p></li>
+<li><p>Step/Activation Function: the role of activation functions is make neural networks non-linear. For linerarly classification of example, it becomes necessary to make the perceptron as linear as possible.</p></li>
+<li><p>Output: The weighted Summation is passed to the step/activation function and whatever value we get after computation is our predicted output.</p></li>
+</ul>
+<p><strong>Procedure:</strong></p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>Fistly the features for an examples given as input to the Perceptron.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>These input features get multiplied by corresponding weights [starts with initial value].</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>Summation is computed for value we get after multiplication of each feature with corresponding weight.</li>
+</ol></li>
+<li><ol start="4" style="list-style-type: decimal">
+<li>Value of summation is added to bias.</li>
+</ol></li>
+<li><ol start="5" style="list-style-type: decimal">
+<li>Step/Activation function is applied to the new value.</li>
+</ol></li>
+</ul>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>3 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+import seaborn as sns
+
+#For chapter 4
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.linear_model import Perceptron
+
+#For chapter 5
+from sklearn.model_selection import GridSearchCV
+
+#For chapter 6
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.multiclass import OneVsOneClassifier
+
+#For chapter 7
+from sklearn.linear_model import SGDClassifier</code></pre>
+</div>
+<div id="perceptron---model-fitting-and-evaluation" class="section level1">
+<h1>4 Perceptron - Model Fitting and Evaluation</h1>
+<p>For the use of the perceptron, we first take only two variables from the iris data set (‘sepal_length’ and ‘sepal_width’) and only two iris types (‘Iris-setosa’ and ‘Iris-virginica’).</p>
+<pre class="r"><code>iris = pd.read_csv(&quot;Iris_Data.csv&quot;)
+iris = iris[[&#39;sepal_length&#39;, &#39;sepal_width&#39;, &#39;species&#39;]]
+iris = iris[(iris[&quot;species&quot;] != &#39;Iris-versicolor&#39;)]
+print(iris[&#39;species&#39;].value_counts().head().T)
+print()
+print(&#39;------------------------------------------&#39;)
+print()
+print(iris.head())</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p1.png" />
+
+</div>
+<p>Let’s plot them:</p>
+<pre class="r"><code>ax = sns.scatterplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, hue=&quot;species&quot;, data=iris)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p2.png" />
+
+</div>
+<p>Now let’s split the data and train the model as well as evaluate it.</p>
+<pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
+y = iris[&#39;species&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>clf = Perceptron()
+
+clf.fit(trainX, trainY)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p3.png" />
+
+</div>
+<pre class="r"><code>y_pred = clf.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p4.png" />
+
+</div>
+<p>Wow 95% accuracy with the perceptron as binary classifier.</p>
+</div>
+<div id="hyperparameter-optimization-via-grid-search" class="section level1">
+<h1>5 Hyperparameter optimization via Grid Search</h1>
+<p>Now we are trying to improve the model performance using grid search.</p>
+<pre class="r"><code>param_grid = {&quot;alpha&quot;: [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3],
+              &quot;n_iter&quot;: [5, 10, 15, 20, 50],
+              }
+
+grid = GridSearchCV(clf, param_grid, cv=10, scoring=&#39;accuracy&#39;)
+
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>print(grid.best_score_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p5.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_params_)</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p6.png" />
+
+</div>
+</div>
+<div id="ovoovr-with-the-perceptron" class="section level1">
+<h1>6 OvO/OvR with the Perceptron</h1>
+<p>To show OvR and OvO using Perceptron, the iris data set is loaded again. This time without restrictions or filters.</p>
+<pre class="r"><code>iris = pd.read_csv(&quot;Iris_Data.csv&quot;)</code></pre>
+<pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
+y = iris[&#39;species&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<p><strong>OvR</strong></p>
+<pre class="r"><code>OvR_clf = OneVsRestClassifier(Perceptron())
+OvR_clf.fit(trainX, trainY)
+
+y_pred = OvR_clf.predict(testX)
+
+print(&#39;Accuracy of OvR Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p7.png" />
+
+</div>
+<p><strong>OvO</strong></p>
+<pre class="r"><code>OvO_clf = OneVsOneClassifier(Perceptron())
+OvO_clf.fit(trainX, trainY)
+
+y_pred = OvO_clf.predict(testX)
+
+print(&#39;Accuracy of OvO Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p8.png" />
+
+</div>
+<p>As we can see, OvR doesn’t work quite as well but OvO does.</p>
+</div>
+<div id="perceptron-with-sgd-training" class="section level1">
+<h1>7 Perceptron with SGD training</h1>
+<p>Finally I show how to use the Perceptron with SGD training. For this we reload the iris data set as already done in chapter 4.</p>
+<pre class="r"><code>iris = pd.read_csv(&quot;Iris_Data.csv&quot;)
+iris = iris[[&#39;sepal_length&#39;, &#39;sepal_width&#39;, &#39;species&#39;]]
+iris = iris[(iris[&quot;species&quot;] != &#39;Iris-versicolor&#39;)]</code></pre>
+<pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
+y = iris[&#39;species&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>clf = SGDClassifier(loss=&quot;perceptron&quot;, penalty=&quot;l2&quot;)
+clf.fit(trainX, trainY)
+
+y_pred = clf.predict(testX)
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<div class="figure">
+<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p9.png" />
+
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>This post described how the Perceptron algorithm works and how it can be used in python. Furthermore, the model improvement via grid search was discussed as well as the use of OvR and OvO to convert the binary classifier into a multiple.</p>
+</div>

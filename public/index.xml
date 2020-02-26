@@ -63,7 +63,7 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
       <pubDate>Thu, 14 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/14/introduction-to-perceptron-algorithm/</guid>
-      <description>test</description>
+      <description>Table of Content1 Introduction2 Background information on Perceptron Algorithm3 Loading the libraries and the data4 Perceptron - Model Fitting and Evaluation5 Hyperparameter optimization via Grid Search6 OvO/OvR with the Perceptron7 Perceptron with SGD training8 Conclusion1 IntroductionI already wrote about “Logistic Regression” and “Support Vector Machines”. I also showed how to optimize these linear classifiers using “SGD training” and how to use the “OneVersusRest and OneVersusAll” Classifier to convert binary classifiers to multiple classifiers.</description>
     </item>
     
     <item>
