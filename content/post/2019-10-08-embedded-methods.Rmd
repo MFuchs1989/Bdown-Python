@@ -19,7 +19,10 @@ tags:
 + 3.1 Ridge Regression
 + 3.2 Lasso Regression
 + 3.3 Elastic Net
-+ 4 Conclusion
++ 4 Grid Search
++ 4.1 Grid for Ridge
++ 4.2 Grid for embedded methods
++ 5 Conclusion
 
 
 #1 Introduction
@@ -59,6 +62,9 @@ from sklearn.linear_model import Lasso
 from sklearn.linear_model import ElasticNet
 
 import matplotlib.pyplot as plt
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
 ```
 
 
@@ -337,8 +343,83 @@ plt.show()
 
 
 
+#4 Grid Search
 
-#4 Conclusion
+Grid search is an approach to parameter tuning that will methodically build and evaluate a model for each combination of algorithm parameters specified in a grid.
+
+
+#4.1 Grid for Ridge
+
+The code below evaluates different alpha values for the Ridge Regression.
+
+
+```{r, eval=F, echo=T}
+ridge_reg = Ridge()
+
+param_grid = [{'alpha':[1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]}]
+
+grid = GridSearchCV(ElaNet_reg, param_grid, cv = 10)
+
+grid.fit(trainX, trainY)
+```
+
+
+```{r, eval=F, echo=T}
+print(grid.best_score_)
+```
+
+![](/post/2019-10-08-embedded-methods_files/p21p21.png)
+
+
+```{r, eval=F, echo=T}
+print(grid.best_params_) 
+```
+
+![](/post/2019-10-08-embedded-methods_files/p21p22.png)
+
+We see that the result from grid search is worse than that from the original model.Something like that can happen. It does not matter anyway.
+
+
+#4.2 Grid for embedded methods
+
+We also can use Grid Search to compare all embedded methods with the different values for alpha:
+
+```{r, eval=F, echo=T}
+ridge_reg = Ridge()
+lasso_reg = Lasso()
+ElaNet_reg = ElasticNet()
+
+
+# Just initialize the pipeline with any estimator you like 
+pipe = Pipeline(steps=[('estimator', Ridge())])
+
+# Add a dict of estimator and estimator related parameters in this list
+params_grid = [{
+                'estimator':[Ridge()],
+                'estimator__alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                },
+                {
+                'estimator':[Lasso()],
+                'estimator__alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                },
+                {
+                'estimator': [ElasticNet()],
+                'estimator__alpha': [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                }
+              ]
+
+grid = GridSearchCV(pipe, params_grid, cv=5)
+
+grid.fit(trainX, trainY) 
+
+print(grid.best_params_) 
+```
+
+![](/post/2019-10-08-embedded-methods_files/p21p23.png)
+
+
+
+#5 Conclusion
 
 Within my latest post ["Wrapper methods"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/) 
 I described how they work and how they are differentiated from filter methods. But what's the difference between wrapper methods and embedded methods?
@@ -370,4 +451,11 @@ Then we went over to the wrapper methods:
 Finally we showed in this post the three best known embedded methods work.
 
 In addition to the explained syntax, the delimitation of the methods was also discussed.
+
+
+**Typical Use Cases**
+
++ Ridge: It is majorly used to prevent overfitting. Since it includes all the features, it is not very useful in case of exorbitantly high #features, say in millions, as it will pose computational challenges.
++ Lasso: Since it provides sparse solutions, it is generally the model of choice (or some variant of this concept) for modelling cases where the #features are in millions or more. In such a case, getting a sparse solution is of great computational advantage as the features with zero coefficients can simply be ignored.
+
 

@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">6 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">Embedded methods</h1>
@@ -84,7 +84,10 @@
 <li>3.1 Ridge Regression</li>
 <li>3.2 Lasso Regression</li>
 <li>3.3 Elastic Net</li>
-<li>4 Conclusion</li>
+<li>4 Grid Search</li>
+<li>4.1 Grid for Ridge</li>
+<li>4.2 Grid for embedded methods</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -113,7 +116,10 @@ from sklearn.linear_model import Ridge
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import ElasticNet
 
-import matplotlib.pyplot as plt</code></pre>
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline</code></pre>
 <pre class="r"><code>cars = pd.read_csv(&quot;auto-mpg.csv&quot;)
 cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
 cars_horsepower_mean = cars[&#39;horsepower&#39;].fillna(cars[&#39;horsepower&#39;].mean())
@@ -343,8 +349,70 @@ plt.show()</code></pre>
 
 </div>
 </div>
+<div id="grid-search" class="section level1">
+<h1>4 Grid Search</h1>
+<p>Grid search is an approach to parameter tuning that will methodically build and evaluate a model for each combination of algorithm parameters specified in a grid.</p>
+</div>
+<div id="grid-for-ridge" class="section level1">
+<h1>4.1 Grid for Ridge</h1>
+<p>The code below evaluates different alpha values for the Ridge Regression.</p>
+<pre class="r"><code>ridge_reg = Ridge()
+
+param_grid = [{&#39;alpha&#39;:[1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]}]
+
+grid = GridSearchCV(ElaNet_reg, param_grid, cv = 10)
+
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>print(grid.best_score_)</code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p21.png" />
+
+</div>
+<pre class="r"><code>print(grid.best_params_) </code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p22.png" />
+
+</div>
+<p>We see that the result from grid search is worse than that from the original model.Something like that can happen. It does not matter anyway.</p>
+</div>
+<div id="grid-for-embedded-methods" class="section level1">
+<h1>4.2 Grid for embedded methods</h1>
+<p>We also can use Grid Search to compare all embedded methods with the different values for alpha:</p>
+<pre class="r"><code>ridge_reg = Ridge()
+lasso_reg = Lasso()
+ElaNet_reg = ElasticNet()
+
+
+# Just initialize the pipeline with any estimator you like 
+pipe = Pipeline(steps=[(&#39;estimator&#39;, Ridge())])
+
+# Add a dict of estimator and estimator related parameters in this list
+params_grid = [{
+                &#39;estimator&#39;:[Ridge()],
+                &#39;estimator__alpha&#39;: [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                },
+                {
+                &#39;estimator&#39;:[Lasso()],
+                &#39;estimator__alpha&#39;: [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                },
+                {
+                &#39;estimator&#39;: [ElasticNet()],
+                &#39;estimator__alpha&#39;: [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]
+                }
+              ]
+
+grid = GridSearchCV(pipe, params_grid, cv=5)
+
+grid.fit(trainX, trainY) 
+
+print(grid.best_params_) </code></pre>
+<div class="figure">
+<img src="/post/2019-10-08-embedded-methods_files/p21p23.png" />
+
+</div>
+</div>
 <div id="conclusion" class="section level1">
-<h1>4 Conclusion</h1>
+<h1>5 Conclusion</h1>
 <p>Within my latest post <a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“Wrapper methods”</a> I described how they work and how they are differentiated from filter methods. But what’s the difference between wrapper methods and embedded methods?</p>
 <p>The difference from embedded methods to wrapper methods is that an intrinsic model building metric is used during learning. Furthermore embedded methods use algorithms that have built-in feature selection methods.</p>
 <p>I also gave this overview of the three types of feature selection:</p>
@@ -366,6 +434,11 @@ plt.show()</code></pre>
 </ul>
 <p>Finally we showed in this post the three best known embedded methods work.</p>
 <p>In addition to the explained syntax, the delimitation of the methods was also discussed.</p>
+<p><strong>Typical Use Cases</strong></p>
+<ul>
+<li>Ridge: It is majorly used to prevent overfitting. Since it includes all the features, it is not very useful in case of exorbitantly high #features, say in millions, as it will pose computational challenges.</li>
+<li>Lasso: Since it provides sparse solutions, it is generally the model of choice (or some variant of this concept) for modelling cases where the #features are in millions or more. In such a case, getting a sparse solution is of great computational advantage as the features with zero coefficients can simply be ignored.</li>
+</ul>
 </div>
 
     </div>
