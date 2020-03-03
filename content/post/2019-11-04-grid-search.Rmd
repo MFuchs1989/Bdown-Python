@@ -162,12 +162,20 @@ Unfortunately, we have not further improved the accuracy in this case.
 As already mentioned, grid search can be used with all possible machine learning algorithms.
 Below is a list of the well-known algorithms I used this method:
 
+**classifiacation:**
+
 + ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/)
 + ["SGD Classifier"](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/)
 + ["OvO and OvR Classifier"](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/)
 + ["Decision Trees"](https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/)
 + ["KNN Classifier"](https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/)
 
+
+**Regression:**
+
++ ["Ridge Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Lasso Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 
 #6.3 Grid Search with more than one estimator
 
