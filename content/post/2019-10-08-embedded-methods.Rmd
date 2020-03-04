@@ -439,8 +439,6 @@ In previous publications we treated filter methods:
 + ["Highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) 
 + ["Constant features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
 + ["Duplicate features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
-+ ["SelectKBest (chapter 4.1.3)"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
-
 
 
 Then we went over to the wrapper methods:
