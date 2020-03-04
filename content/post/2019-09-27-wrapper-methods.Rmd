@@ -20,11 +20,11 @@ tags:
 + 4.1 Data Preparation
 + 4.1.1 Check for missing values
 + 4.1.2 Removing highly correlated features
-+ 4.1.3 SelectKBest
 + 4.2 Syntax for wrapper methods
-+ 4.2.1 **Forward Feature Selection**
-+ 4.2.2 **Backward Elimination**
-+ 4.2.3 **Recursive Feature Elimination (RFE)**
++ 4.2.1 **SelectKBest**
++ 4.2.2 **Forward Feature Selection**
++ 4.2.3 **Backward Elimination**
++ 4.2.4 **Recursive Feature Elimination (RFE)**
 + 5 Conclusion
 
 
@@ -54,12 +54,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.ensemble import RandomForestRegressor
 
-#for chapter 4.1.3
+#for chapter 4.2.1
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
-#for chapter 4.2.1 and 4.2.2
+#for chapter 4.2.2 and 4.2.3
 from mlxtend.feature_selection import SequentialFeatureSelector
-#for chapter 4.2.3
+#for chapter 4.2.4
 from sklearn.feature_selection import RFE
 from sklearn.linear_model import LinearRegression
 ```
@@ -91,7 +91,6 @@ The following filter methods should be considered when creating your regression 
 + ["Highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) 
 + ["Constant features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
 + ["Duplicate features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
-+ SelectKBest (see section 4.1.3 below)
 
 
 
@@ -124,8 +123,12 @@ Well, it might get confusing at times to differentiate between filter and wrappe
 **Types of wrapper methods**
 
 
-In the following, three wrapper methods will be presented:
+In the following wrapper methods will be presented:
 
+
+*SelectKBest*
+
+Select features according to the k highest scores.
 
 *Forward Selection*
 
@@ -229,11 +232,12 @@ Originally, the record had 371 columns.
 After the exclusion of highly correlated variables we come up to 203 columns.
 
 
+#4.2 Syntax for wrapper methods
 
-#4.1.3 SelectKBest
+#4.2.1 SelectKBest
 
-As already mentioned several times, wrapper methods are computationally expensive.
-Therefore, it is worthwhile to use the filter method SelectKBest to select the k best features.
+As already mentioned several times, the most wrapper methods are computationally expensive.
+Therefore, it is worthwhile to use SelectKBest to select the k best features.
 
 ```{r, eval=F, echo=T}
 selector = SelectKBest(score_func=f_regression, k=20)
@@ -283,9 +287,8 @@ print(testY_reduced.shape)
 
 ![](/post/2019-09-27-wrapper-methods_files/p20p6.png)
 
-#4.2 Syntax for wrapper methods
 
-#4.2.1 Forward Feature Selection
+#4.2.2 Forward Feature Selection
 
 
 ```{r, eval=F, echo=T}
@@ -326,7 +329,7 @@ New_test_x = testX_reduced[filtered_features]
 
 
 
-#4.2.2 Backward Elimination
+#4.2.3 Backward Elimination
 
 The backward elimination functions almost identically from the syntax. the only difference is that the parameter forward is set to false.
 
@@ -357,7 +360,7 @@ New_test_x = testX_reduced[filtered_features]
 ```
 
 
-#4.2.3 Recursive Feature Elimination (RFE)
+#4.2.4 Recursive Feature Elimination (RFE)
 
 The syntax for RFE is now a little different but not particularly complicated. The parameter determining the number of features to extract is here n_features_to_select.
 
@@ -428,7 +431,7 @@ New_test_x = testX_reduced[filtered_features]
 #5 Conclusion
 
 
-This post discussed the differences between filter methods and wrapper methods. Furthermore, three wrapper methods were shown how they can be used to determine the best features out of a record.
+This post discussed the differences between filter methods and wrapper methods. Furthermore, four wrapper methods were shown how they can be used to determine the best features out of a record.
 
 
 One final note: the wrapper methods shown served as feature selection for regression models. For classification tasks you have to change some parameters. I'll show in a later post.
