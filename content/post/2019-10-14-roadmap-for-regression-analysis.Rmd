@@ -12,9 +12,10 @@ tags:
 
 #Table of Content
 
-  + 1 Introduction
-  + 2 Roadmap for Regression Analysis
-  + 3 Conclusion
++ 1 Introduction
++ 2 Roadmap for Regression Analysis
++ 3 Different types of regression models
++ 4 Conclusion
 
 
 
@@ -49,11 +50,11 @@ Filter methods:
 + ["Dealing with highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/)
 + ["Dealing with constant features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
 + ["Dealing with duplicate features"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
-+ ["SelectKBest"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
 
 
 Wrapper methods:
 
++ ["SelectKBest"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
 + ["Forward Feature Selection"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
 + ["Backward Elimination"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
 + ["Recursive Feature Elimination (RFE)"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
@@ -67,8 +68,17 @@ Embedded methods:
 
 
 
+#3 Different types of regression models
 
-#3 Conclusion
++ ["Linear Regression"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
++ ["Non-Linear Regression"](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
++ ["Polynomial Regression"](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
++ ["Ridge Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Lasso Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
+
+
+#4 Conclusion
 
 The methods mentioned in the listed posts show how to improve regression models.
 
