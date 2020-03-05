@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.46" />
+
+
+<title>Feature selection methods for classification tasks - Michael Fuchs Python</title>
+<meta property="og:title" content="Feature selection methods for classification tasks - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/Bdown-Python">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">Feature selection methods for classification tasks</h1>
+
+    
+    <span class="article-date">2020-01-31</span>
+    
+
+    <div class="article-content">
+      <div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Filter methods</li>
+<li>4 Wrapper methods</li>
+<li>4.1 SelectKBest</li>
+<li>4.2 Step Forward Feature Selection</li>
+<li>4.3 Backward Elimination</li>
+<li>4.4 Recursive Feature Elimination (RFE)</li>
+<li>4.5 Exhaustive Feature Selection</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39s1.png" />
+
+</div>
+<p>I already wrote about feature selection for regression analysis in this <a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“post”</a>. Feature selection is also relevant for classification problems. And that’s what this post is about.</p>
+<p>For this publication the dataset <em>MNIST</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk" class="uri">https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+# For chapter 4.1
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+
+# For chapter 4.2 &amp; 4.3
+from mlxtend.feature_selection import SequentialFeatureSelector
+from sklearn.ensemble import RandomForestClassifier
+
+# For chapter 4.4
+from sklearn.feature_selection import RFE
+
+# For chapter 4.5
+from mlxtend.feature_selection import ExhaustiveFeatureSelector</code></pre>
+<pre class="r"><code>mnist = pd.read_csv(&#39;path/to/file/mnist_train.csv&#39;)</code></pre>
+<p>We already know the data set used from the <a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">“OvO and OvR Classifier - Post”</a>. For a detailed description see also <a href="https://en.wikipedia.org/wiki/MNIST_database">“heret”</a>.</p>
+<p>As we can see, the MNIST dataset has 785 columns. Reason enough to use feature selection.</p>
+<pre class="r"><code>mnist.shape</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p1.png" />
+
+</div>
+<p>But first of all let’s split our dataframe:</p>
+<pre class="r"><code>x = mnist.drop(&#39;label&#39;, axis=1)
+y = mnist[&#39;label&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="filter-methods" class="section level1">
+<h1>3 Filter methods</h1>
+<p>The filter methods that we used for <a href="https://michael-fuchs-python.netlify.com/2019/10/14/roadmap-for-regression-analysis/">“regression tasks”</a> are also valid for classification problems.</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“Highly correlated features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Constant features”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“Duplicate features”</a></li>
+</ul>
+<p>Check out these publications to find out exactly how these methods work. In this post we have omitted the use of filter methods for the sake of simplicity and will go straight to the wrapper methdods.</p>
+</div>
+<div id="wrapper-methods" class="section level1">
+<h1>4 Wrapper methods</h1>
+<p>As already mentioned above, I described the use of wrapper methods for regression problems in this <a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“post: Wrapper methods”</a>. If you want to know exactly how the different wrapper methods work and how they differ from filter methods, please read <a href="https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/">“here”</a>.</p>
+<p>The syntax changes only slightly with classification problems.</p>
+</div>
+<div id="selectkbest" class="section level1">
+<h1>4.1 SelectKBest</h1>
+<pre class="r"><code>selector = SelectKBest(score_func=chi2, k=20)
+
+selector.fit(trainX, trainY)
+
+vector_names = list(trainX.columns[selector.get_support(indices=True)])
+print(vector_names)</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p2.png" />
+
+</div>
+<pre class="r"><code>trainX_best = trainX[vector_names]
+testX_best = testX[vector_names]
+
+print(trainX_best.shape)
+print(testX_best.shape)</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p3.png" />
+
+</div>
+</div>
+<div id="step-forward-feature-selection" class="section level1">
+<h1>4.2 Step Forward Feature Selection</h1>
+<p>We continue to work on the remaining wrapper methods with the selection by SelectKBest. Furthermore, the classification algorithm Random Forest was used for the other wrapper methods.</p>
+<pre class="r"><code>clf = RandomForestClassifier(n_jobs=-1)
+
+# Build step forward feature selection
+feature_selector = SequentialFeatureSelector(clf,
+           k_features=5,
+           forward=True,
+           floating=False,
+           verbose=2,
+           scoring=&#39;accuracy&#39;,
+           cv=5)
+
+features = feature_selector.fit(trainX_best, trainY)</code></pre>
+<pre class="r"><code>filtered_features= trainX_best.columns[list(features.k_feature_idx_)]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p4.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_best[filtered_features]
+New_test_x = trainX_best[filtered_features]</code></pre>
+</div>
+<div id="backward-elimination" class="section level1">
+<h1>4.3 Backward Elimination</h1>
+<pre class="r"><code>clf = RandomForestClassifier(n_jobs=-1)
+
+feature_selector = SequentialFeatureSelector(clf,
+           k_features=5,
+           forward=False,
+           floating=False,
+           verbose=2,
+           scoring=&#39;accuracy&#39;,
+           cv=5)
+
+features = feature_selector.fit(trainX_best, trainY)</code></pre>
+<pre class="r"><code>filtered_features= trainX_best.columns[list(features.k_feature_idx_)]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p5.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_best[filtered_features]
+New_test_x = trainX_best[filtered_features]</code></pre>
+</div>
+<div id="recursive-feature-elimination-rfe" class="section level1">
+<h1>4.4 Recursive Feature Elimination (RFE)</h1>
+<pre class="r"><code>clf = RandomForestClassifier(n_jobs=-1)
+
+rfe = RFE(clf, n_features_to_select=5)
+rfe.fit(trainX_best,trainY)</code></pre>
+<pre class="r"><code>rfe.support_</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p6.png" />
+
+</div>
+<pre class="r"><code>rfe.ranking_</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p7.png" />
+
+</div>
+<pre class="r"><code>Columns = trainX_best.columns
+RFE_support = rfe.support_
+RFE_ranking = rfe.ranking_
+
+dataset = pd.DataFrame({&#39;Columns&#39;: Columns, &#39;RFE_support&#39;: RFE_support, &#39;RFE_ranking&#39;: RFE_ranking}, columns=[&#39;Columns&#39;, &#39;RFE_support&#39;, &#39;RFE_ranking&#39;])
+dataset</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p8.png" />
+
+</div>
+<pre class="r"><code>df = dataset[(dataset[&quot;RFE_support&quot;] == True) &amp; (dataset[&quot;RFE_ranking&quot;] == 1)]
+filtered_features = df[&#39;Columns&#39;]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p9.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_best[filtered_features]
+New_test_x = trainX_best[filtered_features]</code></pre>
+</div>
+<div id="exhaustive-feature-selection" class="section level1">
+<h1>4.5 Exhaustive Feature Selection</h1>
+<p>The method of the Exhaustive Feature Selection is new and is therefore explained in a little more detail.</p>
+<p>In exhaustive feature selection, the performance of a machine learning algorithm is evaluated against all possible combinations of the features in the dataframe. The exhaustive search algorithm is the most greedy algorithm of all the wrapper methods shown above since it tries all the combination of features and selects the best. The algorithm has min_featuresand max_features attributes which can be used to specify the minimum and the maximum number of features in the combination.</p>
+<pre class="r"><code>clf = RandomForestClassifier(n_jobs=-1)
+
+feature_selector = ExhaustiveFeatureSelector(clf,
+           min_features=2,
+           max_features=5,
+           scoring=&#39;accuracy&#39;,
+           print_progress=True,
+           cv=5)
+
+features = feature_selector.fit(trainX_best, trainY)</code></pre>
+<pre class="r"><code>filtered_features= trainX_best.columns[list(features.k_feature_idx_)]
+filtered_features</code></pre>
+<div class="figure">
+<img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p10.png" />
+
+</div>
+<pre class="r"><code>New_train_x = trainX_best[filtered_features]
+New_test_x = trainX_best[filtered_features]</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This post showed how to use wrapper methods for classification problems.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

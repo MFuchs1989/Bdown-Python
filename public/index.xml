@@ -6,10 +6,19 @@
     <description>Recent content on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Feature selection methods for classification tasks</title>
+      <link>/2020/01/31/feature-selection-methods-for-classification-tasks/</link>
+      <pubDate>Fri, 31 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/01/31/feature-selection-methods-for-classification-tasks/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Filter methods4 Wrapper methods4.1 SelectKBest4.2 Step Forward Feature Selection4.3 Backward Elimination4.4 Recursive Feature Elimination (RFE)4.5 Exhaustive Feature Selection5 Conclusion1 IntroductionI already wrote about feature selection for regression analysis in this “post”. Feature selection is also relevant for classification problems. And that’s what this post is about.</description>
+    </item>
     
     <item>
       <title>Dealing with imbalanced classes</title>
