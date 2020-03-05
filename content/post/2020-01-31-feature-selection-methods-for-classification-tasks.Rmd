@@ -63,7 +63,7 @@ from mlxtend.feature_selection import ExhaustiveFeatureSelector
 mnist = pd.read_csv('path/to/file/mnist_train.csv')
 ```
 
-We already know the data set used from the ["OvO and OvR Classifier - Post"](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/). For a detailed description see also ["heret"](https://en.wikipedia.org/wiki/MNIST_database).
+We already know the data set used from the ["OvO and OvR Classifier - Post"](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/). For a detailed description see also ["here"](https://en.wikipedia.org/wiki/MNIST_database).
 
 As we can see, the MNIST dataset has 785 columns. Reason enough to use feature selection.
 
