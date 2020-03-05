@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">4 min read</span>
     
 
     <h1 class="article-title">Feature selection methods for classification tasks</h1>
@@ -254,6 +254,14 @@ New_test_x = trainX_best[filtered_features]</code></pre>
 <h1>4.5 Exhaustive Feature Selection</h1>
 <p>The method of the Exhaustive Feature Selection is new and is therefore explained in a little more detail.</p>
 <p>In exhaustive feature selection, the performance of a machine learning algorithm is evaluated against all possible combinations of the features in the dataframe. The exhaustive search algorithm is the most greedy algorithm of all the wrapper methods shown above since it tries all the combination of features and selects the best. The algorithm has min_featuresand max_features attributes which can be used to specify the minimum and the maximum number of features in the combination.</p>
+<p>As already mentioned Exhaustive Feature Selection is very computationaly expensive. Therefore, we use SelectKBest again, but this time we only let us calculate the 10 best features.</p>
+<pre class="r"><code>selector = SelectKBest(score_func=chi2, k=10)
+selector.fit(trainX, trainY)
+vector_names = list(trainX.columns[selector.get_support(indices=True)])
+
+trainX_best = trainX[vector_names]
+testX_best = testX[vector_names]</code></pre>
+<p>Furthermore we set the parameter cv to 2. Normaly I set cv=5.</p>
 <pre class="r"><code>clf = RandomForestClassifier(n_jobs=-1)
 
 feature_selector = ExhaustiveFeatureSelector(clf,
@@ -261,10 +269,10 @@ feature_selector = ExhaustiveFeatureSelector(clf,
            max_features=5,
            scoring=&#39;accuracy&#39;,
            print_progress=True,
-           cv=5)
+           cv=2)
 
 features = feature_selector.fit(trainX_best, trainY)</code></pre>
-<pre class="r"><code>filtered_features= trainX_best.columns[list(features.k_feature_idx_)]
+<pre class="r"><code>filtered_features= trainX_best.columns[list(features.best_idx_)]
 filtered_features</code></pre>
 <div class="figure">
 <img src="/post/2020-01-31-feature-selection-methods-for-classification-tasks_files/p39p10.png" />

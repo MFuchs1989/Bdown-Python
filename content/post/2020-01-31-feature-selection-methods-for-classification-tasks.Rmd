@@ -245,6 +245,20 @@ The method of the Exhaustive Feature Selection is new and is therefore explained
 
 In exhaustive feature selection, the performance of a machine learning algorithm is evaluated against all possible combinations of the features in the dataframe. The exhaustive search algorithm is the most greedy algorithm of all the wrapper methods shown above since it tries all the combination of features and selects the best. The algorithm has min_featuresand max_features attributes which can be used to specify the minimum and the maximum number of features in the combination.
 
+As already mentioned Exhaustive Feature Selection is very computationaly expensive. 
+Therefore, we use SelectKBest again, but this time we only let us calculate the 10 best features. 
+
+```{r, eval=F, echo=T}
+selector = SelectKBest(score_func=chi2, k=10)
+selector.fit(trainX, trainY)
+vector_names = list(trainX.columns[selector.get_support(indices=True)])
+
+trainX_best = trainX[vector_names]
+testX_best = testX[vector_names]
+```
+
+
+Furthermore we set the parameter cv to 2. Normaly I set cv=5.
 
 ```{r, eval=F, echo=T}
 clf = RandomForestClassifier(n_jobs=-1)
@@ -254,7 +268,7 @@ feature_selector = ExhaustiveFeatureSelector(clf,
            max_features=5,
            scoring='accuracy',
            print_progress=True,
-           cv=5)
+           cv=2)
 
 features = feature_selector.fit(trainX_best, trainY)
 ```
@@ -262,7 +276,7 @@ features = feature_selector.fit(trainX_best, trainY)
 
 
 ```{r, eval=F, echo=T}
-filtered_features= trainX_best.columns[list(features.k_feature_idx_)]
+filtered_features= trainX_best.columns[list(features.best_idx_)]
 filtered_features
 ```
 
