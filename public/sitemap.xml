@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2020/02/19/roadmap-for-classification-tasks/</loc>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2020/01/31/feature-selection-methods-for-classification-tasks/</loc>
     <lastmod>2020-01-31T00:00:00+00:00</lastmod>
   </url>
@@ -209,31 +214,31 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2020-01-31T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2020-01-31T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/r/</loc>
-    <lastmod>2020-01-31T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/r-markdown/</loc>
-    <lastmod>2020-01-31T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2020-01-31T00:00:00+00:00</lastmod>
+    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

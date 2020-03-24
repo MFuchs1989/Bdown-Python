@@ -6,10 +6,20 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 31 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 19 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Roadmap for Classification Tasks</title>
+      <link>/2020/02/19/roadmap-for-classification-tasks/</link>
+      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/02/19/roadmap-for-classification-tasks/</guid>
+      <description>Table of Content1 Introduction2 Roadmap for Classification Tasks2.1 Data pre-processing2.2 Feature Selection Methods2.3 Classification Algorithms3 Conclusion1 IntroductionAnother big chapter from the supervised machine learning area comes to an end. In the past 4 months I wrote in detail about the functionality and use of the most common classification algorithms within data science.
+Analogous to my post “Roadmap for Regression Analysis”, I will give again an overview of the handling of classification tasks.</description>
+    </item>
     
     <item>
       <title>Feature selection methods for classification tasks</title>

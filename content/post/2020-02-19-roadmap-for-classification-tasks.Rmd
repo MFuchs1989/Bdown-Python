@@ -1,0 +1,112 @@
+---
+title: Roadmap for Classification Tasks
+author: Michael Fuchs
+date: '2020-02-19'
+slug: roadmap-for-classification-tasks
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+#Table of Content
+
++ 1 Introduction
++ 2 Roadmap for Classification Tasks
++ 2.1 Data pre-processing
++ 2.2 Feature Selection Methods
++ 2.3 Classification Algorithms
++ 3 Conclusion
+
+
+
+#1 Introduction
+
+
+
+Another big chapter from the supervised machine learning area comes to an end. In the past 4 months I wrote in detail about the functionality and use of the most common classification algorithms within data science.
+
+Analogous to my post ["Roadmap for Regression Analysis"](https://michael-fuchs-python.netlify.com/2019/10/14/roadmap-for-regression-analysis/), I will give again an overview of the handling of classification tasks.
+
+
+
+#2 Roadmap for Classification Tasks
+
+#2.1 Data pre-processing
+
+![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p1.png)
+
+
+
+Here are the links to the individual topics:
+
++ [Handling Missing Values](https://michael-fuchs-python.netlify.com/2019/03/18/dealing-with-missing-values/)
++ [Dealing with outliers](https://michael-fuchs-python.netlify.com/2019/08/20/dealing-with-outliers/)
++ [Feature Encoding](https://michael-fuchs-python.netlify.com/2019/06/16/types-of-encoder/)
++ [Feature Scaling](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/)
++ [Dealing with imbalanced classes](https://michael-fuchs-python.netlify.com/2020/01/16/dealing-with-imbalanced-classes/)
+
+
+
+#2.2 Feature Selection Methods
+
+
+![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p2.png)
+
+
+Here are the links to the individual topics:
+
+
+Filter methods:
+
++ [Dealing with highly correlated features](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/)
++ [Dealing with constant features](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ [Dealing with duplicate features](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
+
+
+
+Wrapper methods:
+
++ [SelectKBest](https://michael-fuchs-python.netlify.com/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ [Step Forward Feature Selection](https://michael-fuchs-python.netlify.com/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ [Backward Elimination](https://michael-fuchs-python.netlify.com/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ [Recursive Feature Elimination (RFE)](https://michael-fuchs-python.netlify.com/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ [Exhaustive Feature Selection](https://michael-fuchs-python.netlify.com/2020/01/31/feature-selection-methods-for-classification-tasks/)
+
+
+
+
+#2.3 Classification Algorithms
+
+
+
+![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p3.png)
+
+Here are the links to the individual topics:
+
++ [Logistic Regression](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/)
++ [Support Vector Machines](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/)
++ [Perceptron](https://michael-fuchs-python.netlify.com/2019/11/14/introduction-to-perceptron-algorithm/)
++ [SGD Classifier](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/)
++ [OvO and OvR Classifier](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/)
++ [Softmax Regression](https://michael-fuchs-python.netlify.com/2019/11/15/multinomial-logistic-regression/)
++ [Decision Trees](https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/)
++ [Naive Bayes Classifier](https://michael-fuchs-python.netlify.com/2019/12/15/introduction-to-naive-bayes-classifier/)
++ [K Nearest Neighbor Classifier](https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/)
+
+
+
+**Notes on the special classifiers:**
+
+As described in the [SGD Classifier](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/) post, this is not a classifier. It's a linear classifier optimized by the Stochastic Gradient Descent.
+
+
+With the [One-vs-One and One-vs-Rest](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/) method it is possible to make binary classifiers multiple.
+
+
+
+#3 Conclusion
+
+The methods and algorithms shown in the overviews are described in detail in the respective publications with regard to theory and practical application. Just click on the respective link.
+
+
