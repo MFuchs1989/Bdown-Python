@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Michael Fuchs Python</title>
@@ -6,10 +6,21 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 19 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 29 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Saving machine learning models to disc</title>
+      <link>/2020/02/29/saving-machine-learning-models-to-disc/</link>
+      <pubDate>Sat, 29 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/02/29/saving-machine-learning-models-to-disc/</guid>
+      <description>#Table of Content
+1 Introduction2 Loading the libraries and the data#1 Introduction
+We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?Due to the fact that the training of large machine learning models can sometimes take many hours, it is a good tip to save your trained models regularly so that you can access them later.</description>
+    </item>
     
     <item>
       <title>Roadmap for Classification Tasks</title>
@@ -91,7 +102,7 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
       <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/13/ovo-and-ovr-classifier/</guid>
-      <description>Table of Content1 Introduction2 Background information on OvO and OvR3 Loading the libraries and the data4 OvO/OvR with Logistic Regression4.1 One-vs-Rest4.2 One-vs-One4.3 Grid Search5 OvO/OvR with SVM5.1 One-vs-Rest5.2 One-vs-One5.3 Grid Search6 Conclusion1 IntroductionWe already know from my previous posts how to train a binary classifier using “Logistic Regression” or “Support Vector Machines”. We have learned that these machine learning algorithms are strictly binary classifiers.</description>
+      <description>Table of Content1 Introduction2 Background information on OvO and OvR3 Loading the libraries and the data4 OvO/OvR with Logistic Regression4.1 One-vs-Rest4.2 One-vs-One4.3 Grid Search5 OvO/OvR with SVM5.1 One-vs-Rest5.2 One-vs-One5.3 Grid Search6 Conclusion1 IntroductionWe already know from my previous posts how to train a binary classifier using “Logistic Regression” or “Support Vector Machines”.</description>
     </item>
     
     <item>
@@ -138,8 +149,7 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
       <guid>/2019/10/14/roadmap-for-regression-analysis/</guid>
       <description>Table of Content1 Introduction2 Roadmap for Regression Analysis3 Different types of regression models4 Conclusion1 IntroductionIn my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
 2 Roadmap for Regression AnalysisHere are the links to the individual topics.
-Data pre-processing:
-“Handling Missing Values”“Dealing with outliers”“Feature Encoding”“Feature Scaling”Feature Selection:</description>
+Data pre-processing:</description>
     </item>
     
     <item>
@@ -261,8 +271,7 @@ For this post the dataset House Sales in King County, USA from the statistic pla
       <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/05/30/the-use-of-the-groupby-function/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Group by3.1 with size3.2 with count3.2.1 Count Non - Zero Observations3.3 with sum3.4 with nunique3.5 with mean3.6 with agg.4 Conclusion1 IntroductionGoupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.
-For this post the dataset flight from the statistic platform “Kaggle” was used.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Group by3.1 with size3.2 with count3.2.1 Count Non - Zero Observations3.3 with sum3.4 with nunique3.5 with mean3.6 with agg.4 Conclusion1 IntroductionGoupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.</description>
     </item>
     
     <item>
@@ -354,7 +363,7 @@ For this post the dataset WorldHappinessReport from the statistic platform “Ka
       
       <guid>/2019/03/06/add-new-columns/</guid>
       <description>Table of Content1 Introduction2 Normal Calculation3 If-else statements4 Multiple If-else statements5 Row Sum6 With a defined list7 Conclusion1 IntroductionThere are several ways to generate new variables in Python. Below the most common methods will be shown.
-For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL.</description>
+For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.</description>
     </item>
     
     <item>
