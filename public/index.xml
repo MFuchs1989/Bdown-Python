@@ -12,16 +12,6 @@
     
     
     <item>
-      <title>test</title>
-      <link>/2020/04/15/test/</link>
-      <pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/2020/04/15/test/</guid>
-      <description>#Test
-TEstTest</description>
-    </item>
-    
-    <item>
       <title>Saving machine learning models to disc</title>
       <link>/2020/02/29/saving-machine-learning-models-to-disc/</link>
       <pubDate>Sat, 29 Feb 2020 00:00:00 +0000</pubDate>
