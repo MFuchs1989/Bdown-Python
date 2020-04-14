@@ -18,7 +18,7 @@
       
       <guid>/2020/02/29/saving-machine-learning-models-to-disc/</guid>
       <description>#Table of Content
-1 Introduction2 Loading the libraries and the data3 Visualization of the data4 Model training5 Safe a model to disc6 Load a model from disc#1 Introduction
+1 Introduction2 Loading the libraries and the data3 Visualization of the data4 Model training5 Safe a model to disc6 Load a model from disc7 Conclusion#1 Introduction
 We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?Due to the fact that the training of large machine learning models can sometimes take many hours, it is a good tip to save your trained models regularly so that you can access them later.</description>
     </item>
     
