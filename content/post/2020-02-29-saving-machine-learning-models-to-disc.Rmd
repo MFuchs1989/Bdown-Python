@@ -12,7 +12,7 @@ tags:
 
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Loading the libraries and the data
@@ -23,7 +23,7 @@ tags:
 + 7 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 
 We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance? 
@@ -34,7 +34,7 @@ For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://
 
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 ```{r, eval=F, echo=T}
 import pandas as pd
@@ -65,7 +65,7 @@ iris
 ![](/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p1.png)
 
 
-#3 Visualization of the data
+# 3 Visualization of the data
 
 ```{r, eval=F, echo=T}
 g = sns.pairplot(iris, hue='species', markers='+')
@@ -77,7 +77,7 @@ plt.show()
 
 
 
-#4 Model training
+# 4 Model training
 
 ```{r, eval=F, echo=T}
 x = iris.drop('species', axis=1)
@@ -109,7 +109,7 @@ print('Error rate: {:.2f}'.format(1 - accuracy_score(testY, y_pred)))
 
 
 
-#5 Safe a model to disc
+# 5 Safe a model to disc
 
 Now we have trained our model (here linear SVM). It's time to safe the trained model to disc.
 
@@ -131,7 +131,7 @@ Of course you can specify a different location under (here) filename.
 
 
 
-#6 Load a model from disc
+# 6 Load a model from disc
 
 
 The trained model can be reloaded at any later time.
@@ -162,7 +162,7 @@ my_pred
 ![](/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p6.png)
 
 
-#7 Conclusion
+# 7 Conclusion
 
 A Jupyter notebook or whatever IDE you like to use crashes easily. It is therefore advisable to save your trained model regularly.
 

@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 29 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 15 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>test</title>
+      <link>/2020/04/15/test/</link>
+      <pubDate>Wed, 15 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/15/test/</guid>
+      <description>#Test
+TEstTest</description>
+    </item>
     
     <item>
       <title>Saving machine learning models to disc</title>
@@ -17,9 +27,7 @@
       <pubDate>Sat, 29 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/02/29/saving-machine-learning-models-to-disc/</guid>
-      <description>#Table of Content
-1 Introduction2 Loading the libraries and the data3 Visualization of the data4 Model training5 Safe a model to disc6 Load a model from disc7 Conclusion#1 Introduction
-We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?Due to the fact that the training of large machine learning models can sometimes take many hours, it is a good tip to save your trained models regularly so that you can access them later.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Visualization of the data4 Model training5 Safe a model to disc6 Load a model from disc7 Conclusion1 IntroductionWe have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?</description>
     </item>
     
     <item>

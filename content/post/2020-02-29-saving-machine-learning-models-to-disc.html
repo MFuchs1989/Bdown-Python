@@ -12,7 +12,8 @@ tags:
 
 
 
-<p>#Table of Content</p>
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
 <ul>
 <li>1 Introduction</li>
 <li>2 Loading the libraries and the data</li>
@@ -22,11 +23,15 @@ tags:
 <li>6 Load a model from disc</li>
 <li>7 Conclusion</li>
 </ul>
-<p>#1 Introduction</p>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
 <p>We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?
 Due to the fact that the training of large machine learning models can sometimes take many hours, it is a good tip to save your trained models regularly so that you can access them later.</p>
 <p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
-<p>#2 Loading the libraries and the data</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
 <pre class="r"><code>import pandas as pd
 
 from sklearn.model_selection import train_test_split
@@ -45,11 +50,15 @@ iris = iris[[&#39;sepal_length&#39;, &#39;sepal_width&#39;, &#39;species&#39;]]
 
 iris</code></pre>
 <p><img src="/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p1.png" /></p>
-<p>#3 Visualization of the data</p>
+</div>
+<div id="visualization-of-the-data" class="section level1">
+<h1>3 Visualization of the data</h1>
 <pre class="r"><code>g = sns.pairplot(iris, hue=&#39;species&#39;, markers=&#39;+&#39;)
 plt.show()</code></pre>
 <p><img src="/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p2.png" /></p>
-<p>#4 Model training</p>
+</div>
+<div id="model-training" class="section level1">
+<h1>4 Model training</h1>
 <pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
 y = iris[&#39;species&#39;]
 
@@ -62,7 +71,9 @@ clf.fit(trainX, trainY)</code></pre>
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))
 print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p4.png" /></p>
-<p>#5 Safe a model to disc</p>
+</div>
+<div id="safe-a-model-to-disc" class="section level1">
+<h1>5 Safe a model to disc</h1>
 <p>Now we have trained our model (here linear SVM). It’s time to safe the trained model to disc.</p>
 <pre class="r"><code># save the model to disk
 
@@ -70,7 +81,9 @@ filename = &#39;final_svm_model.sav&#39;
 joblib.dump(clf, filename)</code></pre>
 <p><img src="/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p5.png" /></p>
 <p>Of course you can specify a different location under (here) filename.</p>
-<p>#6 Load a model from disc</p>
+</div>
+<div id="load-a-model-from-disc" class="section level1">
+<h1>6 Load a model from disc</h1>
 <p>The trained model can be reloaded at any later time.</p>
 <pre class="r"><code># load the model from disk
 
@@ -82,5 +95,8 @@ Let’s see what prediction I get for values sepal_length &amp; sepal_width of 4
 <pre class="r"><code>my_pred = loaded_model.predict(my_flower)
 my_pred</code></pre>
 <p><img src="/post/2020-02-29-saving-machine-learning-models-to-disc_files/p41p6.png" /></p>
-<p>#7 Conclusion</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
 <p>A Jupyter notebook or whatever IDE you like to use crashes easily. It is therefore advisable to save your trained model regularly.</p>
+</div>
