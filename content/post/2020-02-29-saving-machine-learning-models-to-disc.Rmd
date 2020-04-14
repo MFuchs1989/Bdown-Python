@@ -7,8 +7,8 @@ categories:
   - R
 tags:
   - R Markdown
-  output:
-html_notebook:
+output:
+  html_notebook:
     toc: yes
 ---
 
