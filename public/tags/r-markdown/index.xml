@@ -6,10 +6,19 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 29 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ensemble Modeling - Bagging</title>
+      <link>/2020/03/07/ensemble-modeling-bagging/</link>
+      <pubDate>Sat, 07 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/07/ensemble-modeling-bagging/</guid>
+      <description>Table of Content1 Introduction2 Backgroundinformation on Bagging3 Loading the libraries and the data4 Data pre-processing5 Decision Tree Classifier6 Bagging Classifier7 Random Forest Classifier7.1 Train the Random Forest Classifier7.2 Evaluate the Forest Classifier7.2.1 StratifiedKFold7.2.2 KFold7.3 Hyperparameter optimization via Randomized Search7.4 Determination of feature importance8 Conclusion1 IntroductionSo far we have dealt very intensively with the use of different classification algorithms.</description>
+    </item>
     
     <item>
       <title>Saving machine learning models to disc</title>
