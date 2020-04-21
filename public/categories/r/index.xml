@@ -81,9 +81,7 @@ Analogous to my post “Roadmap for Regression Analysis”, I will give again an
       <pubDate>Sat, 30 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/30/introduction-to-decision-trees/</guid>
-      <description>#Table of Content
-1 Introduction2 Background information on decision trees3 Loading the libraries and the data4 Decision Trees with scikit-learn5 Visualization of the decision tree5.1 via graphviz5.2 via scikit-learn6 Model evaluation7 Model improvement7.1 Hyperparameter optimization via Grid Search8 Conclusion#1 Introduction
-After “Multinomial logistic regression” we come to a further multiple class classifier: Decision Trees.
+      <description>Table of Content1 Introduction2 Background information on decision trees3 Loading the libraries and the data4 Decision Trees with scikit-learn5 Visualization of the decision tree5.1 via graphviz5.2 via scikit-learn6 Model evaluation7 Model improvement7.1 Hyperparameter optimization via Grid Search8 Conclusion1 IntroductionAfter “Multinomial logistic regression” we come to a further multiple class classifier: Decision Trees.
 For this post the dataset Iris from the statistic platform “Kaggle” was used.</description>
     </item>
     

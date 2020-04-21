@@ -10,7 +10,7 @@ tags:
 ---
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Background information on decision trees
@@ -25,7 +25,7 @@ tags:
 + 8 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 ![](/post/2019-11-30-introduction-to-decision-trees_files/p30p1.png)
 
@@ -34,7 +34,7 @@ After ["Multinomial logistic regression"](https://michael-fuchs-python.netlify.c
 For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
 
 
-#2 Background information on decision trees
+# 2 Background information on decision trees
 
 A decision tree is a largely used non-parametric effective machine learning modeling technique for regression and classification problems. In the following, the classification using decision trees is discussed in detail. The use of decision trees for regression problems is covered in a separate post.
 
@@ -67,7 +67,7 @@ There are several pos and cons for the use of decision trees:
 
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -97,7 +97,7 @@ iris = pd.read_csv("path/to/file/Iris_Data.csv")
 
 
 
-#4 Decision Trees with scikit-learn
+# 4 Decision Trees with scikit-learn
 
 
 ```{r, eval=F, echo=T}
@@ -118,9 +118,9 @@ Here we assigned the predictor variables and the target variable to an object, d
 
 
 
-#5 Visualization of the decision tree
+# 5 Visualization of the decision tree
 
-#5.1 via graphviz
+# 5.1 via graphviz
 
 I recommend export_graphviz for the visualization of decision trees.
 
@@ -155,7 +155,7 @@ Calling the generated .jpg may show an image with poor quality. I therefore reco
 
 
 
-#5.2 via scikit-learn
+# 5.2 via scikit-learn
 
 New in scikit-learn (version 0.21) is plot_tree and export_text.
 
@@ -185,7 +185,7 @@ print(export_text(clf, feature_names=features, show_weights=True))
 
 
 
-#6 Model evaluation
+# 6 Model evaluation
 
 To evaluate the model we calculate the accuracy: 
 
@@ -213,9 +213,9 @@ Ok, here we get a slightly better result of 96.7% accuracy.
 
 
 
-#7 Model improvement
+# 7 Model improvement
 
-#7.1 Hyperparameter optimization via Grid Search
+# 7.1 Hyperparameter optimization via Grid Search
 
 To get a more detailed impression of how grid search works have look ["here"](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV).
 
@@ -251,7 +251,7 @@ print(grid.best_params_)
 ![](/post/2019-11-30-introduction-to-decision-trees_files/p30p7.png)
 
 
-#7.2 Pruning
+# 7.2 Pruning
 
 Another way to improve model performance is to prune a tree.
 
@@ -344,7 +344,7 @@ As the alpha increases, the tree becomes more pruned, creating a decision tree t
 
 
 
-#8 Conclusion
+# 8 Conclusion
 
 
 This post showed how decision trees can be created, their performance can be measured and improved. Furthermore, the advantages and disadvantages of decision trees were discussed.
