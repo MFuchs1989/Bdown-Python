@@ -17,6 +17,8 @@ tags:
 + 3 Loading the libraries and the data
 + 4 Decision Trees with scikit-learn
 + 5 Visualization of the decision tree
++ 5.1 via graphviz
++ 5.2 via scikit-learn
 + 6 Model evaluation
 + 7 Model improvement
 + 7.1 Hyperparameter optimization via Grid Search
@@ -118,6 +120,8 @@ Here we assigned the predictor variables and the target variable to an object, d
 
 #5 Visualization of the decision tree
 
+#5.1 via graphviz
+
 I recommend export_graphviz for the visualization of decision trees.
 
 
@@ -148,6 +152,36 @@ plt.imshow(im)
 
 
 Calling the generated .jpg may show an image with poor quality. I therefore recommend calling the .jpgs directly.
+
+
+
+#5.2 via scikit-learn
+
+New in scikit-learn (version 0.21) is plot_tree and export_text.
+
+
+
+```{r, eval=F, echo=T}
+features = x.columns.tolist()
+classes = y.unique().tolist()
+```
+
+
+
+```{r, eval=F, echo=T}
+plt.figure(figsize=(15, 15))
+plot_tree(clf, feature_names=features, class_names=classes, filled=True)
+plt.savefig('tree2.png')  #you can also comment out this feature if you want
+plt.show()
+```
+
+![](/post/2019-11-30-introduction-to-decision-trees_files/p30p2.1.png)
+
+```{r, eval=F, echo=T}
+print(export_text(clf, feature_names=features, show_weights=True))
+```
+
+![](/post/2019-11-30-introduction-to-decision-trees_files/p30p2.2.png)
 
 
 

@@ -11,35 +11,30 @@ tags:
 
 
 
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<p>#Table of Content</p>
 <ul>
 <li>1 Introduction</li>
 <li>2 Background information on decision trees</li>
 <li>3 Loading the libraries and the data</li>
 <li>4 Decision Trees with scikit-learn</li>
 <li>5 Visualization of the decision tree</li>
+<li>5.1 via graphviz</li>
+<li>5.2 via scikit-learn</li>
 <li>6 Model evaluation</li>
 <li>7 Model improvement</li>
 <li>7.1 Hyperparameter optimization via Grid Search</li>
 <li>8 Conclusion</li>
 </ul>
-</div>
-<div id="introduction" class="section level1">
-<h1>1 Introduction</h1>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p1.png" />
-
-</div>
+<p>#1 Introduction</p>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p1.png" /></p>
 <p>After <a href="https://michael-fuchs-python.netlify.com/2019/11/15/multinomial-logistic-regression/">“Multinomial logistic regression”</a> we come to a further multiple class classifier: Decision Trees.</p>
 <p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
-</div>
-<div id="background-information-on-decision-trees" class="section level1">
-<h1>2 Background information on decision trees</h1>
+<p>#2 Background information on decision trees</p>
 <p>A decision tree is a largely used non-parametric effective machine learning modeling technique for regression and classification problems. In the following, the classification using decision trees is discussed in detail. The use of decision trees for regression problems is covered in a separate post.</p>
 <p>Decision tree algorithms use information gain to split a node. Gini index or entropy is the criterion for calculating information gain.</p>
 <p>Both gini and entropy are measures of impurity of a node. A node having multiple classes is impure whereas a node having only one class is pure.<br />
-Gini measurement is the probability of a random sample being classified incorrectly if we randomly pick a label according to the distribution in a branch. Entropy is a measurement of information. You calculate the information gain by making a split.</p>
+Gini measurement is the probability of a random sample being classified incorrectly if we randomly pick a label according to the distribution in a branch.
+Entropy is a measurement of information. You calculate the information gain by making a split.</p>
 <p>There are several pos and cons for the use of decision trees:</p>
 <p><strong>Pros:</strong></p>
 <ul>
@@ -59,9 +54,7 @@ Gini measurement is the probability of a random sample being classified incorrec
 <li>For a Decision tree sometimes calculation can go far more complex compared to other algorithms.</li>
 <li>Decision trees are biased with imbalance dataset, so it is recommended that balance out the dataset before creating the decision tree.</li>
 </ul>
-</div>
-<div id="loading-the-libraries-and-the-data" class="section level1">
-<h1>3 Loading the libraries and the data</h1>
+<p>#3 Loading the libraries and the data</p>
 <pre class="r"><code>import numpy as np
 import pandas as pd
 
@@ -80,9 +73,7 @@ from sklearn.model_selection import cross_val_score
 # For chapter 6.1
 from sklearn.model_selection import GridSearchCV</code></pre>
 <pre class="r"><code>iris = pd.read_csv(&quot;path/to/file/Iris_Data.csv&quot;)</code></pre>
-</div>
-<div id="decision-trees-with-scikit-learn" class="section level1">
-<h1>4 Decision Trees with scikit-learn</h1>
+<p>#4 Decision Trees with scikit-learn</p>
 <pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
 y = iris[&#39;species&#39;]
 
@@ -94,9 +85,8 @@ clf.fit(trainX, trainY)
 
 y_pred = clf.predict(testX)</code></pre>
 <p>Here we assigned the predictor variables and the target variable to an object, divided them into a training part and a test part and predicted values for the test part using the trained classification algorithm.</p>
-</div>
-<div id="visualization-of-the-decision-tree" class="section level1">
-<h1>5 Visualization of the decision tree</h1>
+<p>#5 Visualization of the decision tree</p>
+<p>#5.1 via graphviz</p>
 <p>I recommend export_graphviz for the visualization of decision trees.</p>
 <pre class="r"><code>dot_data = export_graphviz(
                 clf,
@@ -112,36 +102,32 @@ graph.write_png(&#39;tree.jpng&#39;)</code></pre>
 <pre class="r"><code>im = img.imread(&#39;tree.jpng&#39;) 
 plt.figure(figsize = (10,10))
 plt.imshow(im)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.png" /></p>
 <p>Calling the generated .jpg may show an image with poor quality. I therefore recommend calling the .jpgs directly.</p>
-</div>
-<div id="model-evaluation" class="section level1">
-<h1>6 Model evaluation</h1>
+<p>#5.2 via scikit-learn</p>
+<p>New in scikit-learn (version 0.21) is plot_tree and export_text.</p>
+<pre class="r"><code>features = x.columns.tolist()
+classes = y.unique().tolist()</code></pre>
+<pre class="r"><code>plt.figure(figsize=(15, 15))
+plot_tree(clf, feature_names=features, class_names=classes, filled=True)
+plt.savefig(&#39;tree2.png&#39;)  #you can also comment out this feature if you want
+plt.show()</code></pre>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.1.png" /></p>
+<pre class="r"><code>print(export_text(clf, feature_names=features, show_weights=True))</code></pre>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.2.png" /></p>
+<p>#6 Model evaluation</p>
 <p>To evaluate the model we calculate the accuracy:</p>
 <pre class="r"><code>metrics.accuracy_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p3.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p3.png" /></p>
 <p>Furthermore we use cross validation:</p>
 <pre class="r"><code>scores = cross_val_score(clf, trainX, trainY, cv=10)
 print(&quot;Cross-Validation mean: {:.3f} (std: {:.3f})&quot;.format(scores.mean(),
                                           scores.std()),
                                           end=&quot;\n\n&quot; )</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p4.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p4.png" /></p>
 <p>Ok, here we get a slightly better result of 96.7% accuracy.</p>
-</div>
-<div id="model-improvement" class="section level1">
-<h1>7 Model improvement</h1>
-</div>
-<div id="hyperparameter-optimization-via-grid-search" class="section level1">
-<h1>7.1 Hyperparameter optimization via Grid Search</h1>
+<p>#7 Model improvement</p>
+<p>#7.1 Hyperparameter optimization via Grid Search</p>
 <p>To get a more detailed impression of how grid search works have look <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">“here”</a>.</p>
 <pre class="r"><code>param_grid = {&quot;criterion&quot;: [&quot;gini&quot;, &quot;entropy&quot;],
               &quot;min_samples_split&quot;: [2, 5, 10, 15, 20],
@@ -152,25 +138,14 @@ print(&quot;Cross-Validation mean: {:.3f} (std: {:.3f})&quot;.format(scores.mean
 
 grid = GridSearchCV(clf, param_grid, cv=10, scoring=&#39;accuracy&#39;)
 grid.fit(trainX, trainY)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p5.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p5.png" /></p>
 <pre class="r"><code># Single best score achieved across all params
 print(grid.best_score_)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p6.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p6.png" /></p>
 <pre class="r"><code># Dictionary containing the parameters used to generate that score
 print(grid.best_params_)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p7.png" />
-
-</div>
-</div>
-<div id="pruning" class="section level1">
-<h1>7.2 Pruning</h1>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p7.png" /></p>
+<p>#7.2 Pruning</p>
 <p>Another way to improve model performance is to prune a tree.</p>
 <p>The DecisionTreeClassifier provides parameters such as min_samples_leaf and max_depth to prevent a tree from overfiting. Cost complexity pruning provides another option to control the size of a tree. In DecisionTreeClassifier, this pruning technique is parameterized by the cost complexity parameter, ccp_alpha.</p>
 <pre class="r"><code>path = clf.cost_complexity_pruning_path(trainX, trainY)
@@ -182,10 +157,7 @@ ax.set_ylabel(&quot;total impurity of leaves&quot;)
 ax.set_title(&quot;Total Impurity vs effective alpha for training set&quot;)
 
 #In the following plot, the maximum effective alpha value is removed, because it is the trivial tree with only one node.</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p8.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p8.png" /></p>
 <p>As alpha increases, more of the tree is pruned, which increases the total impurity of its leaves.</p>
 <p>Next, we train a decision tree using the effective alphas. The last value in ccp_alphas is the alpha value that prunes the whole tree, leaving the tree, clfs[-1], with one node.</p>
 <pre class="r"><code>clfs = []
@@ -211,10 +183,7 @@ ax[1].set_xlabel(&quot;alpha&quot;)
 ax[1].set_ylabel(&quot;depth of tree&quot;)
 ax[1].set_title(&quot;Depth vs alpha&quot;)
 fig.tight_layout()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p9.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p9.png" /></p>
 <pre class="r"><code>train_scores = [clf.score(trainX, trainY) for clf in clfs]
 test_scores = [clf.score(testX, testY) for clf in clfs]
 
@@ -228,13 +197,7 @@ ax.plot(ccp_alphas, test_scores, marker=&#39;o&#39;, label=&quot;test&quot;,
         drawstyle=&quot;steps-post&quot;)
 ax.legend()
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p10.png" />
-
-</div>
+<p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p10.png" /></p>
 <p>As the alpha increases, the tree becomes more pruned, creating a decision tree that may be more generalized. Here we can see that increasing ccp_alpha does not further increase accuracy</p>
-</div>
-<div id="conclusion" class="section level1">
-<h1>8 Conclusion</h1>
+<p>#8 Conclusion</p>
 <p>This post showed how decision trees can be created, their performance can be measured and improved. Furthermore, the advantages and disadvantages of decision trees were discussed.</p>
-</div>
