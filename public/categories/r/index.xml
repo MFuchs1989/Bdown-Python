@@ -6,10 +6,20 @@
     <description>Recent content in R on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 07 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 26 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ensemble Modeling - Boosting</title>
+      <link>/2020/03/26/ensemble-modeling-boosting/</link>
+      <pubDate>Thu, 26 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/03/26/ensemble-modeling-boosting/</guid>
+      <description>Table of Content1 Introduction2 Backgroundinformation on Boosting3 Loading the libraries and the data4 Data pre-processing5 AdaBoost (Adaptive Boosting)6 Gradient Boosting7 Conclusion1 IntroductionAfter “Bagging” we come to another type of ensemble method: Boosting.
+For this post the dataset Bank Data from the platform “UCI Machine Learning repository” was used. A copy of the record is available at https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD.</description>
+    </item>
     
     <item>
       <title>Ensemble Modeling - Bagging</title>

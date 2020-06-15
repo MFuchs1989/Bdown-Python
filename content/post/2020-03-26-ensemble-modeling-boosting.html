@@ -1,0 +1,175 @@
+---
+title: Ensemble Modeling - Boosting
+author: Michael Fuchs
+date: '2020-03-26'
+slug: ensemble-modeling-boosting
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Backgroundinformation on Boosting</li>
+<li>3 Loading the libraries and the data</li>
+<li>4 Data pre-processing</li>
+<li>5 AdaBoost (Adaptive Boosting)</li>
+<li>6 Gradient Boosting</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>After <a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">“Bagging”</a> we come to another type of ensemble method: Boosting.</p>
+<p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
+</div>
+<div id="backgroundinformation-on-boosting" class="section level1">
+<h1>2 Backgroundinformation on Boosting</h1>
+<p>Boosting often considers homogeneous weak learners and learns them sequentially in a very adaptative way (a base model depends on the previous ones) and combines them following a deterministic strategy.</p>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43s1.png" /></p>
+<p>To get a better understanding of the difference between Bagging and Boosting read this <a href="https://quantdare.com/what-is-the-difference-between-bagging-and-boosting/">“article”</a></p>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43s2.png" /></p>
+<p>Source: <a href="https://quantdare.com/what-is-the-difference-between-bagging-and-boosting/">“QuantDare”</a></p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>3 Loading the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier
+
+from sklearn.ensemble import GradientBoostingClassifier</code></pre>
+<pre class="r"><code>bank = pd.read_csv(&quot;path/to/file/bank.csv&quot;, sep=&quot;;&quot;)
+bank.head()</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p1.png" /></p>
+<p>The data set before us contains information about whether a customer has signed a contract or not.</p>
+<pre class="r"><code>bank[&#39;y&#39;].value_counts().T</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p2.png" /></p>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<p>We do exactly the same data pre-processing steps like in the previous post about <a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">“Bagging”</a>.</p>
+<pre class="r"><code>safe_y = bank[[&#39;y&#39;]]
+
+col_to_exclude = [&#39;y&#39;]
+bank = bank.drop(col_to_exclude, axis=1)</code></pre>
+<pre class="r"><code>#Just select the categorical variables
+cat_col = [&#39;object&#39;]
+cat_columns = list(bank.select_dtypes(include=cat_col).columns)
+cat_data = bank[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(bank[var], prefix=var)
+    bank=bank.join(cat_list)
+
+    
+data_vars=bank.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+bank_final=bank[to_keep]
+bank_final.columns.values</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p3.png" /></p>
+<pre class="r"><code>bank = pd.concat([bank_final, safe_y], axis=1)
+bank</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p4.png" /></p>
+<p>Now let’s split the dataframe for further processing.</p>
+<pre class="r"><code>x = bank.drop(&#39;y&#39;, axis=1)
+y = bank[&#39;y&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="adaboost-adaptive-boosting" class="section level1">
+<h1>5 AdaBoost (Adaptive Boosting)</h1>
+<p>AdaBoost or Adaptive Boosting is one of ensemble boosting classifier proposed by Yoav Freund and Robert Schapire. It combines multiple classifiers to increase the accuracy of classifiers. AdaBoost is an iterative ensemble method. AdaBoost classifier builds a strong classifier by combining multiple poorly performing classifiers so that you will get high accuracy strong classifier. The basic concept behind Adaboost is to set the weights of classifiers and training the data sample in each iteration such that it ensures the accurate predictions of unusual observations. Any machine learning algorithm can be used as base classifier if it accepts weights on the training set. Adaboost should meet two conditions:</p>
+<ul>
+<li>The classifier should be trained interactively on various weighed training examples.</li>
+<li>In each iteration, it tries to provide an excellent fit for these examples by minimizing training error.</li>
+</ul>
+<p>Now let’s implement an AdaBoost-Classifier with a decision tree classifier as a base estimator:</p>
+<pre class="r"><code>dt_params = {
+    &#39;max_depth&#39;: 1,
+    &#39;random_state&#39;: 11
+}
+dt = DecisionTreeClassifier(**dt_params)</code></pre>
+<pre class="r"><code>ab_params = {
+    &#39;n_estimators&#39;: 100,
+    &#39;base_estimator&#39;: dt,
+    &#39;random_state&#39;: 11
+}
+ab = AdaBoostClassifier(**ab_params)</code></pre>
+<pre class="r"><code>ab.fit(trainX, trainY)
+ab_preds_train = ab.predict(trainX)
+ab_preds_test = ab.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Adaptive Boosting:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on validation data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=ab_preds_train),
+    accuracy_score(y_true=testY, y_pred=ab_preds_test)
+))</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p5.png" /></p>
+<p>Now let’s see how the accuracy change with the number of estimators:</p>
+<pre class="r"><code>ab_params = {
+    &#39;base_estimator&#39;: dt,
+    &#39;random_state&#39;: 11
+}
+
+n_estimator_values = list(range(10, 360, 10))
+train_accuracies, test_accuracies = [], []
+
+for n_estimators in n_estimator_values:
+    ab = AdaBoostClassifier(n_estimators=n_estimators, **ab_params)
+    ab.fit(trainX, trainY)
+    ab_preds_train = ab.predict(trainX)
+    ab_preds_test = ab.predict(testX)
+    
+    train_accuracies.append(accuracy_score(y_true=trainY, y_pred=ab_preds_train))
+    test_accuracies.append(accuracy_score(y_true=testY, y_pred=ab_preds_test))</code></pre>
+<pre class="r"><code>plt.figure(figsize=(10,7))
+plt.plot(n_estimator_values, train_accuracies, label=&#39;Train&#39;)
+plt.plot(n_estimator_values, test_accuracies, label=&#39;Validation&#39;)
+
+plt.ylabel(&#39;Accuracy score&#39;)
+plt.xlabel(&#39;n_estimators&#39;)
+
+plt.legend()
+plt.show()</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p6.png" /></p>
+</div>
+<div id="gradient-boosting" class="section level1">
+<h1>6 Gradient Boosting</h1>
+<p>It is also called Gradient Tree Boost classifier and is an extension to the boosting method that visualizes boosting as an optimization problem. Here we also combine many weak learning models together to create a strong predictive model.
+Gradient boosting models are becoming popular because of their effectiveness at classifying complex datasets.</p>
+<pre class="r"><code>gbc_params = {
+    &#39;n_estimators&#39;: 100,
+    &#39;max_depth&#39;: 3,
+    &#39;min_samples_leaf&#39;: 5,
+    &#39;random_state&#39;: 11
+}
+gbc = GradientBoostingClassifier(**gbc_params)</code></pre>
+<pre class="r"><code>gbc.fit(trainX, trainY)
+gbc_preds_train = gbc.predict(trainX)
+gbc_preds_test = gbc.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Gradient Boosting Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on validation data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=gbc_preds_train),
+    accuracy_score(y_true=testY, y_pred=gbc_preds_test)
+))</code></pre>
+<p><img src="/post/2020-03-26-ensemble-modeling-boosting_files/p43p7.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this second post on ensemble methods, I presented the method of Boosting.
+In this publication I showed what boosting is, how it should be differentiated from bagging and how it can be used for classification problems.</p>
+</div>
