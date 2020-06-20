@@ -9,7 +9,7 @@ tags:
   - R Markdown
 ---
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Roadmap for Classification Tasks
@@ -20,7 +20,7 @@ tags:
 
 
 
-#1 Introduction
+# 1 Introduction
 
 
 
@@ -30,9 +30,9 @@ Analogous to my post ["Roadmap for Regression Analysis"](https://michael-fuchs-p
 
 
 
-#2 Roadmap for Classification Tasks
+# 2 Roadmap for Classification Tasks
 
-#2.1 Data pre-processing
+# 2.1 Data pre-processing
 
 ![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p1.png)
 
@@ -48,7 +48,7 @@ Here are the links to the individual topics:
 
 
 
-#2.2 Feature Selection Methods
+# 2.2 Feature Selection Methods
 
 
 ![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p2.png)
@@ -76,7 +76,7 @@ Wrapper methods:
 
 
 
-#2.3 Classification Algorithms
+# 2.3 Classification Algorithms
 
 
 
@@ -106,7 +106,7 @@ With the [One-vs-One and One-vs-Rest](https://michael-fuchs-python.netlify.com/2
 
 
 
-#3 Conclusion
+# 3 Conclusion
 
 The methods and algorithms shown in the overviews are described in detail in the respective publications with regard to theory and practical application. Just click on the respective link.
 
