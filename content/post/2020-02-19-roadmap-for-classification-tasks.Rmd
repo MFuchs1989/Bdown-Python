@@ -87,15 +87,15 @@ Here are the links to the individual topics:
 + [Logistic Regression](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/)
 + [Support Vector Machines](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/)
 + [Perceptron](https://michael-fuchs-python.netlify.com/2019/11/14/introduction-to-perceptron-algorithm/)
-
+----------------------------------
 + [SGD Classifier](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/)
 + [OvO and OvR Classifier](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/)
-
+----------------------------------
 + [Softmax Regression](https://michael-fuchs-python.netlify.com/2019/11/15/multinomial-logistic-regression/)
 + [Decision Trees](https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/)
 + [Naive Bayes Classifier](https://michael-fuchs-python.netlify.com/2019/12/15/introduction-to-naive-bayes-classifier/)
 + [K Nearest Neighbor Classifier](https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/)
-
+----------------------------------
 + [Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
 + [Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
 + [Stacking](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
