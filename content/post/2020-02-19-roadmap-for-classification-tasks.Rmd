@@ -22,7 +22,6 @@ tags:
 
 # 1 Introduction
 
-test
 
 Another big chapter from the supervised machine learning area comes to an end. In the past 4 months I wrote in detail about the functionality and use of the most common classification algorithms within data science.
 
