@@ -114,7 +114,7 @@ df = pd.DataFrame({'Transaction': ['46568454684', '89844548864', '90487651685'],
 df
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p2s1.png)
+![](/post/2019-03-06-add-new-columns_files/p2z1.png)
 
 Now we want to convert the CHF to EUR with a certain exchange rate so that we have a column with the same currency (here EUR).
 
@@ -130,7 +130,7 @@ df['Amount_converted_into_EUR'] = np.where(df['Currancy']== 'EUR', EUR, CHF_in_E
 df
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p2s2.png)
+![](/post/2019-03-06-add-new-columns_files/p2z2.png)
 
 Voilà.
 
@@ -143,7 +143,7 @@ df = pd.DataFrame({'Transaction': ['46568454684', '89844548864', '90487651685'],
 df
 ```
 
-![](/post/2019-03-06-add-new-columns_files/p2s3.png)
+![](/post/2019-03-06-add-new-columns_files/p2z3.png)
 
 ```{r, eval=F, echo=T}
 Umrechnungskurs_CHF_EUR = 0.94
@@ -168,7 +168,8 @@ def converter(df):
 df['Amount_converted_into_EUR'] = df.apply(converter, axis = 1)
 df.head()
 ```
-![](/post/2019-03-06-add-new-columns_files/p2s4.png)
+
+![](/post/2019-03-06-add-new-columns_files/p2z4.png)
 
 This also works with this method.
 

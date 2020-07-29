@@ -145,21 +145,21 @@ The following example shows how a calculated value is output (depending on the c
                    &#39;Amount&#39;: [22,100,13],
                    &#39;Currancy&#39;: [&#39;EUR&#39;, &#39;CHF&#39;, &#39;EUR&#39;]})
 df</code></pre>
-<p><img src="/post/2019-03-06-add-new-columns_files/p2s1.png" /></p>
+<p><img src="/post/2019-03-06-add-new-columns_files/p2z1.png" /></p>
 <p>Now we want to convert the CHF to EUR with a certain exchange rate so that we have a column with the same currency (here EUR).</p>
 <pre class="r"><code>Umrechnungskurs_CHF_EUR = 0.94</code></pre>
 <pre class="r"><code>EUR = df[&#39;Amount&#39;]
 CHF_in_EUR = df[&#39;Amount&#39;]*Umrechnungskurs_CHF_EUR
 df[&#39;Amount_converted_into_EUR&#39;] = np.where(df[&#39;Currancy&#39;]== &#39;EUR&#39;, EUR, CHF_in_EUR)
 df</code></pre>
-<p><img src="/post/2019-03-06-add-new-columns_files/p2s2.png" /></p>
+<p><img src="/post/2019-03-06-add-new-columns_files/p2z2.png" /></p>
 <p>Voilà.</p>
 <p>Now we go one step further to a similar data set, which not only contains two different currencies, but several.</p>
 <pre class="r"><code>df = pd.DataFrame({&#39;Transaction&#39;: [&#39;46568454684&#39;, &#39;89844548864&#39;, &#39;90487651685&#39;],
                    &#39;Amount&#39;: [22,100,100],
                    &#39;Currancy&#39;: [&#39;EUR&#39;, &#39;CHF&#39;, &#39;THB&#39;]})
 df</code></pre>
-<p><img src="/post/2019-03-06-add-new-columns_files/p2s3.png" /></p>
+<p><img src="/post/2019-03-06-add-new-columns_files/p2z3.png" /></p>
 <pre class="r"><code>Umrechnungskurs_CHF_EUR = 0.94
 Umrechnungskurs_THB_EUR = 0.5</code></pre>
 <pre class="r"><code>def converter(df):
@@ -174,7 +174,7 @@ Umrechnungskurs_THB_EUR = 0.5</code></pre>
         return df[&#39;Amount&#39;]*Umrechnungskurs_THB_EUR</code></pre>
 <pre class="r"><code>df[&#39;Amount_converted_into_EUR&#39;] = df.apply(converter, axis = 1)
 df.head()</code></pre>
-<p><img src="/post/2019-03-06-add-new-columns_files/p2s4.png" /></p>
+<p><img src="/post/2019-03-06-add-new-columns_files/p2z4.png" /></p>
 <p>This also works with this method.</p>
 </div>
 <div id="row-sum" class="section level1">
