@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">4 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">Read and write to files</h1>
@@ -89,9 +89,10 @@
 <li>5.1 with a for loop</li>
 <li>5.2 with read_csv</li>
 <li>5.2.1 <strong>Convert epoch</strong> time to DateTime</li>
-<li>5.2.2 <strong>Write to csv</strong></li>
-<li>6 How to read further data types</li>
-<li>7 Conclusion</li>
+<li>6 <strong>Write to csv</strong></li>
+<li>7 <strong>Write to excel</strong></li>
+<li>8 How to read further data types</li>
+<li>9 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -199,15 +200,81 @@ df.head()</code></pre>
 <p>Voilà !</p>
 </div>
 <div id="write-to-csv" class="section level1">
-<h1>5.2.2 Write to csv</h1>
+<h1>6 Write to csv</h1>
 <p>At this point, the question arises how the newly prepared data record can be easily stored.
 Almost every “read_from” has a “write_to” command.
-Let’s do so with our dataframe:</p>
+Let’s do so with our previously created dataframe:</p>
 <pre class="r"><code>df.to_csv(&#39;NewDataFrame.csv&#39;)</code></pre>
 <p>This data set is now saved to the previously set path or any one that can be integrated in this command.</p>
 </div>
+<div id="write-to-excel" class="section level1">
+<h1>7 Write to excel</h1>
+<p>The CSV format is the most common format in which data is saved, but it is still necessary / desired to save the data in Excel from time to time.</p>
+<p>To do so I use the <em>.to_excel function</em> in combination with the <em>xlsxwriter-engine</em>.
+This is pretty much the same simple process as saving in a csv format.
+Therefore, this time we not only do the normal storage of the file but also assign it a special label.</p>
+<p>Imagine our task is to create a report on financial data on a regular basis and to save it accordingly in excel after the date of creation and the respective quarter.</p>
+<p>We do not want to name each time by hand. So we let python work for us.</p>
+<p>Here is our new dataframe with financial data:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Transaction&#39;: [&#39;46568454684&#39;, &#39;89844548864&#39;, &#39;90487651685&#39;],
+                   &#39;Amount&#39;: [32,22,6200,],
+                   &#39;Currancy&#39;: [&#39;EUR&#39;, &#39;CHF&#39;, &#39;THB&#39;]})
+df</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z1.png" /></p>
+<p>Well, in order to supplement the naming of the file with information at the current point in time, we have to have the current values displayed.</p>
+<pre class="r"><code>now = datetime.datetime.now()
+now</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z2.png" /></p>
+<p>Here we can also have individual elements output.
+For example year and month:</p>
+<pre class="r"><code>now.year</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z3.png" /></p>
+<pre class="r"><code>now.month</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z4.png" /></p>
+<p>To get the current quarter, I wrote the following function:</p>
+<pre class="r"><code>def get_quater(month):
+
+    if (month &lt;= 3):
+        return &#39;Q1&#39;
+    
+    elif (month &lt;= 6) and (month &gt; 3):
+        return &#39;Q2&#39;
+              
+    elif (month &lt;= 9) and (month &gt; 6):
+        return &#39;Q3&#39;
+
+    elif (month &lt;= 12) and (month &gt; 9):
+        return &#39;Q4&#39; </code></pre>
+<p>Let’s test the created function:</p>
+<pre class="r"><code>for i in range(1, 13):
+    total = get_quater(i)
+    print(total)</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z5.png" /></p>
+<p>Works fine!</p>
+<p>Now we save the information that we want to use in the naming of the file in our own objects.</p>
+<pre class="r"><code>now_year = now.year
+now_year</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z6.png" /></p>
+<pre class="r"><code>month = now.month
+
+now_quater = get_quater(month)
+now_quater</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z7.png" /></p>
+<p>Then we combine the two objects:</p>
+<pre class="r"><code>year_quater = str(now_year) + now_quater
+year_quater</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z8.png" /></p>
+<p>Last but not least the current date:</p>
+<pre class="r"><code>now_date = now.strftime(&quot;%Y-%m-%d&quot;)
+now_date</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z9.png" /></p>
+<p>Now we save our data record in Excel and give this file our desired name with the automatically generated information at the time.</p>
+<pre class="r"><code>df.to_excel(year_quater + &#39;_Financial_Data_&#39;+ now_date + &#39;.xlsx&#39;, sheet_name=&#39;Sheet1&#39;, engine=&#39;xlsxwriter&#39;)</code></pre>
+<p>The result looks like this:</p>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z10.png" /></p>
+</div>
 <div id="how-to-read-further-data-types" class="section level1">
-<h1>6 How to read further data types</h1>
+<h1>8 How to read further data types</h1>
 <p>In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:</p>
 <ul>
 <li>Excel (pd.read_excel())</li>
@@ -222,7 +289,7 @@ Let’s do so with our dataframe:</p>
 </ul>
 </div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
+<h1>9 Conclusion</h1>
 <p>In this post various ways and possibilities were shown to read different data formats in python.</p>
 </div>
 

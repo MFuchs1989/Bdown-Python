@@ -20,9 +20,10 @@ tags:
 + 5.1 with a for loop
 + 5.2 with read_csv
 + 5.2.1 **Convert epoch** time to DateTime
-+ 5.2.2 **Write to csv**
-+ 6 How to read further data types
-+ 7 Conclusion
++ 6 **Write to csv**
++ 7 **Write to excel**
++ 8 How to read further data types
++ 9 Conclusion
 
 
 
@@ -200,11 +201,11 @@ df.head()
 Voilà !
 
 
-# 5.2.2 Write to csv
+# 6 Write to csv
 
 At this point, the question arises how the newly prepared data record can be easily stored.
 Almost every "read_from" has a "write_to" command.
-Let's do so with our dataframe:
+Let's do so with our previously created dataframe:
 
 ```{r, eval=F, echo=T}
 df.to_csv('NewDataFrame.csv')
@@ -215,7 +216,141 @@ df.to_csv('NewDataFrame.csv')
 This data set is now saved to the previously set path or any one that can be integrated in this command.
 
 
-# 6 How to read further data types
+# 7 Write to excel
+
+The CSV format is the most common format in which data is saved, but it is still necessary / desired to save the data in Excel from time to time.
+
+To do so I use the *.to_excel function* in combination with the *xlsxwriter-engine*.
+This is pretty much the same simple process as saving in a csv format.
+Therefore, this time we not only do the normal storage of the file but also assign it a special label.
+
+Imagine our task is to create a report on financial data on a regular basis and to save it accordingly in excel after the date of creation and the respective quarter.
+
+
+We do not want to name each time by hand. So we let python work for us.
+
+Here is our new dataframe with financial data:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Transaction': ['46568454684', '89844548864', '90487651685'],
+                   'Amount': [32,22,6200,],
+                   'Currancy': ['EUR', 'CHF', 'THB']})
+df
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z1.png)
+
+
+Well, in order to supplement the naming of the file with information at the current point in time, we have to have the current values displayed.
+
+
+```{r, eval=F, echo=T}
+now = datetime.datetime.now()
+now
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z2.png)
+
+Here we can also have individual elements output.
+For example year and month:
+
+
+```{r, eval=F, echo=T}
+now.year
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z3.png)
+
+
+```{r, eval=F, echo=T}
+now.month
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z4.png)
+
+
+To get the current quarter, I wrote the following function:
+
+```{r, eval=F, echo=T}
+def get_quater(month):
+
+    if (month <= 3):
+        return 'Q1'
+    
+    elif (month <= 6) and (month > 3):
+        return 'Q2'
+              
+    elif (month <= 9) and (month > 6):
+        return 'Q3'
+
+    elif (month <= 12) and (month > 9):
+        return 'Q4' 
+```
+
+Let's test the created function:
+
+```{r, eval=F, echo=T}
+for i in range(1, 13):
+    total = get_quater(i)
+    print(total)
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z5.png)
+
+Works fine!
+
+Now we save the information that we want to use in the naming of the file in our own objects.
+
+```{r, eval=F, echo=T}
+now_year = now.year
+now_year
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z6.png)
+
+
+```{r, eval=F, echo=T}
+month = now.month
+
+now_quater = get_quater(month)
+now_quater
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z7.png)
+
+
+Then we combine the two objects:
+
+
+```{r, eval=F, echo=T}
+year_quater = str(now_year) + now_quater
+year_quater
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z8.png)
+
+Last but not least the current date:
+
+```{r, eval=F, echo=T}
+now_date = now.strftime("%Y-%m-%d")
+now_date
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z9.png)
+
+Now we save our data record in Excel and give this file our desired name with the automatically generated information at the time.
+
+```{r, eval=F, echo=T}
+df.to_excel(year_quater + '_Financial_Data_'+ now_date + '.xlsx', sheet_name='Sheet1', engine='xlsxwriter')
+```
+
+The result looks like this:
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z10.png)
+
+
+
+# 8 How to read further data types
 
 
 In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:
@@ -233,7 +368,7 @@ In addition to csv and json, there are many other file formats that can also be 
 
 
 
-# 7 Conclusion
+# 9 Conclusion
 
 In this post various ways and possibilities were shown to read different data formats in python. 
 
