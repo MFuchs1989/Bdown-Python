@@ -85,5 +85,157 @@ house.head()</code></pre>
 <p>For our further procedure we convert these into numerical values.
 There are several ways to do so.
 If you are interested in the different methods, check out this post from me: <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/">“Types of Encoder”</a></p>
-<p><img src="/post/2020-05-19-k-means-clustering_files/p45p1.png" /></p>
+<pre class="r"><code>ord_house_price_dict = {&#39;cheap&#39; : 0,
+                        &#39;medium&#39; : 1,
+                        &#39;expensive&#39; : 2}
+
+house[&#39;house_price_Ordinal&#39;] = house.house_price_cat.map(ord_house_price_dict)
+house</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p5.png" /></p>
+<p>Now let’s check for missing values:</p>
+<pre class="r"><code>def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : &#39;Missing Values&#39;, 1 : &#39;% of Total Values&#39;})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        &#39;% of Total Values&#39;, ascending=False).round(1)
+        
+        # Print some summary information
+        print (&quot;Your selected dataframe has &quot; + str(df.shape[1]) + &quot; columns.\n&quot;      
+            &quot;There are &quot; + str(mis_val_table_ren_columns.shape[0]) +
+              &quot; columns that have missing values.&quot;)
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns
+
+missing_values_table(house)</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p6.png" /></p>
+<p>No one, perfect.</p>
+<p>Last but not least the train test split:</p>
+<pre class="r"><code>x = house.drop([&#39;house_price_cat&#39;, &#39;house_price_Ordinal&#39;], axis=1)
+y = house[&#39;house_price_Ordinal&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<p>And the conversion to numpy arrays:</p>
+<pre class="r"><code>trainX = np.array(trainX)
+trainY = np.array(trainY)</code></pre>
+</div>
+<div id="application-of-k-means" class="section level1">
+<h1>5 Application of k-Means</h1>
+<p>Since we know that we are looking for 3 clusters (cheap, medium and expensive), we set k to 3.</p>
+<pre class="r"><code>kmeans = KMeans(n_clusters=3) 
+kmeans.fit(trainX)</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p7.png" /></p>
+<pre class="r"><code>correct = 0
+for i in range(len(trainX)):
+    predict_me = np.array(trainX[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX))</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p8.png" /></p>
+<p>24.5 % accuracy … Not really a very good result but sufficient for illustrative purposes.</p>
+<p>Let’s try to increase the max. iteration parameter.</p>
+<pre class="r"><code>kmeans = KMeans(n_clusters=3, max_iter=600, algorithm = &#39;auto&#39;)
+kmeans.fit(trainX)</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p9.png" /></p>
+<pre class="r"><code>correct = 0
+for i in range(len(trainX)):
+    predict_me = np.array(trainX[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX))</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p10.png" /></p>
+<p>No improvement. What a shame.</p>
+<p>Maybe it’s because we didn’t scale the data. Let’s try this next.
+If you are interested in the various scaling methods available, check out this post from me: <a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/">“Feature Scaling with Scikit-Learn”</a></p>
+<pre class="r"><code>sc=StandardScaler()
+
+trainX_scaled = sc.fit_transform(trainX)</code></pre>
+<pre class="r"><code>kmeans = KMeans(n_clusters=3)
+kmeans.fit(trainX_scaled)</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p11.png" /></p>
+<pre class="r"><code>correct = 0
+for i in range(len(trainX_scaled)):
+    predict_me = np.array(trainX_scaled[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX_scaled))</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p12.png" /></p>
+<p>This worked. Improvement of 13%.</p>
+</div>
+<div id="determine-the-optimal-k-for-k-means" class="section level1">
+<h1>6 Determine the optimal k for k-Means</h1>
+<p>This time we knew how many clusters to look for. But k-Means is actually an unsupervised machine learning algorithm.
+But also here are opportunities to see which k best fits our data.
+One of them is the ‘Elbow-Method’.</p>
+<p>To do so we have to remove the specially created target variables from the current record.</p>
+<pre class="r"><code>house = house.drop([&#39;house_price_cat&#39;, &#39;house_price_Ordinal&#39;], axis=1)
+house.head()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p13.png" /></p>
+<p>We also scale the data again (this time with the MinMaxScaler).</p>
+<pre class="r"><code>mms = MinMaxScaler()
+mms.fit(house)
+data_transformed = mms.transform(house)</code></pre>
+<pre class="r"><code>Sum_of_squared_distances = []
+K = range(1,15)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_transformed)
+    Sum_of_squared_distances.append(km.inertia_)</code></pre>
+<pre class="r"><code>plt.plot(K, Sum_of_squared_distances, &#39;bx-&#39;)
+plt.xlabel(&#39;k&#39;)
+plt.ylabel(&#39;Sum_of_squared_distances&#39;)
+plt.title(&#39;Elbow Method For Optimal k&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p14.png" /></p>
+<p>As we can see the optimal k for this dataset is 5. Let’s use this k for our final k-Mean algorithm.</p>
+<pre class="r"><code>km = KMeans(n_clusters=5, random_state=1)
+km.fit(house)</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p15.png" /></p>
+<p>We can now assign the calculated clusters to the observations from the original data set.</p>
+<pre class="r"><code>predict=km.predict(house)
+house[&#39;my_clusters&#39;] = pd.Series(predict, index=house.index)
+house.head()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p16.png" /></p>
+<p>Here is an overview of the respective size of the clusters created.</p>
+<pre class="r"><code>house[&#39;my_clusters&#39;].value_counts()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p17.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>As with any machine learning algorithm, there are advantages and disadvantages:</p>
+<p><strong>Advantages of k-Means</strong></p>
+<ul>
+<li>Relatively simple to implement</li>
+<li>Scales to large data sets</li>
+<li>Easily adapts to new examples</li>
+<li>Generalizes to clusters of different shapes and sizes, such as elliptical clusters</li>
+</ul>
+<p><strong>Disadvantages of k-Means</strong></p>
+<ul>
+<li>Choosing manually</li>
+<li>Being dependent on initial values</li>
+<li>Clustering data of varying sizes and density</li>
+<li>Clustering outliers</li>
+</ul>
 </div>

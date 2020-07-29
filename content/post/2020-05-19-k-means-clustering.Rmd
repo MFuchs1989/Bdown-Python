@@ -124,19 +124,256 @@ If you are interested in the different methods, check out this post from me: ["T
 
 
 
+```{r, eval=F, echo=T}
+ord_house_price_dict = {'cheap' : 0,
+                        'medium' : 1,
+                        'expensive' : 2}
 
+house['house_price_Ordinal'] = house.house_price_cat.map(ord_house_price_dict)
+house
+```
 
+![](/post/2020-05-19-k-means-clustering_files/p45p5.png)
 
-
-
-
+Now let's check for missing values:
 
 
 ```{r, eval=F, echo=T}
+def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : 'Missing Values', 1 : '% of Total Values'})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        '% of Total Values', ascending=False).round(1)
+        
+        # Print some summary information
+        print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"      
+            "There are " + str(mis_val_table_ren_columns.shape[0]) +
+              " columns that have missing values.")
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns
 
+missing_values_table(house)
 ```
 
-![](/post/2020-05-19-k-means-clustering_files/p45p1.png)
+![](/post/2020-05-19-k-means-clustering_files/p45p6.png)
+
+No one, perfect.
+
+
+Last but not least the train test split:
+
+
+```{r, eval=F, echo=T}
+x = house.drop(['house_price_cat', 'house_price_Ordinal'], axis=1)
+y = house['house_price_Ordinal']
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+And the conversion to numpy arrays:
+
+```{r, eval=F, echo=T}
+trainX = np.array(trainX)
+trainY = np.array(trainY)
+```
+
+
+# 5 Application of k-Means
+
+
+Since we know that we are looking for 3 clusters (cheap, medium and expensive), we set k to 3.
+
+
+```{r, eval=F, echo=T}
+kmeans = KMeans(n_clusters=3) 
+kmeans.fit(trainX)
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p7.png)
+
+```{r, eval=F, echo=T}
+correct = 0
+for i in range(len(trainX)):
+    predict_me = np.array(trainX[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX))
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p8.png)
+
+24.5 % accuracy ... Not really a very good result but sufficient for illustrative purposes.
+
+Let's try to increase the max. iteration parameter.
+
+
+```{r, eval=F, echo=T}
+kmeans = KMeans(n_clusters=3, max_iter=600, algorithm = 'auto')
+kmeans.fit(trainX)
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p9.png)
+
+
+```{r, eval=F, echo=T}
+correct = 0
+for i in range(len(trainX)):
+    predict_me = np.array(trainX[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX))
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p10.png)
+
+No improvement. What a shame.
+
+Maybe it's because we didn't scale the data. Let's try this next.
+If you are interested in the various scaling methods available, check out this post from me: ["Feature Scaling with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/)
+
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+trainX_scaled = sc.fit_transform(trainX)
+```
+
+```{r, eval=F, echo=T}
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(trainX_scaled)
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p11.png)
+
+```{r, eval=F, echo=T}
+correct = 0
+for i in range(len(trainX_scaled)):
+    predict_me = np.array(trainX_scaled[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == trainY[i]:
+        correct += 1
+
+print(correct/len(trainX_scaled))
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p12.png)
+
+This worked. Improvement of 13%.
+
+
+
+# 6 Determine the optimal k for k-Means
+
+This time we knew how many clusters to look for. But k-Means is actually an unsupervised machine learning algorithm.
+But also here are opportunities to see which k best fits our data.
+One of them is the 'Elbow-Method'.
+
+To do so we have to remove the specially created target variables from the current record.
+
+```{r, eval=F, echo=T}
+house = house.drop(['house_price_cat', 'house_price_Ordinal'], axis=1)
+house.head()
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p13.png)
+
+We also scale the data again (this time with the MinMaxScaler).
+
+
+```{r, eval=F, echo=T}
+mms = MinMaxScaler()
+mms.fit(house)
+data_transformed = mms.transform(house)
+```
+
+
+```{r, eval=F, echo=T}
+Sum_of_squared_distances = []
+K = range(1,15)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_transformed)
+    Sum_of_squared_distances.append(km.inertia_)
+```
+
+```{r, eval=F, echo=T}
+plt.plot(K, Sum_of_squared_distances, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Sum_of_squared_distances')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p14.png)
+
+As we can see the optimal k for this dataset is 5. Let's use this k for our final k-Mean algorithm.
+
+```{r, eval=F, echo=T}
+km = KMeans(n_clusters=5, random_state=1)
+km.fit(house)
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p15.png)
+
+We can now assign the calculated clusters to the observations from the original data set.
+
+```{r, eval=F, echo=T}
+predict=km.predict(house)
+house['my_clusters'] = pd.Series(predict, index=house.index)
+house.head()
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p16.png)
+
+Here is an overview of the respective size of the clusters created.
+
+
+```{r, eval=F, echo=T}
+house['my_clusters'].value_counts()
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p17.png)
+
+# 7 Conclusion
+
+As with any machine learning algorithm, there are advantages and disadvantages:
+
+**Advantages of k-Means**
+
++ Relatively simple to implement
++ Scales to large data sets
++ Easily adapts to new examples
++ Generalizes to clusters of different shapes and sizes, such as elliptical clusters
+
+
+**Disadvantages of k-Means**
+
++ Choosing manually
++ Being dependent on initial values
++ Clustering data of varying sizes and density
++ Clustering outliers
+
+
 
 
 
