@@ -279,7 +279,7 @@ For this post the dataset House Sales in King County, USA from the statistic pla
       <pubDate>Sun, 16 Jun 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/06/16/types-of-encoder/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Encoder for predictor variables3.1 One Hot Encoder3.1.1 via scikit-learn3.1.2 via pandas3.2 Ordinal Encoder4 Encoder for target variables4.1 Label Binarizer4.2 Label Encoding5 Conclusion1 IntroductionAs mentioned in my previous “post”, before you can start modeling, a lot of preparatory work is often necessary when preparing the data.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Encoder for predictor variables3.1 One Hot Encoder3.1.1 via scikit-learn3.1.2 via pandas3.2 Ordinal Encoder4 Encoder for target variables4.1 Label Binarizer4.2 Label Encoding5 Conclusion1 IntroductionAs mentioned in my previous “post”, before you can start modeling, a lot of preparatory work is often necessary when preparing the data.</description>
     </item>
     
     <item>
