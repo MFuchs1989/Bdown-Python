@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 19 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>k-Means Clustering</title>
+      <link>/2020/05/19/k-means-clustering/</link>
+      <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/19/k-means-clustering/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing k-Means4 Preparation of the data record5 Application of k-Means6 Determine the optimal k for k-Means7 Conclusion1 IntroductionAfter dealing with supervised machine learning models, we now come to another important data science area: unsupervised machine learning models.One class of the unsupervised machine learning models are the cluster algorithms. Clustering algorithms seek to learn, from the properties of the data, an optimal division or discrete labeling of groups of points.</description>
+    </item>
     
     <item>
       <title>Ensemble Modeling - Stacking</title>

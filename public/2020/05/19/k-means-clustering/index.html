@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.69.0" />
+
+
+<title>k-Means Clustering - Michael Fuchs Python</title>
+<meta property="og:title" content="k-Means Clustering - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">k-Means Clustering</h1>
+
+    
+    <span class="article-date">2020-05-19</span>
+    
+
+    <div class="article-content">
+      
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Introducing k-Means</li>
+<li>4 Preparation of the data record</li>
+<li>5 Application of k-Means</li>
+<li>6 Determine the optimal k for k-Means</li>
+<li>7 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>After dealing with supervised machine learning models, we now come to another important data science area: unsupervised machine learning models.
+One class of the unsupervised machine learning models are the cluster algorithms. Clustering algorithms seek to learn, from the properties of the data, an optimal division or discrete labeling of groups of points.</p>
+<p>We will start this section with one of the most famous cluster algorithms: k-Means Clustering.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.cluster import KMeans
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler</code></pre>
+</div>
+<div id="introducing-k-means" class="section level1">
+<h1>3 Introducing k-Means</h1>
+<p>K-means clustering aims to partition data into k clusters in a way that data points in the same cluster are similar and data points in the different clusters are farther apart. In other words, the K-means algorithm identifies k number of centroids, and then allocates every data point to the nearest cluster, while keeping the centroids as small as possible.</p>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45s1.png" /></p>
+<p>There are many methods to measure the distance. Euclidean distance is one of most commonly used distance measurements.</p>
+<p><strong>How the K-means algorithm works</strong></p>
+<p>To process the learning data, the K-means algorithm in data mining starts with a first group of randomly selected centroids, which are used as the beginning points for every cluster, and then performs iterative calculations to optimize the positions of the centroids.</p>
+</div>
+<div id="preparation-of-the-data-record" class="section level1">
+<h1>4 Preparation of the data record</h1>
+<p>At the beginning we throw unnecessary variables out of the data set.</p>
+<pre class="r"><code>house = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)
+house = house.drop([&#39;id&#39;, &#39;date&#39;, &#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;], axis=1)
+house.head()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p1.png" /></p>
+<p>Now we are creating a new target variable.
+To do this we look at a histogram that shows house prices.</p>
+<pre class="r"><code>plt.hist(house[&#39;price&#39;], bins=&#39;auto&#39;)
+plt.title(&quot;Histogram for house prices&quot;)
+plt.xlim(xmin=0, xmax = 1200000)
+plt.show()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p2.png" /></p>
+<p>Now we have a rough idea of how we could divide house prices into three categories: cheap, medium and expensive.
+To do so we’ll use the following function:</p>
+<pre class="r"><code>def house_price_cat(df):
+
+    if (df[&#39;price&#39;] &gt;= 600000):
+        return &#39;expensive&#39;
+    
+    elif (df[&#39;price&#39;] &lt; 600000) and (df[&#39;price&#39;] &gt; 300000):
+        return &#39;medium&#39;
+              
+    elif (df[&#39;price&#39;] &lt;= 300000):
+        return &#39;cheap&#39;</code></pre>
+<pre class="r"><code>house[&#39;house_price_cat&#39;] = house.apply(house_price_cat, axis = 1)
+house.head()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p3.png" /></p>
+<p>As we can see, we now have a new column with three categories of house prices.</p>
+<pre class="r"><code>house[&#39;house_price_cat&#39;].value_counts().T</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p4.png" /></p>
+<p>For our further procedure we convert these into numerical values.
+There are several ways to do so.
+If you are interested in the different methods, check out this post from me: <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/">“Types of Encoder”</a></p>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p1.png" /></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

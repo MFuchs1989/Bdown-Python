@@ -10,7 +10,7 @@ tags:
 ---
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Loading the libraries and the data
@@ -23,14 +23,14 @@ tags:
 
 
 
-#1 Introduction
+# 1 Introduction
 
 Regression analyzes are very common and should therefore be mastered by every data scientist.
 
 For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 
@@ -50,9 +50,9 @@ houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
 ```
 
 
-#3 Implementing linear regression with the statsmodel library
+# 3 Implementing linear regression with the statsmodel library
 
-#3.1 Simple linear Regression
+# 3.1 Simple linear Regression
 
 Following, a simple linear regression with the variables 'price' and 'sqft_living' is to be performed.
 
@@ -150,7 +150,7 @@ HousePrices_SimplReg.head()
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p7.png)
 
 
-#3.2 Multiple Regression
+# 3.2 Multiple Regression
 
 
 Now we try to improve the predictive power of the model by adding more predictors.
@@ -281,7 +281,7 @@ Below is an overview of the major results of the created models:
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p16.png)
 
 
-#3.3 Model validation
+# 3.3 Model validation
 
 
 We saw that model 3 delivered the best values. Therefore, our linear model is trained with this. Afterwards the performance will be measured.
@@ -363,7 +363,7 @@ This is normal because there was less data available for creating the model.
 
 
 
-#4 Linear Regression with scikit-learn
+# 4 Linear Regression with scikit-learn
 
 
 The library scikit-learn is also very good for training models. A brief insight should give the following example.
@@ -455,7 +455,7 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pr
 
 
 
-#5 Conclusion
+# 5 Conclusion
 
 
 This was a small insight into the creation and use of linear regression models.
