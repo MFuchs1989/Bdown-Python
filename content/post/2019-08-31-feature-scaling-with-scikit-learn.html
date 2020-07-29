@@ -11,7 +11,8 @@ tags:
 
 
 
-<p>#Table of Content</p>
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
 <ul>
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
@@ -23,9 +24,13 @@ tags:
 <li>4 Feature Scaling in practice</li>
 <li>5 Conclusion</li>
 </ul>
-<p>#1 Introduction</p>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
 <p>Feature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range. Sometimes, it also helps in speeding up the calculations in an algorithm.</p>
-<p>#2 Loading the libraries</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
 <pre class="r"><code>import pandas as pd
 import numpy as np
 
@@ -47,14 +52,18 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import train_test_split
 
 pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
-<p>#3 Scaling methods</p>
+</div>
+<div id="scaling-methods" class="section level1">
+<h1>3 Scaling methods</h1>
 <p>In the following, three of the most important scaling methods are presented:</p>
 <ul>
 <li>Standard Scaler</li>
 <li>Min-Max Scaler</li>
 <li>Robust Scaler</li>
 </ul>
-<p>#3.1 Standard Scaler</p>
+</div>
+<div id="standard-scaler" class="section level1">
+<h1>3.1 Standard Scaler</h1>
 <p>The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1. If you want to know wheather your data is normal distributet have a look at this post: <a href="https://michael-fuchs-python.netlify.com/2019/09/13/check-for-normal-distribution/">“Check for normal distribution”</a></p>
 <p>The mean and standard deviation are calculated for the feature and then the feature is scaled based on:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png" /></p>
@@ -90,7 +99,9 @@ sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png" /></p>
-<p>#3.2 Min-Max Scaler</p>
+</div>
+<div id="min-max-scaler" class="section level1">
+<h1>3.2 Min-Max Scaler</h1>
 <p>The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png" /></p>
 <p>It essentially shrinks the range such that the range is now between 0 and 1. This scaler works better for cases in which the standard scaler might not work so well. If the distribution is not Gaussian or the standard deviation is very small, the Min-Max Scaler works better. However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler (shown below).</p>
@@ -127,7 +138,9 @@ sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png" /></p>
-<p>#3.3 Robust Scaler</p>
+</div>
+<div id="robust-scaler" class="section level1">
+<h1>3.3 Robust Scaler</h1>
 <p>The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png" /></p>
 <p>Of course this means it is using the less of the data for scaling so it’s more suitable for when there are outliers in the data.</p>
@@ -162,7 +175,9 @@ sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png" /></p>
-<p>#3.4 Comparison of the previously shown scaling methods</p>
+</div>
+<div id="comparison-of-the-previously-shown-scaling-methods" class="section level1">
+<h1>3.4 Comparison of the previously shown scaling methods</h1>
 <pre class="r"><code>np.random.seed(32)
 
 df = pd.DataFrame({
@@ -214,7 +229,9 @@ sns.kdeplot(robust_scaler[&#39;Col_2&#39;], ax=ax4)
 
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" /></p>
-<p>#4 Feature Scaling in practice</p>
+</div>
+<div id="feature-scaling-in-practice" class="section level1">
+<h1>4 Feature Scaling in practice</h1>
 <p>In practice, not the complete data record is usually scaled There are two reasons for this:</p>
 <ol style="list-style-type: decimal">
 <li><p>In the case of large data sets, it makes little sense with regard to the storage capacity (RAM) to reserve another scaled data set.</p></li>
@@ -247,5 +264,8 @@ Use the previous method for this.</p>
 <pre class="r"><code>sc=StandardScaler()
 
 df_scaled = sc.fit_transform(df)</code></pre>
-<p>#5 Conclusion</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
 <p>As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.</p>
+</div>
