@@ -388,8 +388,8 @@ For this post the dataset WorldHappinessReport from the statistic platform “Ka
       <pubDate>Wed, 06 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/06/add-new-columns/</guid>
-      <description>Table of Content1 Introduction2 Normal Calculation3 If-else statements4 Multiple If-else statements5 Row Sum6 With a defined list7 Conclusion1 IntroductionThere are several ways to generate new variables in Python. Below the most common methods will be shown.
-For this post the dataset flight from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.</description>
+      <description>Table of Content1 Introduction2 Normal Calculation3 If-else statements4 Multiple If-else statements4.1 with conditional output values4.2 with conditional calculation5 Row Sum6 With a defined list7 Conclusion1 IntroductionThere are several ways to generate new variables in Python. Below the most common methods will be shown.
+For this post the dataset flight from the statistic platform “Kaggle” was used.</description>
     </item>
     
     <item>

@@ -9,19 +9,21 @@ tags:
   - R Markdown
 ---
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Normal Calculation
 + 3 If-else statements 
-+ 4 Multiple If-else statements 
++ 4 Multiple If-else statements
++ 4.1 with conditional output values
++ 4.2 with conditional calculation
 + 5 Row Sum
 + 6 With a defined list
 + 7 Conclusion
 
 
 
-#1 Introduction
+# 1 Introduction
 
 There are several ways to generate new variables in Python. Below the most common methods will be shown.
 
@@ -41,7 +43,7 @@ flight = pd.read_csv("path/to/file/flight.csv")
 
 
 
-#2 Normal Calculation
+# 2 Normal Calculation
 
 We'll start with the two columns *Scheduled_Departure* and *Departure_Time* from the dataset **flight**.
 
@@ -63,7 +65,7 @@ flight2.head()
 ![](/post/2019-03-06-add-new-columns_files/p2p2.png)
 
 
-#3 If-else statements 
+# 3 If-else statements 
 
 ```{r, eval=F, echo=T}
 flight2['new_Delay_txt'] = np.where(flight2['new_Delay']>=0, 'no delay', 'delayed')
@@ -74,8 +76,9 @@ flight2.head()
 
 
 
-#4 Multiple If-else statements 
+# 4 Multiple If-else statements 
 
+# 4.1 with conditional output values
 
 ```{r, eval=F, echo=T}
 def new_Delay_detailed(df):
@@ -97,7 +100,81 @@ flight2.head()
 
 
 
-#5 Row Sum
+# 4.2 with conditional calculation
+
+Of course there are also situations in which we do not only need a certain playback depending on the condition.
+The following example shows how a calculated value is output (depending on the condition).
+
+Imagine that we have transaction data with different currencies available:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Transaction': ['46568454684', '89844548864', '90487651685'],
+                   'Amount': [22,100,13],
+                   'Currancy': ['EUR', 'CHF', 'EUR']})
+df
+```
+
+![](/post/2019-03-06-add-new-columns_files/p2s1.png)
+
+Now we want to convert the CHF to EUR with a certain exchange rate so that we have a column with the same currency (here EUR).
+
+
+```{r, eval=F, echo=T}
+Umrechnungskurs_CHF_EUR = 0.94
+```
+
+```{r, eval=F, echo=T}
+EUR = df['Amount']
+CHF_in_EUR = df['Amount']*Umrechnungskurs_CHF_EUR
+df['Amount_converted_into_EUR'] = np.where(df['Currancy']== 'EUR', EUR, CHF_in_EUR)
+df
+```
+
+![](/post/2019-03-06-add-new-columns_files/p2s2.png)
+
+Voilà.
+
+Now we go one step further to a similar data set, which not only contains two different currencies, but several.
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Transaction': ['46568454684', '89844548864', '90487651685'],
+                   'Amount': [22,100,100],
+                   'Currancy': ['EUR', 'CHF', 'THB']})
+df
+```
+
+![](/post/2019-03-06-add-new-columns_files/p2s3.png)
+
+```{r, eval=F, echo=T}
+Umrechnungskurs_CHF_EUR = 0.94
+Umrechnungskurs_THB_EUR = 0.5
+```
+
+```{r, eval=F, echo=T}
+def converter(df):
+
+    if (df['Currancy'] == 'EUR'):
+        return df['Amount']
+    
+    elif (df['Currancy'] == 'CHF'):
+        return df['Amount']*Umrechnungskurs_CHF_EUR
+              
+    elif (df['Currancy'] == 'THB'):
+        return df['Amount']*Umrechnungskurs_THB_EUR
+```
+
+
+```{r, eval=F, echo=T}
+df['Amount_converted_into_EUR'] = df.apply(converter, axis = 1)
+df.head()
+```
+![](/post/2019-03-06-add-new-columns_files/p2s4.png)
+
+This also works with this method.
+
+
+
+# 5 Row Sum
 
 Complete row:
 ```{r, eval=F, echo=T}
@@ -116,7 +193,7 @@ flight2.head()
 
 ![](/post/2019-03-06-add-new-columns_files/p2p6.png)
 
-#6 With a defined list
+# 6 With a defined list
 
 
 ```{r, eval=F, echo=T}
@@ -143,7 +220,7 @@ df
 
 
 
-#7 Conclusion
+# 7 Conclusion
 
 As you can see it's quite easy to generate new columns. 
 This can be done using simple arithmetic or self-defined if-else statements.
