@@ -78,8 +78,7 @@
       
 
 
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<p>#Table of Content</p>
 <ul>
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
@@ -91,13 +90,9 @@
 <li>4 Feature Scaling in practice</li>
 <li>5 Conclusion</li>
 </ul>
-</div>
-<div id="introduction" class="section level1">
-<h1>1 Introduction</h1>
+<p>#1 Introduction</p>
 <p>Feature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range. Sometimes, it also helps in speeding up the calculations in an algorithm.</p>
-</div>
-<div id="loading-the-libraries" class="section level1">
-<h1>2 Loading the libraries</h1>
+<p>#2 Loading the libraries</p>
 <pre class="r"><code>import pandas as pd
 import numpy as np
 
@@ -119,24 +114,17 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import train_test_split
 
 pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
-</div>
-<div id="scaling-methods" class="section level1">
-<h1>3 Scaling methods</h1>
+<p>#3 Scaling methods</p>
 <p>In the following, three of the most important scaling methods are presented:</p>
 <ul>
 <li>Standard Scaler</li>
 <li>Min-Max Scaler</li>
 <li>Robust Scaler</li>
 </ul>
-</div>
-<div id="standard-scaler" class="section level1">
-<h1>3.1 Standard Scaler</h1>
+<p>#3.1 Standard Scaler</p>
 <p>The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1. If you want to know wheather your data is normal distributet have a look at this post: <a href="https://michael-fuchs-python.netlify.com/2019/09/13/check-for-normal-distribution/">“Check for normal distribution”</a></p>
 <p>The mean and standard deviation are calculated for the feature and then the feature is scaled based on:</p>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png" /></p>
 <pre class="r"><code>np.random.seed(1)
 
 df = pd.DataFrame({
@@ -146,10 +134,7 @@ df = pd.DataFrame({
 })
 
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p1.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p1.png" /></p>
 <pre class="r"><code>col_names = df.columns
 features = df[col_names]
 
@@ -157,15 +142,9 @@ scaler = StandardScaler().fit(features.values)
 features = scaler.transform(features.values)
 scaled_features = pd.DataFrame(features, columns = col_names)
 scaled_features.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p2.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p2.png" /></p>
 <pre class="r"><code>scaled_features.describe()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p3.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p3.png" /></p>
 <pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
 
 ax1.set_title(&#39;Before Scaling&#39;)
@@ -177,18 +156,10 @@ sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png" />
-
-</div>
-</div>
-<div id="min-max-scaler" class="section level1">
-<h1>3.2 Min-Max Scaler</h1>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png" /></p>
+<p>#3.2 Min-Max Scaler</p>
 <p>The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:</p>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png" /></p>
 <p>It essentially shrinks the range such that the range is now between 0 and 1. This scaler works better for cases in which the standard scaler might not work so well. If the distribution is not Gaussian or the standard deviation is very small, the Min-Max Scaler works better. However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler (shown below).</p>
 <pre class="r"><code>np.random.seed(1)
 
@@ -202,10 +173,7 @@ df = pd.DataFrame({
 })
 
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p5.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p5.png" /></p>
 <pre class="r"><code>col_names = df.columns
 features = df[col_names]
 
@@ -213,10 +181,7 @@ scaler = MinMaxScaler().fit(features.values)
 features = scaler.transform(features.values)
 scaled_features = pd.DataFrame(features, columns = col_names)
 scaled_features.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p6.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p6.png" /></p>
 <pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
 
 ax1.set_title(&#39;Before Scaling&#39;)
@@ -228,18 +193,10 @@ sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png" />
-
-</div>
-</div>
-<div id="robust-scaler" class="section level1">
-<h1>3.3 Robust Scaler</h1>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png" /></p>
+<p>#3.3 Robust Scaler</p>
 <p>The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:</p>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png" /></p>
 <p>Of course this means it is using the less of the data for scaling so it’s more suitable for when there are outliers in the data.</p>
 <pre class="r"><code>np.random.seed(1)
 
@@ -251,10 +208,7 @@ df = pd.DataFrame({
 })
 
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p8.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p8.png" /></p>
 <pre class="r"><code>col_names = df.columns
 features = df[col_names]
 
@@ -262,10 +216,7 @@ scaler = RobustScaler().fit(features.values)
 features = scaler.transform(features.values)
 scaled_features = pd.DataFrame(features, columns = col_names)
 scaled_features.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p9.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p9.png" /></p>
 <pre class="r"><code>fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6, 5))
 
 ax1.set_title(&#39;Before Scaling&#39;)
@@ -277,13 +228,8 @@ sns.kdeplot(scaled_features[&#39;Col_1&#39;], ax=ax2)
 sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png" />
-
-</div>
-</div>
-<div id="comparison-of-the-previously-shown-scaling-methods" class="section level1">
-<h1>3.4 Comparison of the previously shown scaling methods</h1>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png" /></p>
+<p>#3.4 Comparison of the previously shown scaling methods</p>
 <pre class="r"><code>np.random.seed(32)
 
 df = pd.DataFrame({
@@ -294,10 +240,7 @@ df = pd.DataFrame({
 })
 
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p11.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p11.png" /></p>
 <pre class="r"><code>col_names = df.columns
 features = df[col_names]
 scaler = StandardScaler().fit(features.values)
@@ -337,13 +280,8 @@ sns.kdeplot(robust_scaler[&#39;Col_1&#39;], ax=ax4)
 sns.kdeplot(robust_scaler[&#39;Col_2&#39;], ax=ax4)
 
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" />
-
-</div>
-</div>
-<div id="feature-scaling-in-practice" class="section level1">
-<h1>4 Feature Scaling in practice</h1>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" /></p>
+<p>#4 Feature Scaling in practice</p>
 <p>In practice, not the complete data record is usually scaled There are two reasons for this:</p>
 <ol style="list-style-type: decimal">
 <li><p>In the case of large data sets, it makes little sense with regard to the storage capacity (RAM) to reserve another scaled data set.</p></li>
@@ -353,10 +291,7 @@ plt.show()</code></pre>
 <p>First of all we create a random dataframe.</p>
 <pre class="r"><code>df = pd.DataFrame(np.random.randint(0,100,size=(10000, 4)), columns=[&#39;Var1&#39;, &#39;Var2&#39;, &#39;Var3&#39;, &#39;Target_Var&#39;])
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png" />
-
-</div>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p13.png" /></p>
 <p>Then we split it as if we wanted to train a machine learning model. If you want to know how the train-test-split function works, have a look at this post of mine: <a href="https://michael-fuchs-python.netlify.com/2019/05/16/random-sampling/">“Random sampling”</a></p>
 <pre class="r"><code>x = df.drop(&#39;Target_Var&#39;, axis=1)
 y = df[&#39;Target_Var&#39;]
@@ -368,27 +303,19 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 scaler = sc.fit(trainX)
 trainX_scaled = scaler.transform(trainX)
 testX_scaled = scaler.transform(testX)</code></pre>
-<p>We save the scaler on an object, adapt this object to the training part and transform the trainX and testX part with the metrics obtained. Here we have the scaled features:</p>
+<p>We save the scaler on an object, adapt this object to the training part and transform the trainX and testX part with the metrics obtained.
+Here we have the scaled features:</p>
 <pre class="r"><code>trainX_scaled</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png" />
-
-</div>
-<p>You can also save yourself a step in the syntax if you don’t use the fit &amp; transform function individually but together:</p>
+<p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png" /></p>
+<p>You can also save yourself a step in the syntax if you don’t use the fit &amp; transform function individually but together.
+!! Don’t do this if you plan to train a machine learning algorithm !!
+Use the previous method for this.</p>
+<p>But if you want to scale an entire data set (for example for cluster analysis), then use the fit_transform function:</p>
 <pre class="r"><code>sc=StandardScaler()
 
-trainX_scaled = sc.fit_transform(trainX)
-testX_scaled = sc.transform(testX)</code></pre>
-<pre class="r"><code>trainX_scaled</code></pre>
-<div class="figure">
-<img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p15.png" />
-
-</div>
-</div>
-<div id="conclusion" class="section level1">
-<h1>5 Conclusion</h1>
+df_scaled = sc.fit_transform(df)</code></pre>
+<p>#5 Conclusion</p>
 <p>As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.</p>
-</div>
 
     </div>
   </article>

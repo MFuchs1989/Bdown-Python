@@ -383,20 +383,19 @@ trainX_scaled
 ![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png)
 
 
-You can also save yourself a step in the syntax if you don't use the fit & transform function individually but together:
+You can also save yourself a step in the syntax if you don't use the fit & transform function individually but together.
+!! Don't do this if you plan to train a machine learning algorithm !!
+Use the previous method for this.
+
+But if you want to scale an entire data set (for example for cluster analysis), then use the fit_transform function:
 
 ```{r, eval=F, echo=T}
 sc=StandardScaler()
 
-trainX_scaled = sc.fit_transform(trainX)
-testX_scaled = sc.transform(testX)
+df_scaled = sc.fit_transform(df)
 ```
 
-```{r, eval=F, echo=T}
-trainX_scaled
-```
 
-![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p15.png)
 
 #5 Conclusion
 
