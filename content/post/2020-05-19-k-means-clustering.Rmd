@@ -17,7 +17,8 @@ tags:
 + 4 Preparation of the data record
 + 5 Application of k-Means
 + 6 Determine the optimal k for k-Means
-+ 7 Conclusion
++ 7 Visualization
++ 8 Conclusion
 
 
 # 1 Introduction
@@ -354,7 +355,39 @@ house['my_clusters'].value_counts()
 
 ![](/post/2020-05-19-k-means-clustering_files/p45p17.png)
 
-# 7 Conclusion
+
+# 7 Visualization
+
+```{r, eval=F, echo=T}
+df_sub = house[['sqft_living', 'price']].values
+```
+
+
+```{r, eval=F, echo=T}
+plt.scatter(df_sub[predict==0, 0], df_sub[predict==0, 1], s=100, c='red', label ='Cluster 1')
+plt.scatter(df_sub[predict==1, 0], df_sub[predict==1, 1], s=100, c='blue', label ='Cluster 2')
+plt.scatter(df_sub[predict==2, 0], df_sub[predict==2, 1], s=100, c='green', label ='Cluster 3')
+plt.scatter(df_sub[predict==3, 0], df_sub[predict==3, 1], s=100, c='cyan', label ='Cluster 4')
+plt.scatter(df_sub[predict==4, 0], df_sub[predict==4, 1], s=100, c='magenta', label ='Cluster 5')
+
+
+#plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[:, 1], s=300, c='yellow', label = 'Centroids')
+#plt.scatter()
+plt.title('Cluster of Houses')
+plt.xlim((0, 8000))
+plt.ylim((0,4000000))
+plt.xlabel('sqft_living \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan), Cluster5 (Magenta)')
+plt.ylabel('Price')
+plt.show()
+```
+
+![](/post/2020-05-19-k-means-clustering_files/p45p18.png)
+
+
+
+
+
+# 8 Conclusion
 
 As with any machine learning algorithm, there are advantages and disadvantages:
 

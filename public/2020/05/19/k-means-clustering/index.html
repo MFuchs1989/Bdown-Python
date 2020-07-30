@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">5 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">k-Means Clustering</h1>
@@ -87,7 +87,8 @@
 <li>4 Preparation of the data record</li>
 <li>5 Application of k-Means</li>
 <li>6 Determine the optimal k for k-Means</li>
-<li>7 Conclusion</li>
+<li>7 Visualization</li>
+<li>8 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -288,8 +289,28 @@ house.head()</code></pre>
 <pre class="r"><code>house[&#39;my_clusters&#39;].value_counts()</code></pre>
 <p><img src="/post/2020-05-19-k-means-clustering_files/p45p17.png" /></p>
 </div>
+<div id="visualization" class="section level1">
+<h1>7 Visualization</h1>
+<pre class="r"><code>df_sub = house[[&#39;sqft_living&#39;, &#39;price&#39;]].values</code></pre>
+<pre class="r"><code>plt.scatter(df_sub[predict==0, 0], df_sub[predict==0, 1], s=100, c=&#39;red&#39;, label =&#39;Cluster 1&#39;)
+plt.scatter(df_sub[predict==1, 0], df_sub[predict==1, 1], s=100, c=&#39;blue&#39;, label =&#39;Cluster 2&#39;)
+plt.scatter(df_sub[predict==2, 0], df_sub[predict==2, 1], s=100, c=&#39;green&#39;, label =&#39;Cluster 3&#39;)
+plt.scatter(df_sub[predict==3, 0], df_sub[predict==3, 1], s=100, c=&#39;cyan&#39;, label =&#39;Cluster 4&#39;)
+plt.scatter(df_sub[predict==4, 0], df_sub[predict==4, 1], s=100, c=&#39;magenta&#39;, label =&#39;Cluster 5&#39;)
+
+
+#plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[:, 1], s=300, c=&#39;yellow&#39;, label = &#39;Centroids&#39;)
+#plt.scatter()
+plt.title(&#39;Cluster of Houses&#39;)
+plt.xlim((0, 8000))
+plt.ylim((0,4000000))
+plt.xlabel(&#39;sqft_living \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan), Cluster5 (Magenta)&#39;)
+plt.ylabel(&#39;Price&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-05-19-k-means-clustering_files/p45p18.png" /></p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
+<h1>8 Conclusion</h1>
 <p>As with any machine learning algorithm, there are advantages and disadvantages:</p>
 <p><strong>Advantages of k-Means</strong></p>
 <ul>
