@@ -18,8 +18,8 @@ tags:
 + 3 Introducing hierarchical clustering
 + 4 Dendrograms explained
 + 5 Hierarchical Clustering with Scikit-Learn
-
-
++ 6 Hierarchical clustering on real-world data
++ 7 Conclusion
 
 
 # 1 Introduction
@@ -283,6 +283,7 @@ I would have made the following interpretation:
 ![](/post/2020-06-04-hierarchical-clustering_files/p46s1.png)
 
 
+Now that I want to examine the clusters more closely, I add the predictions to my data set. Be careful at this point since python always starts with 0 for counting. That is the reason why I use predictions + 1 in the code below. This way I generate clusters from 1-5.
 
 ```{r, eval=F, echo=T}
 df_pred = pd.DataFrame(predictions)
@@ -294,10 +295,10 @@ mall.head()
 
 ![](/post/2020-06-04-hierarchical-clustering_files/p46p15.png)
 
+In order to be able to better assess the target group, I add the variables 'Age' and 'Gender' from the original data set and filter according to the target group.
+
 
 ```{r, eval=F, echo=T}
-# now we want to have the information about the age as well
-# get from original dataframe
 mall['age'] = df['Age']
 mall['gender'] = df['Gender']
 
@@ -306,29 +307,31 @@ target_group = mall[(mall["cluster"] == 3)]
 target_group.head()
 ```
 
-![](/post/2020-06-04-hierarchical-clustering_files/p46p.png)
+![](/post/2020-06-04-hierarchical-clustering_files/p46p16.png)
 
-
+Now it's time for some statistics:
 
 ```{r, eval=F, echo=T}
 df = target_group.agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
 df.drop(['cluster', 'gender'], axis=1)
 ```
 
-![](/post/2020-06-04-hierarchical-clustering_files/p46p.png)
+![](/post/2020-06-04-hierarchical-clustering_files/p46p17.png)
 
 
-
-
+Last but not least, the division of men and women:
 
 ```{r, eval=F, echo=T}
 target_group['gender'].value_counts()
 ```
 
-![](/post/2020-06-04-hierarchical-clustering_files/p46p.png)
+![](/post/2020-06-04-hierarchical-clustering_files/p46p18.png)
 
 
+# 7 Conclusion
 
+Unfortunately, the data set does not provide any other sensible variables.
+At this point it starts to get exciting and valuable knowledge about the different customer segments can be gained.
 
 
 
