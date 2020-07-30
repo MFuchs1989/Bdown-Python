@@ -1,0 +1,117 @@
+---
+title: Hierarchical Clustering
+author: Michael Fuchs
+date: '2020-06-04'
+slug: hierarchical-clustering
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Introducing hierarchical clustering</li>
+<li>4 Dendrograms explained</li>
+<li>5 Hierarchical Clustering with Scikit-Learn</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>The second cluster algorithm I would like present is hierarchical clustering.
+Hierarchical clustering is also a type of unsupervised machine learning algorithm used to cluster unlabeled data points within a dataset. Like <a href="https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/">“k-Means Clustering”</a>, hierarchical clustering also groups together the data points with similar characteristics.</p>
+<p>For this post the dataset <em>Mall_Customers</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/file/d/16aeG6dy8j1P70kqTEBsJm4fojK3_a6cq/view?usp=sharing" class="uri">https://drive.google.com/file/d/16aeG6dy8j1P70kqTEBsJm4fojK3_a6cq/view?usp=sharing</a>.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.cluster import KMeans
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler</code></pre>
+</div>
+<div id="introducing-hierarchical-clustering" class="section level1">
+<h1>3 Introducing hierarchical clustering</h1>
+<p><strong>Theory of hierarchical clustering</strong></p>
+<p>There are two types of hierarchical clustering:
++ Agglomerative and
++ Divisive</p>
+<p>In the course of the first variant, data points are clustered using a bottom-up approach starting with individual data points, while in the second variant top-down approach is followed where all the data points are treated as one big cluster and the clustering process involves dividing the one big cluster into several small clusters.</p>
+<p>In this post we will focus on agglomerative clustering that involves the bottom-up approach since this method is used almost exclusively in the real world.</p>
+<p><strong>Steps to perform hierarchical clustering</strong></p>
+<p>Following are the steps involved in agglomerative clustering:</p>
+<ul>
+<li>At the beginning, treat each data point as one cluster. Therefore, the number of clusters at the start will be k, while k is an integer representing the number of data points</li>
+<li>Second: Form a cluster by joining the two closest data points resulting in k-1 clusters</li>
+<li>Third: Form more clusters by joining the two closest clusters resulting in k-2 clusters</li>
+</ul>
+<p>Repeat the above three steps until one big cluster is formed.
+Once single cluster is formed, dendrograms are used to divide into multiple clusters depending upon the problem.</p>
+</div>
+<div id="dendrograms-explained" class="section level1">
+<h1>4 Dendrograms explained</h1>
+<p>Let me explain the use of dendrograms with the following example dataframe.</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Col1&#39;: [5, 9, 13, 22, 31, 90, 81, 70, 45, 73, 85],
+                   &#39;Col2&#39;: [2, 8, 11, 10, 25, 80, 90, 80, 60, 62, 90]})
+df</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p1.png" /></p>
+<p>First we’ll convert this dataframe to a numpy array.</p>
+<pre class="r"><code>arr = np.array(df)
+arr</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p2.png" /></p>
+<p>Now we plot the example dataframe:</p>
+<pre class="r"><code>labels = range(1, 12)
+plt.figure(figsize=(10, 7))
+plt.subplots_adjust(bottom=0.1)
+plt.scatter(arr[:,0],arr[:,1], label=&#39;True Position&#39;)
+
+for label, x, y in zip(labels, arr[:, 0], arr[:, 1]):
+    plt.annotate(
+        label,
+        xy=(x, y), xytext=(-3, 3),
+        textcoords=&#39;offset points&#39;, ha=&#39;right&#39;, va=&#39;bottom&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p3.png" /></p>
+<p>Now we have a rough idea of the underlying distribution of the data points.
+Let’s plot our first dendrogram:</p>
+<pre class="r"><code>linked = shc.linkage(arr, &#39;single&#39;)
+
+labelList = range(1, 12)
+
+plt.figure(figsize=(10, 7))
+shc.dendrogram(linked,
+            orientation=&#39;top&#39;,
+            labels=labelList,
+            distance_sort=&#39;descending&#39;,
+            show_leaf_counts=True)
+plt.axhline(y=23, color=&#39;r&#39;, linestyle=&#39;--&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p4.png" /></p>
+<p>The algorithm starts by finding the two points that are closest to each other on the basis of euclidean distance.
+The vertical height of the dendogram shows the euclidean distances between points.</p>
+<p>In the end, we can read from the present graphic that data points 1-5 forms a cluster as well as 6,7,8, 10 and 11.
+Data point 9 seems to be a own cluster.</p>
+<p>We can see that the largest vertical distance without any horizontal line passing through it is represented by blue line.
+So I draw a horizontal red line within the dendogram that passes through the blue line.
+Since it crosses the blue line at three points, therefore the number of clusters will be 3.</p>
+</div>
+<div id="hierarchical-clustering-with-scikit-learn" class="section level1">
+<h1>5 Hierarchical Clustering with Scikit-Learn</h1>
+<p>Now it’s time to use scikits’AgglomerativeClustering class and call its fit_predict method to predict the clusters that each data point belongs to.</p>
+<pre class="r"><code>hc = AgglomerativeClustering(n_clusters=3, affinity=&#39;euclidean&#39;, linkage=&#39;ward&#39;)
+hc.fit_predict(arr)</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p5.png" /></p>
+<p>Finally, let’s plot our clusters.</p>
+<pre class="r"><code>plt.scatter(arr[:,0],arr[:,1], c=hc.labels_, cmap=&#39;rainbow&#39;)</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p6.png" /></p>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p.png" /></p>
+</div>
