@@ -113,5 +113,82 @@ hc.fit_predict(arr)</code></pre>
 <p>Finally, let’s plot our clusters.</p>
 <pre class="r"><code>plt.scatter(arr[:,0],arr[:,1], c=hc.labels_, cmap=&#39;rainbow&#39;)</code></pre>
 <p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p6.png" /></p>
+</div>
+<div id="hierarchical-clustering-on-real-world-data" class="section level1">
+<h1>6 Hierarchical clustering on real-world data</h1>
+<p>That was an easy example of how to use dendograms and the AgglomerativeClustering algorithm.
+Now let’s see how it works with real-world data.</p>
+<pre class="r"><code>df = pd.read_csv(&quot;Mall_Customers.csv&quot;)
+mall = df.drop([&#39;CustomerID&#39;, &#39;Gender&#39;], axis=1)
+mall</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p7.png" /></p>
+<p>The steps are similar as before.</p>
+<pre class="r"><code>mall_arr = np.array(mall)</code></pre>
+<pre class="r"><code>plt.figure(figsize=(10, 7))
+plt.title(&quot;Customer Dendograms&quot;)
+plt.axhline(y=350, color=&#39;r&#39;, linestyle=&#39;--&#39;)
+dend = shc.dendrogram(shc.linkage(mall_arr, method=&#39;ward&#39;))</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p8.png" /></p>
+<p>I have again drawn the threshold I chose with a red line.
+Now it’s time for some predictions:</p>
+<pre class="r"><code>hc = AgglomerativeClustering(n_clusters=3, affinity=&#39;euclidean&#39;, linkage=&#39;ward&#39;)
+predictions = hc.fit_predict(mall_arr)
+predictions</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p9.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(10, 7))
+plt.scatter(mall_arr[:,0],mall_arr[:,1], c=hc.labels_, cmap=&#39;rainbow&#39;)
+plt.title(&quot;Plot of the clusters&quot;)</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p10.png" /></p>
+<p>That looks a bit messy now … let’s see if we can do it better if we take out the variable age.</p>
+<pre class="r"><code>mall = mall.drop([&#39;Age&#39;], axis=1)
+mall</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p11.png" /></p>
+<pre class="r"><code>mall_arr = np.array(mall)</code></pre>
+<pre class="r"><code>plt.figure(figsize=(10, 7))
+plt.title(&quot;Customer Dendograms&quot;)
+plt.axhline(y=200, color=&#39;r&#39;, linestyle=&#39;--&#39;)
+dend = shc.dendrogram(shc.linkage(mall_arr, method=&#39;ward&#39;))</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p12.png" /></p>
+<p>Very nice. Now there are apparently 5 clusters.
+Let’s do some predictions again.</p>
+<pre class="r"><code>hc = AgglomerativeClustering(n_clusters=5, affinity=&#39;euclidean&#39;, linkage=&#39;ward&#39;)
+predictions = hc.fit_predict(mall_arr)
+predictions</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p13.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(10, 7))
+plt.scatter(mall_arr[predictions==0, 0], mall_arr[predictions==0, 1], s=55, c=&#39;red&#39;, label =&#39;Cluster 1&#39;)
+plt.scatter(mall_arr[predictions==1, 0], mall_arr[predictions==1, 1], s=55, c=&#39;blue&#39;, label =&#39;Cluster 2&#39;)
+plt.scatter(mall_arr[predictions==2, 0], mall_arr[predictions==2, 1], s=55, c=&#39;green&#39;, label =&#39;Cluster 3&#39;)
+plt.scatter(mall_arr[predictions==3, 0], mall_arr[predictions==3, 1], s=55, c=&#39;cyan&#39;, label =&#39;Cluster 4&#39;)
+plt.scatter(mall_arr[predictions==4, 0], mall_arr[predictions==4, 1], s=55, c=&#39;magenta&#39;, label =&#39;Cluster 5&#39;)
+
+plt.title(&#39;Clusters of Mall Customers \n (Hierarchical Clustering Model)&#39;)
+plt.xlabel(&#39;Annual Income(k$) \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan), Cluster5 (Magenta)&#39;)
+plt.ylabel(&#39;Spending Score(1-100)&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p14.png" /></p>
+<p>That looks useful now.
+What we can now read from the graphic are the customers’ segments.</p>
+<p>I would have made the following interpretation:</p>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46s1.png" /></p>
+<pre class="r"><code>df_pred = pd.DataFrame(predictions)
+
+#be carefull here ... +1 because we start with count 1 python 0
+mall[&#39;cluster&#39;] = predictions + 1
+mall.head()</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p15.png" /></p>
+<pre class="r"><code># now we want to have the information about the age as well
+# get from original dataframe
+mall[&#39;age&#39;] = df[&#39;Age&#39;]
+mall[&#39;gender&#39;] = df[&#39;Gender&#39;]
+
+#filter for the target group
+target_group = mall[(mall[&quot;cluster&quot;] == 3)] 
+target_group.head()</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p.png" /></p>
+<pre class="r"><code>df = target_group.agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()
+df.drop([&#39;cluster&#39;, &#39;gender&#39;], axis=1)</code></pre>
+<p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p.png" /></p>
+<pre class="r"><code>target_group[&#39;gender&#39;].value_counts()</code></pre>
 <p><img src="/post/2020-06-04-hierarchical-clustering_files/p46p.png" /></p>
 </div>
