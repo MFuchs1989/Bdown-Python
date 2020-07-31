@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">Gaussian Mixture Models</h1>
@@ -83,31 +83,206 @@
 <ul>
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
-<li>3 Introducing</li>
+<li>3 Generating some test data</li>
+<li>4 Weaknesses of k-Means</li>
+<li>5 Gaussian Mixture Models</li>
+<li>6 GMM for density estimation</li>
+<li>7 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>The next unsupervised machine learning cluster algorithms is the Density-Based Spatial Clustering and Application with Noise (DBSCAN).
-DBSCAN is a density-based clusering algorithm, which can be used to identify clusters of any shape in a data set containing noise and outliers.</p>
+<p>Let’s come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.
+As simple or good as the K-Means algorithm, for example, it is often very challenging to use in the real world. In particular, the non-probabilistic nature of k-means and its use of simple distance-from-cluster-center to assign cluster membership leads to poor performance for many real-world problems. Therefore I will give you an overview of Gaussian mixture models (GMMs), which can be viewed as an extension of the ideas behind k-means, but can also be a powerful tool for estimation beyond simple clustering.</p>
 </div>
 <div id="loading-the-libraries" class="section level1">
 <h1>2 Loading the libraries</h1>
 <pre class="r"><code>import pandas as pd
 import numpy as np
+
 import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns; sns.set()
+
+# For generating some data
 from sklearn.datasets import make_blobs
 
-from sklearn.preprocessing import StandardScaler
 
 from sklearn.cluster import KMeans
-from sklearn.cluster import DBSCAN
+from sklearn import mixture
 
-from sklearn.metrics.cluster import adjusted_rand_score</code></pre>
+# For creating some circles around the center of each cluster within the visualizations
+from scipy.spatial.distance import cdist
+# For creating some circles for probability area around the center of each cluster within the visualizations
+from matplotlib.patches import Ellipse</code></pre>
 </div>
-<div id="introducing-dbscan" class="section level1">
-<h1>3 Introducing DBSCAN</h1>
-<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p.png" /></p>
+<div id="generating-some-test-data" class="section level1">
+<h1>3 Generating some test data</h1>
+<p>For the following example, in which I will show which weaknesses there are in k-means, I will generate some sample data.</p>
+<pre class="r"><code>X, y = make_blobs(n_samples=350, centers=4, n_features=2, cluster_std=0.67)
+X = X[:, ::-1] # flip axes for better plotting
+plt.scatter(X[:, 0], X[:, 1], cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p1.png" /></p>
+</div>
+<div id="weaknesses-of-k-means" class="section level1">
+<h1>4 Weaknesses of k-Means</h1>
+<p>In the graphic above we can see with the eye that there are probably 3-4 clusters.
+So let’s calculate k-Means with 4 clusters.</p>
+<pre class="r"><code>kmeans = KMeans(n_clusters=4)
+kmeans.fit(X)
+labels = kmeans.predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p2.png" /></p>
+<p>At this point, k-means determined the clusters quite well.
+Once you understand how k-means works, you know that this algorithm only includes the points within its calculated radius in a cluster.
+We can visualize these radii.</p>
+<pre class="r"><code>#Keep in mind to change n_clusters accordingly
+
+def plot_kmeans(kmeans, X, n_clusters=4, rseed=0, ax=None):
+    labels = kmeans.fit_predict(X)
+
+    # plot the input data
+    ax = ax or plt.gca()
+    ax.axis(&#39;equal&#39;)
+    ax.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;, zorder=2)
+
+    # plot the representation of the KMeans model
+    centers = kmeans.cluster_centers_
+    radii = [cdist(X[labels == i], [center]).max()
+             for i, center in enumerate(centers)]
+    for c, r in zip(centers, radii):
+        ax.add_patch(plt.Circle(c, r, fc=&#39;#CCCCCC&#39;, lw=3, alpha=0.5, zorder=1))</code></pre>
+<pre class="r"><code>kmeans = KMeans(n_clusters=4)
+plot_kmeans(kmeans, X)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p3.png" /></p>
+<p>An important observation for k-Means is that these cluster models must be circular. k-Means has no built-in way of accounting for oblong or elliptical clusters. So, let’s see how k-Means work with less orderly data.</p>
+<pre class="r"><code># transform the data to be stretched
+rng = np.random.RandomState(74)
+transformation = rng.normal(size=(2, 2))
+X_stretched = np.dot(X, transformation)</code></pre>
+<pre class="r"><code>kmeans = KMeans(n_clusters=4)
+plot_kmeans(kmeans, X_stretched)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p4.png" /></p>
+<p>You can see that this can quickly lead to problems.</p>
+</div>
+<div id="gaussian-mixture-models" class="section level1">
+<h1>5 Gaussian Mixture Models</h1>
+<p>A Gaussian mixture model (GMM) attempts to find a mixture of multi-dimensional Gaussian probability distributions that best model any input dataset. In the simplest case, GMMs can be used for finding clusters in the same manner as k-Means.
+Now let’s see how the GMM model works.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=4)
+gmm.fit(X)
+labels = gmm.predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p5.png" /></p>
+<p>But because gaussian mixture model contains a probabilistic model under the hood, it is also possible to find probabilistic cluster assignments. In Scikit-Learn this is done using the predict_proba method.</p>
+<pre class="r"><code>probs = gmm.predict_proba(X)
+probs</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p6.png" /></p>
+<p>For a better view we’ll round it:</p>
+<pre class="r"><code>props = probs.round(3)
+props</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p7.png" /></p>
+<p>We can also visualize the effect of the probabilities.</p>
+<pre class="r"><code>size = 50 * probs.max(1) ** 2  # square emphasizes differences
+plt.scatter(X[:, 0], X[:, 1], c=labels, cmap=&#39;viridis&#39;, s=size)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p8.png" /></p>
+<p>As you can see now, points that are more likely to belong to the respective cluster are shown smaller than the others.
+Here we can visually represent the probability areas in which the more distant points lie, too.</p>
+<pre class="r"><code>def draw_ellipse(position, covariance, ax=None, **kwargs):
+    &quot;&quot;&quot;Draw an ellipse with a given position and covariance&quot;&quot;&quot;
+    ax = ax or plt.gca()
+    
+    # Convert covariance to principal axes
+    if covariance.shape == (2, 2):
+        U, s, Vt = np.linalg.svd(covariance)
+        angle = np.degrees(np.arctan2(U[1, 0], U[0, 0]))
+        width, height = 2 * np.sqrt(s)
+    else:
+        angle = 0
+        width, height = 2 * np.sqrt(covariance)
+    
+    # Draw the Ellipse
+    for nsig in range(1, 4):
+        ax.add_patch(Ellipse(position, nsig * width, nsig * height, angle, **kwargs))
+        
+def plot_gmm(gmm, X, label=True, ax=None):
+    ax = ax or plt.gca()
+    labels = gmm.fit(X).predict(X)
+    if label:
+        ax.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;, zorder=2)
+    else:
+        ax.scatter(X[:, 0], X[:, 1], s=40, zorder=2)
+    ax.axis(&#39;equal&#39;)
+    
+    w_factor = 0.2 / gmm.weights_.max()
+    for pos, covar, w in zip(gmm.means_, gmm.covariances_, gmm.weights_):
+        draw_ellipse(pos, covar, alpha=w * w_factor)</code></pre>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=4)
+plot_gmm(gmm, X)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p9.png" /></p>
+<p>Similarly, we can use the GMM approach to fit our stretched dataset. Allowing for a full covariance the model will fit even very oblong, stretched-out clusters:</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=4, covariance_type=&#39;full&#39;)
+plot_gmm(gmm, X_stretched)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p10.png" /></p>
+</div>
+<div id="gmm-for-density-estimation" class="section level1">
+<h1>6 GMM for density estimation</h1>
+<p>GMM is often used / viewed as a cluster algorithm. Fundamentally it is an algorithm for density estimation.
+That is to say, the result of a GMM fit to some data is technically not a clustering model, but a generative probabilistic model describing the distribution of the data.</p>
+<p>Let me give you an example with Scikit-Learn’s make_moons function:</p>
+<pre class="r"><code>from sklearn.datasets import make_moons
+
+Xmoon, ymoon = make_moons(300, noise=.06)
+plt.scatter(Xmoon[:, 0], Xmoon[:, 1])</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p11.png" /></p>
+<p>If I try to fit this with a two-component GMM viewed as a clustering model, the results are not particularly useful.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=2, covariance_type=&#39;full&#39;)
+plot_gmm(gmm, Xmoon)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p12.png" /></p>
+<p>But if I instead use many more components and ignore the cluster labels, we find a fit that is much closer to the input data.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=18, covariance_type=&#39;full&#39;)
+plot_gmm(gmm, Xmoon, label=False)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p13.png" /></p>
+<p>No clustering should take place here, but rather the overall distribution of the available data should be found.
+We can use a fitted GMM model to generate new random data distributed similarly to our input.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=18)
+gmm.fit(Xmoon)
+
+
+[Xnew, Ynew] = gmm.sample(400)
+plt.scatter(Xnew[:, 0], Xnew[:, 1])</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p14.png" /></p>
+<p>Here we can see 400 new generated data poinst.
+It looks very similar to the orginal data frame, doesn’t it?</p>
+<p>We can also determine the number of components we need:</p>
+<pre class="r"><code>n_components = np.arange(1, 25)
+models = [mixture.GaussianMixture(n, covariance_type=&#39;full&#39;).fit(Xmoon)
+          for n in n_components]
+
+plt.plot(n_components, [m.bic(Xmoon) for m in models], label=&#39;BIC&#39;)
+plt.plot(n_components, [m.aic(Xmoon) for m in models], label=&#39;AIC&#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.xlabel(&#39;n_components&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p15.png" /></p>
+<p>Based on the graphic, I choose 9 components to use.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=9, covariance_type=&#39;full&#39;)
+plot_gmm(gmm, Xmoon, label=False)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p16.png" /></p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=9)
+gmm.fit(Xmoon)
+
+
+[Xnew, Ynew] = gmm.sample(400)
+
+plt.scatter(Xnew[:, 0], Xnew[:, 1])</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p17.png" /></p>
+<p>Notice: this choice of number of components measures how well GMM works as a density estimator, not how well it works as a clustering algorithm.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post I showed the weaknesses of the K-Means algorithm and illustrated how GMMs can still be used to identify more difficult patterns in data.</p>
 </div>
 
     </div>

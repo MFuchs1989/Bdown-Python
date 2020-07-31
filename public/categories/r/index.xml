@@ -17,8 +17,7 @@
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/06/24/gaussian-mixture-models/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing1 IntroductionThe next unsupervised machine learning cluster algorithms is the Density-Based Spatial Clustering and Application with Noise (DBSCAN).DBSCAN is a density-based clusering algorithm, which can be used to identify clusters of any shape in a data set containing noise and outliers.
-2 Loading the librariesimport pandas as pdimport numpy as npimport matplotlib.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Weaknesses of k-Means5 Gaussian Mixture Models6 GMM for density estimation7 Conclusion1 IntroductionLet’s come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.As simple or good as the K-Means algorithm, for example, it is often very challenging to use in the real world. In particular, the non-probabilistic nature of k-means and its use of simple distance-from-cluster-center to assign cluster membership leads to poor performance for many real-world problems.</description>
     </item>
     
     <item>
