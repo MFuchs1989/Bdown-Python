@@ -75,12 +75,12 @@ For an illustrative example, I will create a data set artificially.
 ```{r, eval=F, echo=T}
 # generate some random cluster data
 X, y = make_blobs(random_state=170, n_samples=500, centers = 5)
-rng = np.random.RandomState(74)
 ```
 
 
 ```{r, eval=F, echo=T}
 # transform the data to be stretched
+rng = np.random.RandomState(74)
 transformation = rng.normal(size=(2, 2))
 X = np.dot(X, transformation)
 ```

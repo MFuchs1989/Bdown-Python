@@ -124,9 +124,9 @@ from sklearn.metrics.cluster import adjusted_rand_score</code></pre>
 <h1>4.1 Data preparation</h1>
 <p>For an illustrative example, I will create a data set artificially.</p>
 <pre class="r"><code># generate some random cluster data
-X, y = make_blobs(random_state=170, n_samples=500, centers = 5)
-rng = np.random.RandomState(74)</code></pre>
+X, y = make_blobs(random_state=170, n_samples=500, centers = 5)</code></pre>
 <pre class="r"><code># transform the data to be stretched
+rng = np.random.RandomState(74)
 transformation = rng.normal(size=(2, 2))
 X = np.dot(X, transformation)</code></pre>
 <pre class="r"><code>plt.scatter(X[:, 0], X[:, 1])
