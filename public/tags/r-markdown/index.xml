@@ -6,10 +6,20 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Gaussian Mixture Models</title>
+      <link>/2020/06/24/gaussian-mixture-models/</link>
+      <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/06/24/gaussian-mixture-models/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing1 IntroductionThe next unsupervised machine learning cluster algorithms is the Density-Based Spatial Clustering and Application with Noise (DBSCAN).DBSCAN is a density-based clusering algorithm, which can be used to identify clusters of any shape in a data set containing noise and outliers.
+2 Loading the librariesimport pandas as pdimport numpy as npimport matplotlib.</description>
+    </item>
     
     <item>
       <title>DBSCAN</title>
