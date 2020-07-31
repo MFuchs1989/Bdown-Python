@@ -16,7 +16,11 @@ tags:
 <ul>
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
-<li>3</li>
+<li>3 Introducing DBSCAN</li>
+<li>4 DBSCAN with Scikit-Learn</li>
+<li>4.1 Data preparation</li>
+<li>4.2 DBSCAN</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -26,12 +30,107 @@ DBSCAN is a density-based clusering algorithm, which can be used to identify clu
 </div>
 <div id="loading-the-libraries" class="section level1">
 <h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
+
+from sklearn.metrics.cluster import adjusted_rand_score</code></pre>
 </div>
-<div id="section" class="section level1">
-<h1>3</h1>
+<div id="introducing-dbscan" class="section level1">
+<h1>3 Introducing DBSCAN</h1>
 <p>The basic idea behind DBSCAN is derived from a human intuitive clustering method.</p>
 <p>If you have a look at the picture below you can easily identify 2 clusters along with several points of noise, because of the differences in the density of points.</p>
 <p>Clusters are dense regions in the data space, separated by regions of lower density of points. The Density-Based Spatial Clustering and Application with Noise algorithm is based on this intuitive notion of “clusters” and “noise”. The key idea is that for each point of a cluster, the neighborhood of a given radius has to contain at least a minimum number of points.</p>
 <p><img src="/post/2020-06-15-dbscan_files/p47s1.png" /></p>
-<p><img src="/post/2020-06-15-dbscan_files/p47p.png" /></p>
+</div>
+<div id="dbscan-with-scikit-learn" class="section level1">
+<h1>4 DBSCAN with Scikit-Learn</h1>
+<p>In the following I will show you an example of some of the strengths of DBSCAN clustering when k-means clustering doesn’t seem to handle the data shape well.</p>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>4.1 Data preparation</h1>
+<p>For an illustrative example, I will create a data set artificially.</p>
+<pre class="r"><code># generate some random cluster data
+X, y = make_blobs(random_state=170, n_samples=500, centers = 5)
+rng = np.random.RandomState(74)</code></pre>
+<pre class="r"><code># transform the data to be stretched
+transformation = rng.normal(size=(2, 2))
+X = np.dot(X, transformation)</code></pre>
+<pre class="r"><code>plt.scatter(X[:, 0], X[:, 1])
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)
+plt.show()</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p1.png" /></p>
+<pre class="r"><code># scaling the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)</code></pre>
+</div>
+<div id="k-means" class="section level1">
+<h1>4.1 k-Means</h1>
+<p>f you want to find out exactly how k-Means works have a look at this post of mine: <a href="https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/">“k-Means Clustering”</a></p>
+<pre class="r"><code># cluster the data into five clusters
+kmeans = KMeans(n_clusters=5)
+kmeans.fit(X_scaled)
+y_pred = kmeans.predict(X_scaled)</code></pre>
+<pre class="r"><code># plot the cluster assignments and cluster centers
+
+plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=&quot;viridis&quot;)
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p2.png" /></p>
+<p>We can measure the performance with the adjusted_rand_score</p>
+<pre class="r"><code>#k-means performance:
+print(&quot;ARI =&quot;, adjusted_rand_score(y, y_pred))</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p3.png" /></p>
+</div>
+<div id="dbscan" class="section level1">
+<h1>4.2 DBSCAN</h1>
+<pre class="r"><code># cluster the data into five clusters
+dbscan = DBSCAN(eps=0.123, min_samples = 2)
+
+clusters = dbscan.fit_predict(X_scaled)</code></pre>
+<pre class="r"><code># plot the cluster assignments
+plt.scatter(X[:, 0], X[:, 1], c=clusters, cmap=&quot;viridis&quot;)
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p4.png" /></p>
+<pre class="r"><code>#DBSCAN performance:
+print(&quot;ARI =&quot;, adjusted_rand_score(y, clusters))</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p5.png" /></p>
+<p>Here we see that the performance of the DBSCANS is much higher than k-means with this data set.</p>
+<p>Let’s have a look at the labels:</p>
+<pre class="r"><code>labels = dbscan.labels_
+labels</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p6.png" /></p>
+<p>We can also add them to the original record.</p>
+<pre class="r"><code>X_df = pd.DataFrame(X)
+db_cluster = pd.DataFrame(labels)  
+
+df = pd.concat([X_df, db_cluster], axis=1)
+df.columns = [&#39;Feature 1&#39;, &#39;Feature 2&#39;, &#39;db_cluster&#39;]
+df.head()</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p7.png" /></p>
+<p>Let’s have a detailed look at the generated clusters:</p>
+<pre class="r"><code>view_cluster = df[&#39;db_cluster&#39;].value_counts().T
+view_cluster = pd.DataFrame(data=view_cluster)
+view_cluster = view_cluster.reset_index()
+view_cluster.columns = [&#39;db_cluster&#39;, &#39;count&#39;]
+view_cluster.sort_values(by=&#39;db_cluster&#39;, ascending=False)</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p8.png" /></p>
+<p>As we can see from the overview above, a point was assigned to cluster -1.
+This is not a cluster at all, it’s a noisy point.</p>
+<pre class="r"><code># Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
+<p><img src="/post/2020-06-15-dbscan_files/p47p9.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>The example in this post showed that clustering also depends heavily on the distribution of the data points and that it is always worth trying out several cluster algorithms.</p>
 </div>
