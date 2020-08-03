@@ -19,6 +19,10 @@ tags:
 <li>3 Introducing HDBSCAN</li>
 <li>4 Parameter Selection for HDBSCAN</li>
 <li>5 HDBSCAN in action</li>
+<li>5.1 Functionality of the HDBSCAN algorithm</li>
+<li>5.2 Visualization options</li>
+<li>5.3 Predictions with HDBSCAN</li>
+<li>6 Conclustion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -156,6 +160,124 @@ print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
 </div>
 <div id="hdbscan-in-action" class="section level1">
 <h1>5 HDBSCAN in action</h1>
-<p><img src="/post/2020-06-20-hdbscan_files/p49p.png" /></p>
-<p><img src="/post/2020-06-20-hdbscan_files/p49p.png" /></p>
+<p>To see how HDBSCAN works we’ll generate some data again.</p>
+<pre class="r"><code>Xmoon, ymoon = make_moons(80, noise=.06)
+X, y = make_blobs(n_samples=50, centers=[(-0.75,2.25), (1.0, 2.0)], n_features=2, cluster_std=0.25)
+
+test_data = np.vstack([Xmoon, X])
+
+plt.scatter(test_data.T[0], test_data.T[1], color=&#39;b&#39;, **plot_kwds)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p12.png" /></p>
+</div>
+<div id="functionality-of-the-hdbscan-algorithm" class="section level1">
+<h1>5.1 Functionality of the HDBSCAN algorithm</h1>
+<p>The functionality of the HDBSCAN algorithm can be described in the following steps:</p>
+<ul>
+<li>Transform the space according to the density/sparsity</li>
+<li>Build the minimum spanning tree of the distance weighted graph</li>
+<li>Construct a cluster hierarchy of connected components</li>
+<li>Condense the cluster hierarchy based on minimum cluster size</li>
+<li>Extract the stable clusters from the condensed tree</li>
+</ul>
+<p>Ok let’s train and fit our model:</p>
+<pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=5, gen_min_span_tree=True)
+clusterer.fit(test_data)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p13.png" /></p>
+</div>
+<div id="visualization-options" class="section level1">
+<h1>5.2 Visualization options</h1>
+<p>For most of the above named steps, the hdbscan library offers its own visualization options.
+If you want to do this, don’t forget to set the gen_min_span_tree parameter to True.</p>
+<p><strong>Build the minimum spanning tree</strong></p>
+<pre class="r"><code>clusterer.minimum_spanning_tree_.plot(edge_cmap=&#39;viridis&#39;,
+                                      edge_alpha=0.6,
+                                      node_size=80,
+                                      edge_linewidth=2)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p14.png" /></p>
+<p><strong>Build the cluster hierarchy</strong></p>
+<pre class="r"><code>clusterer.single_linkage_tree_.plot(cmap=&#39;viridis&#39;, colorbar=True)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p15.png" /></p>
+<p><strong>Condense the cluster tree</strong></p>
+<pre class="r"><code>clusterer.condensed_tree_.plot()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p16.png" /></p>
+<p><strong>Extract the clusters</strong></p>
+<pre class="r"><code>clusterer.condensed_tree_.plot(select_clusters=True, selection_palette=sns.color_palette())</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p17.png" /></p>
+<p><strong>Visualize the colculated clusters</strong></p>
+<pre class="r"><code>palette = sns.color_palette()
+cluster_colors = [sns.desaturate(palette[col], sat)
+                  if col &gt;= 0 else (0.5, 0.5, 0.5) for col, sat in
+                  zip(clusterer.labels_, clusterer.probabilities_)]
+plt.scatter(test_data.T[0], test_data.T[1], c=cluster_colors, **plot_kwds)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p18.png" /></p>
+<p>I personally find this representation not so clear from the visual point of view.
+We can do better.
+So let’s bring out test_data and the calculated hdb_cluster together:</p>
+<pre class="r"><code>df = pd.DataFrame(test_data)
+df.columns = [&#39;Value_1&#39;, &#39;Value_2&#39;]
+df.head()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p19.png" /></p>
+<pre class="r"><code>labels = clusterer.labels_</code></pre>
+<pre class="r"><code>hdb_cluster = pd.DataFrame(labels)  
+df = pd.concat([df, hdb_cluster], axis=1)
+df.columns = [&#39;Value_1&#39;, &#39;Value_2&#39;, &#39;hdb_cluster&#39;]
+df.head()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p20.png" /></p>
+<pre class="r"><code>plt.scatter(df[&#39;Value_1&#39;], df[&#39;Value_2&#39;], c=labels, s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p21.png" /></p>
+<p>Now it is clearly shown.</p>
+</div>
+<div id="predictions-with-hdbscan" class="section level1">
+<h1>5.3 Predictions with HDBSCAN</h1>
+<p>Similar to the visualization of the individual steps regarding the functioning of HDBSCAN, the prediction_data parameter must be set to True so that we can use the model to make predictions for new data.
+In the following I set this parameter accodingly and also fit the model on our test_data.</p>
+<pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=5, prediction_data=True).fit(test_data)</code></pre>
+<p>After this step I create some new data points:</p>
+<pre class="r"><code>df_new = pd.DataFrame({&#39;Col1&#39;: [0, 1.5],
+                   &#39;Col2&#39;: [1.5, 1]})
+df_new</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p22.png" /></p>
+<p>If you have a single point be sure to wrap it in a list.</p>
+<pre class="r"><code>test_points = np.array(df_new)
+test_points</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p23.png" /></p>
+<p>With the approximate_predict function we’ll get the labels for our new data.</p>
+<pre class="r"><code>test_labels, strengths = hdbscan.approximate_predict(clusterer, test_points)
+test_labels</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p24.png" /></p>
+<p>We also add these predictions to the dataframe (df_new).</p>
+<pre class="r"><code>hdb2_cluster = pd.DataFrame(test_labels)  
+df_new = pd.concat([df_new, hdb2_cluster], axis=1)
+df_new.columns = [&#39;Value_1&#39;, &#39;Value_2&#39;, &#39;hdb_cluster&#39;]
+df_new.head()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p25.png" /></p>
+<p>Now let’s connect the original dataframe with the new dataframe:</p>
+<pre class="r"><code>data_frames = [df, df_new]
+
+df_final = pd.concat(data_frames)
+df_final.tail()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p26.png" /></p>
+<p>In the above overview I showed the last 5 rows of the final dataframe.
+As we can see, the two additional points were listed along with their assigned cluster.
+Let’s take a look at how many clusters have been identified.</p>
+<pre class="r"><code>df_final[&#39;hdb_cluster&#39;].value_counts()</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p27.png" /></p>
+<p>3 clusters were identified. Remember that a point was labeled -1. This is not a separate cluster but a noisy point.</p>
+<p>Now we age going to visualize the final dataframe and pay attention to the two new points.</p>
+<pre class="r"><code>plt.scatter(df_final[&#39;Value_1&#39;], df_final[&#39;Value_2&#39;], c=df_final[&#39;hdb_cluster&#39;], s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p28.png" /></p>
+<p>You can see very nicely that the first point (0, 1.5) was assigned to the yellow cluster and the second point (1.5, 1) is shown as an outlier.
+In the diagram below, I have shown the exact location using red and green lines.</p>
+<pre class="r"><code>plt.scatter(df_final[&#39;Value_1&#39;], df_final[&#39;Value_2&#39;], c=df_final[&#39;hdb_cluster&#39;], s=40, cmap=&#39;viridis&#39;)
+
+plt.axhline(y=1, color=&#39;r&#39;, linestyle=&#39;--&#39;)
+plt.axvline(x=1.5, color=&#39;r&#39;, linestyle=&#39;--&#39;)
+
+plt.axhline(y=1.5, color=&#39;g&#39;, linestyle=&#39;--&#39;)
+plt.axvline(x=0, color=&#39;g&#39;, linestyle=&#39;--&#39;)</code></pre>
+<p><img src="/post/2020-06-20-hdbscan_files/p49p29.png" /></p>
+</div>
+<div id="conclustion" class="section level1">
+<h1>6 Conclustion</h1>
+<p>Like the DBSCAN algorithm, the HDBSCAN algorithm is a density-based unsupervised machine learning algorithm and can be viewed as an extension of this. It may seem somewhat complicated – there are a fair number of moving parts to the algorithm – but ultimately each part is actually very straightforward and can be optimized well.</p>
 </div>

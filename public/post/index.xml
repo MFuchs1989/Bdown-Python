@@ -26,7 +26,7 @@
       <pubDate>Sat, 20 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/06/20/hdbscan/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing HDBSCAN4 Parameter Selection for HDBSCAN5 HDBSCAN in action1 IntroductionIn the series of unsupervised learning cluster algorithms, we have already got to know “hierarchical clustering” and “density-based clustering (DBSCAN)”. Now we come to an expansion of the DBSCAN algorithm in which the hierarchical approach is integrated.So called: Hierarchical Density-Based Spatial Clustering and Application with Noise (HDBSCAN)</description>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing HDBSCAN4 Parameter Selection for HDBSCAN5 HDBSCAN in action5.1 Functionality of the HDBSCAN algorithm5.2 Visualization options5.3 Predictions with HDBSCAN6 Conclustion1 IntroductionIn the series of unsupervised learning cluster algorithms, we have already got to know “hierarchical clustering” and “density-based clustering (DBSCAN)”. Now we come to an expansion of the DBSCAN algorithm in which the hierarchical approach is integrated.</description>
     </item>
     
     <item>

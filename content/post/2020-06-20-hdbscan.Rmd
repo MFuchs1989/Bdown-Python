@@ -17,6 +17,10 @@ tags:
 + 3 Introducing HDBSCAN
 + 4 Parameter Selection for HDBSCAN
 + 5 HDBSCAN in action
++ 5.1 Functionality of the HDBSCAN algorithm
++ 5.2 Visualization options
++ 5.3 Predictions with HDBSCAN
++ 6 Conclustion
 
 
 # 1 Introduction
@@ -243,57 +247,242 @@ print('Estimated number of clusters: %d' % n_clusters_)
 
 # 5 HDBSCAN in action
 
+To see how HDBSCAN works we'll generate some data again.
+
+```{r, eval=F, echo=T}
+Xmoon, ymoon = make_moons(80, noise=.06)
+X, y = make_blobs(n_samples=50, centers=[(-0.75,2.25), (1.0, 2.0)], n_features=2, cluster_std=0.25)
+
+test_data = np.vstack([Xmoon, X])
+
+plt.scatter(test_data.T[0], test_data.T[1], color='b', **plot_kwds)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p12.png)
+
+# 5.1 Functionality of the HDBSCAN algorithm
+
+The functionality of the HDBSCAN algorithm can be described in the following steps:
 
 
++ Transform the space according to the density/sparsity
++ Build the minimum spanning tree of the distance weighted graph
++ Construct a cluster hierarchy of connected components
++ Condense the cluster hierarchy based on minimum cluster size
++ Extract the stable clusters from the condensed tree
+
+Ok let's train and fit our model:
+
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=5, gen_min_span_tree=True)
+clusterer.fit(test_data)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p13.png)
+
+# 5.2 Visualization options
+
+For most of the above named steps, the hdbscan library offers its own visualization options.
+If you want to do this, don't forget to set the gen_min_span_tree parameter to True.
 
 
+**Build the minimum spanning tree**
+
+```{r, eval=F, echo=T}
+clusterer.minimum_spanning_tree_.plot(edge_cmap='viridis',
+                                      edge_alpha=0.6,
+                                      node_size=80,
+                                      edge_linewidth=2)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p14.png)
+
+
+**Build the cluster hierarchy**
+
+```{r, eval=F, echo=T}
+clusterer.single_linkage_tree_.plot(cmap='viridis', colorbar=True)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p15.png)
+
+**Condense the cluster tree**
+
+```{r, eval=F, echo=T}
+clusterer.condensed_tree_.plot()
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p16.png)
+
+
+**Extract the clusters**
+
+```{r, eval=F, echo=T}
+clusterer.condensed_tree_.plot(select_clusters=True, selection_palette=sns.color_palette())
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p17.png)
+
+
+**Visualize the colculated clusters**
+
+```{r, eval=F, echo=T}
+palette = sns.color_palette()
+cluster_colors = [sns.desaturate(palette[col], sat)
+                  if col >= 0 else (0.5, 0.5, 0.5) for col, sat in
+                  zip(clusterer.labels_, clusterer.probabilities_)]
+plt.scatter(test_data.T[0], test_data.T[1], c=cluster_colors, **plot_kwds)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p18.png)
+
+
+I personally find this representation not so clear from the visual point of view.
+We can do better.
+So let's bring out test_data and the calculated hdb_cluster together:
+
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame(test_data)
+df.columns = ['Value_1', 'Value_2']
+df.head()
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p19.png)
+
+
+```{r, eval=F, echo=T}
+labels = clusterer.labels_
+```
+
+
+```{r, eval=F, echo=T}
+hdb_cluster = pd.DataFrame(labels)  
+df = pd.concat([df, hdb_cluster], axis=1)
+df.columns = ['Value_1', 'Value_2', 'hdb_cluster']
+df.head()
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p20.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+plt.scatter(df['Value_1'], df['Value_2'], c=labels, s=40, cmap='viridis')
 ```
 
-![](/post/2020-06-20-hdbscan_files/p49p.png)
+![](/post/2020-06-20-hdbscan_files/p49p21.png)
 
 
+Now it is clearly shown.
 
 
+# 5.3 Predictions with HDBSCAN
+
+Similar to the visualization of the individual steps regarding the functioning of HDBSCAN, the prediction_data parameter must be set to True so that we can use the model to make predictions for new data.
+In the following I set this parameter accodingly and also fit the model on our test_data.
+
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=5, prediction_data=True).fit(test_data)
+```
+
+After this step I create some new data points:
+
+```{r, eval=F, echo=T}
+df_new = pd.DataFrame({'Col1': [0, 1.5],
+                   'Col2': [1.5, 1]})
+df_new
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p22.png)
+
+If you have a single point be sure to wrap it in a list.
 
 
+```{r, eval=F, echo=T}
+test_points = np.array(df_new)
+test_points
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p23.png)
+
+With the approximate_predict function we'll get the labels for our new data.
 
 
+```{r, eval=F, echo=T}
+test_labels, strengths = hdbscan.approximate_predict(clusterer, test_points)
+test_labels
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p24.png)
+
+We also add these predictions to the dataframe (df_new).
 
 
+```{r, eval=F, echo=T}
+hdb2_cluster = pd.DataFrame(test_labels)  
+df_new = pd.concat([df_new, hdb2_cluster], axis=1)
+df_new.columns = ['Value_1', 'Value_2', 'hdb_cluster']
+df_new.head()
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p25.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Now let's connect the original dataframe with the new dataframe:
 
 
 
 ```{r, eval=F, echo=T}
+data_frames = [df, df_new]
 
+df_final = pd.concat(data_frames)
+df_final.tail()
 ```
 
-![](/post/2020-06-20-hdbscan_files/p49p.png)
+![](/post/2020-06-20-hdbscan_files/p49p26.png)
+
+In the above overview I showed the last 5 rows of the final dataframe.
+As we can see, the two additional points were listed along with their assigned cluster.
+Let's take a look at how many clusters have been identified.
+
+
+```{r, eval=F, echo=T}
+df_final['hdb_cluster'].value_counts()
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p27.png)
+
+3 clusters were identified. Remember that a point was labeled -1. This is not a separate cluster but a noisy point.
+
+Now we age going to visualize the final dataframe and pay attention to the two new points.
+
+
+```{r, eval=F, echo=T}
+plt.scatter(df_final['Value_1'], df_final['Value_2'], c=df_final['hdb_cluster'], s=40, cmap='viridis')
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p28.png)
+
+You can see very nicely that the first point (0, 1.5) was assigned to the yellow cluster and the second point (1.5, 1) is shown as an outlier.
+In the diagram below, I have shown the exact location using red and green lines.
+
+
+
+```{r, eval=F, echo=T}
+plt.scatter(df_final['Value_1'], df_final['Value_2'], c=df_final['hdb_cluster'], s=40, cmap='viridis')
+
+plt.axhline(y=1, color='r', linestyle='--')
+plt.axvline(x=1.5, color='r', linestyle='--')
+
+plt.axhline(y=1.5, color='g', linestyle='--')
+plt.axvline(x=0, color='g', linestyle='--')
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p29.png)
+
+# 6 Conclustion
+
+Like the DBSCAN algorithm, the HDBSCAN algorithm is a density-based unsupervised machine learning algorithm and can be viewed as an extension of this. It may seem somewhat complicated – there are a fair number of moving parts to the algorithm – but ultimately each part is actually very straightforward and can be optimized well. 
+
+
