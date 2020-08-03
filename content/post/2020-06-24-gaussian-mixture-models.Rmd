@@ -24,7 +24,7 @@ tags:
 # 1 Introduction
 
 Let's come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.
-As simple or good as the K-Means algorithm, for example, it is often very challenging to use in the real world. In particular, the non-probabilistic nature of k-means and its use of simple distance-from-cluster-center to assign cluster membership leads to poor performance for many real-world problems. Therefore I will give you an overview of Gaussian mixture models (GMMs), which can be viewed as an extension of the ideas behind k-means, but can also be a powerful tool for estimation beyond simple clustering.
+As simple or good as the K-Means algorithm is, it is often difficult to use in real world situations. In particular, the non-probabilistic nature of k-means and its use of simple distance-from-cluster-center to assign cluster membership leads to poor performance for many real-world problems. Therefore I will give you an overview of Gaussian mixture models (GMMs), which can be viewed as an extension of the ideas behind k-means, but can also be a powerful tool for estimation beyond simple clustering.
 
 
 # 2 Loading the libraries
