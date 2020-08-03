@@ -14,14 +14,15 @@ tags:
 
 + 1 Introduction
 + 2 Loading the libraries
-+ 3 Introducing DBSCAN
-+ 4 
++ 3 Introducing HDBSCAN
++ 4 Parameter Selection for HDBSCAN
++ 5 HDBSCAN in action
 
 
 # 1 Introduction
 
-The next unsupervised machine learning cluster algorithms is the Density-Based Spatial Clustering and Application with Noise (DBSCAN).
-DBSCAN is a density-based clusering algorithm, which can be used to identify clusters of any shape in a data set containing noise and outliers.
+In the series of unsupervised learning cluster algorithms, we have already got to know ["hierarchical clustering"](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/) and ["density-based clustering (DBSCAN)"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/). Now we come to an expansion of the DBSCAN algorithm in which the hierarchical approach is integrated.
+So called: Hierarchical Density-Based Spatial Clustering and Application with Noise (HDBSCAN)
 
 
 
@@ -29,92 +30,218 @@ DBSCAN is a density-based clusering algorithm, which can be used to identify clu
 
 
 ```{r, eval=F, echo=T}
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
+
+from sklearn.datasets import load_digits
+
+
+from sklearn.manifold import TSNE
+import hdbscan
+
 from sklearn.datasets import make_blobs
+from sklearn.datasets import make_moons
 
-from sklearn.preprocessing import StandardScaler
-
-from sklearn.cluster import KMeans
-from sklearn.cluster import DBSCAN
-
-from sklearn.metrics.cluster import adjusted_rand_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+plot_kwds = {'alpha' : 0.25, 's' : 10, 'linewidths':0}
 ```
 
 
-# 3 Introducing DBSCAN
+# 3 Introducing HDBSCAN
 
 
+We already know from ["DBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/) post this algorithm needs a minimum cluster size and a distance threshold epsilon as user-defined input parameters. HDBSCAN is basically a DBSCAN implementation for varying epsilon values and therefore only needs the minimum cluster size as single input parameter. Unlike DBSCAN, this allows to it find clusters of variable densities without having to choose a suitable distance threshold first.
+
+HDBSCAN extends DBSCAN by converting it into a hierarchical clustering algorithm, and then using a technique to extract a flat clustering based in the stability of clusters.
 
 
+# 4 Parameter Selection for HDBSCAN
+
+While the HDBSCAN class has a large number of parameters that can be set on initialization, in practice there are a very small number of parameters that have significant practical effect on clustering.
+
+One of these is the 'min_cluster_size'.
+
+The ["digits"](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)  dataset from scikit learn is used to illustrate the effects of the following changes to the parameters.
 
 
+```{r, eval=F, echo=T}
+digits = load_digits()
+data = digits.data
+```
+
+The loaded data set contains 64 dimensions.
+For a visual representation, I use t-SNE (t-distributed Stochastic Neighbor Embedding) in advance.
+I will explain the exact functioning of this algorithm for dimension reduction in a separate post.
+
+```{r, eval=F, echo=T}
+projection = TSNE().fit_transform(data)
+plt.scatter(*projection.T, **plot_kwds)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p1.png)
+
+This is what a two-dimensional representation of our digits dataset looks like.
+
+The min_cluster_size parameter is a relatively intuitive parameter to select. Set it to the smallest size grouping that you wish to consider a cluster.
+
+In the following we will see how the calculated number of clusters will change from varying the min_cluster_size.
+I will start with a min_cluster_size of 15.
 
 
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=15).fit(data)
+```
+
+```{r, eval=F, echo=T}
+color_palette = sns.color_palette('Paired', 12)
+cluster_colors = [color_palette[x] if x >= 0
+                  else (0.5, 0.5, 0.5)
+                  for x in clusterer.labels_]
+cluster_member_colors = [sns.desaturate(x, p) for x, p in
+                         zip(cluster_colors, clusterer.probabilities_)]
+plt.scatter(*projection.T, s=20, linewidth=0, c=cluster_member_colors, alpha=0.25)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p2.png)
 
 
+```{r, eval=F, echo=T}
+labels = clusterer.labels_
+```
+
+```{r, eval=F, echo=T}
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print('Estimated number of clusters: %d' % n_clusters_)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p3.png)
+
+10 estimated clusters.
+Now let's see what happens if we increase the min_cluster_size to 30.
 
 
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=30).fit(data)
 
+color_palette = sns.color_palette('Paired', 12)
+cluster_colors = [color_palette[x] if x >= 0
+                  else (0.5, 0.5, 0.5)
+                  for x in clusterer.labels_]
+cluster_member_colors = [sns.desaturate(x, p) for x, p in
+                         zip(cluster_colors, clusterer.probabilities_)]
+plt.scatter(*projection.T, s=20, linewidth=0, c=cluster_member_colors, alpha=0.25)
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2020-06-20-hdbscan_files/p49p4.png)
 
 
 
 ```{r, eval=F, echo=T}
+labels = clusterer.labels_
 
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print('Estimated number of clusters: %d' % n_clusters_)
 ```
 
-![](/post/2020-06-20-hdbscan_files/p49p.png)
+![](/post/2020-06-20-hdbscan_files/p49p5.png)
+
+
+We see if we increase the parameter min_cluster_size the number of clusters found decreases.
+Let's see what happens at min_cluster_size 60.
+
+
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=60).fit(data)
+
+color_palette = sns.color_palette('Paired', 12)
+cluster_colors = [color_palette[x] if x >= 0
+                  else (0.5, 0.5, 0.5)
+                  for x in clusterer.labels_]
+cluster_member_colors = [sns.desaturate(x, p) for x, p in
+                         zip(cluster_colors, clusterer.probabilities_)]
+plt.scatter(*projection.T, s=20, linewidth=0, c=cluster_member_colors, alpha=0.25)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p6.png)
+
+
+```{r, eval=F, echo=T}
+labels = clusterer.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print('Estimated number of clusters: %d' % n_clusters_)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p7.png)
+
+Only two clusters are still being calculated. These two clusters are known as really core clusters.
+But actually, more than two clusters should contain more than 60 assigned data points. So why is so much data spotted as noisy data points?
+The answer is that HDBSCAN has a second parameter min_samples. The implementation defaults this value (if it is unspecified) to whatever min_cluster_size is set to. We can recover some of our original clusters by explicitly providing min_samples at the original value of 15.
 
 
 
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=60, min_samples=15).fit(data)
+
+color_palette = sns.color_palette('Paired', 12)
+cluster_colors = [color_palette[x] if x >= 0
+                  else (0.5, 0.5, 0.5)
+                  for x in clusterer.labels_]
+cluster_member_colors = [sns.desaturate(x, p) for x, p in
+                         zip(cluster_colors, clusterer.probabilities_)]
+plt.scatter(*projection.T, s=20, linewidth=0, c=cluster_member_colors, alpha=0.25)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p8.png)
 
 
 
+```{r, eval=F, echo=T}
+labels = clusterer.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print('Estimated number of clusters: %d' % n_clusters_)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p9.png)
+
+As you can see this results in us recovering something much closer to our original clustering, only now with some of the smaller clusters pruned out. 
+
+Since we have seen that min_samples clearly has a dramatic effect on clustering, the question becomes: how do we select this parameter? The simplest intuition for what min_samples does is provide a measure of how conservative you want you clustering to be. The larger the value of min_samples you provide, the more conservative the clustering – more points will be declared as noise, and clusters will be restricted to progressively more dense areas. We can see this in practice by leaving the min_cluster_size at 60, but reducing min_samples to 1.
 
 
+```{r, eval=F, echo=T}
+clusterer = hdbscan.HDBSCAN(min_cluster_size=60, min_samples=1).fit(data)
+
+color_palette = sns.color_palette('Paired', 12)
+cluster_colors = [color_palette[x] if x >= 0
+                  else (0.5, 0.5, 0.5)
+                  for x in clusterer.labels_]
+cluster_member_colors = [sns.desaturate(x, p) for x, p in
+                         zip(cluster_colors, clusterer.probabilities_)]
+plt.scatter(*projection.T, s=20, linewidth=0, c=cluster_member_colors, alpha=0.25)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p10.png)
 
 
+```{r, eval=F, echo=T}
+labels = clusterer.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+print('Estimated number of clusters: %d' % n_clusters_)
+```
+
+![](/post/2020-06-20-hdbscan_files/p49p11.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 5 HDBSCAN in action
 
 
 
