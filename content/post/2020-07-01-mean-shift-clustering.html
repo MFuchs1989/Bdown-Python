@@ -1,0 +1,95 @@
+---
+title: Mean Shift Clustering
+author: Michael Fuchs
+date: '2020-07-01'
+slug: mean-shift-clustering
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Generating some test data</li>
+<li>4 Introducing Mean Shift Clustering</li>
+<li>5 Mean Shift with scikit-learn</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Suppose you have been given the task of discovering groups, or clusters, that share certain characteristics within a dataset. There are various unsupervised machine learning algorithms that can be used to do this.</p>
+<p>As we’ve seen in past posts, <a href="https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/">“k-Means Clustering”</a> and <a href="https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/">“Affinity Propagation”</a> can be used if you have good or easily separable data, respectively.
+Maybe this time the problem is that none of those two criteria are met. What to do?</p>
+<p>The answer is: Mean Shift.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+
+from sklearn.cluster import MeanShift, estimate_bandwidth</code></pre>
+</div>
+<div id="generating-some-test-data" class="section level1">
+<h1>3 Generating some test data</h1>
+<p>For the following example, I will generate some sample data.</p>
+<pre class="r"><code>X, y = make_blobs(n_samples=1000, n_features = 3, centers = [(5,5), (3,3), (1,1)], cluster_std = 0.30)
+
+plt.scatter(X[:, 0], X[:, 1])
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)
+plt.show()</code></pre>
+<p><img src="/post/2020-07-01-mean-shift-clustering_files/p51p1.png" /></p>
+</div>
+<div id="introducing-mean-shift-clustering" class="section level1">
+<h1>4 Introducing Mean Shift Clustering</h1>
+<p>In a nutshell:
+Mean Shift looks at the “mode” of the density, and where it is highest, and will iteratively shift points in the plot towards the closest mode – resulting in a number of clusters, and the ability to assign a sample to a cluster, after fitting is complete.</p>
+<p>In this way, Mean Shift can still recognize clusters, even if they are not properly separated.</p>
+<p><strong>k-Means vs Mean Shift</strong></p>
+<p>Mean Shift looks very similar to k-Means, they both move the point closer to the cluster centroids.
+One may wonder: How is this different from k-Means? k-Means is faster in terms of runtime complexity!</p>
+<p>The key difference is that Mean Shift does not require the user to specify the number of clusters (k).
+In some cases, it is not straightforward to guess the right number of clusters to use.
+In k-Means, the output may end up having too few clusters or too many clusters. This can lead to a skewed result.
+At the cost of larger time complexity, Mean Shift determines the number of clusters suitable to the dataset provided.</p>
+<p>Another commonly cited difference is that k-Means can only learn circle or ellipsoidal clusters.
+The reason that Mean Shift can learn arbitrary shapes is because the features are mapped to another higher dimensional feature space through the kernel.</p>
+</div>
+<div id="mean-shift-with-scikit-learn" class="section level1">
+<h1>5 Mean Shift with scikit-learn</h1>
+<p>Let’s now take a look at how to implement Mean Shift with scikit-learn.</p>
+<p>First of all we define bandwidth:</p>
+<pre class="r"><code>bandwidth = estimate_bandwidth(X, quantile=0.2, n_samples=500)</code></pre>
+<p>and fit the algorithm to our data:</p>
+<pre class="r"><code># Fit Mean Shift with Scikit
+meanshift = MeanShift(bandwidth=bandwidth)
+meanshift.fit(X)</code></pre>
+<pre class="r"><code>labels = meanshift.labels_
+labels_unique = np.unique(labels)
+n_clusters_ = len(labels_unique)
+
+print(&#39;Estimated number of clusters: &#39; + str(n_clusters_))</code></pre>
+<p><img src="/post/2020-07-01-mean-shift-clustering_files/p51p2.png" /></p>
+<p>Now let’s do some predictions and have a look at the result</p>
+<pre class="r"><code># Predict the cluster for all the samples
+y_pred  = meanshift.predict(X)</code></pre>
+<pre class="r"><code>plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=&quot;viridis&quot;)
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)</code></pre>
+<p><img src="/post/2020-07-01-mean-shift-clustering_files/p51p3.png" /></p>
+<p>Looks good :)</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I showed that Mean Shift is a simple and versatile cluster algorithm that finds applications in general data clustering as well as in image processing and object tracking. It has similarities with k-Means but there are differences. Mean Shift is essentially iterations of weighted average of the datapoints.</p>
+</div>

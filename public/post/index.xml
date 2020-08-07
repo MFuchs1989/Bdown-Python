@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Mean Shift Clustering</title>
+      <link>/2020/07/01/mean-shift-clustering/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/01/mean-shift-clustering/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Introducing Mean Shift Clustering5 Mean Shift with scikit-learn6 Conclusion1 IntroductionSuppose you have been given the task of discovering groups, or clusters, that share certain characteristics within a dataset. There are various unsupervised machine learning algorithms that can be used to do this.
+As we’ve seen in past posts, “k-Means Clustering” and “Affinity Propagation” can be used if you have good or easily separable data, respectively.</description>
+    </item>
     
     <item>
       <title>Affinity Propagation</title>
