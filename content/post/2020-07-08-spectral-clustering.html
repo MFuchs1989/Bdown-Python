@@ -11,4 +11,250 @@ tags:
 
 
 
-<p><img src="/post/2020-07-08-spectral-clustering_files/p52p.png" /></p>
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Introducing Spectral Clustering</li>
+<li>4 Generating some test data</li>
+<li>5 k-Means</li>
+<li>6 Spectral Clustering</li>
+<li>7 Digression: Feature-Engineering &amp; k-Means</li>
+<li>8 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>My post series from the unsupervised machine learning area about cluster algorithms is slowly coming to an end.
+However, what cluster algorithm cannot be missing in any case is Spectral Clustering.
+And this is what the following post is about.</p>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52s1.png" /></p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style(&#39;darkgrid&#39;, {&#39;axes.facecolor&#39;: &#39;.9&#39;})
+sns.set_palette(palette=&#39;deep&#39;)
+sns_c = sns.color_palette(palette=&#39;deep&#39;)
+%matplotlib inline
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
+from itertools import chain
+
+from sklearn.cluster import KMeans
+from sklearn.cluster import SpectralClustering</code></pre>
+</div>
+<div id="introducing-spectral-clustering" class="section level1">
+<h1>3 Introducing Spectral Clustering</h1>
+<p>As we know from the well-known k-Means algorithm (also a cluster algorithm), it has the following main problems:</p>
+<ul>
+<li>It makes assumption on the shape of the data (a round sphere, a radial basis)</li>
+<li>It requires multiple restarts at times to find the local minima (i.e. the best clustering)</li>
+</ul>
+<p>Spectral Clustering algorithm helps to solve these two problems. This algorithm relies on the power of graphs and the proximity between the data points in order to cluster them, makes it possible to avoid the sphere shape cluster that the k-Means algorithm forces us to assume.</p>
+<p>The functionality of the Spectral Clustering algorithm can be described in the following steps:</p>
+<ul>
+<li>constructing a nearest neighbours graph (KNN graph) or radius based graph</li>
+<li>Embed the data points in low dimensional space (spectral embedding) in which the clusters are more obvious with the use of eigenvectors of the graph Laplacian</li>
+<li>Use the lowest eigen value in order to choose the eigenvector for the cluster</li>
+</ul>
+</div>
+<div id="generating-some-test-data" class="section level1">
+<h1>4 Generating some test data</h1>
+<p>For the following example, I will generate some sample data.
+Since these should be a little fancy we need the following functions:</p>
+<pre class="r"><code>def generate_circle_sample_data(r, n, sigma):
+    &quot;&quot;&quot;Generate circle data with random Gaussian noise.&quot;&quot;&quot;
+    angles = np.random.uniform(low=0, high=2*np.pi, size=n)
+
+    x_epsilon = np.random.normal(loc=0.0, scale=sigma, size=n)
+    y_epsilon = np.random.normal(loc=0.0, scale=sigma, size=n)
+
+    x = r*np.cos(angles) + x_epsilon
+    y = r*np.sin(angles) + y_epsilon
+    return x, y
+
+
+def generate_concentric_circles_data(param_list):
+    &quot;&quot;&quot;Generates many circle data with random Gaussian noise.&quot;&quot;&quot;
+    coordinates = [ 
+        generate_circle_sample_data(param[0], param[1], param[2])
+     for param in param_list
+    ]
+    return coordinates</code></pre>
+<pre class="r"><code># Set global plot parameters. 
+plt.rcParams[&#39;figure.figsize&#39;] = [8, 8]
+plt.rcParams[&#39;figure.dpi&#39;] = 80
+
+# Number of points per circle. 
+n = 1000
+# Radius. 
+r_list =[2, 4, 6]
+# Standar deviation (Gaussian noise). 
+sigmas = [0.1, 0.25, 0.5]
+
+param_lists = [[(r, n, sigma) for r in r_list] for sigma in sigmas] 
+# We store the data on this list.
+coordinates_list = []
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+for i, param_list in enumerate(param_lists):
+
+    coordinates = generate_concentric_circles_data(param_list)
+
+    coordinates_list.append(coordinates)
+    
+    ax = axes[i]
+    
+    for j in range(0, len(coordinates)):
+    
+        x, y = coordinates[j]
+        sns.scatterplot(x=x, y=y, color=&#39;black&#39;, ax=ax)
+        ax.set(title=f&#39;$\sigma$ = {param_list[0][2]}&#39;)
+
+plt.tight_layout()</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p1.png" /></p>
+<p>For the following cluster procedures we use the first graphic (shown on the left) and extract its points into a separate data frame.</p>
+<pre class="r"><code>coordinates = coordinates_list[0]
+
+def data_frame_from_coordinates(coordinates): 
+    &quot;&quot;&quot;From coordinates to data frame.&quot;&quot;&quot;
+    xs = chain(*[c[0] for c in coordinates])
+    ys = chain(*[c[1] for c in coordinates])
+
+    return pd.DataFrame(data={&#39;x&#39;: xs, &#39;y&#39;: ys})
+
+data_df = data_frame_from_coordinates(coordinates)
+
+data_df.head()</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p2.png" /></p>
+<p>These are the data we will use:</p>
+<pre class="r"><code># Plot the input data.
+fig, ax = plt.subplots(figsize=(5, 5))
+sns.scatterplot(x=&#39;x&#39;, y=&#39;y&#39;, color=&#39;black&#39;, data=data_df, ax=ax)
+ax.set(title=&#39;Input Data&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p3.png" /></p>
+</div>
+<div id="k-means" class="section level1">
+<h1>5 k-Means</h1>
+<p>We know the following steps from the detailed <a href="https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/">“k-Means Clustering”</a> post.</p>
+<p>What I want to show is how well the k-Means algorithm works with this cluster problem.</p>
+<pre class="r"><code>Sum_of_squared_distances = []
+K = range(1,10)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_df)
+    Sum_of_squared_distances.append(km.inertia_)</code></pre>
+<pre class="r"><code>plt.plot(K, Sum_of_squared_distances, &#39;bx-&#39;)
+plt.xlabel(&#39;k&#39;)
+plt.ylabel(&#39;Sum_of_squared_distances&#39;)
+plt.title(&#39;Elbow Method For Optimal k&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p4.png" /></p>
+<p>As we can see optimal k=3.</p>
+<pre class="r"><code>kmeans = KMeans(n_clusters=3) 
+kmeans.fit(data_df)</code></pre>
+<pre class="r"><code>cluster = kmeans.predict(data_df)</code></pre>
+<p>Let’s plot the result:</p>
+<pre class="r"><code>cluster = [&#39;k-means_c_&#39; + str(c) for c in cluster]
+
+fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;x&#39;, y=&#39;y&#39;, data=data_df.assign(cluster = cluster), hue=&#39;cluster&#39;, ax=ax)
+ax.set(title=&#39;K-Means Clustering&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p5.png" /></p>
+<p>As expected, the k-Means algorithm shows poor performance here.
+Let’s see how the Spectral Clustering algorithm performs.</p>
+</div>
+<div id="spectral-clustering" class="section level1">
+<h1>6 Spectral Clustering</h1>
+<pre class="r"><code>spec_cl = SpectralClustering(
+    n_clusters=3,  
+    n_neighbors=20, 
+    affinity=&#39;nearest_neighbors&#39;)</code></pre>
+<pre class="r"><code>cluster = spec_cl.fit_predict(data_df)</code></pre>
+<pre class="r"><code>cluster = [&#39;k-means_c_&#39; + str(c) for c in cluster]
+
+fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;x&#39;, y=&#39;y&#39;, data=data_df.assign(cluster = cluster), hue=&#39;cluster&#39;, ax=ax)
+ax.set(title=&#39;Spectral Clustering&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p6.png" /></p>
+<p>Perfect !
+But this is not the only solution.</p>
+</div>
+<div id="digression-feature-engineering-k-means" class="section level1">
+<h1>7 Digression: Feature-Engineering &amp; k-Means</h1>
+<p>In concrete applications is sometimes hard to evaluate which clustering algorithm to choose.
+I therefore often use feature engineering and proceed, if possible, with k-means due to speed factors.</p>
+<p>Let’s take a second look at the dataset we created.</p>
+<pre class="r"><code>data_df</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p7.png" /></p>
+<p>This time we add the calculated r2 to the data set:</p>
+<pre class="r"><code>data_df = data_df.assign(r2 = lambda x: np.power(x[&#39;x&#39;], 2) + np.power(x[&#39;y&#39;], 2))
+
+data_df</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p8.png" /></p>
+<p>Now let’s plot our generated r2:</p>
+<pre class="r"><code>fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;r2&#39;, y=&#39;r2&#39;, color=&#39;black&#39;, data=data_df, ax=ax)
+ax.set(title=&#39;Radius Feature&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p9.png" /></p>
+<p>This now seems to be separable for k-Means as well.
+Let’s check it out:</p>
+<pre class="r"><code>Sum_of_squared_distances = []
+K = range(1,10)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_df)
+    Sum_of_squared_distances.append(km.inertia_)</code></pre>
+<pre class="r"><code>plt.plot(K, Sum_of_squared_distances, &#39;bx-&#39;)
+plt.xlabel(&#39;k&#39;)
+plt.ylabel(&#39;Sum_of_squared_distances&#39;)
+plt.title(&#39;Elbow Method For Optimal k&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p10.png" /></p>
+<pre class="r"><code>kmeans = KMeans(n_clusters=3) 
+kmeans.fit(data_df[[&#39;r2&#39;]])</code></pre>
+<pre class="r"><code>cluster = kmeans.predict(data_df[[&#39;r2&#39;]])</code></pre>
+<p>Note at this point: k-Means is only applied to the variable r2, not to the complete data set.</p>
+<pre class="r"><code>cluster = [&#39;k-means_c_&#39; + str(c) for c in cluster]
+
+fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;r2&#39;, y=&#39;r2&#39;, data=data_df.assign(cluster = cluster), hue=&#39;cluster&#39;, ax=ax)
+ax.set(title=&#39;K-Means Clustering&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p11.png" /></p>
+<p>Finally, we visualize the original data with the corresponding clusters.</p>
+<pre class="r"><code># This time I commented out the first of the following commands, otherwise the legend of the graphic will be labeled twice.
+#cluster = [&#39;k-means_c_&#39; + str(c) for c in cluster]
+
+fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;x&#39;, y=&#39;y&#39;, data=data_df.assign(cluster = cluster), hue=&#39;cluster&#39;, ax=ax)
+ax.set(title=&#39;K-Means Clustering&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p12.png" /></p>
+<p>As we can see, the k-Means algorithm now also separates the data as desired.
+For the matter of the commented-out line, however, the following work-around can be used.
+We save the predicted labels as a variable to the original record.</p>
+<pre class="r"><code>data_df = data_df.assign(cluster = [&#39;k-means_c_&#39; + str(c) for c in cluster])
+
+data_df.head()</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p13.png" /></p>
+<p>Now we can plot without any problems.</p>
+<pre class="r"><code>fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;r2&#39;, y=&#39;r2&#39;, hue=&#39;cluster&#39;, data=data_df, ax=ax)
+ax.set(title=&#39;Radius Feature (K-Means)&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p14.png" /></p>
+<pre class="r"><code>fig, ax = plt.subplots()
+sns.scatterplot(x=&#39;x&#39;, y=&#39;y&#39;, hue=&#39;cluster&#39;, data=data_df, ax=ax)
+ax.set(title=&#39;Radius Feature (K-Means)&#39;)</code></pre>
+<p><img src="/post/2020-07-08-spectral-clustering_files/p52p15.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>In this post I have shown the advantages of spectral clustering over conventional cluster algorithms and how this algorithm can be used.
+I have also shown how feature engineering in combination with the k-Means algorithms can be used to achieve equally good results.</p>
+</div>
