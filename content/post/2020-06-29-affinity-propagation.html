@@ -17,7 +17,9 @@ tags:
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
 <li>3 Generating some test data</li>
-<li>4</li>
+<li>4 Introducing Affinity Propagation</li>
+<li>5 Affinity Propagation with scikit-learn</li>
+<li>6 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -36,7 +38,9 @@ from sklearn.datasets import make_blobs
 
 from matplotlib import pyplot as plt
 
-from sklearn.cluster import AffinityPropagation</code></pre>
+from sklearn.cluster import AffinityPropagation
+
+from sklearn import metrics</code></pre>
 </div>
 <div id="generating-some-test-data" class="section level1">
 <h1>3 Generating some test data</h1>
@@ -47,6 +51,49 @@ plt.scatter(X[:, 0], X[:, 1], cmap=&#39;viridis&#39;)</code></pre>
 </div>
 <div id="introducing-affinity-propagation" class="section level1">
 <h1>4 Introducing Affinity Propagation</h1>
-<p>Affinity Propagation was published by Frey and Dueck in 2007, and is only getting more and more popular due to its simplicity, general applicability, and performance.</p>
-<p><img src="/post/2020-06-29-affinity-propagation_files/p50p1.png" /></p>
+<p>Affinity Propagation was published by Frey and Dueck in 2007, and is only getting more and more popular due to its simplicity, general applicability, and performance.
+The main drawbacks of k-Means and similar algorithms are having to select the number of clusters (k), and choosing the initial set of points.
+In contrast to these traditional clustering methods, Affinity Propagation does not require you to specify the number of clusters.
+Affinity Propagation, instead, takes as input measures of similarity between pairs of data points, and simultaneously considers all data points as potential exemplars.</p>
+</div>
+<div id="affinity-propagation-with-scikit-learn" class="section level1">
+<h1>5 Affinity Propagation with scikit-learn</h1>
+<p>Now let’s see how Affinity Propagation is used.</p>
+<pre class="r"><code>afprop  = AffinityPropagation(preference=-50)
+
+afprop.fit(X)
+
+labels = afprop.predict(X)</code></pre>
+<pre class="r"><code>plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-29-affinity-propagation_files/p50p2.png" /></p>
+<p>The algorithm worked well.</p>
+<p>One the the class attributes is cluster_center_indices_:</p>
+<pre class="r"><code>cluster_centers_indices = afprop.cluster_centers_indices_
+cluster_centers_indices</code></pre>
+<p><img src="/post/2020-06-29-affinity-propagation_files/p50p3.png" /></p>
+<p>This allows the identified clusters to be calculated.</p>
+<pre class="r"><code>n_clusters_ = len(cluster_centers_indices)
+
+print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
+<p><img src="/post/2020-06-29-affinity-propagation_files/p50p4.png" /></p>
+<p>With the following command we’ll receive the calculated cluster centers:</p>
+<pre class="r"><code>afprop.cluster_centers_</code></pre>
+<p><img src="/post/2020-06-29-affinity-propagation_files/p50p5.png" /></p>
+<p>Last but not least some performance metrics:</p>
+<pre class="r"><code>print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)
+print(&quot;Homogeneity: %0.3f&quot; % metrics.homogeneity_score(y, labels))
+print(&quot;Completeness: %0.3f&quot; % metrics.completeness_score(y, labels))
+print(&quot;V-measure: %0.3f&quot; % metrics.v_measure_score(y, labels))
+print(&quot;Adjusted Rand Index: %0.3f&quot;
+      % metrics.adjusted_rand_score(y, labels))
+print(&quot;Adjusted Mutual Information: %0.3f&quot;
+      % metrics.adjusted_mutual_info_score(y, labels))
+print(&quot;Silhouette Coefficient: %0.3f&quot;
+      % metrics.silhouette_score(X, labels, metric=&#39;sqeuclidean&#39;))</code></pre>
+<p><img src="/post/2020-06-29-affinity-propagation_files/p50p6.png" /></p>
+<p>If you want to read the exact description of the metrics see <a href="https://scikit-learn.org/stable/modules/classes.html?highlight=sklearn%20metrics#module-sklearn.metrics">“here”</a>.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I explained the affinity propagation algorithm and showed how it can be used with scikit-learn.</p>
 </div>

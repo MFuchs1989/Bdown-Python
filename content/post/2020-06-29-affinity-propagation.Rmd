@@ -15,7 +15,9 @@ tags:
 + 1 Introduction
 + 2 Loading the libraries
 + 3 Generating some test data
-+ 4 
++ 4 Introducing Affinity Propagation
++ 5 Affinity Propagation with scikit-learn
++ 6 Conclusion
 
 
 # 1 Introduction
@@ -38,6 +40,8 @@ from sklearn.datasets import make_blobs
 from matplotlib import pyplot as plt
 
 from sklearn.cluster import AffinityPropagation
+
+from sklearn import metrics
 ```
 
 
@@ -57,23 +61,88 @@ plt.scatter(X[:, 0], X[:, 1], cmap='viridis')
 # 4 Introducing Affinity Propagation
 
 Affinity Propagation was published by Frey and Dueck in 2007, and is only getting more and more popular due to its simplicity, general applicability, and performance.
+The main drawbacks of k-Means and similar algorithms are having to select the number of clusters (k), and choosing the initial set of points. 
+In contrast to these traditional clustering methods, Affinity Propagation does not require you to specify the number of clusters.
+Affinity Propagation, instead, takes as input measures of similarity between pairs of data points, and simultaneously considers all data points as potential exemplars.
 
 
 
+# 5 Affinity Propagation with scikit-learn
+
+Now let's see how Affinity Propagation is used.
 
 
 ```{r, eval=F, echo=T}
+afprop  = AffinityPropagation(preference=-50)
 
+afprop.fit(X)
+
+labels = afprop.predict(X)
 ```
 
-![](/post/2020-06-29-affinity-propagation_files/p50p1.png)
+```{r, eval=F, echo=T}
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap='viridis')
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p2.png)
+
+The algorithm worked well.
+
+One the the class attributes is cluster_center_indices_:
+
+
+```{r, eval=F, echo=T}
+cluster_centers_indices = afprop.cluster_centers_indices_
+cluster_centers_indices
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p3.png)
+
+This allows the identified clusters to be calculated.
+
+
+```{r, eval=F, echo=T}
+n_clusters_ = len(cluster_centers_indices)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p4.png)
+
+
+With the following command we'll receive the calculated cluster centers:
+
+```{r, eval=F, echo=T}
+afprop.cluster_centers_
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p5.png)
+
+Last but not least some performance metrics:
+
+
+```{r, eval=F, echo=T}
+print('Estimated number of clusters: %d' % n_clusters_)
+print("Homogeneity: %0.3f" % metrics.homogeneity_score(y, labels))
+print("Completeness: %0.3f" % metrics.completeness_score(y, labels))
+print("V-measure: %0.3f" % metrics.v_measure_score(y, labels))
+print("Adjusted Rand Index: %0.3f"
+      % metrics.adjusted_rand_score(y, labels))
+print("Adjusted Mutual Information: %0.3f"
+      % metrics.adjusted_mutual_info_score(y, labels))
+print("Silhouette Coefficient: %0.3f"
+      % metrics.silhouette_score(X, labels, metric='sqeuclidean'))
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p6.png)
+
+If you want to read the exact description of the metrics see ["here"](https://scikit-learn.org/stable/modules/classes.html?highlight=sklearn%20metrics#module-sklearn.metrics).
 
 
 
+# 6 Conclusion
 
-
-
-
+In this post I explained the affinity propagation algorithm and showed how it can be used with scikit-learn.
 
 
 
