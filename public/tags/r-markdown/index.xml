@@ -6,10 +6,21 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Affinity Propagation</title>
+      <link>/2020/06/29/affinity-propagation/</link>
+      <pubDate>Mon, 29 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/06/29/affinity-propagation/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data41 IntroductionIn the past few posts some cluster algorithms were presented.I wrote extensively about “k-Means Clustering”, “Hierarchical Clustering”, “DBSCAN”, “HDBSCAN” and finally about “Gaussian Mixture Models”.
+Fortunately, we are not yet through with the most common cluster algorithms. So now we come to affinity propagation.
+2 Loading the librariesimport pandas as pdimport numpy as np# For generating some datafrom sklearn.</description>
+    </item>
     
     <item>
       <title>Gaussian Mixture Models</title>

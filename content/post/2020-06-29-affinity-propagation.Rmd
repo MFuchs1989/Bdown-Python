@@ -1,0 +1,84 @@
+---
+title: Affinity Propagation
+author: Michael Fuchs
+date: '2020-06-29'
+slug: affinity-propagation
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries
++ 3 Generating some test data
++ 4 
+
+
+# 1 Introduction
+
+In the past few posts some cluster algorithms were presented. 
+I wrote extensively about ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/), ["Hierarchical Clustering"](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/), ["DBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/), ["HDBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/20/hdbscan/) and finally about ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/).
+
+Fortunately, we are not yet through with the most common cluster algorithms. So now we come to affinity propagation.
+
+# 2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+# For generating some data
+from sklearn.datasets import make_blobs
+
+from matplotlib import pyplot as plt
+
+from sklearn.cluster import AffinityPropagation
+```
+
+
+# 3 Generating some test data
+
+
+For the following example, I will generate some sample data.
+
+```{r, eval=F, echo=T}
+X, y = make_blobs(n_samples=350, centers=4, cluster_std=0.60)
+plt.scatter(X[:, 0], X[:, 1], cmap='viridis')
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p1.png)
+
+
+# 4 Introducing Affinity Propagation
+
+Affinity Propagation was published by Frey and Dueck in 2007, and is only getting more and more popular due to its simplicity, general applicability, and performance.
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-06-29-affinity-propagation_files/p50p1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
