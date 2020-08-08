@@ -41,6 +41,15 @@ Fortunately, we are not yet through with the most common cluster algorithms. So 
     </item>
     
     <item>
+      <title>Bayesian Gaussian Mixture Models</title>
+      <link>/2020/06/26/bayesian-gaussian-mixture-models/</link>
+      <pubDate>Fri, 26 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/06/26/bayesian-gaussian-mixture-models/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Bayesian Gaussian Mixture Models in action1 IntroductionIn my last post I reported on “Gaussian Mixture Models”.Now we come to an kind of extension of GMM the Bayesian Gaussian Mixture Models.As we have seen at “GMM”, we could either only infer the number of clusters by eye or by comparing the theoretical information criterions “AIC” and “BIC” for different k.</description>
+    </item>
+    
+    <item>
       <title>Gaussian Mixture Models</title>
       <link>/2020/06/24/gaussian-mixture-models/</link>
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>

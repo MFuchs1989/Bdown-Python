@@ -1,0 +1,128 @@
+---
+title: Bayesian Gaussian Mixture Models
+author: Michael Fuchs
+date: '2020-06-26'
+slug: bayesian-gaussian-mixture-models
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries
++ 3 Generating some test data
++ 4 Bayesian Gaussian Mixture Models in action
+
+
+# 1 Introduction
+
+
+In my last post I reported on ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/).
+Now we come to an kind of extension of GMM the Bayesian Gaussian Mixture Models. 
+As we have seen at ["GMM"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/), we could either only infer the number of clusters by eye or by comparing the theoretical information criterions ["AIC"](https://en.wikipedia.org/wiki/Akaike_information_criterion) and ["BIC"](https://en.wikipedia.org/wiki/Bayesian_information_criterion) for different k.
+
+Rather than manually search for the optimal number of k, you can use the Bayesian Gaussian Mixture Model, which is capable of giving weights equal (or close) to zero to unnecessary cluster. Set the parameter 'n_components' to a value that you have good reason to believe is greater than the optimal number of clusters, and the algorithm will eliminate the unnecessary cluster automatically. 
+
+
+# 2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+# For generating some data
+from sklearn.datasets import make_blobs
+
+from matplotlib import pyplot as plt
+
+from sklearn.mixture import BayesianGaussianMixture
+```
+
+
+# 3 Generating some test data
+
+
+For the following example, I will generate some sample data.
+
+```{r, eval=F, echo=T}
+X, y = make_blobs(n_samples=350, centers=4, cluster_std=0.60)
+plt.scatter(X[:, 0], X[:, 1], cmap='viridis')
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p1.png)
+
+
+# 4 Bayesian Gaussian Mixture Models in action
+
+
+```{r, eval=F, echo=T}
+bay_gmm = BayesianGaussianMixture(n_components=10, n_init=10)
+
+bay_gmm.fit(X)
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p2.png)
+
+
+With the following syntax we'll receive the calculated weights:
+
+```{r, eval=F, echo=T}
+bay_gmm_weights = bay_gmm.weights_
+np.round(bay_gmm_weights, 2)
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p3.png)
+
+
+As we can see three clusters have been identified.
+This makes sense after looking at the scatter plot, even though we specified to generate 4 clusters when creating the data.
+But two clusters are so close together that they were correctly identified as one cluster.
+
+
+```{r, eval=F, echo=T}
+n_clusters_ = (np.round(bay_gmm_weights, 2) > 0).sum()
+print('Estimated number of clusters: ' + str(n_clusters_))
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p4.png)
+
+Let's do the predictions: 
+
+```{r, eval=F, echo=T}
+y_pred  = bay_gmm.predict(X)
+```
+
+```{r, eval=F, echo=T}
+plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap="viridis")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p5.png)
+
+
+As with ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/), we have a 'predict_proba' function here.
+
+
+```{r, eval=F, echo=T}
+props = bay_gmm.predict_proba(X)
+props = props.round(3)
+props
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p6.png)
+
+
+
+```{r, eval=F, echo=T}
+size = 50 * props.max(1) ** 2  # square emphasizes differences
+plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=size)
+```
+
+![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p7.png)
