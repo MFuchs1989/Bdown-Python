@@ -29,7 +29,7 @@ In my most recent publications, I have dealt extensively with individual topics 
 # 2 Roadmap for Cluster Analysis
 
 
-![](/post/2020-07-14-roadmap-for-cluster-analysis_files/p24p1.png)
+![](/post/2020-07-14-roadmap-for-cluster-analysis_files/p54p1.png)
 
 
 'First annotation:'
