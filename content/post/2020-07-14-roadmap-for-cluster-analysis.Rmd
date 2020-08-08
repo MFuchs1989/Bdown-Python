@@ -110,9 +110,7 @@ The Spectral Clustering algorithm treats the data clustering as a graph partitio
 
 # 4 Conclusion
 
-The methods mentioned in the listed posts show how to improve regression models.
-
-The focus of the upcoming publications will be on algorithms for classification problems.
+Another large chapter in the field of data science is coming to an end. In this post, I gave a clear overview of which cluster algorithms exists and also gave a brief description of each algorithm.
 
 
 
