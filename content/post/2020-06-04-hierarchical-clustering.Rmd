@@ -51,6 +51,7 @@ from sklearn.preprocessing import MinMaxScaler
 **Theory of hierarchical clustering**
 
 There are two types of hierarchical clustering: 
+
 + Agglomerative and 
 + Divisive
 

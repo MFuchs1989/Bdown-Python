@@ -18,7 +18,7 @@
       
       <guid>/2020/07/14/roadmap-for-cluster-analysis/</guid>
       <description>Table of Content1 Introduction2 Roadmap for Cluster Analysis3 Description of the cluster algorithms in a nutshell4 Conclusion1 IntroductionIn my most recent publications, I have dealt extensively with individual topics in the field of cluster analysis. This post should serve as a summary of the topics covered.
-2 Roadmap for Cluster Analysis‘First annotation:’The cluster algorithms that are marked with a red star in the graphic do not require an entry of k for the number of clusters</description>
+2 Roadmap for Cluster AnalysisFirst annotation:The cluster algorithms that are marked with a red star in the graphic do not require an entry of k for the number of clusters</description>
     </item>
     
     <item>

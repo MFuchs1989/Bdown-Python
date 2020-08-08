@@ -64,7 +64,7 @@ HDBSCAN extends DBSCAN by converting it into a hierarchical clustering algorithm
 
 While the HDBSCAN class has a large number of parameters that can be set on initialization, in practice there are a very small number of parameters that have significant practical effect on clustering.
 
-One of these is the 'min_cluster_size'.
+One of these is the *min_cluster_size*.
 
 The ["digits"](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)  dataset from scikit learn is used to illustrate the effects of the following changes to the parameters.
 
@@ -87,10 +87,10 @@ plt.scatter(*projection.T, **plot_kwds)
 
 This is what a two-dimensional representation of our digits dataset looks like.
 
-The min_cluster_size parameter is a relatively intuitive parameter to select. Set it to the smallest size grouping that you wish to consider a cluster.
+The *min_cluster_size* parameter is a relatively intuitive parameter to select. Set it to the smallest size grouping that you wish to consider a cluster.
 
-In the following we will see how the calculated number of clusters will change from varying the min_cluster_size.
-I will start with a min_cluster_size of 15.
+In the following we will see how the calculated number of clusters will change from varying the *min_cluster_size*.
+I will start with a *min_cluster_size* of 15.
 
 
 ```{r, eval=F, echo=T}
@@ -123,7 +123,7 @@ print('Estimated number of clusters: %d' % n_clusters_)
 ![](/post/2020-06-20-hdbscan_files/p49p3.png)
 
 10 estimated clusters.
-Now let's see what happens if we increase the min_cluster_size to 30.
+Now let's see what happens if we increase the *min_cluster_size* to 30.
 
 
 ```{r, eval=F, echo=T}
@@ -154,7 +154,7 @@ print('Estimated number of clusters: %d' % n_clusters_)
 
 
 We see if we increase the parameter min_cluster_size the number of clusters found decreases.
-Let's see what happens at min_cluster_size 60.
+Let's see what happens at *min_cluster_size* 60.
 
 
 ```{r, eval=F, echo=T}
@@ -184,7 +184,7 @@ print('Estimated number of clusters: %d' % n_clusters_)
 
 Only two clusters are still being calculated. These two clusters are known as really core clusters.
 But actually, more than two clusters should contain more than 60 assigned data points. So why is so much data spotted as noisy data points?
-The answer is that HDBSCAN has a second parameter min_samples. The implementation defaults this value (if it is unspecified) to whatever min_cluster_size is set to. We can recover some of our original clusters by explicitly providing min_samples at the original value of 15.
+The answer is that HDBSCAN has a second parameter min_samples. The implementation defaults this value (if it is unspecified) to whatever *min_cluster_size* is set to. We can recover some of our original clusters by explicitly providing *min_samples* at the original value of 15.
 
 
 

@@ -32,13 +32,13 @@ In my most recent publications, I have dealt extensively with individual topics 
 ![](/post/2020-07-14-roadmap-for-cluster-analysis_files/p54p1.png)
 
 
-'First annotation:'
+*First annotation:*
 The cluster algorithms that are marked with a red star in the graphic do not require an entry of k for the number of clusters
 
-'Second annotation:' 
+*Second annotation:*
 ["Mean Shift Clustering"](https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/) and ["Affinity Propagation"](https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/) are not suited for large datasets due to their computational complexity. 
 
-'Third annotation:' 
+*Third annotation:*
 ["Spectral Clustering"](https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/) does not scale well to large numbers of instances and it does not behave well when the clusters have very different size.
 
 

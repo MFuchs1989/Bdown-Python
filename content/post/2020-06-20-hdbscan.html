@@ -56,7 +56,7 @@ plot_kwds = {&#39;alpha&#39; : 0.25, &#39;s&#39; : 10, &#39;linewidths&#39;:0}</
 <div id="parameter-selection-for-hdbscan" class="section level1">
 <h1>4 Parameter Selection for HDBSCAN</h1>
 <p>While the HDBSCAN class has a large number of parameters that can be set on initialization, in practice there are a very small number of parameters that have significant practical effect on clustering.</p>
-<p>One of these is the ‘min_cluster_size’.</p>
+<p>One of these is the <em>min_cluster_size</em>.</p>
 <p>The <a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html">“digits”</a> dataset from scikit learn is used to illustrate the effects of the following changes to the parameters.</p>
 <pre class="r"><code>digits = load_digits()
 data = digits.data</code></pre>
@@ -67,9 +67,9 @@ I will explain the exact functioning of this algorithm for dimension reduction i
 plt.scatter(*projection.T, **plot_kwds)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p1.png" /></p>
 <p>This is what a two-dimensional representation of our digits dataset looks like.</p>
-<p>The min_cluster_size parameter is a relatively intuitive parameter to select. Set it to the smallest size grouping that you wish to consider a cluster.</p>
-<p>In the following we will see how the calculated number of clusters will change from varying the min_cluster_size.
-I will start with a min_cluster_size of 15.</p>
+<p>The <em>min_cluster_size</em> parameter is a relatively intuitive parameter to select. Set it to the smallest size grouping that you wish to consider a cluster.</p>
+<p>In the following we will see how the calculated number of clusters will change from varying the <em>min_cluster_size</em>.
+I will start with a <em>min_cluster_size</em> of 15.</p>
 <pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=15).fit(data)</code></pre>
 <pre class="r"><code>color_palette = sns.color_palette(&#39;Paired&#39;, 12)
 cluster_colors = [color_palette[x] if x &gt;= 0
@@ -85,7 +85,7 @@ n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p3.png" /></p>
 <p>10 estimated clusters.
-Now let’s see what happens if we increase the min_cluster_size to 30.</p>
+Now let’s see what happens if we increase the <em>min_cluster_size</em> to 30.</p>
 <pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=30).fit(data)
 
 color_palette = sns.color_palette(&#39;Paired&#39;, 12)
@@ -103,7 +103,7 @@ n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p5.png" /></p>
 <p>We see if we increase the parameter min_cluster_size the number of clusters found decreases.
-Let’s see what happens at min_cluster_size 60.</p>
+Let’s see what happens at <em>min_cluster_size</em> 60.</p>
 <pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=60).fit(data)
 
 color_palette = sns.color_palette(&#39;Paired&#39;, 12)
@@ -122,7 +122,7 @@ print(&#39;Estimated number of clusters: %d&#39; % n_clusters_)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p7.png" /></p>
 <p>Only two clusters are still being calculated. These two clusters are known as really core clusters.
 But actually, more than two clusters should contain more than 60 assigned data points. So why is so much data spotted as noisy data points?
-The answer is that HDBSCAN has a second parameter min_samples. The implementation defaults this value (if it is unspecified) to whatever min_cluster_size is set to. We can recover some of our original clusters by explicitly providing min_samples at the original value of 15.</p>
+The answer is that HDBSCAN has a second parameter min_samples. The implementation defaults this value (if it is unspecified) to whatever <em>min_cluster_size</em> is set to. We can recover some of our original clusters by explicitly providing <em>min_samples</em> at the original value of 15.</p>
 <pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=60, min_samples=15).fit(data)
 
 color_palette = sns.color_palette(&#39;Paired&#39;, 12)
