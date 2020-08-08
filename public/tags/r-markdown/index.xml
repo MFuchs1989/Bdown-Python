@@ -36,8 +36,8 @@ As we’ve seen in past posts, “k-Means Clustering” and “Affinity Propagat
       <pubDate>Mon, 29 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/06/29/affinity-propagation/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Introducing Affinity Propagation5 Affinity Propagation with scikit-learn6 Conclusion1 IntroductionIn the past few posts some cluster algorithms were presented.I wrote extensively about “k-Means Clustering”, “Hierarchical Clustering”, “DBSCAN”, “HDBSCAN” and finally about “Gaussian Mixture Models”.
-Fortunately, we are not yet through with the most common cluster algorithms. So now we come to affinity propagation.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Introducing Affinity Propagation5 Affinity Propagation with scikit-learn6 Conclusion1 IntroductionIn the past few posts some cluster algorithms were presented.I wrote extensively about “k-Means Clustering”, “Hierarchical Clustering”, “DBSCAN”, “HDBSCAN” and finally about “Gaussian Mixture Models” as well as “Bayesian Gaussian Mixture Models”.
+Fortunately, we are not yet through with the most common cluster algorithms.</description>
     </item>
     
     <item>
