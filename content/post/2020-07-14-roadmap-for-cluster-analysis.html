@@ -1,0 +1,74 @@
+---
+title: Roadmap for Cluster Analysis
+author: Michael Fuchs
+date: '2020-07-14'
+slug: roadmap-for-cluster-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+<p>#Table of Content</p>
+<ul>
+<li>1 Introduction</li>
+<li>2 Roadmap for Cluster Analysis</li>
+<li>3 Description of the cluster algorithms in a nutshell</li>
+<li>4 Conclusion</li>
+</ul>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my most recent publications, I have dealt extensively with individual topics in the field of cluster analysis. This post should serve as a summary of the topics covered.</p>
+</div>
+<div id="roadmap-for-cluster-analysis" class="section level1">
+<h1>2 Roadmap for Cluster Analysis</h1>
+<p><img src="/post/2020-07-14-roadmap-for-cluster-analysis_files/p24p1.png" /></p>
+<p>‘First annotation:’
+The cluster algorithms that are marked with a red star in the graphic do not require an entry of k for the number of clusters</p>
+<p>‘Second annotation:’
+<a href="https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/">“Mean Shift Clustering”</a> and <a href="https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/">“Affinity Propagation”</a> are not suited for large datasets due to their computational complexity.</p>
+<p>‘Third annotation:’
+<a href="https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/">“Spectral Clustering”</a> does not scale well to large numbers of instances and it does not behave well when the clusters have very different size.</p>
+<p>Here are the links to the individual topics.</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/">“k-Means Clustering”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/">“Mean Shift Clustering”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/">“DBSCAN”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/20/hdbscan/">“HDBSCAN”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/">“Gaussian Mixture Models”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/26/bayesian-gaussian-mixture-models/">“Bayesian Gaussian Mixture Models”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/">“Hierarchical Clustering”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/">“Affinity Propagation”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/">“Spectral Clustering”</a></li>
+</ul>
+</div>
+<div id="description-of-the-cluster-algorithms-in-a-nutshell" class="section level1">
+<h1>3 Description of the cluster algorithms in a nutshell</h1>
+<p><strong>k-Means Clustering</strong></p>
+<p>The k-Means algorithm starts with a first group of randomly selected centroids, which are used as the beginning points for every cluster, and then performs iterative (repetitive) calculations to optimize the positions of the centroids.</p>
+<p><strong>Mean Shift Clustering</strong></p>
+<p>The Mean Shift algorithm starts by placing a circle centered on each instance, then for each circle it computes the mean of all the instances located within it and it shifts the circle so that it is centered on the mean. Next, it iterates this mean shifting step until all the circles stop moving. The Means Shift algorithm shifts the circles in the direction of higher density until each of them has found a local density maximum.</p>
+<p><strong>DBSCAN</strong></p>
+<p>The DBSCAN algorithm defines clustes as continuous regions of high density.</p>
+<p><strong>HDBSCAN</strong></p>
+<p>The HDBSCAN algorithm can be seen as an extension of the DBSCAN algorithm.
+The difference is that a hierarchical approach is also pursued here.</p>
+<p><strong>Gaussian Mixture Models</strong></p>
+<p>A Gaussian Mixture Model (GMM) is a probalistic model that assumes that the instances were generated from a mixture of several Gaussian distributions whose parameters are unknown.</p>
+<p><strong>Bayesian Gaussian Mixture Models</strong></p>
+<p>A Bayesian Gaussian Mixture Model is quite similar to the GMM model. In the Bayesian GMM the cluster parameters (including the weights, means and covariance metrics) are not treated as fixed model parameters anymore, but as latent random variables, like the cluster assignments.</p>
+<p><strong>Hierarchical Clustering</strong></p>
+<p>The agglomerative approach of hierarchical clustering builds cluster from the bottom up. At each iteration, agglomerative clustering connects the nearest pair of clusters.</p>
+<p><strong>Affinity Propagation</strong></p>
+<p>The Affinity Propagation algorithm uses a voting system, where instances vote for similar instances and once the algorithm converges, each representative and its voters form a cluster.</p>
+<p><strong>Spectral Clustering</strong></p>
+<p>The Spectral Clustering algorithm takes a similarity matrix between the instances and creates a low-dimensional embedding from it. Then it uses another cluster algorithm in this low-dimensional space (i.e. k-Means).
+The Spectral Clustering algorithm treats the data clustering as a graph partitioning problem without make any assumption on the form of the data clusters.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion</h1>
+<p>The methods mentioned in the listed posts show how to improve regression models.</p>
+<p>The focus of the upcoming publications will be on algorithms for classification problems.</p>
+</div>
