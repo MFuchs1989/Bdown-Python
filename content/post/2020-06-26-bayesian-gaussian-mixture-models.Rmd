@@ -57,7 +57,7 @@ X, y = make_blobs(n_samples=350, centers=4, cluster_std=0.60)
 plt.scatter(X[:, 0], X[:, 1], cmap='viridis')
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p1.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p1.png)
 
 
 # 4 Bayesian Gaussian Mixture Models in action
@@ -69,7 +69,7 @@ bay_gmm = BayesianGaussianMixture(n_components=10, n_init=10)
 bay_gmm.fit(X)
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p2.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p2.png)
 
 
 With the following syntax we'll receive the calculated weights:
@@ -79,7 +79,7 @@ bay_gmm_weights = bay_gmm.weights_
 np.round(bay_gmm_weights, 2)
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p3.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p3.png)
 
 
 As we can see three clusters have been identified.
@@ -92,7 +92,7 @@ n_clusters_ = (np.round(bay_gmm_weights, 2) > 0).sum()
 print('Estimated number of clusters: ' + str(n_clusters_))
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p4.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p4.png)
 
 Let's do the predictions: 
 
@@ -106,7 +106,7 @@ plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p5.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p5.png)
 
 
 As with ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/), we have a 'predict_proba' function here.
@@ -118,7 +118,7 @@ props = props.round(3)
 props
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p6.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p6.png)
 
 
 ```{r, eval=F, echo=T}
@@ -126,7 +126,7 @@ size = 50 * props.max(1) ** 2  # square emphasizes differences
 plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=size)
 ```
 
-![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p7.png)
+![](/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p7.png)
 
 
 In this graphic for the visualization of the probability predictions, we can also see that some points, that have received a lower probability, are shown a little smaller in the graphic.

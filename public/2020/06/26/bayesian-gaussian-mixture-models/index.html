@@ -112,38 +112,38 @@ from sklearn.mixture import BayesianGaussianMixture</code></pre>
 <p>For the following example, I will generate some sample data.</p>
 <pre class="r"><code>X, y = make_blobs(n_samples=350, centers=4, cluster_std=0.60)
 plt.scatter(X[:, 0], X[:, 1], cmap=&#39;viridis&#39;)</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p1.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p1.png" /></p>
 </div>
 <div id="bayesian-gaussian-mixture-models-in-action" class="section level1">
 <h1>4 Bayesian Gaussian Mixture Models in action</h1>
 <pre class="r"><code>bay_gmm = BayesianGaussianMixture(n_components=10, n_init=10)
 
 bay_gmm.fit(X)</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p2.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p2.png" /></p>
 <p>With the following syntax we’ll receive the calculated weights:</p>
 <pre class="r"><code>bay_gmm_weights = bay_gmm.weights_
 np.round(bay_gmm_weights, 2)</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p3.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p3.png" /></p>
 <p>As we can see three clusters have been identified.
 This makes sense after looking at the scatter plot, even though we specified to generate 4 clusters when creating the data.
 But two clusters are so close together that they were correctly identified as one cluster.</p>
 <pre class="r"><code>n_clusters_ = (np.round(bay_gmm_weights, 2) &gt; 0).sum()
 print(&#39;Estimated number of clusters: &#39; + str(n_clusters_))</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p4.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p4.png" /></p>
 <p>Let’s do the predictions:</p>
 <pre class="r"><code>y_pred  = bay_gmm.predict(X)</code></pre>
 <pre class="r"><code>plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=&quot;viridis&quot;)
 plt.xlabel(&quot;Feature 1&quot;)
 plt.ylabel(&quot;Feature 2&quot;)</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p5.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p5.png" /></p>
 <p>As with <a href="https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/">“Gaussian Mixture Models”</a>, we have a ‘predict_proba’ function here.</p>
 <pre class="r"><code>props = bay_gmm.predict_proba(X)
 props = props.round(3)
 props</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p6.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p6.png" /></p>
 <pre class="r"><code>size = 50 * props.max(1) ** 2  # square emphasizes differences
 plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=&#39;viridis&#39;, s=size)</code></pre>
-<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p7.png" /></p>
+<p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models_files/p53p7.png" /></p>
 <p>In this graphic for the visualization of the probability predictions, we can also see that some points, that have received a lower probability, are shown a little smaller in the graphic.</p>
 </div>
 <div id="conclusion" class="section level1">
