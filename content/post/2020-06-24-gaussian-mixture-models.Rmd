@@ -17,8 +17,9 @@ tags:
 + 3 Generating some test data
 + 4 Weaknesses of k-Means
 + 5 Gaussian Mixture Models
-+ 6 GMM for density estimation
-+ 7 Conclusion
++ 6 Determine the optimal k for GMM
++ 7 GMM for density estimation
++ 8 Conclusion
 
 
 # 1 Introduction
@@ -236,8 +237,70 @@ plot_gmm(gmm, X_stretched)
 ![](/post/2020-06-24-gaussian-mixture-models_files/p48p10.png)
 
 
+# 6 Determine the optimal k for GMM
 
-# 6 GMM for density estimation
+With k-Means, you could use the inertia or silhouette score to select the appropriate number of clusters. But with GMM, it's not possible to use these metrics because they are not reliable when clusters are not spherical or have different sizes. Instead you can try to find the model that minimizes a theoretical information criterion, such as ["AIC"](https://en.wikipedia.org/wiki/Akaike_information_criterion) or ["BIC"](https://en.wikipedia.org/wiki/Bayesian_information_criterion). 
+
+
+Let's create for this some new sample data: 
+
+```{r, eval=F, echo=T}
+X, y = make_blobs(n_samples=350, centers=3, cluster_std=0.67)
+X = X[:, ::-1] # flip axes for better plotting
+plt.scatter(X[:, 0], X[:, 1], cmap='viridis')
+```
+
+![](/post/2020-06-24-gaussian-mixture-models_files/p48z1.png)
+
+We have three clusters that are easy to recognize. therefore, we can determine k fairly safely by eye.
+
+
+```{r, eval=F, echo=T}
+gmm = mixture.GaussianMixture(n_components=3)
+gmm.fit(X)
+labels = gmm.predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap='viridis')
+```
+
+![](/post/2020-06-24-gaussian-mixture-models_files/p48z2.png)
+
+Now we try to find out with BIC and AIC whether this calculation and comparison would have come to the same result.
+
+```{r, eval=F, echo=T}
+Sum_bic = []
+Sum_aic = []
+
+K = range(1,8)
+for k in K:
+    gmm = mixture.GaussianMixture(n_components=k)
+    gmm = gmm.fit(X)
+    Sum_bic.append(gmm.bic(X))
+    Sum_aic.append(gmm.aic(X))
+```
+
+
+```{r, eval=F, echo=T}
+x1 = K
+y1 = Sum_aic
+plt.plot(x1, y1, label = "AIC")
+x2 = K
+y2 = Sum_bic
+plt.plot(x2, y2, label = "BIC")
+
+plt.title("AIC and BIC for dofferent numbers of k", fontsize=16, fontweight='bold')
+plt.xlabel("k")
+plt.ylabel("Information Criterion")
+plt.legend(loc='upper right')
+plt.show()
+```
+
+![](/post/2020-06-24-gaussian-mixture-models_files/p48z3.png)
+
+BIC and AIC also have their minimum at k = 3.
+
+
+# 7 GMM for density estimation
 
 
 GMM is often used / viewed as a cluster algorithm. Fundamentally it is an algorithm for density estimation. 
@@ -336,7 +399,7 @@ plt.scatter(Xnew[:, 0], Xnew[:, 1])
 Notice: this choice of number of components measures how well GMM works as a density estimator, not how well it works as a clustering algorithm. 
 
 
-# 7 Conclusion
+# 8 Conclusion
 
 In this post I showed the weaknesses of the K-Means algorithm and illustrated how GMMs can still be used to identify more difficult patterns in data.
 

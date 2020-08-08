@@ -46,7 +46,7 @@ Fortunately, we are not yet through with the most common cluster algorithms. So 
       <pubDate>Wed, 24 Jun 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/06/24/gaussian-mixture-models/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Weaknesses of k-Means5 Gaussian Mixture Models6 GMM for density estimation7 Conclusion1 IntroductionLet’s come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.As simple or good as the K-Means algorithm is, it is often difficult to use in real world situations. In particular, the non-probabilistic nature of k-means and its use of simple distance-from-cluster-center to assign cluster membership leads to poor performance for many real-world problems.</description>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Generating some test data4 Weaknesses of k-Means5 Gaussian Mixture Models6 Determine the optimal k for GMM7 GMM for density estimation8 Conclusion1 IntroductionLet’s come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.As simple or good as the K-Means algorithm is, it is often difficult to use in real world situations.</description>
     </item>
     
     <item>

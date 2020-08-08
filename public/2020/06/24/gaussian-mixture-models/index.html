@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">6 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">Gaussian Mixture Models</h1>
@@ -86,8 +86,9 @@
 <li>3 Generating some test data</li>
 <li>4 Weaknesses of k-Means</li>
 <li>5 Gaussian Mixture Models</li>
-<li>6 GMM for density estimation</li>
-<li>7 Conclusion</li>
+<li>6 Determine the optimal k for GMM</li>
+<li>7 GMM for density estimation</li>
+<li>8 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -227,8 +228,48 @@ plot_gmm(gmm, X)</code></pre>
 plot_gmm(gmm, X_stretched)</code></pre>
 <p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48p10.png" /></p>
 </div>
+<div id="determine-the-optimal-k-for-gmm" class="section level1">
+<h1>6 Determine the optimal k for GMM</h1>
+<p>With k-Means, you could use the inertia or silhouette score to select the appropriate number of clusters. But with GMM, it’s not possible to use these metrics because they are not reliable when clusters are not spherical or have different sizes. Instead you can try to find the model that minimizes a theoretical information criterion, such as <a href="https://en.wikipedia.org/wiki/Akaike_information_criterion">“AIC”</a> or <a href="https://en.wikipedia.org/wiki/Bayesian_information_criterion">“BIC”</a>.</p>
+<p>Let’s create for this some new sample data:</p>
+<pre class="r"><code>X, y = make_blobs(n_samples=350, centers=3, cluster_std=0.67)
+X = X[:, ::-1] # flip axes for better plotting
+plt.scatter(X[:, 0], X[:, 1], cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48z1.png" /></p>
+<p>We have three clusters that are easy to recognize. therefore, we can determine k fairly safely by eye.</p>
+<pre class="r"><code>gmm = mixture.GaussianMixture(n_components=3)
+gmm.fit(X)
+labels = gmm.predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=labels, s=40, cmap=&#39;viridis&#39;)</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48z2.png" /></p>
+<p>Now we try to find out with BIC and AIC whether this calculation and comparison would have come to the same result.</p>
+<pre class="r"><code>Sum_bic = []
+Sum_aic = []
+
+K = range(1,8)
+for k in K:
+    gmm = mixture.GaussianMixture(n_components=k)
+    gmm = gmm.fit(X)
+    Sum_bic.append(gmm.bic(X))
+    Sum_aic.append(gmm.aic(X))</code></pre>
+<pre class="r"><code>x1 = K
+y1 = Sum_aic
+plt.plot(x1, y1, label = &quot;AIC&quot;)
+x2 = K
+y2 = Sum_bic
+plt.plot(x2, y2, label = &quot;BIC&quot;)
+
+plt.title(&quot;AIC and BIC for dofferent numbers of k&quot;, fontsize=16, fontweight=&#39;bold&#39;)
+plt.xlabel(&quot;k&quot;)
+plt.ylabel(&quot;Information Criterion&quot;)
+plt.legend(loc=&#39;upper right&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-06-24-gaussian-mixture-models_files/p48z3.png" /></p>
+<p>BIC and AIC also have their minimum at k = 3.</p>
+</div>
 <div id="gmm-for-density-estimation" class="section level1">
-<h1>6 GMM for density estimation</h1>
+<h1>7 GMM for density estimation</h1>
 <p>GMM is often used / viewed as a cluster algorithm. Fundamentally it is an algorithm for density estimation.
 That is to say, the result of a GMM fit to some data is technically not a clustering model, but a generative probabilistic model describing the distribution of the data.</p>
 <p>Let me give you an example with Scikit-Learn’s make_moons function:</p>
@@ -281,7 +322,7 @@ plt.scatter(Xnew[:, 0], Xnew[:, 1])</code></pre>
 <p>Notice: this choice of number of components measures how well GMM works as a density estimator, not how well it works as a clustering algorithm.</p>
 </div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
+<h1>8 Conclusion</h1>
 <p>In this post I showed the weaknesses of the K-Means algorithm and illustrated how GMMs can still be used to identify more difficult patterns in data.</p>
 </div>
 
