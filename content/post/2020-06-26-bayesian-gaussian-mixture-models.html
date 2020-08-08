@@ -18,6 +18,7 @@ tags:
 <li>2 Loading the libraries</li>
 <li>3 Generating some test data</li>
 <li>4 Bayesian Gaussian Mixture Models in action</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -76,4 +77,9 @@ props</code></pre>
 <pre class="r"><code>size = 50 * props.max(1) ** 2  # square emphasizes differences
 plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=&#39;viridis&#39;, s=size)</code></pre>
 <p><img src="/post/2020-06-26-bayesian-gaussian-mixture-models/p53p7.png" /></p>
+<p>In this graphic for the visualization of the probability predictions, we can also see that some points, that have received a lower probability, are shown a little smaller in the graphic.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>As a supplement to the post <a href="https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/">“Gaussian Mixture Models”</a>, I have explained in this post how a reasonable number of clusters can be determined with the help of Bayesian Gaussian Mixture Models and how this algorithm can be used.</p>
 </div>

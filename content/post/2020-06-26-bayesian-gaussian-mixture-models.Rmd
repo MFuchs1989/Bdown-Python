@@ -17,6 +17,8 @@ tags:
 + 2 Loading the libraries
 + 3 Generating some test data
 + 4 Bayesian Gaussian Mixture Models in action
++ 5 Conclusion
+
 
 
 # 1 Introduction
@@ -119,10 +121,22 @@ props
 ![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p6.png)
 
 
-
 ```{r, eval=F, echo=T}
 size = 50 * props.max(1) ** 2  # square emphasizes differences
 plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=size)
 ```
 
 ![](/post/2020-06-26-bayesian-gaussian-mixture-models/p53p7.png)
+
+
+In this graphic for the visualization of the probability predictions, we can also see that some points, that have received a lower probability, are shown a little smaller in the graphic.
+
+
+
+# 5 Conclusion
+
+As a supplement to the post ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/), I have explained in this post how a reasonable number of clusters can be determined with the help of Bayesian Gaussian Mixture Models and how this algorithm can be used.
+
+
+
+
