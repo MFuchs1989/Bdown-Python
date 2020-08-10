@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>PCA for visualization</title>
+      <link>/2020/07/27/pca-for-visualization/</link>
+      <pubDate>Mon, 27 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/27/pca-for-visualization/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Statistics and preprocessing4 PCA for visualization4.1 Interpreting Components4.2 Visualization of the components5 Conclusion1 IntroductionAfter I wrote extensively on the subject of “Principal Component Analysis” in my last publication, we now come to one of the two main uses announced: PCA for visualizations.
+For this post the dataset Pokemon from the statistic platform “Kaggle” was used.</description>
+    </item>
+    
+    <item>
       <title>Principal Component Analysis (PCA)</title>
       <link>/2020/07/22/principal-component-analysis-pca/</link>
       <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
