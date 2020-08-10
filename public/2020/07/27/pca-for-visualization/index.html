@@ -206,36 +206,31 @@ important_features = important_features[cols]
 #print the output
 important_features</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p12.png" /></p>
-<p>``{r, eval=F, echo=T}
-def draw_vectors(transformed_features, components_, columns):
-"""
-This funtion will project your <em>original</em> features
-onto your principal component feature-space, so that you can
-visualize how “important” each one was in the
-multi-dimensional scaling
-"""</p>
-<pre><code>num_columns = len(columns)
+<pre class="r"><code>def draw_vectors(transformed_features, components_, columns):
+    &quot;&quot;&quot;
+    This funtion will project your *original* features
+    onto your principal component feature-space, so that you can
+    visualize how &quot;important&quot; each one was in the
+    multi-dimensional scaling
+    &quot;&quot;&quot;
 
-# Scale the principal components by the max value in
-# the transformed set belonging to that component
-xvector = components_[0] * max(transformed_features[:,0])
-yvector = components_[1] * max(transformed_features[:,1])
+    num_columns = len(columns)
 
-ax = plt.axes()
+    # Scale the principal components by the max value in
+    # the transformed set belonging to that component
+    xvector = components_[0] * max(transformed_features[:,0])
+    yvector = components_[1] * max(transformed_features[:,1])
 
-for i in range(num_columns):
-# Use an arrow to project each original feature as a
-# labeled vector on your principal component axes
-    plt.arrow(0, 0, xvector[i], yvector[i], color=&#39;b&#39;, width=0.0005, head_width=0.02, alpha=0.75)
-    plt.text(xvector[i]*1.2, yvector[i]*1.2, list(columns)[i], color=&#39;b&#39;, alpha=0.75)
+    ax = plt.axes()
 
-return ax</code></pre>
-<pre><code>
+    for i in range(num_columns):
+    # Use an arrow to project each original feature as a
+    # labeled vector on your principal component axes
+        plt.arrow(0, 0, xvector[i], yvector[i], color=&#39;b&#39;, width=0.0005, head_width=0.02, alpha=0.75)
+        plt.text(xvector[i]*1.2, yvector[i]*1.2, list(columns)[i], color=&#39;b&#39;, alpha=0.75)
 
-
-
-```r
-ax = draw_vectors(T, pca.components_, df.columns.values)
+    return ax</code></pre>
+<pre class="r"><code>ax = draw_vectors(T, pca.components_, df.columns.values)
 T_df = pd.DataFrame(T)
 T_df.columns = [&#39;component1&#39;, &#39;component2&#39;]
 

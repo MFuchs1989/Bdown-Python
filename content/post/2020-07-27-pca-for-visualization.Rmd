@@ -226,7 +226,7 @@ important_features
 
 
 
-``{r, eval=F, echo=T}
+```{r, eval=F, echo=T}
 def draw_vectors(transformed_features, components_, columns):
     """
     This funtion will project your *original* features
