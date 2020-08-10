@@ -88,6 +88,7 @@
 <li>5 Randomized PCA</li>
 <li>6 Incremental PCA</li>
 <li>7 Kernel PCA</li>
+<li>8 Tuning Hyperparameters</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -274,12 +275,35 @@ linear_pca.fit(swiss_roll)
 X_reduced_linear = linear_pca.transform(swiss_roll)
 
 X_reduced_linear.shape</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p15_1.png" /></p>
+<pre class="r"><code>plt.scatter(X_reduced_linear[:, 0], X_reduced_linear[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title(&quot;Linear kernel&quot;)</code></pre>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p15.png" /></p>
+<pre class="r"><code>rbf_pca = KernelPCA(n_components = 2, kernel=&#39;rbf&#39;, gamma=0.04)
+
+rbf_pca.fit(swiss_roll)
+
+X_reduced_rbf = rbf_pca.transform(swiss_roll)
+
+X_reduced_rbf.shape</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p16_1.png" /></p>
+<pre class="r"><code>plt.scatter(X_reduced_rbf[:, 0], X_reduced_rbf[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title(&quot;RBF kernel, gamma: 0.04&quot;)</code></pre>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p16.png" /></p>
+<pre class="r"><code>sigmoid_pca = KernelPCA(n_components = 2, kernel=&#39;sigmoid&#39;, gamma=0.001)
+
+sigmoid_pca.fit(swiss_roll)
+
+X_reduced_sigmoid = sigmoid_pca.transform(swiss_roll)
+
+X_reduced_sigmoid.shape</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p17_1.png" /></p>
+<pre class="r"><code>plt.scatter(X_reduced_sigmoid[:, 0], X_reduced_sigmoid[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title(&quot;RBF kernel, gamma: 0.04&quot;)</code></pre>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p17.png" /></p>
-<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png" /></p>
-<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png" /></p>
-<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
+</div>
+<div id="tuning-hyperparameters" class="section level1">
+<h1>8 Tuning Hyperparameters</h1>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
 </div>
 

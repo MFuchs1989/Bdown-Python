@@ -20,7 +20,7 @@ tags:
 + 5 Randomized PCA
 + 6 Incremental PCA
 + 7 Kernel PCA
-
++ 8 Tuning Hyperparameters
 
 
 # 1 Introduction
@@ -347,44 +347,61 @@ X_reduced_linear = linear_pca.transform(swiss_roll)
 X_reduced_linear.shape
 ```
 
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p15_1.png)
+
+
+```{r, eval=F, echo=T}
+plt.scatter(X_reduced_linear[:, 0], X_reduced_linear[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title("Linear kernel")
+```
+
 ![](/post/2020-07-22-principal-component-analysis-pca_files/p55p15.png)
 
 
 ```{r, eval=F, echo=T}
+rbf_pca = KernelPCA(n_components = 2, kernel='rbf', gamma=0.04)
 
+rbf_pca.fit(swiss_roll)
+
+X_reduced_rbf = rbf_pca.transform(swiss_roll)
+
+X_reduced_rbf.shape
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p16_1.png)
+
+
+```{r, eval=F, echo=T}
+plt.scatter(X_reduced_rbf[:, 0], X_reduced_rbf[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title("RBF kernel, gamma: 0.04")
 ```
 
 ![](/post/2020-07-22-principal-component-analysis-pca_files/p55p16.png)
 
 
 ```{r, eval=F, echo=T}
+sigmoid_pca = KernelPCA(n_components = 2, kernel='sigmoid', gamma=0.001)
 
+sigmoid_pca.fit(swiss_roll)
+
+X_reduced_sigmoid = sigmoid_pca.transform(swiss_roll)
+
+X_reduced_sigmoid.shape
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p17_1.png)
+
+
+```{r, eval=F, echo=T}
+plt.scatter(X_reduced_sigmoid[:, 0], X_reduced_sigmoid[:, 1], c = color, cmap=plt.cm.Spectral)
+plt.title("RBF kernel, gamma: 0.04")
 ```
 
 ![](/post/2020-07-22-principal-component-analysis-pca_files/p55p17.png)
 
 
-```{r, eval=F, echo=T}
 
-```
-
-![](/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png)
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png)
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-07-22-principal-component-analysis-pca_files/p55p.png)
-
-
+# 8 Tuning Hyperparameters
 
 
 
