@@ -22,6 +22,7 @@ tags:
 <li>6 Incremental PCA</li>
 <li>7 Kernel PCA</li>
 <li>8 Tuning Hyperparameters</li>
+<li>9 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -45,7 +46,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-#Chapter 4&amp;5
+# Chapter 4&amp;5
 from sklearn.decomposition import PCA
 
 # Chapter 6
@@ -57,7 +58,14 @@ from sklearn.datasets import make_swiss_roll
 
 from mpl_toolkits.mplot3d import Axes3D
 from pydiffmap import diffusion_map as dm
-from pydiffmap.visualization import data_plot</code></pre>
+from pydiffmap.visualization import data_plot
+
+# Chapter 8
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split</code></pre>
 </div>
 <div id="introducing" class="section level1">
 <h1>3 Introducing</h1>
@@ -237,5 +245,32 @@ plt.title(&quot;RBF kernel, gamma: 0.04&quot;)</code></pre>
 </div>
 <div id="tuning-hyperparameters" class="section level1">
 <h1>8 Tuning Hyperparameters</h1>
-<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
+<p>For this chapter let’s create some new test data:</p>
+<pre class="r"><code>Xmoon, ymoon = make_moons(500, noise=.06)
+plt.scatter(Xmoon[:, 0], Xmoon[:, 1])</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png" /></p>
+<p>If we use a kernel PCA as a preprocessing step in order to train a machine learning algorithm, the most suitable kernel can also be calculated with the help of gridsearch.</p>
+<pre class="r"><code>x = Xmoon
+y = ymoon
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>clf = Pipeline([
+    (&quot;kpca&quot;, KernelPCA(n_components=2)),
+    (&quot;log_reg&quot;, LogisticRegression())
+    ])</code></pre>
+<pre class="r"><code>param_grid = [{
+    &quot;kpca__gamma&quot;: np.linspace(0.03, 0.05, 10),
+    &quot;kpca__kernel&quot;: [&quot;linear&quot;, &quot;rbf&quot;, &quot;sigmoid&quot;]
+    }]</code></pre>
+<pre class="r"><code>grid_search = GridSearchCV(clf, param_grid, cv=3)
+
+grid_search.fit(trainX, trainY)</code></pre>
+<p>Here are the best parameters to use:</p>
+<pre class="r"><code>print(grid_search.best_params_)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>9 Conclusion</h1>
+<p>In this post I have explained what the PCA is in general and how to use it.
+I also presented different types of PCAs for different situations.</p>
 </div>

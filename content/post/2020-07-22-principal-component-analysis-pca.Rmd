@@ -21,6 +21,7 @@ tags:
 + 6 Incremental PCA
 + 7 Kernel PCA
 + 8 Tuning Hyperparameters
++ 9 Conclusion
 
 
 # 1 Introduction
@@ -49,7 +50,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-#Chapter 4&5
+# Chapter 4&5
 from sklearn.decomposition import PCA
 
 # Chapter 6
@@ -63,6 +64,12 @@ from mpl_toolkits.mplot3d import Axes3D
 from pydiffmap import diffusion_map as dm
 from pydiffmap.visualization import data_plot
 
+# Chapter 8
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_moons
+from sklearn.model_selection import train_test_split
 ```
 
 
@@ -403,23 +410,59 @@ plt.title("RBF kernel, gamma: 0.04")
 
 # 8 Tuning Hyperparameters
 
-
-
-
-
-
-
-
-
-
-
-
-
+For this chapter let's create some new test data:
 
 
 ```{r, eval=F, echo=T}
-
+Xmoon, ymoon = make_moons(500, noise=.06)
+plt.scatter(Xmoon[:, 0], Xmoon[:, 1])
 ```
 
-![](/post/2020-07-22-principal-component-analysis-pca_files/p55p.png)
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png)
+
+
+If we use a kernel PCA as a preprocessing step in order to train a machine learning algorithm, the most suitable kernel can also be calculated with the help of gridsearch.
+
+```{r, eval=F, echo=T}
+x = Xmoon
+y = ymoon
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+```{r, eval=F, echo=T}
+clf = Pipeline([
+    ("kpca", KernelPCA(n_components=2)),
+    ("log_reg", LogisticRegression())
+    ])
+```
+
+```{r, eval=F, echo=T}
+param_grid = [{
+    "kpca__gamma": np.linspace(0.03, 0.05, 10),
+    "kpca__kernel": ["linear", "rbf", "sigmoid"]
+    }]
+```
+
+```{r, eval=F, echo=T}
+grid_search = GridSearchCV(clf, param_grid, cv=3)
+
+grid_search.fit(trainX, trainY)
+```
+
+Here are the best parameters to use:
+
+```{r, eval=F, echo=T}
+print(grid_search.best_params_)
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png)
+
+
+# 9 Conclusion
+
+In this post I have explained what the PCA is in general and how to use it.
+I also presented different types of PCAs for different situations.
+
+
 
