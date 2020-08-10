@@ -275,7 +275,7 @@ plt.show()
 
 
 
-Get the pokemons which load high on the first principal component (High Attack, High Sp. Atk):
+Get the pokemons which load high on the first principal component (High Sp. Atk, High Sp. Def):
 
 ```{r, eval=F, echo=T}
 pc1_pokemon = pokemon.loc[T_df[T_df['color'] == 'g'].index]

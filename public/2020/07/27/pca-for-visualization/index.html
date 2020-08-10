@@ -243,7 +243,7 @@ plt.ylabel(&#39;Principle Component 2&#39;)
 plt.scatter(T_df[&#39;component1&#39;], T_df[&#39;component2&#39;], color=T_df[&#39;color&#39;], alpha=0.5)
 plt.show()</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p13.png" /></p>
-<p>Get the pokemons which load high on the first principal component (High Attack, High Sp. Atk):</p>
+<p>Get the pokemons which load high on the first principal component (High Sp. Atk, High Sp. Def):</p>
 <pre class="r"><code>pc1_pokemon = pokemon.loc[T_df[T_df[&#39;color&#39;] == &#39;g&#39;].index]
 pc1_pokemon</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p14.png" /></p>
