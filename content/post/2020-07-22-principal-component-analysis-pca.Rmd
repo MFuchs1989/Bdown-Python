@@ -16,10 +16,10 @@ tags:
 + 1 Introduction
 + 2 Loading the libraries
 + 3 Introducing 
-
-
-
-
++ 4 PCA in general
++ 5 Randomized PCA
++ 6 Incremental PCA
++ 7 Kernel PCA
 
 
 
@@ -49,7 +49,20 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
+#Chapter 4&5
 from sklearn.decomposition import PCA
+
+# Chapter 6
+from sklearn.decomposition import IncrementalPCA
+
+# Chapter 7
+from sklearn.decomposition import KernelPCA
+from sklearn.datasets import make_swiss_roll
+
+from mpl_toolkits.mplot3d import Axes3D
+from pydiffmap import diffusion_map as dm
+from pydiffmap.visualization import data_plot
+
 ```
 
 
@@ -74,26 +87,295 @@ are to be presented separately in detail.
 
 
 
+# 4 PCA in general
+
+For the demonstration of PCA in general we'll load the cars dataset:
+
+```{r, eval=F, echo=T}
+cars = pd.read_csv('auto-mpg.csv')
+cars["horsepower"] = pd.to_numeric(cars.horsepower, errors='coerce')
+cars
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p1.png)
+
+
+For further use, we throw out all missing values from the data set, split the data set and standardize all predictors.
+
+
+```{r, eval=F, echo=T}
+cars=cars.dropna()
+```
+
+```{r, eval=F, echo=T}
+X = cars.drop(['car name'], axis=1)
+Y = cars['car name']
+```
+
+```{r, eval=F, echo=T}
+sc = StandardScaler()
+
+X = X.values
+X_std =  sc.fit_transform(X)  
+```
+
+
+With the following calculations we can see how much variance the individual main components explain within the data set.
+
+```{r, eval=F, echo=T}
+cov_matrix = np.cov(X_std.T)
+```
+
+```{r, eval=F, echo=T}
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+```
+
+```{r, eval=F, echo=T}
+tot = sum(eigenvalues)
+var_explained = [(i / tot) for i in sorted(eigenvalues, reverse=True)] 
+cum_var_exp = np.cumsum(var_explained)
+```
+
+```{r, eval=F, echo=T}
+plt.bar(range(1,len(var_explained)+1), var_explained, alpha=0.5, align='center', label='individual explained variance')
+plt.step(range(1,len(var_explained)+1),cum_var_exp, where= 'mid', label='cumulative explained variance')
+plt.ylabel('Explained variance ratio')
+plt.xlabel('Principal components')
+plt.legend(loc = 'best')
+plt.show()
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p2.png)
+
+As we can see, it is worth using the first two main components, as together they already explain 80% of the variance.
+
+
+```{r, eval=F, echo=T}
+pca = PCA(n_components = 2)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)
+```
+
+
+```{r, eval=F, echo=T}
+pca.explained_variance_ratio_
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p3.png)
+
+For those who are too lazy to add that up in their heads:
+
+```{r, eval=F, echo=T}
+pca.explained_variance_ratio_.sum()
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p4.png)
+
+In the previous step, we specified how many main components the PCA should calculated and then asked how much variance these components explained.
+
+We can also approach this process the other way around and tell the PCA how much variance we would like to have explained.
+
+
+We do this so (for 95% variance):
+
+```{r, eval=F, echo=T}
+pca = PCA(n_components = 0.95)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)
+```
+
+```{r, eval=F, echo=T}
+pca.n_components_
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p5.png)
+
+4 main components were necessary to achieve 95% variance explanation.
 
 
 
+# 5 Randomized PCA
+
+PCA is mostly used for very large data sets with many variables in order to make them clearer and easier to interpret.
+This can lead to a very high computing power and long waiting times.
+Randomized PCA can be used to reduce the calculation time. To do this, simply set the parameter *svd_solver * to 'randomized'.
+In the following example you can see the saving in computing time.
+This example is carried out with the MNIST data set.
+
+
+```{r, eval=F, echo=T}
+mnist = pd.read_csv('mnist_train.csv')
+X = mnist.drop(['label'], axis=1)
+sc = StandardScaler()
+X = X.values
+X_std =  sc.fit_transform(X)
+print(X_std.shape)
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p6.png)
+
+
+```{r, eval=F, echo=T}
+import time
+
+start = time.time()
+
+pca = PCA(n_components = 200)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)
+
+
+end = time.time()
+print()
+print('Calculation time: ' + str(end - start) + ' seconds')
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p7.png)
+
+```{r, eval=F, echo=T}
+pca_time = end - start
+```
+
+
+```{r, eval=F, echo=T}
+import time
+
+start = time.time()
+
+rnd_pca = PCA(n_components = 200, svd_solver='randomized')
+rnd_pca.fit(X_std)
+x_rnd_pca = rnd_pca.transform(X_std)
+
+end = time.time()
+print()
+print('Calculation time: ' + str(end - start) + ' seconds')
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p8.png)
+
+```{r, eval=F, echo=T}
+rnd_pca_time = end - start
+```
+
+
+```{r, eval=F, echo=T}
+diff = pca_time - rnd_pca_time
+diff
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p9.png)
+
+
+```{r, eval=F, echo=T}
+procentual_decrease = ((pca_time - rnd_pca_time) / pca_time) * 100
+print('Procentual decrease of: ' + str(round(procentual_decrease, 2)) + '%')
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p10.png)
 
 
 
+# 6 Incremental PCA
+
+In some cases the data set may be too large to be able to perform a principal component analysis all at once.
+The Incremental PCA is available for these cases:
+
+With n_batches we determine how much data should always be loaded at once.
 
 
+```{r, eval=F, echo=T}
+n_batches = 100
+
+inc_pca = IncrementalPCA(n_components = 100)
+for X_batch in np.array_split(X_std, n_batches):
+    inc_pca.partial_fit(X_batch)
+```
 
 
+```{r, eval=F, echo=T}
+inc_pca.explained_variance_ratio_.sum()
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p11.png)
 
 
+# 7 Kernel PCA
+
+Now we know all too well from practice that some data cannot be linearly separable. Like this one for example:
+
+```{r, eval=F, echo=T}
+X, color = make_swiss_roll(n_samples = 1000)
+swiss_roll = X
+swiss_roll.shape
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p12.png)
 
 
+```{r, eval=F, echo=T}
+plt.scatter(swiss_roll[:, 0], swiss_roll[:, 1], c=color)
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p13.png)
+
+Not really nice to look at. But we can do better.
 
 
+```{r, eval=F, echo=T}
+neighbor_params = {'n_jobs': -1, 'algorithm': 'ball_tree'}
+
+mydmap = dm.DiffusionMap.from_sklearn(n_evecs=2, k=200, epsilon='bgh', alpha=1.0, neighbor_params=neighbor_params)
+# fit to data and return the diffusion map.
+dmap = mydmap.fit_transform(swiss_roll)
+
+data_plot(mydmap, dim=3, scatter_kwargs = {'cmap': 'Spectral'})
+plt.show()
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p14.png)
+
+Let's use some PCA models with different kernels and have a look at how they will perform.
 
 
+```{r, eval=F, echo=T}
+linear_pca = KernelPCA(n_components = 2, kernel='linear')
+
+linear_pca.fit(swiss_roll)
+
+X_reduced_linear = linear_pca.transform(swiss_roll)
+
+X_reduced_linear.shape
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p15.png)
 
 
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p16.png)
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p17.png)
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png)
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png)
 
 
 ```{r, eval=F, echo=T}
@@ -101,65 +383,6 @@ are to be presented separately in detail.
 ```
 
 ![](/post/2020-07-22-principal-component-analysis-pca_files/p55p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-07-22-principal-component-analysis-pca_files/p55p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

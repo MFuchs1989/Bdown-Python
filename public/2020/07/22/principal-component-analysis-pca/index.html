@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">2 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Principal Component Analysis (PCA)</h1>
@@ -84,6 +84,10 @@
 <li>1 Introduction</li>
 <li>2 Loading the libraries</li>
 <li>3 Introducing</li>
+<li>4 PCA in general</li>
+<li>5 Randomized PCA</li>
+<li>6 Incremental PCA</li>
+<li>7 Kernel PCA</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -107,7 +111,19 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
-from sklearn.decomposition import PCA</code></pre>
+#Chapter 4&amp;5
+from sklearn.decomposition import PCA
+
+# Chapter 6
+from sklearn.decomposition import IncrementalPCA
+
+# Chapter 7
+from sklearn.decomposition import KernelPCA
+from sklearn.datasets import make_swiss_roll
+
+from mpl_toolkits.mplot3d import Axes3D
+from pydiffmap import diffusion_map as dm
+from pydiffmap.visualization import data_plot</code></pre>
 </div>
 <div id="introducing" class="section level1">
 <h1>3 Introducing</h1>
@@ -122,7 +138,147 @@ In two further publications, the two main uses of the PCA:</p>
 <li>PCA for speed up machine learning algorithms</li>
 </ul>
 <p>are to be presented separately in detail.</p>
-<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
+</div>
+<div id="pca-in-general" class="section level1">
+<h1>4 PCA in general</h1>
+<p>For the demonstration of PCA in general we’ll load the cars dataset:</p>
+<pre class="r"><code>cars = pd.read_csv(&#39;auto-mpg.csv&#39;)
+cars[&quot;horsepower&quot;] = pd.to_numeric(cars.horsepower, errors=&#39;coerce&#39;)
+cars</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p1.png" /></p>
+<p>For further use, we throw out all missing values from the data set, split the data set and standardize all predictors.</p>
+<pre class="r"><code>cars=cars.dropna()</code></pre>
+<pre class="r"><code>X = cars.drop([&#39;car name&#39;], axis=1)
+Y = cars[&#39;car name&#39;]</code></pre>
+<pre class="r"><code>sc = StandardScaler()
+
+X = X.values
+X_std =  sc.fit_transform(X)  </code></pre>
+<p>With the following calculations we can see how much variance the individual main components explain within the data set.</p>
+<pre class="r"><code>cov_matrix = np.cov(X_std.T)</code></pre>
+<pre class="r"><code>eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)</code></pre>
+<pre class="r"><code>tot = sum(eigenvalues)
+var_explained = [(i / tot) for i in sorted(eigenvalues, reverse=True)] 
+cum_var_exp = np.cumsum(var_explained)</code></pre>
+<pre class="r"><code>plt.bar(range(1,len(var_explained)+1), var_explained, alpha=0.5, align=&#39;center&#39;, label=&#39;individual explained variance&#39;)
+plt.step(range(1,len(var_explained)+1),cum_var_exp, where= &#39;mid&#39;, label=&#39;cumulative explained variance&#39;)
+plt.ylabel(&#39;Explained variance ratio&#39;)
+plt.xlabel(&#39;Principal components&#39;)
+plt.legend(loc = &#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p2.png" /></p>
+<p>As we can see, it is worth using the first two main components, as together they already explain 80% of the variance.</p>
+<pre class="r"><code>pca = PCA(n_components = 2)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)</code></pre>
+<pre class="r"><code>pca.explained_variance_ratio_</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p3.png" /></p>
+<p>For those who are too lazy to add that up in their heads:</p>
+<pre class="r"><code>pca.explained_variance_ratio_.sum()</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p4.png" /></p>
+<p>In the previous step, we specified how many main components the PCA should calculated and then asked how much variance these components explained.</p>
+<p>We can also approach this process the other way around and tell the PCA how much variance we would like to have explained.</p>
+<p>We do this so (for 95% variance):</p>
+<pre class="r"><code>pca = PCA(n_components = 0.95)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)</code></pre>
+<pre class="r"><code>pca.n_components_</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p5.png" /></p>
+<p>4 main components were necessary to achieve 95% variance explanation.</p>
+</div>
+<div id="randomized-pca" class="section level1">
+<h1>5 Randomized PCA</h1>
+<p>PCA is mostly used for very large data sets with many variables in order to make them clearer and easier to interpret.
+This can lead to a very high computing power and long waiting times.
+Randomized PCA can be used to reduce the calculation time. To do this, simply set the parameter <em>svd_solver </em> to ‘randomized’.
+In the following example you can see the saving in computing time.
+This example is carried out with the MNIST data set.</p>
+<pre class="r"><code>mnist = pd.read_csv(&#39;mnist_train.csv&#39;)
+X = mnist.drop([&#39;label&#39;], axis=1)
+sc = StandardScaler()
+X = X.values
+X_std =  sc.fit_transform(X)
+print(X_std.shape)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p6.png" /></p>
+<pre class="r"><code>import time
+
+start = time.time()
+
+pca = PCA(n_components = 200)
+pca.fit(X_std)
+x_pca = pca.transform(X_std)
+
+
+end = time.time()
+print()
+print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p7.png" /></p>
+<pre class="r"><code>pca_time = end - start</code></pre>
+<pre class="r"><code>import time
+
+start = time.time()
+
+rnd_pca = PCA(n_components = 200, svd_solver=&#39;randomized&#39;)
+rnd_pca.fit(X_std)
+x_rnd_pca = rnd_pca.transform(X_std)
+
+end = time.time()
+print()
+print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p8.png" /></p>
+<pre class="r"><code>rnd_pca_time = end - start</code></pre>
+<pre class="r"><code>diff = pca_time - rnd_pca_time
+diff</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p9.png" /></p>
+<pre class="r"><code>procentual_decrease = ((pca_time - rnd_pca_time) / pca_time) * 100
+print(&#39;Procentual decrease of: &#39; + str(round(procentual_decrease, 2)) + &#39;%&#39;)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p10.png" /></p>
+</div>
+<div id="incremental-pca" class="section level1">
+<h1>6 Incremental PCA</h1>
+<p>In some cases the data set may be too large to be able to perform a principal component analysis all at once.
+The Incremental PCA is available for these cases:</p>
+<p>With n_batches we determine how much data should always be loaded at once.</p>
+<pre class="r"><code>n_batches = 100
+
+inc_pca = IncrementalPCA(n_components = 100)
+for X_batch in np.array_split(X_std, n_batches):
+    inc_pca.partial_fit(X_batch)</code></pre>
+<pre class="r"><code>inc_pca.explained_variance_ratio_.sum()</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p11.png" /></p>
+</div>
+<div id="kernel-pca" class="section level1">
+<h1>7 Kernel PCA</h1>
+<p>Now we know all too well from practice that some data cannot be linearly separable. Like this one for example:</p>
+<pre class="r"><code>X, color = make_swiss_roll(n_samples = 1000)
+swiss_roll = X
+swiss_roll.shape</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p12.png" /></p>
+<pre class="r"><code>plt.scatter(swiss_roll[:, 0], swiss_roll[:, 1], c=color)</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p13.png" /></p>
+<p>Not really nice to look at. But we can do better.</p>
+<pre class="r"><code>neighbor_params = {&#39;n_jobs&#39;: -1, &#39;algorithm&#39;: &#39;ball_tree&#39;}
+
+mydmap = dm.DiffusionMap.from_sklearn(n_evecs=2, k=200, epsilon=&#39;bgh&#39;, alpha=1.0, neighbor_params=neighbor_params)
+# fit to data and return the diffusion map.
+dmap = mydmap.fit_transform(swiss_roll)
+
+data_plot(mydmap, dim=3, scatter_kwargs = {&#39;cmap&#39;: &#39;Spectral&#39;})
+plt.show()</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p14.png" /></p>
+<p>Let’s use some PCA models with different kernels and have a look at how they will perform.</p>
+<pre class="r"><code>linear_pca = KernelPCA(n_components = 2, kernel=&#39;linear&#39;)
+
+linear_pca.fit(swiss_roll)
+
+X_reduced_linear = linear_pca.transform(swiss_roll)
+
+X_reduced_linear.shape</code></pre>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p15.png" /></p>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p16.png" /></p>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p17.png" /></p>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p18.png" /></p>
+<p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p19.png" /></p>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
 <p><img src="/post/2020-07-22-principal-component-analysis-pca_files/p55p.png" /></p>
 </div>
