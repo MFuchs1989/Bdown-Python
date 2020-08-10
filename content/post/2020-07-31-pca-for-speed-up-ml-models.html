@@ -18,8 +18,8 @@ tags:
 <li>2 Loading the libraries</li>
 <li>3 LogReg</li>
 <li>4 LogReg with PCA</li>
-<li>4.1 PCA and 95% variance explanation</li>
-<li>4.2 PCA and 80% variance explanation</li>
+<li>4.1 PCA with 95% variance explanation</li>
+<li>4.2 PCA with 80% variance explanation</li>
 <li>4.3 Summary</li>
 <li>5 Export PCA to use in another program</li>
 <li>6 Conclusion</li>
@@ -85,8 +85,8 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 <div id="logreg-with-pca" class="section level1">
 <h1>4 LogReg with PCA</h1>
 </div>
-<div id="pca-and-95-variance-explanation" class="section level1">
-<h1>4.1 PCA and 95% variance explanation</h1>
+<div id="pca-with-95-variance-explanation" class="section level1">
+<h1>4.1 PCA with 95% variance explanation</h1>
 <p>Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.</p>
 <pre class="r"><code>pca = PCA(.95)</code></pre>
 <pre class="r"><code># Fitting PCA on the training set only
@@ -114,8 +114,8 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p7.png" /></p>
 <p>Now let’s try 80% variance explanation.</p>
 </div>
-<div id="pca-and-80-variance-explanation" class="section level1">
-<h1>4.2 PCA and 80% variance explanation</h1>
+<div id="pca-with-80-variance-explanation" class="section level1">
+<h1>4.2 PCA with 80% variance explanation</h1>
 <pre class="r"><code>pca = PCA(.80)</code></pre>
 <pre class="r"><code># Fitting PCA on the training set only
 pca.fit(trainX_scaled)</code></pre>
@@ -206,7 +206,7 @@ df_result_new = pd.DataFrame(result_new)
 result_new = pd.concat([df_result_new, df_y_pred], axis=1)
 result_new.columns = [&#39;Principle_Component_1&#39;, &#39;Principle_Component_2&#39;, &#39;Prediction&#39;]
 result_new</code></pre>
-<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png" /></p>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p17.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

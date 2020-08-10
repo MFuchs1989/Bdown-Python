@@ -16,8 +16,8 @@ tags:
 + 2 Loading the libraries
 + 3 LogReg
 + 4 LogReg with PCA
-+ 4.1 PCA and 95% variance explanation
-+ 4.2 PCA and 80% variance explanation
++ 4.1 PCA with 95% variance explanation
++ 4.2 PCA with 80% variance explanation
 + 4.3 Summary
 + 5 Export PCA to use in another program
 + 6 Conclusion
@@ -124,7 +124,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 # 4 LogReg with PCA
 
-# 4.1 PCA and 95% variance explanation
+# 4.1 PCA with 95% variance explanation
 
 Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.
 
@@ -186,7 +186,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 Now let's try 80% variance explanation.
 
 
-# 4.2 PCA and 80% variance explanation
+# 4.2 PCA with 80% variance explanation
 
 
 ```{r, eval=F, echo=T}
@@ -378,7 +378,7 @@ result_new.columns = ['Principle_Component_1', 'Principle_Component_2', 'Predict
 result_new
 ```
 
-![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png)
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p17.png)
 
 
 
