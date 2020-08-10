@@ -25,22 +25,52 @@ tags:
 
 # 1 Introduction
 
-My post series from the unsupervised machine learning area about cluster algorithms is slowly coming to an end.
-However, what cluster algorithm cannot be missing in any case is Spectral Clustering.
-And this is what the following post is about.
+After the various methods of cluster analysis ['Cluster Analysis']('https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/') have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction
+
+The areas of application of dimensionality reduction are widely spread within machine learning.
+Here are some applications of Dimensionality Reduction:
+
++ Pre-processing / Feature engineering
++ Noise reduction
++ Generating plausible artificial datasets
++ Financial modelling / risk analysis
+
+
+For this post the datasets *Auto-mpg* and *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) were used. A copy of the records is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs> and <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>. 
 
 
 # 2 Loading the libraries
 
 
 ```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
 
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+from sklearn.decomposition import PCA
 ```
 
 
 # 3 Introducing
 
 
+PCA is a commonly used and very effective dimensionality reduction technique, which often forms a pre-processing stage for a number of machine learning models and techniques. 
+
+In a nutshell: 
+PCA reduces the sparsity in the dataset by separating the data into a series of components where each component represents a source of information within the data. 
+
+As its name suggests, the first principal component produced in PCA, comprises the majority of information or variance within the data. With each subsequent component, less information, but more subtlety, is contributed to the compressed data. 
+
+
+This post is intended to serve as an introduction to PCA in general.
+In two further publications, the two main uses of the PCA:
+
++ PCA for visualization
++ PCA for speed up machine learning algorithms
+
+are to be presented separately in detail.
 
 
 
