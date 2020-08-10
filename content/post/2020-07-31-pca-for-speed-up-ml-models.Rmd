@@ -14,8 +14,8 @@ tags:
 
 + 1 Introduction
 + 2 Loading the libraries
-+ 3 
-
++ 3 LogReg
++ 4 LogReg with PCA
 
 
 # 1 Introduction
@@ -50,22 +50,200 @@ mnist
 
 ![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p1.png)
 
+```{r, eval=F, echo=T}
+mnist['label'].value_counts().T
+```
 
-# 3
-
-
-
-
-
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p2.png)
 
 
+# 3 LogReg
+
+If you want to know how the algorithm of the logistic regression works exactly see ["this post"](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/) of mine.
+
+
+```{r, eval=F, echo=T}
+x = mnist.drop(['label'], axis=1)
+y = mnist['label']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+# Fit on training set only!
+sc.fit(trainX)
+
+# Apply transform to both the training set and the test set.
+trainX_scaled = sc.transform(trainX)
+testX_scaled = sc.transform(testX)
+```
+
+```{r, eval=F, echo=T}
+# all parameters not specified are set to their defaults
+
+logReg = LogisticRegression()
+```
+
+
+```{r, eval=F, echo=T}
+import time
+
+start = time.time()
+
+print(logReg.fit(trainX_scaled, trainY))
+
+end = time.time()
+print()
+print('Calculation time: ' + str(end - start) + ' seconds')
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p3.png)
+
+
+```{r, eval=F, echo=T}
+y_pred = logReg.predict(testX_scaled)
+```
+
+
+```{r, eval=F, echo=T}
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p4.png)
+
+
+# 4 LogReg with PCA
+
+Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.
+
+
+```{r, eval=F, echo=T}
+pca = PCA(.95)
+```
+
+```{r, eval=F, echo=T}
+# Fitting PCA on the training set only
+pca.fit(trainX_scaled)
+```
+
+You can find out how many components PCA choose after fitting the model using pca.n_components_ . In this case, 95% of the variance amounts to 326 principal components.
+
+```{r, eval=F, echo=T}
+pca.n_components_
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p5.png)
+
+```{r, eval=F, echo=T}
+trainX_pca = pca.transform(trainX_scaled)
+testX_pca = pca.transform(testX_scaled)
+```
+
+```{r, eval=F, echo=T}
+# all parameters not specified are set to their defaults
+
+logReg = LogisticRegression()
+```
+
+```{r, eval=F, echo=T}
+import time
+
+start = time.time()
+
+print(logReg.fit(trainX_pca, trainY))
+
+end = time.time()
+print()
+print('Calculation time: ' + str(end - start) + ' seconds')
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p6.png)
+
+```{r, eval=F, echo=T}
+y_pred = logReg.predict(testX_pca)
+```
+
+
+```{r, eval=F, echo=T}
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p7.png)
 
 
 
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
 
 ![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png)
 
 
