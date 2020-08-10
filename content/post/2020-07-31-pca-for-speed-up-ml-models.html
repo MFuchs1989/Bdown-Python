@@ -18,6 +18,11 @@ tags:
 <li>2 Loading the libraries</li>
 <li>3 LogReg</li>
 <li>4 LogReg with PCA</li>
+<li>4.1 PCA and 95% variance explanation</li>
+<li>4.2 PCA and 80% variance explanation</li>
+<li>4.3 Summary</li>
+<li>5 Export PCA to use in another program</li>
+<li>6 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -36,7 +41,9 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.linear_model import LogisticRegression
 
-from sklearn.decomposition import PCA</code></pre>
+from sklearn.decomposition import PCA
+
+import pickle as pk</code></pre>
 <pre class="r"><code>mnist = pd.read_csv(&#39;mnist_train.csv&#39;)
 mnist</code></pre>
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p1.png" /></p>
@@ -77,6 +84,9 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 </div>
 <div id="logreg-with-pca" class="section level1">
 <h1>4 LogReg with PCA</h1>
+</div>
+<div id="pca-and-95-variance-explanation" class="section level1">
+<h1>4.1 PCA and 95% variance explanation</h1>
 <p>Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.</p>
 <pre class="r"><code>pca = PCA(.95)</code></pre>
 <pre class="r"><code># Fitting PCA on the training set only
@@ -102,7 +112,104 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 <pre class="r"><code>y_pred = logReg.predict(testX_pca)</code></pre>
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p7.png" /></p>
+<p>Now let’s try 80% variance explanation.</p>
+</div>
+<div id="pca-and-80-variance-explanation" class="section level1">
+<h1>4.2 PCA and 80% variance explanation</h1>
+<pre class="r"><code>pca = PCA(.80)</code></pre>
+<pre class="r"><code># Fitting PCA on the training set only
+pca.fit(trainX_scaled)</code></pre>
+<pre class="r"><code>pca.n_components_</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p8.png" /></p>
+<pre class="r"><code>trainX_pca = pca.transform(trainX_scaled)
+testX_pca = pca.transform(testX_scaled)</code></pre>
+<pre class="r"><code># all parameters not specified are set to their defaults
+
+logReg = LogisticRegression()</code></pre>
+<pre class="r"><code>import time
+
+start = time.time()
+
+print(logReg.fit(trainX_pca, trainY))
+
+end = time.time()
+print()
+print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p9.png" /></p>
+<pre class="r"><code>y_pred = logReg.predict(testX_pca)</code></pre>
+<pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p10.png" /></p>
+</div>
+<div id="summary" class="section level1">
+<h1>4.3 Summary</h1>
+<p>As we can see in the overview below, not only has the training time has been reduced by PCA, but the prediction accuracy of the trained model has also increased.</p>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57s1.png" /></p>
+</div>
+<div id="export-pca-to-use-in-another-program" class="section level1">
+<h1>5 Export PCA to use in another program</h1>
+<p>For a nice example we create the following artificial data set:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Col1&#39;: [5464, 2484, 846546],
+                   &#39;Col2&#39;: [5687,78455,845684],
+                   &#39;Col3&#39;: [8754,7686,4585],
+                   &#39;Col4&#39;: [49864, 89481, 92254],
+                   &#39;Col5&#39;: [22168, 63689, 5223]})
+df</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p11.png" /></p>
+<pre class="r"><code>df[&#39;Target&#39;] = df.sum(axis=1)
+df</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p12.png" /></p>
+<p><strong>Note:</strong> We skip the scaling step and the train test split here. In the following, we only want to train the algorithms as well as their storage and use in other programs. Validation is also not a focus here.</p>
+<pre class="r"><code>X = df.drop([&#39;Target&#39;], axis=1)
+Y = df[&#39;Target&#39;]</code></pre>
+<pre class="r"><code>pca = PCA(n_components=2)</code></pre>
+<pre class="r"><code>pca.fit(X)
+result = pca.transform(X)</code></pre>
+<pre class="r"><code>components = pd.DataFrame(pca.components_, columns = X.columns, index=[1, 2])
+components = components.T
+components.columns = [&#39;Principle_Component_1&#39;, &#39;Principle_Component_2&#39;]
+components</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p13.png" /></p>
+<pre class="r"><code># all parameters not specified are set to their defaults
+
+logReg = LogisticRegression()
+
+logReg.fit(result, Y)</code></pre>
+<pre class="r"><code>pk.dump(pca, open(&quot;pca.pkl&quot;,&quot;wb&quot;))
+pk.dump(logReg, open(&quot;logReg.pkl&quot;,&quot;wb&quot;))</code></pre>
+<p>The models are saved in the corresponding path and should look like this:</p>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57s2.png" /></p>
+<p>In order to show that the principal component analysis has been saved with the correct weightings and reloaded accordingly, we create exactly the same artificial data set (only without target variable) as at the beginning of this exercise.</p>
+<pre class="r"><code>df_new = pd.DataFrame({&#39;Col1&#39;: [5464, 2484, 846546],
+                   &#39;Col2&#39;: [5687,78455,845684],
+                   &#39;Col3&#39;: [8754,7686,4585],
+                   &#39;Col4&#39;: [49864, 89481, 92254],
+                   &#39;Col5&#39;: [22168, 63689, 5223]})
+df_new</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p14.png" /></p>
+<p>Now we reload the saved models:</p>
+<pre class="r"><code>pca_reload = pk.load(open(&quot;pca.pkl&quot;,&#39;rb&#39;))
+logReg_reload = pk.load(open(&quot;logReg.pkl&quot;,&#39;rb&#39;))</code></pre>
+<pre class="r"><code>result_new = pca_reload .transform(df_new)</code></pre>
+<pre class="r"><code>components = pd.DataFrame(pca.components_, columns = X.columns, index=[1, 2])
+components = components.T
+components.columns = [&#39;Principle_Component_1&#39;, &#39;Principle_Component_2&#39;]
+components</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p15.png" /></p>
+<p>We see that the weights have been adopted, as we can compare this output with the first transformation (see above).</p>
+<pre class="r"><code>y_pred = logReg_reload.predict(result_new)
+y_pred</code></pre>
+<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p16.png" /></p>
+<p>Last but not least we’ll add the predicted values to our original dataframe.</p>
+<pre class="r"><code>df_y_pred = pd.DataFrame(y_pred)
+df_result_new = pd.DataFrame(result_new)
+
+result_new = pd.concat([df_result_new, df_y_pred], axis=1)
+result_new.columns = [&#39;Principle_Component_1&#39;, &#39;Principle_Component_2&#39;, &#39;Prediction&#39;]
+result_new</code></pre>
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png" /></p>
-<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png" /></p>
-<p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post, I showed how much a PCA can improve the training speed of machine learning algorithms and also increase the quality of the forecast.
+I also showed how the weights of principal component analysis can be saved and reused for future pre-processing steps.</p>
 </div>
