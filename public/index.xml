@@ -12,6 +12,17 @@
     
     
     <item>
+      <title>PCA for speed up ML models</title>
+      <link>/2020/07/31/pca-for-speed-up-ml-models/</link>
+      <pubDate>Fri, 31 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/31/pca-for-speed-up-ml-models/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries31 IntroductionAs already announced in post about “PCA”, we now come to the second main application of a PCA: Principal Component Analysis for speed up machine learning models.
+For this post the dataset MNIST from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk.
+2 Loading the libraries and the datasetimport pandas as pdimport numpy as npfrom sklearn.</description>
+    </item>
+    
+    <item>
       <title>PCA for Visualization</title>
       <link>/2020/07/27/pca-for-visualization/</link>
       <pubDate>Mon, 27 Jul 2020 00:00:00 +0000</pubDate>

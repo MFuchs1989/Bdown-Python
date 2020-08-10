@@ -1,0 +1,71 @@
+---
+title: PCA for speed up ML models
+author: Michael Fuchs
+date: '2020-07-31'
+slug: pca-for-speed-up-ml-models
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries
++ 3 
+
+
+
+# 1 Introduction
+
+As already announced in post about ["PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/), we now come to the second main application of a PCA: Principal Component Analysis for speed up machine learning models.
+
+
+For this post the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
+
+
+
+# 2 Loading the libraries and the dataset
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.decomposition import PCA
+```
+
+```{r, eval=F, echo=T}
+mnist = pd.read_csv('mnist_train.csv')
+mnist
+```
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p1.png)
+
+
+# 3
+
+
+
+
+
+
+
+
+
+
+
+![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p.png)
+
+
+
+
+
