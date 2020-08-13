@@ -133,7 +133,7 @@ dot_data = export_graphviz(
                 clf,
                 out_file = None,
                 feature_names = list(trainX.columns),
-                class_names = class_names,
+                class_names = str(class_names),
                 filled = True,
                 rounded = True)
 
