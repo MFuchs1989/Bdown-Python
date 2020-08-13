@@ -124,6 +124,9 @@ Here we assigned the predictor variables and the target variable to an object, d
 
 I recommend export_graphviz for the visualization of decision trees.
 
+```{r, eval=F, echo=T}
+class_names = y.unique().tolist()
+```
 
 ```{r, eval=F, echo=T}
 dot_data = export_graphviz(

@@ -168,6 +168,7 @@ y_pred = clf.predict(testX)</code></pre>
 <div id="via-graphviz" class="section level1">
 <h1>5.1 via graphviz</h1>
 <p>I recommend export_graphviz for the visualization of decision trees.</p>
+<pre class="r"><code>class_names = y.unique().tolist()</code></pre>
 <pre class="r"><code>dot_data = export_graphviz(
                 clf,
                 out_file = None,
