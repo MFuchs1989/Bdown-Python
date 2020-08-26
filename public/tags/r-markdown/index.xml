@@ -6,10 +6,21 @@
     <description>Recent content in R Markdown on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 31 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linear Discriminant Analysis (LDA)</title>
+      <link>/2020/08/07/linear-discriminant-analysis-lda/</link>
+      <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/07/linear-discriminant-analysis-lda/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries1 IntroductionNow that I have written extensively about the “PCA”, we now come to another dimension reduction algorithm: The Linear Discriminant Analysis.
+For this post the dataset Wine Quality from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf.
+</description>
+    </item>
     
     <item>
       <title>PCA for speed up ML models</title>
@@ -36,7 +47,7 @@ For this post the dataset Pokemon from the statistic platform “Kaggle” was u
       <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/22/principal-component-analysis-pca/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing4 PCA in general5 Randomized PCA6 Incremental PCA7 Kernel PCA8 Tuning Hyperparameters9 Conclusion1 IntroductionAfter the various methods of cluster analysis ‘Cluster Analysis’ have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction
+      <description>Table of Content1 Introduction2 Loading the libraries3 Introducing PCA4 PCA in general5 Randomized PCA6 Incremental PCA7 Kernel PCA8 Tuning Hyperparameters9 Conclusion1 IntroductionAfter the various methods of cluster analysis ‘Cluster Analysis’ have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction
 The areas of application of dimensionality reduction are widely spread within machine learning.</description>
     </item>
     

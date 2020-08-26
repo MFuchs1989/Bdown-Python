@@ -15,7 +15,7 @@ tags:
 
 + 1 Introduction
 + 2 Loading the libraries
-+ 3 Introducing 
++ 3 Introducing PCA
 + 4 PCA in general
 + 5 Randomized PCA
 + 6 Incremental PCA
@@ -73,7 +73,7 @@ from sklearn.model_selection import train_test_split
 ```
 
 
-# 3 Introducing
+# 3 Introducing PCA
 
 
 PCA is a commonly used and very effective dimensionality reduction technique, which often forms a pre-processing stage for a number of machine learning models and techniques. 

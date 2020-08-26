@@ -1,0 +1,64 @@
+---
+title: Linear Discriminant Analysis (LDA)
+author: Michael Fuchs
+date: '2020-08-07'
+slug: linear-discriminant-analysis-lda
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries
+
+
+
+
+
+
+
+# 1 Introduction
+
+![](/post/2020-08-07-linear-discriminant-analysis-lda_files/p58s1.png)
+
+Now that I have written extensively about the ["PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/), we now come to another dimension reduction algorithm: The Linear Discriminant Analysis.
+
+
+For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf>.
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
