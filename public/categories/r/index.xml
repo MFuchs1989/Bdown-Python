@@ -17,9 +17,8 @@
       <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/08/07/linear-discriminant-analysis-lda/</guid>
-      <description>Table of Content1 Introduction2 Loading the libraries1 IntroductionNow that I have written extensively about the “PCA”, we now come to another dimension reduction algorithm: The Linear Discriminant Analysis.
-For this post the dataset Wine Quality from the statistic platform “Kaggle” was used. A copy of the record is available at https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf.
-</description>
+      <description>Table of Content1 Introduction2 Loading the libraries and data3 Descriptive statistics4 Data pre-processing5 LDA in general6 PCA vs. LDA7 LDA as a classifier8 Conclusion1 IntroductionNow that I have written extensively about the “PCA”, we now come to another dimension reduction algorithm: The Linear Discriminant Analysis.
+LDA is a supervised machine learning method that is used to separate two or more classes of objects or events.</description>
     </item>
     
     <item>

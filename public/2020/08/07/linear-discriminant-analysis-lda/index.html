@@ -19,6 +19,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -60,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Linear Discriminant Analysis (LDA)</h1>
@@ -78,15 +83,210 @@
 <h1>Table of Content</h1>
 <ul>
 <li>1 Introduction</li>
-<li>2 Loading the libraries</li>
+<li>2 Loading the libraries and data</li>
+<li>3 Descriptive statistics</li>
+<li>4 Data pre-processing</li>
+<li>5 LDA in general</li>
+<li>6 PCA vs. LDA</li>
+<li>7 LDA as a classifier</li>
+<li>8 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58s1.png" /></p>
 <p>Now that I have written extensively about the <a href="https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/">“PCA”</a>, we now come to another dimension reduction algorithm: The Linear Discriminant Analysis.</p>
+<p>LDA is a supervised machine learning method that is used to separate two or more classes of objects or events. The main idea of linear discriminant analysis (LDA) is to maximize the separability between the groups so that we can make the best decision to classify them.</p>
 <p>For this post the dataset <em>Wine Quality</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf" class="uri">https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf</a>.</p>
-<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p.png" /></p>
+</div>
+<div id="loading-the-libraries-and-data" class="section level1">
+<h1>2 Loading the libraries and data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+
+
+from sklearn.decomposition import PCA
+
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+
+
+from numpy import mean
+from numpy import std
+
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.naive_bayes import GaussianNB
+from matplotlib import pyplot
+
+import warnings
+warnings.filterwarnings(&#39;ignore&#39;)</code></pre>
+<pre class="r"><code>wine = pd.read_csv(&#39;winequality.csv&#39;)
+wine</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p1.png" /></p>
+</div>
+<div id="descriptive-statistics" class="section level1">
+<h1>3 Descriptive statistics</h1>
+<p>In the following, the variable ‘quality’ will be our target variable. Let us therefore take a look at their characteristics.</p>
+<pre class="r"><code>wine[&#39;quality&#39;].value_counts()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p2.png" /></p>
+<p>Now let’s look at the existing data types.</p>
+<pre class="r"><code>wine.dtypes</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p3.png" /></p>
+<p>Very good. All numerical variables that we need in this form in the later analysis (the variable type will be excluded).
+Let’s take a look at the mean values per quality class.</p>
+<pre class="r"><code>wine.groupby(&#39;quality&#39;).mean().T</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p4.png" /></p>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<pre class="r"><code>wine.isnull().sum()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p5.png" /></p>
+<p>There are a few missing values. We will now exclude these.</p>
+<pre class="r"><code>wine = wine.dropna()
+
+wine.isnull().sum()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p6.png" /></p>
+</div>
+<div id="lda-in-general" class="section level1">
+<h1>5 LDA in general</h1>
+<p>As already mentioned LDA is used to find a linear combination of features that characterizes or separates two or more classes of objects or events. It explicitly attempts to model the difference between the classes of data. It works when the measurements made on independent variables for each observation are continuous quantities. Therefore we’ll standardize our data as one of our first steps.</p>
+<pre class="r"><code>x = wine.drop([&#39;type&#39;, &#39;quality&#39;], axis=1)
+y = wine[&#39;quality&#39;]</code></pre>
+<pre class="r"><code>sc=StandardScaler()
+
+x_scaled = sc.fit_transform(x)</code></pre>
+<pre class="r"><code>lda = LDA(n_components = 2)
+
+lda.fit(x_scaled, y)
+
+x_lda = lda.transform(x_scaled)</code></pre>
+<p>As we can see from the following output we reduced the dimensions from 11 to 2.</p>
+<pre class="r"><code>print(x_scaled.shape)
+print(x_lda.shape)</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p7.png" /></p>
+<p>Similar to the PCA, we can have the explained variance output for these two new dimensions.</p>
+<pre class="r"><code>lda.explained_variance_ratio_</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p8.png" /></p>
+<pre class="r"><code>lda.explained_variance_ratio_.sum()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p9.png" /></p>
+</div>
+<div id="pca-vs.-lda" class="section level1">
+<h1>6 PCA vs. LDA</h1>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58s2.png" /></p>
+<p>Both PCA and LDA are linear transformation techniques. However, PCA is an unsupervised while LDA is a supervised dimensionality reduction technique.</p>
+<p>LDA is like PCA which helps in dimensionality reduction, but it focuses on maximizing the separability among known categories by creating a new linear axis and projecting the data points on that axis (see the diagram above). LDA doesn’t work on finding the principal component, it basically looks at what type of point or features gives more discrimination to separate the data.</p>
+<p>We will use PCA and LDA when we have a linear problem in hand that means there is a linear relationship between input and output variables.
+When we have a nonlinear problem in hand, that means there is a nonlinear relationship between input and output variables, we will have to use the <a href="https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/">“Kernel PCA”</a> to solve this problem.</p>
+<p>Let’s have a look at the different results of a logistic regression when we use both, PCA and LDA, as a previous step.</p>
+<pre class="r"><code>x = wine.drop([&#39;type&#39;, &#39;quality&#39;], axis=1)
+y = wine[&#39;quality&#39;]
+
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)</code></pre>
+<p><strong>PCA</strong></p>
+<pre class="r"><code>pca = PCA(n_components = 2)</code></pre>
+<pre class="r"><code>pca.fit(trainX_scaled)</code></pre>
+<pre class="r"><code>pca.explained_variance_ratio_.sum()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p10.png" /></p>
+<pre class="r"><code>trainX_pca = pca.transform(trainX_scaled)
+testX_pca = pca.transform(testX_scaled)</code></pre>
+<pre class="r"><code>logReg = LogisticRegression()</code></pre>
+<pre class="r"><code>logReg.fit(trainX_pca, trainY)</code></pre>
+<pre class="r"><code>y_pred = logReg.predict(testX_pca)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p11.png" /></p>
+<p><strong>LDA</strong></p>
+<pre class="r"><code>lda = LDA(n_components = 2)</code></pre>
+<pre class="r"><code>lda.fit(trainX_scaled, trainY)</code></pre>
+<pre class="r"><code>lda.explained_variance_ratio_.sum()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p12.png" /></p>
+<pre class="r"><code>trainX_lda = lda.transform(trainX_scaled)
+testX_lda = lda.transform(testX_scaled)</code></pre>
+<pre class="r"><code>logReg = LogisticRegression()</code></pre>
+<pre class="r"><code>logReg.fit(trainX_lda, trainY)</code></pre>
+<pre class="r"><code>y_pred = logReg.predict(testX_lda)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p13.png" /></p>
+<p><strong>The difference in Results</strong></p>
+<p>The accuracy of the logistic regression model after PCA is 45% whereas the accuracy after LDA is 53%.</p>
+</div>
+<div id="lda-as-a-classifier" class="section level1">
+<h1>7 LDA as a classifier</h1>
+<p>You can also use LDA as a classifier:</p>
+<pre class="r"><code>lda = LDA()</code></pre>
+<pre class="r"><code>lda.fit(trainX_scaled, trainY)</code></pre>
+<pre class="r"><code>y_pred = lda.predict(testX_scaled)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p14.png" /></p>
+<p>To be honest LDA is a dimensionality reduction method, not a classifier.
+In Scikit-Learn, the LinearDiscriminantAnalysis-class seems to be a Naive Bayes classifier after LDA <a href="https://scikit-learn.org/stable/modules/lda_qda.html#mathematical-formulation-of-the-lda-and-qda-classifiers">“see here”</a>.</p>
+<p>Now that we know this, we can use the combination of LDA and Naive Bayes even more effectively.</p>
+<p>To do this, let’s take another look at the characteristics of the target variable.</p>
+<pre class="r"><code>trainY.value_counts()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p15.png" /></p>
+<p>As we can see, we have 7 classes.</p>
+<pre class="r"><code>len(trainY.value_counts())</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p16.png" /></p>
+<p>In the following, we want to build a machine learning pipeline. We want to find out with which number of components in LDA in combination with GaussianNB the prediction accuracy is greatest.</p>
+<p>LDA is limited in the number of components used in the dimensionality reduction to between the number of classes minus one, in this case, (7 – 1) or 6. This is important for our range within the for-loop:</p>
+<pre class="r"><code># get a list of models to evaluate
+def get_models():
+    models = dict()
+    for i in range(1,7):
+        steps = [(&#39;lda&#39;, LDA(n_components=i)), (&#39;m&#39;, GaussianNB())]
+        models[str(i)] = Pipeline(steps=steps)
+    return models</code></pre>
+<pre class="r"><code># evaluate a give model using cross-validation
+def evaluate_model(model, X, y):
+    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=3, random_state=1)
+    scores = cross_val_score(model, X, y, scoring=&#39;accuracy&#39;, cv=cv, n_jobs=-1, error_score=&#39;raise&#39;)
+    return scores</code></pre>
+<pre class="r"><code># define dataset
+X = trainX_scaled
+y = trainY</code></pre>
+<pre class="r"><code># get the models to evaluate
+models = get_models()</code></pre>
+<pre class="r"><code># evaluate the models and store results
+results, names = list(), list()
+for name, model in models.items():
+    scores = evaluate_model(model, X, y)
+    results.append(scores)
+    names.append(name)
+    print(&#39;&gt;%s %.3f (%.3f)&#39; % (name, mean(scores), std(scores)))</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p17.png" /></p>
+<p>Let’s plot the results:</p>
+<pre class="r"><code># plot model performance for comparison
+pyplot.boxplot(results, labels=names, showmeans=True)
+pyplot.show()</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p18.png" /></p>
+<p>As we can see n_components=1 works best.
+So let’s use this parameter-setting to train our final model:</p>
+<pre class="r"><code># define the final model
+final_steps = [(&#39;lda&#39;, LDA(n_components=1)), (&#39;m&#39;, GaussianNB())]
+final_model = Pipeline(steps=final_steps)
+final_model.fit(trainX_scaled, trainY)
+
+y_pred = final_model.predict(testX_scaled)
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-08-07-linear-discriminant-analysis-lda_files/p58p19.png" /></p>
+<p>Yeah, we managed to increase the prediction accuracy again.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>In this post I showed how to use the LDA and how to differentiate it from the PCA.
+I also showed how to use the LDA in combination with a classifier.</p>
 </div>
 
     </div>
@@ -110,6 +310,18 @@
 
     </div>
     
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
 
     
 
