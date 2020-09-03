@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Manifold Learning</title>
+      <link>/2020/08/12/manifold-learning/</link>
+      <pubDate>Wed, 12 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/12/manifold-learning/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries3 Manifold Learning Methods3.1 Locally Linear Embedding3.2 Modified Locally Linear Embedding3.3 Isomap3.4 Spectral Embedding3.5 Multi-dimensional Scaling (MDS)3.6 t-SNE4 Comparison of the calculation time5 Conclusion1 IntroductionCurse of Dimensionality
+The curse of dimensionality is one of the most important problems in multivariate machine learning. It appears in many different forms, but all of them have the same net form and source: the fact that points in high-dimensional space are highly sparse.</description>
+    </item>
+    
+    <item>
       <title>Linear Discriminant Analysis (LDA)</title>
       <link>/2020/08/07/linear-discriminant-analysis-lda/</link>
       <pubDate>Fri, 07 Aug 2020 00:00:00 +0000</pubDate>

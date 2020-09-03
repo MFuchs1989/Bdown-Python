@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.69.0" />
+
+
+<title>Manifold Learning - Michael Fuchs Python</title>
+<meta property="og:title" content="Manifold Learning - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">Manifold Learning</h1>
+
+    
+    <span class="article-date">2020-08-12</span>
+    
+
+    <div class="article-content">
+      
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Manifold Learning Methods</li>
+<li>3.1 Locally Linear Embedding</li>
+<li>3.2 Modified Locally Linear Embedding</li>
+<li>3.3 Isomap</li>
+<li>3.4 Spectral Embedding</li>
+<li>3.5 Multi-dimensional Scaling (MDS)</li>
+<li>3.6 t-SNE</li>
+<li>4 Comparison of the calculation time</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p><strong>Curse of Dimensionality</strong></p>
+<p>The curse of dimensionality is one of the most important problems in multivariate machine learning. It appears in many different forms, but all of them have the same net form and source: the fact that points in high-dimensional space are highly sparse.</p>
+<p>I have already described two linear dimension reduction methods:</p>
+<ul>
+<li><a href="&#39;https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/&#39;">‘PCA’</a> and</li>
+<li><a href="&#39;https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/&#39;">‘LDA’</a></li>
+</ul>
+<p>But how do I treat data that are of a nonlinear nature?
+Of course we have the option of using a <a href="&#39;https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/&#39;">‘Kernel-PCA’</a> here, but that too has its limits.
+For this reason we can use Manifold Learning Methods, which are to be dealt with in this article.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn import datasets
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+import time
+
+
+from sklearn.manifold import LocallyLinearEmbedding
+from sklearn.manifold import Isomap
+from sklearn.manifold import SpectralEmbedding
+from sklearn.manifold import MDS
+from sklearn.manifold import TSNE</code></pre>
+</div>
+<div id="manifold-learning-methods" class="section level1">
+<h1>3 Manifold Learning Methods</h1>
+<p><a href="&#39;https://en.wikipedia.org/wiki/Nonlinear_dimensionality_reduction&#39;">‘High-dimensional data, meaning data that requires more than two or three dimensions to represent, can be very difficult to interpret. One approach to simplification is to assume that the available data of interest lie on an embedded non-linear manifold within the higher-dimensional space. If the manifold is of low enough dimension, the data can be visualised in the low-dimensional space.’</a></p>
+<p>In the following I will introduce some methods of how this is possible.
+For this example I will use the following data:</p>
+<pre class="r"><code>n_points = 1000
+X, color = datasets.make_s_curve(n_points, random_state=0)
+
+# Create figure
+fig = plt.figure(figsize=(8, 8))
+
+# Add 3d scatter plot
+ax = fig.add_subplot(projection=&#39;3d&#39;)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=color, cmap=plt.cm.Spectral)
+ax.view_init(10, -70)
+plt.title(&quot;Manifold Learning with an S-Curve&quot;, fontsize=15)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p1.png" /></p>
+</div>
+<div id="locally-linear-embedding" class="section level1">
+<h1>3.1 Locally Linear Embedding</h1>
+<p>Locally Linear Embedding (LLE) uses many local linear decompositions to preserve globally non-linear structures.</p>
+<pre class="r"><code>embedding = LocallyLinearEmbedding(n_neighbors=15, n_components=2)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with LLE&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p2.png" /></p>
+</div>
+<div id="modified-locally-linear-embedding" class="section level1">
+<h1>3.2 Modified Locally Linear Embedding</h1>
+<p>Modified LLE applies a regularization parameter to LLE.</p>
+<pre class="r"><code>embedding = LocallyLinearEmbedding(n_neighbors=15, n_components=2, method=&#39;modified&#39;)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with modified LLE&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p3.png" /></p>
+</div>
+<div id="isomap" class="section level1">
+<h1>3.3 Isomap</h1>
+<p>Isomap seeks a lower dimensional embedding that maintains geometric distances between each instance.</p>
+<pre class="r"><code>embedding = Isomap(n_neighbors=15, n_components=2)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with Isomap&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p4.png" /></p>
+</div>
+<div id="spectral-embedding" class="section level1">
+<h1>3.4 Spectral Embedding</h1>
+<p>Spectral Embedding a discrete approximation of the low dimensional manifold using a graph representation.</p>
+<pre class="r"><code>embedding = SpectralEmbedding(n_neighbors=15, n_components=2)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with Spectral Embedding&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p5.png" /></p>
+</div>
+<div id="multi-dimensional-scaling-mds" class="section level1">
+<h1>3.5 Multi-dimensional Scaling (MDS)</h1>
+<p>Multi-dimensional Scaling (MDS) uses similarity to plot points that are near to each other close in the embedding.</p>
+<pre class="r"><code>embedding = MDS(n_components=2)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with MDS&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p6.png" /></p>
+</div>
+<div id="t-sne" class="section level1">
+<h1>3.6 t-SNE</h1>
+<p>t-SNE converts the similarity of points into probabilities then uses those probabilities to create an embedding.</p>
+<pre class="r"><code>embedding = TSNE(n_components=2)
+
+X_transformed = embedding.fit_transform(X)</code></pre>
+<pre class="r"><code>plt.scatter(X_transformed[:, 0], X_transformed[:, 1], c = color, cmap=plt.cm.Spectral)
+
+plt.title(&#39;Projected data with t-SNE&#39;, fontsize=18)</code></pre>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p7.png" /></p>
+</div>
+<div id="comparison-of-the-calculation-time" class="section level1">
+<h1>4 Comparison of the calculation time</h1>
+<p>Please find below a comparison of the calculation time to the models just used.</p>
+<p><img src="/post/2020-08-12-manifold-learning_files/p59p8.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post, I showed how one can graphically represent high-dimensional data using manifold learning algorithms so that valuable insights can be extracted.</p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
