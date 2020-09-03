@@ -6,10 +6,22 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 18 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Roadmap for Dimensionality Reduction</title>
+      <link>/2020/08/18/roadmap-for-dimensionality-reduction/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/18/roadmap-for-dimensionality-reduction/</guid>
+      <description>Table of Content1 Introduction2 Roadmap for Dimensionality Reduction3 Conclusion1 IntroductionIn conclusion to all publications on dimension reduction methods, I am giving an overview of the algorithms discussed here.
+2 Roadmap for Dimensionality ReductionAnnotation: The Kernel-PCA is of course not a linear dimension reduction method.
+Here are the links to the individual topics.
+“PCA in general”“PCA for speed up ML models”“PCA for Visualization”“Randomized PCA”“Incremental PCA”“Kernel PCA”“LDA”“Manifold Learning”3 ConclusionNow we are finally at the end of the publications on the various topics in the field of data science.</description>
+    </item>
     
     <item>
       <title>Manifold Learning</title>
