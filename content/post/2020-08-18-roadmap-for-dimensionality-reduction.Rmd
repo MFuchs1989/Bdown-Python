@@ -47,4 +47,4 @@ Here are the links to the individual topics.
 
 # 3 Conclusion
 
-Now we are finally at the end of the publications on the various topics in the field of data science. I will also give a graphic overview of the data scinece areas in a separate post.
+Now we are finally at the end of the publications on the various topics in the field of data science. I will also give a graphic overview of the Machine Learning areas in a separate post.
