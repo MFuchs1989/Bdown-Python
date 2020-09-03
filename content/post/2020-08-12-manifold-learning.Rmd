@@ -40,7 +40,7 @@ I have already described two linear dimension reduction methods:
 + ["LDA"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
 
 But how do I treat data that are of a nonlinear nature?
-Of course we have the option of using a ['Kernel-PCA']('https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/') here, but that too has its limits.
+Of course we have the option of using a ["Kernel-PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/) here, but that too has its limits.
 For this reason we can use Manifold Learning Methods, which are to be dealt with in this article.
 
 
