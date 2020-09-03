@@ -26,7 +26,7 @@ tags:
 
 # 1 Introduction
 
-After the various methods of cluster analysis ['Cluster Analysis'](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/) have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction
+After the various methods of cluster analysis ["Cluster Analysis"](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/) have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction
 
 The areas of application of dimensionality reduction are widely spread within machine learning.
 Here are some applications of Dimensionality Reduction:
