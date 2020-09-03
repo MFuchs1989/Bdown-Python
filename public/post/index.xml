@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Michael Fuchs Python</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 20 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Roadmap for the Machine Learning fields</title>
+      <link>/2020/08/20/roadmap-for-the-machine-learning-fields/</link>
+      <pubDate>Thu, 20 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/20/roadmap-for-the-machine-learning-fields/</guid>
+      <description>Table of Content1 Introduction2 Roadmap for the Machine Learning fields3 Conclusion1 IntroductionAs mentioned in my previous post here an overview of the Machine Learning fileds.
+2 Roadmap for the Machine Learning fieldsHere are the links to the individual Roadmaps:
+“Roadmap for Regression Analysis”“Roadmap for Classification Tasks”“Roadmap for Cluster Analysis”“Roadmap for Dimensionality Reduction”3 ConclusionThe overview shows the fields from machine learning.</description>
+    </item>
     
     <item>
       <title>Roadmap for Dimensionality Reduction</title>
