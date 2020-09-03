@@ -36,8 +36,8 @@ The curse of dimensionality is one of the most important problems in multivariat
 
 I have already described two linear dimension reduction methods:
 
-+ ['PCA']('https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/') and 
-+ ['LDA']('https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/')
++ ["PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/) and 
++ ["LDA"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
 
 But how do I treat data that are of a nonlinear nature?
 Of course we have the option of using a ['Kernel-PCA']('https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/') here, but that too has its limits.
