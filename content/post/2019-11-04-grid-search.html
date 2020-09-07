@@ -9,10 +9,10 @@ tags:
   - R Markdown
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<p>#Table of Content</p>
 <ul>
 <li>1 Introduction</li>
 <li>2 Background information on Grid Searach</li>
@@ -23,16 +23,13 @@ tags:
 <li>6.1 Grid Search with LogReg</li>
 <li>6.2 Grid Search with other machine learning algorithms</li>
 <li>6.3 Grid Search with more than one estimator</li>
-<li>7 Conclusion</li>
+<li>7 Speed up GridSearchCV using parallel processing</li>
+<li>8 Conclusion</li>
 </ul>
-</div>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Grid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. This is significant as the performance of the entire machine learning model is based on the hyper parameter values specified.</p>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p1.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p1.png" /></p>
 <p>For this post the dataset <em>Breast Cancer Wisconsin (Diagnostic)</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU" class="uri">https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU</a>.</p>
 </div>
 <div id="background-information-on-grid-searach" class="section level1">
@@ -67,10 +64,7 @@ from sklearn.tree import DecisionTreeClassifier</code></pre>
 <pre class="r"><code>cancer = pd.read_csv(&quot;path/to/file/breast_cancer.csv&quot;)
 
 cancer.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p2.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p2.png" /></p>
 <p>The data set used contains 31 columns which contain information about tumors in the tissue. The column ‘diagnosis’ describes whether these tumors are benign (B) or malignant (M). Let’s try to create a classification model.</p>
 </div>
 <div id="data-pre-processing" class="section level1">
@@ -80,10 +74,7 @@ cancer.head()</code></pre>
 cancer[&#39;diagnosis&#39;] = cancer[&#39;diagnosis&#39;].map(vals_to_replace)
 cancer[&#39;diagnosis&#39;] = cancer.diagnosis.astype(&#39;int64&#39;)
 cancer.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p3.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p3.png" /></p>
 </div>
 <div id="logreg" class="section level1">
 <h1>5 LogReg</h1>
@@ -95,15 +86,13 @@ logreg.fit(trainX, trainY)
 y_pred = logreg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p4.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p4.png" /></p>
 </div>
 <div id="grid-search" class="section level1">
 <h1>6 Grid Search</h1>
 <p>Now let’s use Grid Search with the logistic regression model. I mostly use accuracy as scoring. However, other values such as recall or precision can also be very important. It is therefore worth reading a little deeper into this topic.</p>
-<p>Recall and Precision are useful metrics when working with unbalanced datasets (i.e., there are a lot of samples with label ‘0’, but much fewer samples with label ‘1’. Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.</p>
+<p>Recall and Precision are useful metrics when working with unbalanced datasets (i.e., there are a lot of samples with label ‘0’, but much fewer samples with label ‘1’.
+Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.</p>
 </div>
 <div id="grid-search-with-logreg" class="section level1">
 <h1>6.1 Grid Search with LogReg</h1>
@@ -116,23 +105,18 @@ grid = GridSearchCV(clf, grid_values, cv = 10, scoring=&#39;accuracy&#39;)
 grid.fit(trainX, trainY) 
 
 print(grid.best_params_) </code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p5.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p5.png" /></p>
 <p>Here we see best parameters.</p>
 <pre class="r"><code>grid_predictions = grid.predict(testX) 
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p6.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p6.png" /></p>
 <p>Unfortunately, we have not further improved the accuracy in this case.</p>
 </div>
 <div id="grid-search-with-other-machine-learning-algorithms" class="section level1">
 <h1>6.2 Grid Search with other machine learning algorithms</h1>
-<p>As already mentioned, grid search can be used with all possible machine learning algorithms. Below is a list of the well-known algorithms I used this method:</p>
+<p>As already mentioned, grid search can be used with all possible machine learning algorithms.
+Below is a list of the well-known algorithms I used this method:</p>
 <p><strong>Classifiacation:</strong></p>
 <ul>
 <li><a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a></li>
@@ -181,20 +165,41 @@ grid = GridSearchCV(pipe, params_grid, cv=5, scoring=&#39;accuracy&#39;)
 grid.fit(trainX, trainY) 
 
 print(grid.best_params_) </code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p7.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p7.png" /></p>
 <pre class="r"><code>grid_predictions = grid.predict(testX) 
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-04-grid-search_files/p36p8.png" />
-
-</div>
+<p><img src="/post/2019-11-04-grid-search_files/p36p8.png" /></p>
 <p>As we can see, the use of support vector machines gives the best results for this classification problem.</p>
 </div>
+<div id="speed-up-gridsearchcv-using-parallel-processing" class="section level1">
+<h1>7 Speed up GridSearchCV using parallel processing</h1>
+<p>If you use the last grid search shown, you will find that the required computing power is very high and you may have to wait longer.
+For this case you can use parallel processing.
+Just set the parameter n_jobs to -1.</p>
+<pre class="r"><code>import time
+
+start = time.time()
+
+grid = GridSearchCV(pipe, params_grid, cv=5, scoring=&#39;accuracy&#39;)
+grid.fit(trainX, trainY) 
+
+end = time.time()
+print()
+print(&#39;Calculation time: &#39; + str(round(end - start,2)) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2019-11-04-grid-search_files/p36p9.png" /></p>
+<pre class="r"><code>start = time.time()
+
+grid = GridSearchCV(pipe, params_grid, cv=5, scoring=&#39;accuracy&#39;, n_jobs=-1)
+grid.fit(trainX, trainY) 
+
+end = time.time()
+print()
+print(&#39;Calculation time: &#39; + str(round(end - start,2)) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2019-11-04-grid-search_files/p36p10.png" /></p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
-<p>In this post, the functionality and application of Grid Search was shown. Have fun creating machine learning models with optimized hyperparameters.</p>
+<h1>8 Conclusion</h1>
+<p>In this post, the functionality and application of Grid Search was shown.
+Have fun creating machine learning models with optimized hyperparameters.</p>
 </div>

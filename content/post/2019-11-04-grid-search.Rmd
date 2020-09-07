@@ -20,10 +20,11 @@ tags:
 + 6.1 Grid Search with LogReg
 + 6.2 Grid Search with other machine learning algorithms
 + 6.3 Grid Search with more than one estimator
-+ 7 Conclusion
++ 7 Speed up GridSearchCV using parallel processing
++ 8 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 Grid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. This is significant as the performance of the entire machine learning model is based on the hyper parameter values specified.
 
@@ -32,7 +33,7 @@ Grid Search is the process of performing hyperparameter tuning in order to deter
 For this post the dataset *Breast Cancer Wisconsin (Diagnostic)* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU>.
 
 
-#2 Background information on Grid Searach
+# 2 Background information on Grid Searach
 
 
 
@@ -50,7 +51,7 @@ In a nutshell Grid Search is used to find the optimal hyperparameters of a model
 If you work with machine learning, you know what a nightmare it is to stipulate values for hyper parameters. There are methods, such as GridSearchCV of the scikit-learn bibliothek that have been implemented, in order to automate this process and make life a little bit easier for machine learning users.
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -87,7 +88,7 @@ cancer.head()
 The data set used contains 31 columns which contain information about tumors in the tissue. The column 'diagnosis' describes whether these tumors are benign (B) or malignant (M). Let's try to create a classification model.
 
 
-#4 Data pre-processing
+# 4 Data pre-processing
 
 The target variable is then converted into numerical values.
 
@@ -100,7 +101,7 @@ cancer.head()
 
 ![](/post/2019-11-04-grid-search_files/p36p3.png)
 
-#5 LogReg
+# 5 LogReg
 
 
 With Grid Search we can optimize hyper parameters of all possible algorithms. Here we use ["logistic regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) based on the previous ["post"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/). 
@@ -119,7 +120,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 ![](/post/2019-11-04-grid-search_files/p36p4.png)
 
 
-#6 Grid Search
+# 6 Grid Search
 
 Now let's use Grid Search with the logistic regression model. I mostly use accuracy as scoring. However, other values such as recall or precision can also be very important. It is therefore worth reading a little deeper into this topic.
 
@@ -127,7 +128,7 @@ Recall and Precision are useful metrics when working with unbalanced datasets (i
 Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.
 
 
-#6.1 Grid Search with LogReg
+# 6.1 Grid Search with LogReg
 
 ```{r, eval=F, echo=T}
 grid_values = {'penalty': ['l1', 'l2'],'C':[0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]}
@@ -157,7 +158,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 Unfortunately, we have not further improved the accuracy in this case.
 
 
-#6.2 Grid Search with other machine learning algorithms
+# 6.2 Grid Search with other machine learning algorithms
 
 As already mentioned, grid search can be used with all possible machine learning algorithms.
 Below is a list of the well-known algorithms I used this method:
@@ -177,7 +178,7 @@ Below is a list of the well-known algorithms I used this method:
 + ["Lasso Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 + ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 
-#6.3 Grid Search with more than one estimator
+# 6.3 Grid Search with more than one estimator
 
 We can also use Grid Search with multiple estimator:
 
@@ -227,7 +228,44 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 As we can see, the use of support vector machines gives the best results for this classification problem.
 
 
-#7 Conclusion
+
+# 7 Speed up GridSearchCV using parallel processing
+
+If you use the last grid search shown, you will find that the required computing power is very high and you may have to wait longer.
+For this case you can use parallel processing. 
+Just set the parameter n_jobs to -1.
+
+```{r, eval=F, echo=T}
+import time
+
+start = time.time()
+
+grid = GridSearchCV(pipe, params_grid, cv=5, scoring='accuracy')
+grid.fit(trainX, trainY) 
+
+end = time.time()
+print()
+print('Calculation time: ' + str(round(end - start,2)) + ' seconds')
+```
+
+![](/post/2019-11-04-grid-search_files/p36p9.png)
+
+
+```{r, eval=F, echo=T}
+start = time.time()
+
+grid = GridSearchCV(pipe, params_grid, cv=5, scoring='accuracy', n_jobs=-1)
+grid.fit(trainX, trainY) 
+
+end = time.time()
+print()
+print('Calculation time: ' + str(round(end - start,2)) + ' seconds')
+```
+
+![](/post/2019-11-04-grid-search_files/p36p10.png)
+
+
+# 8 Conclusion
 
 In this post, the functionality and application of Grid Search was shown.
 Have fun creating machine learning models with optimized hyperparameters.
