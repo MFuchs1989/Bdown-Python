@@ -320,8 +320,7 @@ For this post the dataset Iris from the statistic platform “Kaggle” was used
       <pubDate>Mon, 04 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/11/04/grid-search/</guid>
-      <description>#Table of Content
-1 Introduction2 Background information on Grid Searach3 Loading the libraries and the data4 Data pre-processing5 LogReg6 Grid Search6.1 Grid Search with LogReg6.2 Grid Search with other machine learning algorithms6.3 Grid Search with more than one estimator7 Speed up GridSearchCV using parallel processing8 Conclusion1 IntroductionGrid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model.</description>
+      <description>Table of Content1 Introduction2 Background information on Grid Searach3 Loading the libraries and the data4 Data pre-processing5 LogReg6 Grid Search6.1 Grid Search with LogReg6.2 Grid Search with other machine learning algorithms6.3 Grid Search with more than one estimator7 Speed up GridSearchCV using parallel processing8 Conclusion1 IntroductionGrid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model.</description>
     </item>
     
     <item>
