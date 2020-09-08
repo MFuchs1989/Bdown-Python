@@ -101,6 +101,15 @@ cancer.head()
 
 ![](/post/2019-11-04-grid-search_files/p36p3.png)
 
+
+```{r, eval=F, echo=T}
+x = cancer.drop(['id', 'diagnosis', 'Unnamed: 32'], axis=1)
+y = cancer['diagnosis']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
 # 5 LogReg
 
 
