@@ -475,6 +475,15 @@ For this post the dataset House Sales in King County, USA from the statistic pla
     </item>
     
     <item>
+      <title>How to create artificial datasets</title>
+      <link>/2019/05/10/how-to-create-artificial-datasets/</link>
+      <pubDate>Fri, 10 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/05/10/how-to-create-artificial-datasets/</guid>
+      <description>Table of Content1 Introduction2 Simulated Data2.1 Make Simulated Data For Regression2.1 Make Simulated Data For Classification2.1 Make Simulated Data For Clustering3 Conclusion1 IntroductionIn the following posts, all possible machine learning algorithms will be shown promptly.In order to test their functionality in a superficial way, you do not necessarily have to look for a suitable data set (from the internet or similar).</description>
+    </item>
+    
+    <item>
       <title>NumPy. An intuition.</title>
       <link>/2019/05/07/numpy-an-intuition/</link>
       <pubDate>Tue, 07 May 2019 00:00:00 +0000</pubDate>

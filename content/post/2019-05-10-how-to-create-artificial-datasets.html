@@ -1,0 +1,123 @@
+---
+title: How to create artificial datasets
+author: Michael Fuchs
+date: '2019-05-10'
+slug: how-to-create-artificial-datasets
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Simulated Data</li>
+<li>2.1 Make Simulated Data For Regression</li>
+<li>2.1 Make Simulated Data For Classification</li>
+<li>2.1 Make Simulated Data For Clustering</li>
+<li>3 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In the following posts, all possible machine learning algorithms will be shown promptly.
+In order to test their functionality in a superficial way, you do not necessarily have to look for a suitable data set (from the internet or similar). Because there is also the possibility to have an artificial data set created for the respective application needs.
+How this can be done I show in this post.</p>
+</div>
+<div id="simulated-data" class="section level1">
+<h1>2 Simulated Data</h1>
+<p>As already mentioned at the beginning, you can generate your own artificial data for each application.
+To do so we need the following libraries:</p>
+<pre class="r"><code>from sklearn.datasets import make_regression
+from sklearn.datasets import make_classification
+from sklearn.datasets import make_blobs
+
+from matplotlib import pyplot as plt
+
+import pandas as pd</code></pre>
+</div>
+<div id="make-simulated-data-for-regression" class="section level1">
+<h1>2.1 Make Simulated Data For Regression</h1>
+<pre class="r"><code>features, output = make_regression(n_samples=100, n_features=1)</code></pre>
+<pre class="r"><code># plot regression dataset
+plt.scatter(features,output)
+plt.show() </code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p1.png" /></p>
+<p>We can generate also more features:</p>
+<pre class="r"><code>features, output = make_regression(n_samples=100, n_features=4)</code></pre>
+<p>And safe these features to an object:</p>
+<pre class="r"><code>features = pd.DataFrame(features, columns=[&#39;Store_1&#39;, &#39;Store_2&#39;, &#39;Store_3&#39;, &#39;Store_4&#39;])
+features.head()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p2.png" /></p>
+<p>Now we do so for the output/target variable:</p>
+<pre class="r"><code>output = pd.DataFrame(output, columns=[&#39;Sales&#39;])
+output.head()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p3.png" /></p>
+<p>We also can combine these two objects to a final-dataframe:</p>
+<pre class="r"><code>df_final = pd.concat([features, output], axis=1)
+df_final.head()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p4.png" /></p>
+<p>Now we are ready for using some machine learning or statistic models:</p>
+<pre class="r"><code>import statsmodels.api as sm
+
+SM_model = sm.OLS(output, features).fit()
+print(SM_model.summary())</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p5.png" /></p>
+</div>
+<div id="make-simulated-data-for-classification" class="section level1">
+<h1>2.1 Make Simulated Data For Classification</h1>
+<p>With almost the same procedure we can also create data for classification tasks.</p>
+<pre class="r"><code>features, output = make_classification(n_samples=100, n_features=25)</code></pre>
+<pre class="r"><code>pd.DataFrame(features).head() </code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p6.png" /></p>
+<p>See here we have 25 features (=columns) and, by default, two output-classes:</p>
+<pre class="r"><code>pd.DataFrame(output, columns=[&#39;Target&#39;]).value_counts()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p7.png" /></p>
+<p>In the following I show two examples of how the characteristics of the artificially generated data can be changed:</p>
+<pre class="r"><code>features, output = make_classification(
+                   n_samples=100, 
+                   n_features=25,
+                   flip_y=0.1)
+
+# the default value for flip_y is 0.01, or 1%
+# 10% of the values of Y will be randomly flipped</code></pre>
+<pre class="r"><code>features, output = make_classification(
+                   n_samples=100, 
+                   n_features=25,
+                   class_sep=0.1)
+
+# the default value for class_sep is 1.0. The lower the value, the harder classification is</code></pre>
+<p>So far we have only created data sets that contain two classes (in the output variable).
+Of course, we can also create data sets for <strong>multi-classification tasks</strong>.</p>
+<pre class="r"><code>features, output = make_classification(n_samples=10000, n_features=10, n_informative=5, n_classes=5)</code></pre>
+<pre class="r"><code>pd.DataFrame(output, columns=[&#39;Target&#39;]).value_counts()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p8.png" /></p>
+</div>
+<div id="make-simulated-data-for-clustering" class="section level1">
+<h1>2.1 Make Simulated Data For Clustering</h1>
+<p>Last but not least we’ll generate some data for cluster-problems.</p>
+<pre class="r"><code>X, y = make_blobs(n_samples=1000, n_features = 2, centers = 3, cluster_std = 0.7)
+
+plt.scatter(X[:, 0], X[:, 1])
+plt.xlabel(&quot;Feature 1&quot;)
+plt.ylabel(&quot;Feature 2&quot;)
+plt.show()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p9.png" /></p>
+<pre class="r"><code>pd.DataFrame(X).head()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p10.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>3 Conclusion</h1>
+<p>As you can see, the way in which artificial data is created basically always works the same.
+Of course, you can change the parameters accordingly depending on the application. See the individual descriptions on scikit-learn:</p>
+<ul>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html#sklearn.datasets.make_regression">“sklearn.datasets.make_regression”</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification">“sklearn.datasets.make_classification”</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html#sklearn.datasets.make_blobs">“sklearn.datasets.make_blobs”</a></li>
+</ul>
+</div>
