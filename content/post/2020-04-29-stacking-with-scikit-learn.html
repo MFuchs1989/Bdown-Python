@@ -1,0 +1,199 @@
+---
+title: Stacking with Scikit-Learn
+author: Michael Fuchs
+date: '2020-04-29'
+slug: stacking-with-scikit-learn
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Importing the libraries and the data</li>
+<li>3 Data pre-processing</li>
+<li>4 Stacking with scikit learn</li>
+<li>4.1 Model 1 incl. GridSearch</li>
+<li>4.2 Model 2 incl. GridSearch</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my previous post I explained the <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“ensemble modeling method ‘Stacking’”</a>. As it is described there, it is entirely applicable. However, it can be made even easier with the machine learning library scikit learn. I will show you how to do this in the following article.</p>
+<p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
+</div>
+<div id="importing-the-libraries-and-the-data" class="section level1">
+<h1>2 Importing the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GridSearchCV
+
+from sklearn.ensemble import StackingClassifier
+
+# Stacking model 1:
+## Our base models
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import LinearSVC
+## Our stacking model
+from sklearn.linear_model import LogisticRegression
+
+# Stacking model 2:
+## Our base models
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB 
+## Our stacking model
+from sklearn.linear_model import LogisticRegression</code></pre>
+<pre class="r"><code>bank = pd.read_csv(&quot;path/to/file/bank.csv&quot;, sep=&quot;;&quot;)</code></pre>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>3 Data pre-processing</h1>
+<p>Since I use the same data approach as with <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“Stacking”</a>, I will not go into the pre-processing steps individually below. If you want to know what is behind the individual pre-processing steps, read <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“this”</a> post.</p>
+<pre class="r"><code>safe_y = bank[[&#39;y&#39;]]
+
+col_to_exclude = [&#39;y&#39;]
+bank = bank.drop(col_to_exclude, axis=1)</code></pre>
+<pre class="r"><code>#Just select the categorical variables
+cat_col = [&#39;object&#39;]
+cat_columns = list(bank.select_dtypes(include=cat_col).columns)
+cat_data = bank[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(bank[var], prefix=var)
+    bank=bank.join(cat_list)
+
+    
+data_vars=bank.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+bank_final=bank[to_keep]
+bank_final.columns.values</code></pre>
+<pre class="r"><code>bank = pd.concat([bank_final, safe_y], axis=1)</code></pre>
+<pre class="r"><code>encoder = LabelBinarizer()
+
+encoded_y = encoder.fit_transform(bank.y.values.reshape(-1,1))</code></pre>
+<pre class="r"><code>bank[&#39;y_encoded&#39;] = encoded_y
+bank[&#39;y_encoded&#39;] = bank[&#39;y_encoded&#39;].astype(&#39;int64&#39;)</code></pre>
+<pre class="r"><code>x = bank.drop([&#39;y&#39;, &#39;y_encoded&#39;], axis=1)
+y = bank[&#39;y_encoded&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="stacking-with-scikit-learn" class="section level1">
+<h1>4 Stacking with scikit learn</h1>
+<p>Since we have now prepared the data set accordingly, I will now show you how to use scikit-learn’s StackingClassifier.</p>
+</div>
+<div id="model-1-incl.-gridsearch" class="section level1">
+<h1>4.1 Model 1 incl. GridSearch</h1>
+<p>The principle is the same as described in <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“Stacking”</a>.
+As a base model, we use a linear support vector classifier and the KNN classifier. The final estimator will be a logistic regression.</p>
+<pre class="r"><code>estimators = [
+     (&#39;svm&#39;, LinearSVC(max_iter=1000)),
+     (&#39;knn&#39;, KNeighborsClassifier(n_neighbors=4))]</code></pre>
+<pre class="r"><code>clf = StackingClassifier(
+     estimators=estimators, final_estimator=LogisticRegression())</code></pre>
+<pre class="r"><code>clf.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>clf_preds_train = clf.predict(trainX)
+clf_preds_test = clf.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Stacked Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p1.png" /></p>
+<p>In comparison, the accuracy results from the base models when they are not used in combination with each other.</p>
+<pre class="r"><code>svm = LinearSVC(max_iter=1000)
+svm.fit(trainX, trainY)
+svm_pred = svm.predict(testX)
+
+knn = KNeighborsClassifier(n_neighbors=4)
+knn.fit(trainX, trainY)
+knn_pred = knn.predict(testX)
+
+# Comparing accuracy with that of base predictors
+
+print(&#39;SVM:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=svm.predict(trainX)),
+    accuracy_score(y_true=testY, y_pred=svm_pred)
+))
+print(&#39;kNN:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=knn.predict(trainX)),
+    accuracy_score(y_true=testY, y_pred=knn_pred)
+))</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p2.png" /></p>
+<p><strong>GridSearch</strong></p>
+<p>Now let’s try to improve the results with GridSearch:
+Here is a tip regarding the naming convention. Look how you named the respective estimator for which you want to tune the parameters above under ‘estimators’. Then you name the parameter (as shown in the example below for KNN) as follows: knn__n_neighbors (name underline underline name_of_the_parameter).</p>
+<pre class="r"><code>params = {&#39;knn__n_neighbors&#39;: [3,5,11,19]} </code></pre>
+<pre class="r"><code>grid = GridSearchCV(estimator=clf, param_grid=params, cv=5, scoring=&#39;accuracy&#39;)
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>grid.best_params_</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p3.png" /></p>
+<pre class="r"><code>clf_preds_train = grid.predict(trainX)
+clf_preds_test = grid.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Stacked Classifier with GridSearch:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p4.png" /></p>
+</div>
+<div id="model-2-incl.-gridsearch" class="section level1">
+<h1>4.2 Model 2 incl. GridSearch</h1>
+<p>Let’s see if we can improve the forecast quality again with other base models.
+Here we’ll use KNN again, Random Forest and Gaussion Classifier:</p>
+<pre class="r"><code>estimators = [
+     (&#39;knn&#39;, KNeighborsClassifier(n_neighbors=5)),
+     (&#39;rfc&#39;, RandomForestClassifier()),
+     (&#39;gnb&#39;, GaussianNB())]</code></pre>
+<pre class="r"><code>clf = StackingClassifier(
+     estimators=estimators, final_estimator=LogisticRegression())</code></pre>
+<pre class="r"><code>clf.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>clf_preds_train = clf.predict(trainX)
+clf_preds_test = clf.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Stacked Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p5.png" /></p>
+<p>Better than Stacking Model 1 but no better than Stacking Model 1 with GridSearch. So we apply GridSearch again on Stacking Model 2.</p>
+<p><strong>GridSearch</strong></p>
+<p>Here the topic with the naming convention explained earlier should also become clear.</p>
+<pre class="r"><code>estimators = [
+     (&#39;knn&#39;, KNeighborsClassifier(n_neighbors=5)),
+     (&#39;rfc&#39;, RandomForestClassifier()),
+     (&#39;gnb&#39;, GaussianNB())]</code></pre>
+<pre class="r"><code>params = {&#39;knn__n_neighbors&#39;: [3,5,11,19,25],
+         &#39;rfc__n_estimators&#39;: list(range(10, 100, 10)),
+         &#39;rfc__max_depth&#39;: list(range(3,20)),
+         &#39;final_estimator__C&#39;: [0.1, 10.0]} </code></pre>
+<pre class="r"><code>grid = GridSearchCV(estimator=clf, param_grid=params, cv=5, scoring=&#39;accuracy&#39;, n_jobs=-1)
+grid.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>clf_preds_train = grid.predict(trainX)
+clf_preds_test = grid.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Stacked Classifier with GridSearch:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p6.png" /></p>
+<p>Yeah !!</p>
+<pre class="r"><code>print(grid.best_params_) </code></pre>
+<p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p7.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In addition to the previous post about <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“Stacking”</a>, I have shown how this ensemble method can be used via scikit learn as well.
+I also showed how hyperparameter tuning can be used with ensemble methods to create even better predictive values.</p>
+</div>

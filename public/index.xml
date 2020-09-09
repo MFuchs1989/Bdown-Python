@@ -177,6 +177,15 @@ Fortunately, we are not yet through with the most common cluster algorithms.</de
     </item>
     
     <item>
+      <title>Stacking with Scikit-Learn</title>
+      <link>/2020/04/29/stacking-with-scikit-learn/</link>
+      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/29/stacking-with-scikit-learn/</guid>
+      <description>Table of Content1 Introduction2 Importing the libraries and the data3 Data pre-processing4 Stacking with scikit learn4.1 Model 1 incl. GridSearch4.2 Model 2 incl. GridSearch5 Conclusion1 IntroductionIn my previous post I explained the “ensemble modeling method ‘Stacking’”. As it is described there, it is entirely applicable. However, it can be made even easier with the machine learning library scikit learn.</description>
+    </item>
+    
+    <item>
       <title>Ensemble Modeling - Stacking</title>
       <link>/2020/04/24/ensemble-modeling-stacking/</link>
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
