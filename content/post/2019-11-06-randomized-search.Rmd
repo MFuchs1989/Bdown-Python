@@ -126,7 +126,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 
 # 5 Randomized Search
 
-Now we do the same hyperparameter tuning with Randomized Search
+Now we do the same hyperparameter tuning with Randomized Search.
 
 ```{r, eval=F, echo=T}
 param_rand_search = {'C': [0.1, 1, 10, 100, 1000],  
