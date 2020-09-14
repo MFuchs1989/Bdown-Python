@@ -95,6 +95,8 @@ Here are the links to the individual topics:
 + [Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
 + [Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
 + [Stacking](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
++ [Stacking with scikit-learn](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
++ [Voting](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting//)
 
 
 **Notes on the special classifiers:**
@@ -104,6 +106,14 @@ As described in the [SGD Classifier](https://michael-fuchs-python.netlify.com/20
 
 With the [One-vs-One and One-vs-Rest](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/) method it is possible to make binary classifiers multiple.
 
+
+**Notes on ensemble methods:**
+
+Depending on the underlying problem with the predictions I choose the following ensemble method:
+
++ Bagging: Decrease Variance
++	Boosting: Decrease Bias
++	Stacking: Improve Predictions
 
 
 # 3 Conclusion

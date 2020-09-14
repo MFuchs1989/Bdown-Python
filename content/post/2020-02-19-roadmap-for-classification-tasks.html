@@ -9,6 +9,7 @@ tags:
   - R Markdown
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="table-of-content" class="section level1">
@@ -78,10 +79,19 @@ tags:
 <li><a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">Bagging</a></li>
 <li><a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">Boosting</a></li>
 <li><a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">Stacking</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/">Stacking with scikit-learn</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting//">Voting</a></li>
 </ul>
 <p><strong>Notes on the special classifiers:</strong></p>
 <p>As described in the <a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">SGD Classifier</a> post, this is not a classifier. It’s a linear classifier optimized by the Stochastic Gradient Descent.</p>
 <p>With the <a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">One-vs-One and One-vs-Rest</a> method it is possible to make binary classifiers multiple.</p>
+<p><strong>Notes on ensemble methods:</strong></p>
+<p>Depending on the underlying problem with the predictions I choose the following ensemble method:</p>
+<ul>
+<li>Bagging: Decrease Variance</li>
+<li>Boosting: Decrease Bias</li>
+<li>Stacking: Improve Predictions</li>
+</ul>
 </div>
 <div id="conclusion" class="section level1">
 <h1>3 Conclusion</h1>
