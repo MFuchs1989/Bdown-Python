@@ -10,23 +10,24 @@ tags:
 ---
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Roadmap for Regression Analysis
 + 3 Different types of regression models
-+ 4 Conclusion
++ 4 Further Regression Algorithms
++ 5 Conclusion
 
 
 
-#1 Introduction
+# 1 Introduction
 
 
 In my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
 
 
 
-#2 Roadmap for Regression Analysis
+# 2 Roadmap for Regression Analysis
 
 
 ![](/post/2019-10-14-roadmap-for-regression-analysis_files/p22p1.png)
@@ -68,17 +69,25 @@ Embedded methods:
 
 
 
-#3 Different types of regression models
+# 3 Different types of regression models
 
 + ["Linear Regression"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
++ ["Multiple Regression"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
 + ["Non-Linear Regression"](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
 + ["Polynomial Regression"](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
-+ ["Ridge Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
-+ ["Lasso Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
-+ ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 
 
-#4 Conclusion
+
+# 4 Further Regression Algorithms
+
+
+**Still in development**
+
+
+
+
+
+# 5 Conclusion
 
 The methods mentioned in the listed posts show how to improve regression models.
 
