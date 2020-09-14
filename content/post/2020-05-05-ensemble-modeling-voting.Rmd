@@ -402,6 +402,7 @@ print('Voting Classifier with GridSearch:\n> Accuracy on training data = {:.4f}\
 
 # 8 Conclusion
 
+In this post I have shown how to use the Voting Classifier. Furthermore I improved the performance with Grid Search.
 
 
 
@@ -409,20 +410,6 @@ print('Voting Classifier with GridSearch:\n> Accuracy on training data = {:.4f}\
 
 
 
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-05-05-ensemble-modeling-voting_files/p65p.png)
-
-
-
-["ensemble modeling method 'Stacking'"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
 
 
 
