@@ -20,6 +20,9 @@ tags:
 <li>3 Loading the libraries and the data</li>
 <li>4 Data pre-processing</li>
 <li>5 Voting with scikit learn</li>
+<li>6 GridSearch</li>
+<li>7 Overview of the accuracy scores</li>
+<li>8 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -31,6 +34,7 @@ It is a technique that may be used to improve model performance, ideally achievi
 </div>
 <div id="backgroundinformation-on-voting" class="section level1">
 <h1>2 Backgroundinformation on Voting</h1>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65s1.png" /></p>
 <p>A voting classifier works like an electoral system in which a predictions on new data points is made based on a voting system of the members of a group of machine learning models. According to the documentation of scikit-learn, one may choose between the hard and the soft voting type.</p>
 <p>The hard voting is applied to predicted class labels for majority rule voting. This uses the idea of “Majority carries the vote” i.e. a decision is made in favor of whoever has more than half of the vote.</p>
 <p>The soft voting type, predicts the class label based on the argmax of the sums of the predicted probabilities of the individual estimators that make up the ensemble. The soft voting is often recommended in the case of an ensemble of well-calibrated/fitted classifiers.</p>
@@ -102,6 +106,157 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 <div id="voting-with-scikit-learn" class="section level1">
 <h1>5 Voting with scikit learn</h1>
 <p>We use the 4 algorithms below as estimators for scikit learn’s voting classifier.</p>
-<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p64p1.png" /></p>
+<pre class="r"><code>knn = KNeighborsClassifier()
+gnb = GaussianNB()
+rf = RandomForestClassifier()
+lr = LogisticRegression()</code></pre>
+<pre class="r"><code>classifiers = [(&#39;knn&#39;, knn),
+               (&#39;gnb&#39;, gnb),
+               (&#39;rf&#39;, rf),
+               (&#39;lr&#39;, lr)]</code></pre>
+<pre class="r"><code>vc = VotingClassifier(estimators=classifiers, voting=&#39;hard&#39;)</code></pre>
+<p>Let’s calculate the cross_val_score for all of the estimators as well as the Voting Classifier:</p>
+<pre class="r"><code>print(&#39;knn cross_val_score:&#39; + str(cross_val_score(knn, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))
+print(&#39;gnb cross_val_score:&#39; + str(cross_val_score(gnb, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))
+print(&#39;rf cross_val_score:&#39; + str(cross_val_score(rf, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))
+print(&#39;lr cross_val_score:&#39; + str(cross_val_score(lr, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))
+print(&#39;vc cross_val_score:&#39; + str(cross_val_score(vc, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p1.png" /></p>
+<p>Now we put this information in a clearer format:</p>
+<pre class="r"><code>a = []
+
+a.append(cross_val_score(knn, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean())
+a.append(cross_val_score(gnb, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean())
+a.append(cross_val_score(rf, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean())
+a.append(cross_val_score(lr, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean())
+a.append(cross_val_score(vc, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean())
+
+a = pd.DataFrame(a, columns=[&#39;cross_val_score&#39;])
+a</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p2.png" /></p>
+<pre class="r"><code>classifier = pd.DataFrame(classifiers, columns=[&#39;classifier&#39;, &#39;Parameter&#39;])
+voting_clf = [(&#39;vc&#39;, vc)]
+voting_clf = pd.DataFrame(voting_clf, columns=[&#39;classifier&#39;, &#39;Parameter&#39;])
+
+classifier = classifier.append(voting_clf)
+classifier = classifier[&#39;classifier&#39;]
+classifier = pd.DataFrame(classifier)
+classifier</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p3.png" /></p>
+<pre class="r"><code>classifier = pd.DataFrame(classifiers, columns=[&#39;classifier&#39;, &#39;Parameter&#39;])
+
+voting_clf = [(&#39;vc&#39;, vc)]
+voting_clf = pd.DataFrame(voting_clf, columns=[&#39;classifier&#39;, &#39;Parameter&#39;])
+
+classifier = classifier.append(voting_clf)
+classifier = classifier[&#39;classifier&#39;]
+
+classifier.reset_index(drop=True, inplace=True)
+a.reset_index(drop=True, inplace=True)
+
+overview_results = pd.concat([classifier, a], axis=1)
+overview_results</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p4.png" /></p>
+<p>Okay. Now we put the achieved scores in a descending order:</p>
+<pre class="r"><code>overview_results.sort_values(by=&#39;cross_val_score&#39;, ascending=False)</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p5.png" /></p>
+<p>As we can see, the Random Forest Classifier achieved the best scores.
+Let’s see if we can get a better performance with Grid-Search.</p>
+</div>
+<div id="gridsearch" class="section level1">
+<h1>6 GridSearch</h1>
+<p>With Grid Search we search for two different parameters:</p>
+<ul>
+<li>Voting type</li>
+<li>Weights</li>
+</ul>
+<p>With Voting Types there are only two possible selection criteria.
+The number of different weight settings depends on the number of estimators used.
+Here we used 4 plus the VotingClassifier itself.</p>
+<pre class="r"><code># define VotingClassifier parameters to search
+params = {&#39;voting&#39;:[&#39;hard&#39;, &#39;soft&#39;],
+          &#39;weights&#39;:[(1,1,1,1), (2,1,1,1), (1,2,1,1), (1,1,2,1), (1,1,1,2)]}</code></pre>
+<pre class="r"><code># find the best set of parameters
+grid = GridSearchCV(estimator=vc, param_grid=params, cv=5, scoring=&#39;accuracy&#39;)
+grid.fit(trainX, trainY)</code></pre>
+<p>The calculated best parameter settings are as follows:</p>
+<pre class="r"><code>print(grid.best_params_) </code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p6.png" /></p>
+<p>Now let’s calculate the cross_val_score for this parameter setting:</p>
+<pre class="r"><code>print(&#39;vc cross_val_score with GridSearch:&#39; + str(cross_val_score(grid, trainX, trainY, scoring=&#39;accuracy&#39;, cv=10).mean()))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p7.png" /></p>
+<p>For a uniform view, we transfer the calculated values to the previously created overview.</p>
+<pre class="r"><code>overview_results = overview_results.append({&#39;classifier&#39; : &#39;vc_plus_gridsearch&#39; , &#39;cross_val_score&#39; : 0.9149924127465857} , ignore_index=True)
+overview_results.sort_values(by=&#39;cross_val_score&#39;, ascending=False)</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p8.png" /></p>
+<p>Perfect, we have managed to increase the performance again. Now the values are higher than those at Random Forest.</p>
+</div>
+<div id="overview-of-the-accuracy-scores" class="section level1">
+<h1>7 Overview of the accuracy scores</h1>
+<p>Finally, I would like to give an overview of the accuracy scores achieved for the individual models.</p>
+<pre class="r"><code>knn.fit(trainX, trainY)
+
+clf_preds_train = knn.predict(trainX)
+clf_preds_test = knn.predict(testX)
+
+print(&#39;knn Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p9.png" /></p>
+<pre class="r"><code>gnb.fit(trainX, trainY)
+
+clf_preds_train = gnb.predict(trainX)
+clf_preds_test = gnb.predict(testX)
+
+print(&#39;gnb Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p10.png" /></p>
+<pre class="r"><code>rf.fit(trainX, trainY)
+
+clf_preds_train = rf.predict(trainX)
+clf_preds_test = rf.predict(testX)
+
+print(&#39;rf Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p11.png" /></p>
+<pre class="r"><code>lr.fit(trainX, trainY)
+
+clf_preds_train = lr.predict(trainX)
+clf_preds_test = lr.predict(testX)
+
+print(&#39;lr Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p12.png" /></p>
+<pre class="r"><code>vc.fit(trainX, trainY)
+
+clf_preds_train = vc.predict(trainX)
+clf_preds_test = vc.predict(testX)
+
+print(&#39;vc Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p13.png" /></p>
+<pre class="r"><code>#we already fit the grid model in the step above
+
+vc_preds_train = grid.predict(trainX)
+vc_preds_test = grid.predict(testX)
+
+print(&#39;Voting Classifier with GridSearch:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=vc_preds_train),
+    accuracy_score(y_true=testY, y_pred=vc_preds_test)
+))</code></pre>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p14.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65p.png" /></p>
 <p><a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“ensemble modeling method ‘Stacking’”</a></p>
 </div>

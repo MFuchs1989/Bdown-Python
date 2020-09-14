@@ -18,6 +18,9 @@ tags:
 + 3 Loading the libraries and the data
 + 4 Data pre-processing
 + 5 Voting with scikit learn
++ 6 GridSearch
++ 7 Overview of the accuracy scores
++ 8 Conclusion
 
 
 
@@ -35,6 +38,8 @@ For this post the dataset *Bank Data* from the platform ["UCI Machine Learning r
 
 
 # 2 Backgroundinformation on Voting
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65s1.png)
 
 
 A voting classifier works like an electoral system in which a predictions on new data points is made based on a voting system of the members of a group of machine learning models. According to the documentation of scikit-learn, one may choose between the hard and the soft voting type.
@@ -150,12 +155,252 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 We use the 4 algorithms below as estimators for scikit learn’s voting classifier.
 
 
+```{r, eval=F, echo=T}
+knn = KNeighborsClassifier()
+gnb = GaussianNB()
+rf = RandomForestClassifier()
+lr = LogisticRegression()
+```
+
+
+```{r, eval=F, echo=T}
+classifiers = [('knn', knn),
+               ('gnb', gnb),
+               ('rf', rf),
+               ('lr', lr)]
+```
+
+```{r, eval=F, echo=T}
+vc = VotingClassifier(estimators=classifiers, voting='hard')
+```
+
+
+Let's calculate the cross_val_score for all of the estimators as well as the Voting Classifier:
+
+
+```{r, eval=F, echo=T}
+print('knn cross_val_score:' + str(cross_val_score(knn, trainX, trainY, scoring='accuracy', cv=10).mean()))
+print('gnb cross_val_score:' + str(cross_val_score(gnb, trainX, trainY, scoring='accuracy', cv=10).mean()))
+print('rf cross_val_score:' + str(cross_val_score(rf, trainX, trainY, scoring='accuracy', cv=10).mean()))
+print('lr cross_val_score:' + str(cross_val_score(lr, trainX, trainY, scoring='accuracy', cv=10).mean()))
+print('vc cross_val_score:' + str(cross_val_score(vc, trainX, trainY, scoring='accuracy', cv=10).mean()))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p1.png)
+
+
+Now we put this information in a clearer format:
+
+
+```{r, eval=F, echo=T}
+a = []
+
+a.append(cross_val_score(knn, trainX, trainY, scoring='accuracy', cv=10).mean())
+a.append(cross_val_score(gnb, trainX, trainY, scoring='accuracy', cv=10).mean())
+a.append(cross_val_score(rf, trainX, trainY, scoring='accuracy', cv=10).mean())
+a.append(cross_val_score(lr, trainX, trainY, scoring='accuracy', cv=10).mean())
+a.append(cross_val_score(vc, trainX, trainY, scoring='accuracy', cv=10).mean())
+
+a = pd.DataFrame(a, columns=['cross_val_score'])
+a
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p2.png)
+
+
+```{r, eval=F, echo=T}
+classifier = pd.DataFrame(classifiers, columns=['classifier', 'Parameter'])
+voting_clf = [('vc', vc)]
+voting_clf = pd.DataFrame(voting_clf, columns=['classifier', 'Parameter'])
+
+classifier = classifier.append(voting_clf)
+classifier = classifier['classifier']
+classifier = pd.DataFrame(classifier)
+classifier
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p3.png)
+
+
+```{r, eval=F, echo=T}
+classifier = pd.DataFrame(classifiers, columns=['classifier', 'Parameter'])
+
+voting_clf = [('vc', vc)]
+voting_clf = pd.DataFrame(voting_clf, columns=['classifier', 'Parameter'])
+
+classifier = classifier.append(voting_clf)
+classifier = classifier['classifier']
+
+classifier.reset_index(drop=True, inplace=True)
+a.reset_index(drop=True, inplace=True)
+
+overview_results = pd.concat([classifier, a], axis=1)
+overview_results
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p4.png)
+
+Okay. Now we put the achieved scores in a descending order:
+
+```{r, eval=F, echo=T}
+overview_results.sort_values(by='cross_val_score', ascending=False)
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p5.png)
+
+As we can see, the Random Forest Classifier achieved the best scores.
+Let's see if we can get a better performance with Grid-Search.
+
+
+# 6 GridSearch
+
+With Grid Search we search for two different parameters:
+
++ Voting type
++ Weights
+
+With Voting Types there are only two possible selection criteria. 
+The number of different weight settings depends on the number of estimators used.
+Here we used 4 plus the VotingClassifier itself.
+
+```{r, eval=F, echo=T}
+# define VotingClassifier parameters to search
+params = {'voting':['hard', 'soft'],
+          'weights':[(1,1,1,1), (2,1,1,1), (1,2,1,1), (1,1,2,1), (1,1,1,2)]}
+```
+
+```{r, eval=F, echo=T}
+# find the best set of parameters
+grid = GridSearchCV(estimator=vc, param_grid=params, cv=5, scoring='accuracy')
+grid.fit(trainX, trainY)
+```
+
+The calculated best parameter settings are as follows:
+
+```{r, eval=F, echo=T}
+print(grid.best_params_) 
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p6.png)
+
+Now let's calculate the cross_val_score for this parameter setting:
+
+```{r, eval=F, echo=T}
+print('vc cross_val_score with GridSearch:' + str(cross_val_score(grid, trainX, trainY, scoring='accuracy', cv=10).mean()))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p7.png)
+
+For a uniform view, we transfer the calculated values to the previously created overview.
+
+```{r, eval=F, echo=T}
+overview_results = overview_results.append({'classifier' : 'vc_plus_gridsearch' , 'cross_val_score' : 0.9149924127465857} , ignore_index=True)
+overview_results.sort_values(by='cross_val_score', ascending=False)
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p8.png)
+
+Perfect, we have managed to increase the performance again. Now the values are higher than those at Random Forest.
+
+
+# 7 Overview of the accuracy scores
+
+Finally, I would like to give an overview of the accuracy scores achieved for the individual models.
+
+
+```{r, eval=F, echo=T}
+knn.fit(trainX, trainY)
+
+clf_preds_train = knn.predict(trainX)
+clf_preds_test = knn.predict(testX)
+
+print('knn Classifier:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p9.png)
+
+
+```{r, eval=F, echo=T}
+gnb.fit(trainX, trainY)
+
+clf_preds_train = gnb.predict(trainX)
+clf_preds_test = gnb.predict(testX)
+
+print('gnb Classifier:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p10.png)
+
+
+```{r, eval=F, echo=T}
+rf.fit(trainX, trainY)
+
+clf_preds_train = rf.predict(trainX)
+clf_preds_test = rf.predict(testX)
+
+print('rf Classifier:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p11.png)
+
+
+```{r, eval=F, echo=T}
+lr.fit(trainX, trainY)
+
+clf_preds_train = lr.predict(trainX)
+clf_preds_test = lr.predict(testX)
+
+print('lr Classifier:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p12.png)
+
+
+```{r, eval=F, echo=T}
+vc.fit(trainX, trainY)
+
+clf_preds_train = vc.predict(trainX)
+clf_preds_test = vc.predict(testX)
+
+print('vc Classifier:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=clf_preds_train),
+    accuracy_score(y_true=testY, y_pred=clf_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p13.png)
+
+
+```{r, eval=F, echo=T}
+#we already fit the grid model in the step above
+
+vc_preds_train = grid.predict(trainX)
+vc_preds_test = grid.predict(testX)
+
+print('Voting Classifier with GridSearch:\n> Accuracy on training data = {:.4f}\n> Accuracy on test data = {:.4f}'.format(
+    accuracy_score(y_true=trainY, y_pred=vc_preds_train),
+    accuracy_score(y_true=testY, y_pred=vc_preds_test)
+))
+```
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p14.png)
 
 
 
 
-
-
+# 8 Conclusion
 
 
 
@@ -173,9 +418,7 @@ We use the 4 algorithms below as estimators for scikit learn’s voting classifi
 
 ```
 
-![](/post/2020-05-05-ensemble-modeling-voting_files/p64p1.png)
-
-
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p.png)
 
 
 
