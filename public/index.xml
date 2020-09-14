@@ -177,6 +177,15 @@ Fortunately, we are not yet through with the most common cluster algorithms.</de
     </item>
     
     <item>
+      <title>Ensemble Modeling - Voting</title>
+      <link>/2020/05/05/ensemble-modeling-voting/</link>
+      <pubDate>Tue, 05 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/05/05/ensemble-modeling-voting/</guid>
+      <description>Table of Content1 Introduction21 Introduction</description>
+    </item>
+    
+    <item>
       <title>Stacking with Scikit-Learn</title>
       <link>/2020/04/29/stacking-with-scikit-learn/</link>
       <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
