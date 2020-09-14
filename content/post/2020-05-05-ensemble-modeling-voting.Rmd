@@ -14,13 +14,151 @@ tags:
 # Table of Content
 
 + 1 Introduction
-+ 2
-
-
++ 2 Backgroundinformation on Voting
++ 3 Loading the libraries and the data
++ 4 Data pre-processing
++ 5 Voting with scikit learn
 
 
 
 # 1 Introduction
+
+
+I have already presented three different Ensemble Methods ["Bagging"](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/), ["Boosting"](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/) and ["Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/). But there is another one that I would like to report on in this publication: Voting
+
+Voting is an ensemble machine learning model that combines the predictions from multiple other models.
+It is a technique that may be used to improve model performance, ideally achieving better performance than any single model used in the ensemble. A voting ensemble works by combining the predictions from multiple models. It can be used for classification or regression. In the case of regression, this involves calculating the average of the predictions from the models. In the case of classification, the predictions for each label are summed and the label with the majority vote is predicted.
+
+
+For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
+
+
+
+# 2 Backgroundinformation on Voting
+
+
+A voting classifier works like an electoral system in which a predictions on new data points is made based on a voting system of the members of a group of machine learning models. According to the documentation of scikit-learn, one may choose between the hard and the soft voting type.
+
+The hard voting is applied to predicted class labels for majority rule voting. This uses the idea of “Majority carries the vote” i.e. a decision is made in favor of whoever has more than half of the vote.
+
+The soft voting type, predicts the class label based on the argmax of the sums of the predicted probabilities of the individual estimators that make up the ensemble. The soft voting is often recommended in the case of an ensemble of well-calibrated/fitted classifiers.
+
+
+
+**Differentiation from stacking**
+
+Stacking involves combining the predictions from multiple machine learning models on the same set of data. We first specify/build some machine learning models called base estimators on our dataset, the results from these base learners then serve as input into our Stacking Classifier. The Stacking Classifier is able to learn when our base estimators can be trusted or not. Stacking allows us to use the strength of each individual estimator by using their output as an input of a final estimator.
+
+In a nutshell: 
+
+The fundamental difference between voting and stacking is how the final aggregation is done. In voting, user-specified weights are used to combine the classifiers whereas stacking performs this aggregation by using a blender/meta classifier.
+
+
+
+# 3 Loading the libraries and the data
+
+```{r, eval=F, echo=T}
+import numpy as np
+import pandas as pd
+
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
+
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.ensemble import VotingClassifier
+
+
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+
+```{r, eval=F, echo=T}
+bank = pd.read_csv("path/to/file/bank.csv", sep=";")
+```
+
+
+
+# 4 Data pre-processing
+
+Since I use the same data approach as with ["Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/), I will not go into the pre-processing steps individually below. If you want to know what is behind the individual pre-processing steps, read ["this"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/) post.
+
+
+
+```{r, eval=F, echo=T}
+safe_y = bank[['y']]
+
+col_to_exclude = ['y']
+bank = bank.drop(col_to_exclude, axis=1)
+```
+
+```{r, eval=F, echo=T}
+#Just select the categorical variables
+cat_col = ['object']
+cat_columns = list(bank.select_dtypes(include=cat_col).columns)
+cat_data = bank[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(bank[var], prefix=var)
+    bank=bank.join(cat_list)
+
+    
+data_vars=bank.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+bank_final=bank[to_keep]
+bank_final.columns.values
+```
+
+```{r, eval=F, echo=T}
+bank = pd.concat([bank_final, safe_y], axis=1)
+```
+
+```{r, eval=F, echo=T}
+encoder = LabelBinarizer()
+
+encoded_y = encoder.fit_transform(bank.y.values.reshape(-1,1))
+```
+
+```{r, eval=F, echo=T}
+bank['y_encoded'] = encoded_y
+bank['y_encoded'] = bank['y_encoded'].astype('int64')
+```
+
+```{r, eval=F, echo=T}
+x = bank.drop(['y', 'y_encoded'], axis=1)
+y = bank['y_encoded']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+
+# 5 Voting with scikit learn
+
+We use the 4 algorithms below as estimators for scikit learn’s voting classifier.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -41,7 +179,7 @@ tags:
 
 
 
-
+["ensemble modeling method 'Stacking'"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
 
 
 
