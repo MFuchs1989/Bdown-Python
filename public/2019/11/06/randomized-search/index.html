@@ -84,10 +84,11 @@
 <ul>
 <li>1 Introduction</li>
 <li>2 Grid Search vs. Randomizes Search</li>
-<li>3 Data pre-processing</li>
-<li>4 Grid Searach</li>
-<li>5 Randomized Search</li>
-<li>6 Conclusion</li>
+<li>3 Loading the libraries and data</li>
+<li>4 Data pre-processing</li>
+<li>5 Grid Searach</li>
+<li>6 Randomized Search</li>
+<li>7 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -102,11 +103,25 @@ How Randomized Search work in detail I will show in this publication.</p>
 <p>Grid Search can be thought of as an exhaustive search for selecting a machine learning model. With Grid Search, the data scientist/analyst sets up a grid of hyperparameter values and for each combination, trains a model and scores on the testing data. In this approach, every combination of hyperparameter values is tried. This could be very inefficient and computationally intensive.</p>
 <p>By contrast, Randomized Search sets up a grid of hyperparameter values and selects random combinations to train the model and score. This allows you to explicitly control the number of parameter combinations that are attempted. The number of search iterations is set based on time or resources. While it’s possible that Randomized Search will not find as accurate of a result as Grid Search, it surprisingly picks the best result more often than not and in a fraction of the time it takes Grid Search would have taken. Given the same resources, Randomized Search can even outperform Grid Search.</p>
 </div>
+<div id="loading-the-libraries-and-data" class="section level1">
+<h1>3 Loading the libraries and data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+import time
+
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV</code></pre>
+<pre class="r"><code>cancer = pd.read_csv(&quot;breast_cancer.csv&quot;)</code></pre>
+</div>
 <div id="data-pre-processing" class="section level1">
-<h1>3 Data pre-processing</h1>
+<h1>4 Data pre-processing</h1>
 <p>For this post I use the same data set and the same preparation as for <a href="https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/">“Grid Search”</a>.
 I will therefore not go into much detail about the first steps. If you want to learn more about the respective pre-processing steps, please read my <a href="https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/">“Grid Search - Post”</a>.</p>
-<pre class="r"><code>cancer = pd.read_csv(&quot;breast_cancer.csv&quot;)</code></pre>
 <pre class="r"><code>vals_to_replace = {&#39;B&#39;:&#39;0&#39;, &#39;M&#39;:&#39;1&#39;}
 cancer[&#39;diagnosis&#39;] = cancer[&#39;diagnosis&#39;].map(vals_to_replace)
 cancer[&#39;diagnosis&#39;] = cancer.diagnosis.astype(&#39;int64&#39;)</code></pre>
@@ -124,7 +139,7 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></
 <p><img src="/post/2019-11-06-randomized-search_files/p63p0.png" /></p>
 </div>
 <div id="grid-searach" class="section level1">
-<h1>4 Grid Searach</h1>
+<h1>5 Grid Searach</h1>
 <p>Now we are going to do hyperparameter tuning with grid search.
 We also measure the time how long this tuning takes.</p>
 <pre class="r"><code>param_grid = {&#39;C&#39;: [0.1, 1, 10, 100, 1000],  
@@ -147,7 +162,7 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions))
 <p><img src="/post/2019-11-06-randomized-search_files/p63p3.png" /></p>
 </div>
 <div id="randomized-search" class="section level1">
-<h1>5 Randomized Search</h1>
+<h1>6 Randomized Search</h1>
 <p>Now we do the same hyperparameter tuning with Randomized Search.</p>
 <pre class="r"><code>param_rand_search = {&#39;C&#39;: [0.1, 1, 10, 100, 1000],  
                      &#39;gamma&#39;: [1, 0.1, 0.01, 0.001, 0.0001], 
@@ -169,7 +184,7 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grand_search_predi
 <p><img src="/post/2019-11-06-randomized-search_files/p63p6.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
-<h1>6 Conclusion</h1>
+<h1>7 Conclusion</h1>
 <p>As we can see, Randomized Search took less than half the time it took to search with Grid Search.
 A different value was found for gamma, but the prediction accuracy remained the same (95%).</p>
 </div>
