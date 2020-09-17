@@ -141,8 +141,6 @@ df_final
 
 
 
-![](/post/2019-04-16-data-management_files/p7p6.png)
-
 # 4 Merge multiple data frames
 
 # 4.1 Preparation
