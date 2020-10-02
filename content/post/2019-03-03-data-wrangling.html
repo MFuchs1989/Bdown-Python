@@ -9,6 +9,7 @@ tags:
   - R Markdown
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="table-of-content" class="section level1">
@@ -46,53 +47,30 @@ tags:
 <h1>3 Overview of the data</h1>
 <p>With the following commands it is possible to get a quick overview of his available data.</p>
 <pre class="r"><code>flight.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p1.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p1.png" /></p>
 <pre class="r"><code>flight.tail()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p2.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p2.png" /></p>
 <pre class="r"><code>flight.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p3.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p3.png" /></p>
 <pre class="r"><code>flight.columns</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p4.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p4.png" /></p>
 <pre class="r"><code>flight[&#39;Origin_Airport&#39;].value_counts().head().T</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p5.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p5.png" /></p>
 <pre class="r"><code>flight.dtypes.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p6.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p6.png" /></p>
+<p>We can also output the unique values of a column.</p>
+<pre class="r"><code>#List unique values in the flight[&#39;Origin_Airport&#39;] column
+flight.Origin_Airport.unique()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z1.png" /></p>
 </div>
 <div id="get-some-statistics" class="section level1">
 <h1>4 Get some statistics</h1>
 <pre class="r"><code>flight.describe()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p7.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p7.png" /></p>
 <pre class="r"><code>flight[&#39;Dep_Delay&#39;].agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p8.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p8.png" /></p>
 <pre class="r"><code>flight[[&#39;Origin_Airport&#39;, &#39;Departure_Time&#39;, &#39;Dep_Delay&#39;, &#39;Carrier_Delay&#39;]].groupby(&#39;Origin_Airport&#39;).mean().head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p9.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p9.png" /></p>
 </div>
 <div id="select-data" class="section level1">
 <h1>5 Select data</h1>
@@ -100,93 +78,49 @@ tags:
 <div id="easy-selection" class="section level1">
 <h1>5.1 Easy selection</h1>
 <pre class="r"><code>flight[[&#39;Year&#39;]].head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p10.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p10.png" /></p>
 <pre class="r"><code>flight[[&#39;Year&#39;, &#39;WeatherDelay&#39;]].head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p11.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p11.png" /></p>
 <pre class="r"><code>flight[1:4]</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p12.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p12.png" /></p>
 <pre class="r"><code>flight.loc[1:4, [&#39;Year&#39;, &#39;WeatherDelay&#39;, &#39;Flight_Date&#39;]]</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p13.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p13.png" /></p>
 <pre class="r"><code>flight.iloc[:,1:5].head()     #iloc = index</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p14.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p14.png" /></p>
 <pre class="r"><code>flight.iloc[1:4,[1,3,5]]</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p15.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p15.png" /></p>
 </div>
 <div id="conditional-selection" class="section level1">
 <h1>5.2 Conditional selection</h1>
 <p>Var.1 (here I see how many cases are affected)</p>
 <pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000)].shape[0]        </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p16.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p16.png" /></p>
 <p>Var.2 (here I see how many cases are affected)</p>
 <pre class="r"><code>flight[flight.Distance &gt;= 3000].shape[0]           </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p17.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p17.png" /></p>
 <p>Var. 1</p>
 <pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000) &amp; (flight[&quot;DayOfWeek&quot;] == 1) &amp; (flight[&quot;Flight_Date&quot;] == &#39;11/07/2016&#39;)]    </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p18.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p18.png" /></p>
 <p>Var.2</p>
 <pre class="r"><code>flight[(flight.Distance &gt;= 3000) &amp; (flight.DayOfWeek == 1) &amp; (flight.Flight_Date == &#39;11/07/2016&#39;)]    </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p19.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p19.png" /></p>
 <pre class="r"><code>flight[(flight.Origin_Airport == &#39;ATL&#39;) | (flight.Origin_Airport == &#39;BOS&#39;)][&#39;Origin_Airport&#39;].value_counts()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p20.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p20.png" /></p>
 <pre class="r"><code># slow method:
 # flight[(flight.Origin_Airport == &#39;ATL&#39;) | (flight.Origin_Airport == &#39;BOS&#39;) | (flight.Origin_Airport == &#39;JFK&#39;)]
 
 # fast method:
 filter_list = [&#39;ATL&#39;, &#39;BOS&#39;, &#39;JFK&#39;]
 flight[flight.Origin_Airport.isin(filter_list)][&#39;Origin_Airport&#39;].value_counts()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p21.png" />
-
-</div>
-</div>
-<div id="set-option" class="section level1">
-<h1>5.3 Set option</h1>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p21.png" /></p>
+<p>#5.3 Set option</p>
 <p>With the set option function one can determine, how many lines and columns should be issued.</p>
 <pre class="r"><code>flight.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p22.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p22.png" /></p>
 <pre class="r"><code>pd.set_option(&#39;display.max_rows&#39;, 2)
 pd.set_option(&#39;display.max_columns&#39;, 2)
 flight.head(200)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p23.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p23.png" /></p>
 </div>
 <div id="filter" class="section level1">
 <h1>6 Filter</h1>
@@ -195,10 +129,7 @@ flight.head(200)</code></pre>
 <h1>6.1 Normal filter</h1>
 <p>Select columns containing ‘Delay’</p>
 <pre class="r"><code>flight.filter(like=&#39;Delay&#39;, axis=1).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p23z.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p23z.png" /></p>
 </div>
 <div id="filter-with-a-defined-list" class="section level1">
 <h1>6.2 Filter with a defined list</h1>
@@ -214,94 +145,55 @@ flight.head(200)</code></pre>
 )
 
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p24.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p24.png" /></p>
 <p>Here we define and apply the defined list</p>
 <pre class="r"><code>mylist = df[&#39;Origin_Airport&#39;].tolist()
 mylist</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p25.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p25.png" /></p>
 <pre class="r"><code>df = flight[(flight[&#39;Origin_Airport&#39;].isin(mylist)) &amp; (flight[&#39;DayOfWeek&#39;]&gt;5)]       
 df = df[[&#39;Origin_Airport&#39;, &#39;Distance&#39;]]
 df = df.groupby([&#39;Origin_Airport&#39;]).agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;])
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p26.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p26.png" /></p>
 <p>Now we have some statistical values of the variable distance for the top 4 airports with max. delay.</p>
 <p>For a better view:</p>
 <pre class="r"><code>df.columns = df.columns.droplevel()
 df = df.reset_index()
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p27.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
 </div>
 <div id="exclude-some-columns-with-a-defined-list" class="section level1">
 <h1>6.3 Exclude some columns with a defined list</h1>
 <pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" /></p>
 <pre class="r"><code>col_to_exclude = [&#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]
 
 reduced_df = df.drop(col_to_exclude, axis=1)
 reduced_df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" /></p>
 </div>
 <div id="pandas-query" class="section level1">
 <h1>7 Panda’s query</h1>
 <p>Here are some expressions from the pandas <em>query function</em></p>
 <pre class="r"><code>flight.query(&quot;DayOfWeek &gt; 4&quot;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p28.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p28.png" /></p>
 <pre class="r"><code>flight.query(&quot;DayOfWeek &gt; 4  &amp; Origin_Airport == &#39;BOS&#39;&quot;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p29.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p29.png" /></p>
 <pre class="r"><code>df = flight.set_index([&#39;DayOfWeek&#39;])
 df.query(&quot;index &lt; Day&quot;).head()             
 #Alternative: df.query(&quot;DayOfWeek &lt; Day&quot;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p30.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p30.png" /></p>
 <pre class="r"><code>df.query(&quot;index &lt; Day &amp; index &gt; 5&quot;).head()            
 #Alternative: df.query(&quot;DayOfWeek &lt; Day &amp; DayOfWeek &gt; 5&quot;).head()  </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p31.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p31.png" /></p>
 <pre class="r"><code>df = flight.set_index([&#39;DayOfWeek&#39;, &#39;Origin_Airport&#39;])
 df.query(&#39;DayOfWeek == &quot;6&quot; &amp;  Origin_Airport == &quot;JFK&quot;&#39;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p32.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p32.png" /></p>
 <pre class="r"><code>df[[&#39;Scheduled_Arrival&#39;, &#39;Arrival_Time&#39;, &#39;Arrival_Delay&#39;]].query(&quot;Scheduled_Arrival &lt; Arrival_Time&quot;).head() </code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p33.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p33.png" /></p>
 <pre class="r"><code>df.query(&quot;Origin_Airport in [&#39;JFK&#39;, &#39;DFW&#39;] &amp; Day in [1, 2, 4]&quot;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-03-data-wrangling_files/p1p34.png" />
-
-</div>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p34.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>8 Conclusion</h1>

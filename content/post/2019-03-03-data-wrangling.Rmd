@@ -11,7 +11,7 @@ tags:
 
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Loading the libraries and the data
@@ -29,7 +29,7 @@ tags:
 + 8 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 
 Never stop learning !
@@ -42,7 +42,7 @@ Let's start with Python!
 For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 
@@ -57,7 +57,7 @@ flight = pd.read_csv("path/to/file/flight.csv")
 
 
 
-#3 Overview of the data
+# 3 Overview of the data
 
 With the following commands it is possible to get a quick overview of his available data. 
 
@@ -98,7 +98,17 @@ flight.dtypes.head()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p6.png)
 
-#4 Get some statistics
+We can also output the unique values of a column.
+
+```{r, eval=F, echo=T}
+#List unique values in the flight['Origin_Airport'] column
+flight.Origin_Airport.unique()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z1.png)
+
+
+# 4 Get some statistics
 
 
 ```{r, eval=F, echo=T}
@@ -120,9 +130,9 @@ flight[['Origin_Airport', 'Departure_Time', 'Dep_Delay', 'Carrier_Delay']].group
 ![](/post/2019-03-03-data-wrangling_files/p1p9.png)
 
 
-#5 Select data
+# 5 Select data
 
-#5.1  Easy selection
+# 5.1  Easy selection
 
 ```{r, eval=F, echo=T}
 flight[['Year']].head()
@@ -162,7 +172,7 @@ flight.iloc[1:4,[1,3,5]]
 
 ![](/post/2019-03-03-data-wrangling_files/p1p15.png)
 
-#5.2 Conditional selection
+# 5.2 Conditional selection
 
 Var.1 (here I see how many cases are affected)
 ```{r, eval=F, echo=T}
@@ -230,9 +240,9 @@ flight.head(200)
 
 ![](/post/2019-03-03-data-wrangling_files/p1p23.png)
 
-#6 Filter
+# 6 Filter
 
-#6.1 Normal filter
+# 6.1 Normal filter
 
 Select columns containing 'Delay'
 ```{r, eval=F, echo=T}
@@ -242,7 +252,7 @@ flight.filter(like='Delay', axis=1).head()
 ![](/post/2019-03-03-data-wrangling_files/p1p23z.png)
 
 
-#6.2 Filter with a defined list
+# 6.2 Filter with a defined list
 
 Here we creat a list (top 4 airports with max. delay)
 ```{r, eval=F, echo=T}
@@ -317,7 +327,7 @@ reduced_df.head()
 
 
 
-#7 Panda's query
+# 7 Panda's query
 
 Here are some expressions from the pandas *query function*
 
@@ -374,7 +384,7 @@ df.query("Origin_Airport in ['JFK', 'DFW'] & Day in [1, 2, 4]").head()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p34.png)
 
-#8 Conclusion
+# 8 Conclusion
 
 This was a small insight into the topic Data Wrangling with Python.
 
