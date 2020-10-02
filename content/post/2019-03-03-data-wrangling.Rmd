@@ -221,8 +221,8 @@ flight[flight.Origin_Airport.isin(filter_list)]['Origin_Airport'].value_counts()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p21.png)
 
-
-#5.3 Set option
+ 
+# 5.3 Set option
 
 With the set option function one can determine, how many lines and columns should be issued.
 
