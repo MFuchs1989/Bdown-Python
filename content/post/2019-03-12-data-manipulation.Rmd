@@ -407,7 +407,7 @@ I can achieve this in 4 steps:
 
 ```{r, eval=F, echo=T}
 # Step 1
-# We start with creating a new dataframe from the series with EmployeeId as the index
+# We start with creating a new dataframe from the series with title as the index
 new_df = pd.DataFrame(df.genres.str.split(',').tolist(), index=df.title).stack()
 new_df
 ```
@@ -418,7 +418,7 @@ new_df
 ```{r, eval=F, echo=T}
 # Step 2
 # We now want to get rid of the secondary index
-# To do this, we will make EmployeeId as a column (it can't be an index since the values will be duplicate)
+# To do this, we will make title as a column (it can't be an index since the values will be duplicate)
 new_df = new_df.reset_index([0, 'title'])
 new_df
 ```

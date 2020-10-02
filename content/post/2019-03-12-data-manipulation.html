@@ -237,13 +237,13 @@ df</code></pre>
 Now we want the genres to be listed per line. For example, if a film is attributed three genres, I want the film to be listed in three separate lines, each with one of the three genres attributed.
 I can achieve this in 4 steps:</p>
 <pre class="r"><code># Step 1
-# We start with creating a new dataframe from the series with EmployeeId as the index
+# We start with creating a new dataframe from the series with title as the index
 new_df = pd.DataFrame(df.genres.str.split(&#39;,&#39;).tolist(), index=df.title).stack()
 new_df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z2.png" /></p>
 <pre class="r"><code># Step 2
 # We now want to get rid of the secondary index
-# To do this, we will make EmployeeId as a column (it can&#39;t be an index since the values will be duplicate)
+# To do this, we will make title as a column (it can&#39;t be an index since the values will be duplicate)
 new_df = new_df.reset_index([0, &#39;title&#39;])
 new_df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z3.png" /></p>
