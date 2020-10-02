@@ -27,6 +27,7 @@ tags:
 + 4 Modifying Rows
 + 4.1 Round each column
 + 4.2 Round columns differently within a df
++ 4.3 Add rows with the stack() function
 + 5 Replacing Values
 + 5.1 One by One
 + 5.2 Collective replacement
