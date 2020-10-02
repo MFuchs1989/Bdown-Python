@@ -35,7 +35,7 @@ tags:
 
 
 
-#1 Introduction
+# 1 Introduction
 
 Data manipulation is an elementary component in the data science field that requires the most time, among other things. It is therefore worthwhile to be fit in this discipline.
 
@@ -55,12 +55,12 @@ flight = pd.read_csv("path/to/file/flight.csv")
 
 
 
-#2 Index
+# 2 Index
 
 
 If you've worked with R before, you may not be used to working with an index. This is common in Python. 
 
-#2.1 Resetting index
+# 2.1 Resetting index
 
 
 ```{r, eval=F, echo=T}
@@ -101,7 +101,7 @@ df['A'].tolist()
 
 
 
-#2.2 Resetting multiindex
+# 2.2 Resetting multiindex
 
 ```{r, eval=F, echo=T}
 # Create a multiindex 
@@ -136,7 +136,7 @@ health_data
 
 
 
-#2.3 Setting index
+# 2.3 Setting index
 
 Here we have the previously created data frame.
 ```{r, eval=F, echo=T}
@@ -168,9 +168,9 @@ df.set_index(['A', 'B'])
 ![](/post/2019-03-12-data-manipulation_files/p3p11.png)
 
 
-#3 Modifying Columns
+# 3 Modifying Columns
 
-#3.1 Rename Columns
+# 3.1 Rename Columns
 
 
 ```{r, eval=F, echo=T}
@@ -208,7 +208,7 @@ show_rename
 
 
 
-#3.1.1 add_prefix
+# 3.1.1 add_prefix
 
 ```{r, eval=F, echo=T}
 show_prefix = show_rename.copy()
@@ -225,7 +225,7 @@ show_prefix.add_prefix('alte_MA_')
 ![](/post/2019-03-12-data-manipulation_files/p3p17.png)
 
 
-#3.3 Add columns
+# 3.3 Add columns
 
 ```{r, eval=F, echo=T}
 data = {'country': ['Italy','Spain','Greece','France','Portugal'],
@@ -272,7 +272,7 @@ df_MC
 
 
 
-#3.4 Drop and Delete Columns
+# 3.4 Drop and Delete Columns
 
 The drop-function don't delete columns.
 ```{r, eval=F, echo=T}
@@ -308,7 +308,7 @@ df_MC.head(3)
 ![](/post/2019-03-12-data-manipulation_files/p3p25.png)
 
 
-#3.5 Insert Columns
+# 3.5 Insert Columns
 
 Now I want to have my previously deleted column "Internet domain" back at a certain point.
 ```{r, eval=F, echo=T}
@@ -321,7 +321,7 @@ df_MC
 ![](/post/2019-03-12-data-manipulation_files/p3p26.png)
 
 
-#3.6 Rearrange Columns
+# 3.6 Rearrange Columns
 
 ```{r, eval=F, echo=T}
 clist = ['capital city','Internet domains','country']
@@ -332,7 +332,7 @@ df_MC
 ![](/post/2019-03-12-data-manipulation_files/p3p27.png)
 
 
-#4 Modifying Rows
+# 4 Modifying Rows
 
 ```{r, eval=F, echo=T}
 # Preparations
@@ -357,7 +357,7 @@ df.head(5)
 ![](/post/2019-03-12-data-manipulation_files/p3p28.png)
 
 
-#4.1 Round each column
+# 4.1 Round each column
 
 ```{r, eval=F, echo=T}
 df.round(2).head(2)
@@ -366,7 +366,7 @@ df.round(2).head(2)
 ![](/post/2019-03-12-data-manipulation_files/p3p29.png)
 
 
-#4.2 Round columns differently within a df
+# 4.2 Round columns differently within a df
 
 ```{r, eval=F, echo=T}
 df.round({'avg_Scheduled_Departure': 1, 
@@ -386,9 +386,69 @@ df.round(decimals).head(2)
 ![](/post/2019-03-12-data-manipulation_files/p3p31.png)
 
 
-#5 Replacing Values
+# 4.3 Add rows with the stack() function
 
-#5.1 One by One
+For some analysis methods it is necessary to have the values per line in one column available separately.
+Have a look at this dataframe:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'title': ['A', 'B', 'C'],
+                   'Runtime': [81,50,120],
+                   'genres': ['animation, comedy, family', 'romance, comedy', 'comedy']})
+df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z1.png)
+
+The different genres that apply to each film are unfortunately summarized in one column.
+Now we want the genres to be listed per line. For example, if a film is attributed three genres, I want the film to be listed in three separate lines, each with one of the three genres attributed.
+I can achieve this in 4 steps:
+
+```{r, eval=F, echo=T}
+# Step 1
+# We start with creating a new dataframe from the series with EmployeeId as the index
+new_df = pd.DataFrame(df.genres.str.split(',').tolist(), index=df.title).stack()
+new_df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z2.png)
+
+
+```{r, eval=F, echo=T}
+# Step 2
+# We now want to get rid of the secondary index
+# To do this, we will make EmployeeId as a column (it can't be an index since the values will be duplicate)
+new_df = new_df.reset_index([0, 'title'])
+new_df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z3.png)
+
+
+```{r, eval=F, echo=T}
+# Step 3
+# Now we have to set the column names as we want them
+new_df.columns = ['title', 'genre']
+new_df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z4.png)
+
+
+```{r, eval=F, echo=T}
+# Step 4
+# The final step is to add the remaining information from the original record to the newly created record
+final = pd.merge(new_df, df[['title', 'Runtime']], on='title', how='left')
+final
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z5.png)
+
+Here we go !
+
+# 5 Replacing Values
+
+# 5.1 One by One
 
 ```{r, eval=F, echo=T}
 df = flight[['DayOfWeek']] 
@@ -401,7 +461,7 @@ df.head(5)
 ![](/post/2019-03-12-data-manipulation_files/p3p32.png)
 
 
-#5.2 Collective replacement
+# 5.2 Collective replacement
 
 ```{r, eval=F, echo=T}
 df = flight[['DayOfWeek']]
@@ -414,7 +474,7 @@ df.head()
 ![](/post/2019-03-12-data-manipulation_files/p3p33.png)
 
 
-#5.3 Conditional replacement
+# 5.3 Conditional replacement
 
 For an example of conditional replacement have a look at this dataframe:
 
@@ -473,7 +533,7 @@ df
 ![](/post/2019-03-12-data-manipulation_files/p3p38.png)
 
 
-#6 Conclusion
+# 6 Conclusion
 
 This was a small insight into the field of data manipulation.
 In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.

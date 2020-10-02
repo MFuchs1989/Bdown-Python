@@ -65,7 +65,7 @@
 
   <article class="article">
     
-    <span class="article-duration">4 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Data Manipulation</h1>
@@ -76,10 +76,10 @@
 
     <div class="article-content">
       
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<p>#Table of Content</p>
 <ul>
 <li>1 Introduction</li>
 <li>2 Index</li>
@@ -102,7 +102,6 @@
 <li>5.3 Conditional replacement</li>
 <li>6 Conclusion</li>
 </ul>
-</div>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Data manipulation is an elementary component in the data science field that requires the most time, among other things. It is therefore worthwhile to be fit in this discipline.</p>
@@ -119,32 +118,17 @@ import numpy as np</code></pre>
 <h1>2.1 Resetting index</h1>
 <pre class="r"><code>df = pd.DataFrame({&#39;A&#39;: [1, 2, 3], &#39;B&#39;: [4, 5, 6]}, index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p1.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p1.png" /></p>
 <pre class="r"><code>df = df.reset_index()
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p2.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p2.png" /></p>
 <pre class="r"><code>df.rename(columns ={df.columns[0]: &#39;ABC&#39;}, inplace = True)
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p3.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p3.png" /></p>
 <pre class="r"><code>df.index.tolist()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p4.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p4.png" /></p>
 <pre class="r"><code>df[&#39;A&#39;].tolist()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p5.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p5.png" /></p>
 </div>
 <div id="resetting-multiindex" class="section level1">
 <h1>2.2 Resetting multiindex</h1>
@@ -164,42 +148,24 @@ data += 37
 # create the DataFrame
 health_data = pd.DataFrame(data, index=index, columns=columns)
 health_data</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p6.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p6.png" /></p>
 <pre class="r"><code>health_data.columns = health_data.columns.droplevel()
 health_data = health_data.reset_index()
 health_data</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p7.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p7.png" /></p>
 </div>
 <div id="setting-index" class="section level1">
 <h1>2.3 Setting index</h1>
 <p>Here we have the previously created data frame.</p>
 <pre class="r"><code>df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p8.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p8.png" /></p>
 <p>Now we would like to set an index again.</p>
 <pre class="r"><code>df.set_index([pd.Index([1, 2, 3])])</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p9.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p9.png" /></p>
 <pre class="r"><code>df.set_index(&#39;ABC&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p10.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p10.png" /></p>
 <pre class="r"><code>df.set_index([&#39;A&#39;, &#39;B&#39;])</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p11.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p11.png" /></p>
 </div>
 <div id="modifying-columns" class="section level1">
 <h1>3 Modifying Columns</h1>
@@ -210,42 +176,24 @@ health_data</code></pre>
                    &#39;Alter&#39;: [32,22,62,44],
                    &#39;Gehalt&#39;: [4700, 2400,4500,2500]})
 show_rename</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p12.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p12.png" /></p>
 <pre class="r"><code>show_rename.rename(columns ={show_rename.columns[2]: &#39;Monatsgehalt&#39;}, inplace = True)
 show_rename</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p13.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p13.png" /></p>
 <pre class="r"><code>show_rename = show_rename.rename(columns={&#39;Name&#39;:&#39;Mitarbeiter&#39;, &#39;Alter&#39;:&#39;Betriebszugehörigkeit&#39;})
 show_rename</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p14.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p14.png" /></p>
 <pre class="r"><code>show_rename.columns = [&#39;MA&#39;, &#39;Bzghk.&#39;, &#39;MGe.&#39;]
 show_rename</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p15.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p15.png" /></p>
 </div>
 <div id="add_prefix" class="section level1">
 <h1>3.1.1 add_prefix</h1>
 <pre class="r"><code>show_prefix = show_rename.copy()
 show_prefix</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p16.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p16.png" /></p>
 <pre class="r"><code>show_prefix.add_prefix(&#39;alte_MA_&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p17.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p17.png" /></p>
 </div>
 <div id="add-columns" class="section level1">
 <h1>3.3 Add columns</h1>
@@ -255,62 +203,39 @@ show_prefix</code></pre>
 
 df_MC = pd.DataFrame(data, index=[&#39;ITA&#39;, &#39;ESP&#39;, &#39;GRC&#39;, &#39;FRA&#39;, &#39;PRT&#39;])
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p18.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p18.png" /></p>
 <p>Add a list as a new column</p>
 <pre class="r"><code>df_MC[&#39;capital city&#39;] = [&#39;Rome&#39;,&#39;Madrid&#39;,&#39;Athens&#39;,&#39;Paris&#39;,&#39;Lisbon&#39;]
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p19.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p19.png" /></p>
 <p>Add an array as a new column</p>
 <pre class="r"><code>ar = np.array([39,34,30,33,351])
 ar
 df_MC[&#39;Calling code&#39;] = ar
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p20.png" />
-
-</div>
-<p>Add a Series array as a new column. When adding a Series data are automatically aligned based on index.</p>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p20.png" /></p>
+<p>Add a Series array as a new column.
+When adding a Series data are automatically aligned based on index.</p>
 <pre class="r"><code>ser = pd.Series([&#39;es&#39;,&#39;it&#39;,&#39;fr&#39;,&#39;pt&#39;,&#39;gr&#39;], index = [&#39;ESP&#39;,&#39;ITA&#39;,&#39;FRA&#39;,&#39;PRT&#39;,&#39;GRC&#39;])
 df_MC[&#39;Internet domain&#39;] = ser
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p21.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p21.png" /></p>
 </div>
 <div id="drop-and-delete-columns" class="section level1">
 <h1>3.4 Drop and Delete Columns</h1>
 <p>The drop-function don’t delete columns.</p>
 <pre class="r"><code>df_MC.drop(columns=[&#39;country&#39;, &#39;popu&#39;, &#39;percent&#39;])</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p22.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p22.png" /></p>
 <pre class="r"><code>df_MC.head(2)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p23.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p23.png" /></p>
 <p>But del-function does this</p>
 <pre class="r"><code>del df_MC[&#39;Internet domain&#39;]
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p24.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p24.png" /></p>
 <p>For multiple deletion use drop-function + inplace = True</p>
 <pre class="r"><code>df_MC.drop([&quot;popu&quot;, &quot;percent&quot;, &quot;Calling code&quot;], axis = 1, inplace = True) 
 df_MC.head(3)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p25.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p25.png" /></p>
 </div>
 <div id="insert-columns" class="section level1">
 <h1>3.5 Insert Columns</h1>
@@ -319,20 +244,14 @@ df_MC.head(3)</code></pre>
 #previously created syntax
 df_MC.insert(1,&#39;Internet domains&#39;,ser)
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p26.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p26.png" /></p>
 </div>
 <div id="rearrange-columns" class="section level1">
 <h1>3.6 Rearrange Columns</h1>
 <pre class="r"><code>clist = [&#39;capital city&#39;,&#39;Internet domains&#39;,&#39;country&#39;]
 df_MC = df_MC[clist]
 df_MC</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p27.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p27.png" /></p>
 </div>
 <div id="modifying-rows" class="section level1">
 <h1>4 Modifying Rows</h1>
@@ -353,18 +272,12 @@ df =(
 )
 
 df.head(5)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p28.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p28.png" /></p>
 </div>
 <div id="round-each-column" class="section level1">
 <h1>4.1 Round each column</h1>
 <pre class="r"><code>df.round(2).head(2)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p29.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p29.png" /></p>
 </div>
 <div id="round-columns-differently-within-a-df" class="section level1">
 <h1>4.2 Round columns differently within a df</h1>
@@ -372,16 +285,45 @@ df.head(5)</code></pre>
           &#39;avg_Dep_Delay&#39;: 2,
          &#39;avg_Scheduled_Arrival&#39;:3,
          &#39;avg_Arrival_Delay&#39;:4}).head(2)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p30.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p30.png" /></p>
 <pre class="r"><code>decimals = pd.Series([1, 2, 3, 4], index=[&#39;avg_Scheduled_Departure&#39;, &#39;avg_Dep_Delay&#39;, &#39;avg_Scheduled_Arrival&#39;, &#39;avg_Arrival_Delay&#39;])
 df.round(decimals).head(2)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p31.png" />
-
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p31.png" /></p>
 </div>
+<div id="add-rows-with-the-stack-function" class="section level1">
+<h1>4.3 Add rows with the stack() function</h1>
+<p>For some analysis methods it is necessary to have the values per line in one column available separately.
+Have a look at this dataframe:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;title&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;],
+                   &#39;Runtime&#39;: [81,50,120],
+                   &#39;genres&#39;: [&#39;animation, comedy, family&#39;, &#39;romance, comedy&#39;, &#39;comedy&#39;]})
+df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z1.png" /></p>
+<p>The different genres that apply to each film are unfortunately summarized in one column.
+Now we want the genres to be listed per line. For example, if a film is attributed three genres, I want the film to be listed in three separate lines, each with one of the three genres attributed.
+I can achieve this in 4 steps:</p>
+<pre class="r"><code># Step 1
+# We start with creating a new dataframe from the series with EmployeeId as the index
+new_df = pd.DataFrame(df.genres.str.split(&#39;,&#39;).tolist(), index=df.title).stack()
+new_df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z2.png" /></p>
+<pre class="r"><code># Step 2
+# We now want to get rid of the secondary index
+# To do this, we will make EmployeeId as a column (it can&#39;t be an index since the values will be duplicate)
+new_df = new_df.reset_index([0, &#39;title&#39;])
+new_df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z3.png" /></p>
+<pre class="r"><code># Step 3
+# Now we have to set the column names as we want them
+new_df.columns = [&#39;title&#39;, &#39;genre&#39;]
+new_df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z4.png" /></p>
+<pre class="r"><code># Step 4
+# The final step is to add the remaining information from the original record to the newly created record
+final = pd.merge(new_df, df[[&#39;title&#39;, &#39;Runtime&#39;]], on=&#39;title&#39;, how=&#39;left&#39;)
+final</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z5.png" /></p>
+<p>Here we go !</p>
 </div>
 <div id="replacing-values" class="section level1">
 <h1>5 Replacing Values</h1>
@@ -393,10 +335,7 @@ df = df.replace(5, &#39;Friday&#39;)
 df = df.replace(6, &#39;Saturday&#39;)
 #and so on ...
 df.head(5)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p32.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p32.png" /></p>
 </div>
 <div id="collective-replacement" class="section level1">
 <h1>5.2 Collective replacement</h1>
@@ -405,10 +344,7 @@ vals_to_replace = {1:&#39;Monday&#39;, 2:&#39;Tuesday&#39;, 3:&#39;Wednesday&#39
 
 df[&#39;DayOfWeek&#39;] = df[&#39;DayOfWeek&#39;].map(vals_to_replace)
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p33.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p33.png" /></p>
 </div>
 <div id="conditional-replacement" class="section level1">
 <h1>5.3 Conditional replacement</h1>
@@ -417,42 +353,29 @@ df.head()</code></pre>
                    &#39;Alter&#39;: [32,22,np.NaN,62,18],
                    &#39;Gehalt&#39;: [np.NaN, np.NaN,np.NaN,np.NaN,500]})
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p34.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p34.png" /></p>
 <p>We want to check the names where the column ‘Gehalt’ is NaN.</p>
 <pre class="r"><code>df[df[&quot;Gehalt&quot;].isnull() &amp; (df[&quot;Name&quot;] == &#39;Anton&#39;)]</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p35.png" />
-
-</div>
-<p>Here we go ! Now we want to replace exspecially these NaNs with a salary of 2.000 for Anton.</p>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p35.png" /></p>
+<p>Here we go !
+Now we want to replace exspecially these NaNs with a salary of 2.000 for Anton.</p>
 <pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Anton&#39;), 2000, df.Gehalt)
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p36.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p36.png" /></p>
 <p>We can also use multiple conditions for filtering and replacement.</p>
 <p>The code below shows a selection of the name (here Moni) for which no age is available. Now we want to replaces the NaNs for the salary.</p>
 <pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter.isna()), 3000, df.Gehalt)
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p37.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p37.png" /></p>
 <p>Finally we replace the hits that we find under Moni with an age greater than 50.</p>
 <pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter &gt; 50), 4000, df.Gehalt)
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-03-12-data-manipulation_files/p3p38.png" />
-
-</div>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3p38.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
-<p>This was a small insight into the field of data manipulation. In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.</p>
+<p>This was a small insight into the field of data manipulation.
+In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.</p>
 </div>
 
     </div>
