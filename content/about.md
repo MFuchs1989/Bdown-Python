@@ -11,3 +11,7 @@ Python and R enthusiastic !
 Always hungry for more and deeper knowledge..
 
 If you have any questions or comments, just text me: FuchsMichaelAndi1989@gmail.com
+
+
+
+![](/post/2020-05-05-ensemble-modeling-voting_files/p65p14.png)
