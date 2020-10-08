@@ -34,7 +34,6 @@ tags:
 
 
 
-
 # 1 Introduction
 
 In previous publications I have covered regression models from the scikit-learn library and the statsmodel library. 
@@ -44,11 +43,10 @@ In this publication I would like to introduce them to you.
 Short remark in advance:
 I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.
 
-The results of the algorithms will be stored in variables and presented in an overview at the end.
-
-
 For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
 
+The goal is to find an algorithm that can best predict house prices.
+The results of the algorithms will be stored in variables and presented in an overview at the end.
 
 
 # 2 Loading the libraries and the data
