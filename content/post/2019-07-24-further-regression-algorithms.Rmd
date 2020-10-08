@@ -40,7 +40,12 @@ tags:
 In previous publications I have covered regression models from the scikit-learn library and the statsmodel library. 
 But besides these, there are a lot of other machine learning algorithms that can be used to create regression models.
 In this publication I would like to introduce them to you.
-Short remark in advance: I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.
+
+Short remark in advance:
+I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.
+
+The results of the algorithms will be stored in variables and presented in an overview at the end.
+
 
 For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
 
@@ -57,24 +62,22 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn import metrics
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 
 
 from sklearn.linear_model import LinearRegression
-
-
-
-
-
-
-
-
-
-
-
-
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
+from sklearn.linear_model import SGDRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import BaggingRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import StackingRegressor
 ```
 
 
@@ -118,21 +121,208 @@ r_lm = lm.score(trainX, trainY)
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
 # 4 Decision Tree Regression
+
+
+```{r, eval=F, echo=T}
+dt_reg = DecisionTreeRegressor() 
+
+dt_reg.fit(trainX, trainY)
+y_pred = dt_reg.predict(testX)
+```
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p3.png)
+
+
+```{r, eval=F, echo=T}
+mae_dt_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_dt_reg = dt_reg.score(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+param_grid = {"criterion": ["mse", "mae"],
+              "min_samples_split": [10, 20, 40],
+              "max_depth": [2, 6, 8],
+              "min_samples_leaf": [20, 40, 100],
+              "max_leaf_nodes": [5, 20, 100],
+              }
+```
+
+```{r, eval=F, echo=T}
+grid_dt_reg = GridSearchCV(dt_reg, param_grid, cv=5, n_jobs = -1) 
+```
+
+```{r, eval=F, echo=T}
+grid_dt_reg.fit(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+print(grid_dt_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p4.png)
+
+
+
+```{r, eval=F, echo=T}
+y_pred = grid_dt_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p5.png)
+
+
+
+```{r, eval=F, echo=T}
+mae_grid_dt_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_dt_reg = grid_dt_reg.score(trainX, trainY)
+```
+
+
 # 5 Support Vector Machines Regression
+
+```{r, eval=F, echo=T}
+svr = SVR(kernel='rbf')
+
+svr.fit(trainX, trainY)
+y_pred = svr.predict(testX)
+```
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p6.png)
+
+
+```{r, eval=F, echo=T}
+mae_svr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_svr = svr.score(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+k = ['rbf']
+c = [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]
+g = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
+
+param_grid=dict(kernel=k, C=c, gamma=g)
+```
+
+```{r, eval=F, echo=T}
+grid_svr = GridSearchCV(svr, param_grid, cv=5, n_jobs = -1)
+grid_svr.fit(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+print(grid_svr.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p7.png)
+
+
+```{r, eval=F, echo=T}
+y_pred = grid_svr.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p8.png)
+
+
+```{r, eval=F, echo=T}
+mae_grid_svr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_svr = grid_svr.score(trainX, trainY)
+```
+
+
 # 6 Stochastic Gradient Descent (SGD) Regression
+
+
+```{r, eval=F, echo=T}
+n_iters = list(range(1,10,1))
+
+scores = []
+for n_iter in n_iters:
+    sgd_reg = SGDRegressor(max_iter=n_iter)
+    sgd_reg.fit(trainX, trainY)
+    scores.append(sgd_reg.score(testX, testY))
+  
+plt.title("Effect of n_iter")
+plt.xlabel("n_iter")
+plt.ylabel("score")
+plt.plot(n_iters, scores) 
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p9.png)
+
+```{r, eval=F, echo=T}
+n_iter=5
+sgd_reg = SGDRegressor(max_iter=n_iter)
+
+sgd_reg.fit(trainX, trainY)
+y_pred = sgd_reg.predict(testX)
+```
+
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p10.png)
+
+
+```{r, eval=F, echo=T}
+mae_sgd_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_sgd_reg = sgd_reg.score(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+params = {"alpha" : [0.0001, 0.001, 0.01, 0.1],
+    "penalty" : ["l2", "l1", "elasticnet", "none"],
+}
+```
+
+```{r, eval=F, echo=T}
+grid_sgd_reg = GridSearchCV(sgd_reg, param_grid=params, cv=5, n_jobs = -1)
+grid_sgd_reg.fit(trainX, trainY)
+```
+
+```{r, eval=F, echo=T}
+print(grid_sgd_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p11.png)
+
+
+```{r, eval=F, echo=T}
+y_pred = grid_sgd_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p12.png)
+
+
+
+```{r, eval=F, echo=T}
+mae_grid_sgd_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_sgd_reg = grid_sgd_reg.score(trainX, trainY)
+```
+
+
+
 # 7 KNN Regression
+
+
+
+
+
+
 # 8 Ensemble Modeling
 # 8.1 Bagging Regressor
 # 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
