@@ -525,8 +525,7 @@ For this post the dataset House Sales in King County, USA from the statistic pla
       <pubDate>Sun, 28 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/04/28/how-to-suppress-scientific-notation-in-pandas/</guid>
-      <description>Table of Content1 Introduction2 Scientific notations3 Import the libraries1 IntroductionScientific notations isn’t helpful when you are trying to make quick comparisons across your dataset.However, Pandas will introduce scientific notations by default when the data type is a float. In this post I want to show how to get around this problem.
-2 Scientific notationsScientific notation (numbers with e) is a way of writing very large or very small numbers in a clear way.</description>
+      <description>Table of Content1 Introduction2 Scientific notations3 Import the libraries4 Display Values as Strings5 Functions5.1 Use round()5.2 Use apply()5.3 Use set_option()1 IntroductionScientific notations isn’t helpful when you are trying to make quick comparisons across your dataset.However, Pandas will introduce scientific notations by default when the data type is a float. In this post I want to show how to get around this problem.</description>
     </item>
     
     <item>

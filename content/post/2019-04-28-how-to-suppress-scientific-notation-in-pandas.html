@@ -18,6 +18,11 @@ tags:
 <li>1 Introduction</li>
 <li>2 Scientific notations</li>
 <li>3 Import the libraries</li>
+<li>4 Display Values as Strings</li>
+<li>5 Functions</li>
+<li>5.1 Use round()</li>
+<li>5.2 Use apply()</li>
+<li>5.3 Use set_option()</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -51,5 +56,63 @@ n_3</code></pre>
 <pre class="r"><code>n_ensemble = (n_1, n_2, n_3)
 n_ensemble</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p4.png" /></p>
-<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p.png" /></p>
+</div>
+<div id="display-values-as-strings" class="section level1">
+<h1>4 Display Values as Strings</h1>
+<pre class="r"><code>&#39;{:.7f}&#39;.format(n_2)</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p5.png" /></p>
+<pre class="r"><code>[&#39;{:.7f}&#39;.format(x) for x in n_ensemble]</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p6.png" /></p>
+<p>Hint: with the number before the f you can determine the number of decimal places (default = 6)</p>
+<pre class="r"><code>[&#39;{:f}&#39;.format(x) for x in n_ensemble]</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p7.png" /></p>
+</div>
+<div id="functions" class="section level1">
+<h1>5 Functions</h1>
+<p>For the following examples we create two artificial datasets:</p>
+<pre class="r"><code>df = pd.DataFrame(np.random.random(5)**10, columns=[&#39;random_numbers&#39;])
+df</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p8.png" /></p>
+<pre class="r"><code>df1 = pd.DataFrame(np.random.random(5)**10, columns=[&#39;random_numbers1&#39;])
+df2 = pd.DataFrame(np.random.random(5)**10, columns=[&#39;random_numbers2&#39;])
+df_multiple = pd.concat([df1, df2], axis=1)
+df_multiple</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p9.png" /></p>
+</div>
+<div id="use-round" class="section level1">
+<h1>5.1 Use round()</h1>
+<p>We simply can use the round-function:</p>
+<pre class="r"><code>df.round(5)</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p10.png" /></p>
+<pre class="r"><code>df_multiple.round(5)</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p11.png" /></p>
+</div>
+<div id="use-apply" class="section level1">
+<h1>5.2 Use apply()</h1>
+<p>Also we can apply a lambda function:</p>
+<pre class="r"><code>df.apply(lambda x: &#39;%.5f&#39; % x, axis=1)</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p12.png" /></p>
+<pre class="r"><code>df_apply1 = df_multiple[&#39;random_numbers1&#39;].apply(lambda x: &#39;%.5f&#39; % x)
+df_apply2 = df_multiple[&#39;random_numbers2&#39;].apply(lambda x: &#39;%.5f&#39; % x)
+df_multiple_apply = pd.concat([df_apply1, df_apply2], axis=1)
+df_multiple_apply</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p13.png" /></p>
+</div>
+<div id="use-set_option" class="section level1">
+<h1>5.3 Use set_option()</h1>
+<p>Finally, I would like to introduce the set_option function.
+Note that set_option() <strong>changes behavior globaly</strong> in Jupyter Notebooks, so it is not a temporary fix.</p>
+<pre class="r"><code>pd.set_option(&#39;display.float_format&#39;, lambda x: &#39;%.5f&#39; % x)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p14.png" /></p>
+<pre class="r"><code>df_multiple</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p15.png" /></p>
+<p>In order to <strong>revert Pandas behaviour</strong> to defaul use reset_option().</p>
+<pre class="r"><code>pd.reset_option(&#39;display.float_format&#39;)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p16.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I presented several ways how to convert scientifically written numbers quickly and easily into more readable ones.</p>
 </div>
