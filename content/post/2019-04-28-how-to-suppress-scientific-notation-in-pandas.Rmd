@@ -21,7 +21,7 @@ tags:
 + 5.1 Use round()
 + 5.2 Use apply()
 + 5.3 Use set_option()
-
++ 6 Conclusion
 
 
 # 1 Introduction
