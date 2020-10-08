@@ -14,4 +14,4 @@ If you have any questions or comments, just text me: FuchsMichaelAndi1989@gmail.
 
 
 
-![](/post/1_random_pic/MFuchs.png)
+![](/post/1_random_pic/MFuchs.png, width = "600", height = "800")
