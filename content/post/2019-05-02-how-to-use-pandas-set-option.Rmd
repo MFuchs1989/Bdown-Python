@@ -124,7 +124,7 @@ To show this I'll create a further dataframe:
 ```{r, eval=F, echo=T}
 df_text = pd.DataFrame({'Novel': [1, 2, '...'],
                         'Text': ['This is a very long text to show how well the set_option function works with "display.max_colwidth"', 
-                                 'This is also a very long text to show how well the set_option function works with "display.max_colwidth". I                                    am also a much longer string than that of Novel 1', 
+                                 'This is also a very long text to show how well the set_option function works with "display.max_colwidth". I am also a much longer string than that of Novel 1', 
                                  '...']})
 df_text
 ```
