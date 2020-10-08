@@ -437,6 +437,15 @@ In statistics, outliers are data points that do not belong to any particular pop
     </item>
     
     <item>
+      <title>Further Regression Algorithms</title>
+      <link>/2019/07/24/further-regression-algorithms/</link>
+      <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/07/24/further-regression-algorithms/</guid>
+      <description>Table of Content1 Introduction2 Loading the libraries and the data3 Linear Regression4 Decision Tree Regression5 Support Vector Machines Regression6 Stochastic Gradient Descent (SGD) Regression7 KNN Regression8 Ensemble Modeling8.1 Bagging Regressor8.2 Bagging Regressor with Decision Tree Reg as base_estimator8.3 Random Forest Regressor8.4 AdaBoost Regressor8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator8.6 Gradient Boosting Regressor8.</description>
+    </item>
+    
+    <item>
       <title>Non-linear regression analysis</title>
       <link>/2019/07/14/non-linear-regression-analysis/</link>
       <pubDate>Sun, 14 Jul 2019 00:00:00 +0000</pubDate>

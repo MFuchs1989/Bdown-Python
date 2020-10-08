@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.69.0" />
+
+
+<title>Further Regression Algorithms - Michael Fuchs Python</title>
+<meta property="og:title" content="Further Regression Algorithms - Michael Fuchs Python">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/MFuchs.png"
+         width="50"
+         height="50"
+         alt="MFuchs">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/MFuchs1989/">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/michael-fuchs-139172131/">LinkedIn</a></li>
+    
+    <li><a href="https://twitter.com/Stat_Michael">Twitter</a></li>
+    
+    <li><a href="https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p">XING</a></li>
+    
+    <li><a href="https://michael-fuchs.netlify.com/">zum R-Blog</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Further Regression Algorithms</h1>
+
+    
+    <span class="article-date">2019-07-24</span>
+    
+
+    <div class="article-content">
+      
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries and the data</li>
+<li>3 Linear Regression</li>
+<li>4 Decision Tree Regression</li>
+<li>5 Support Vector Machines Regression</li>
+<li>6 Stochastic Gradient Descent (SGD) Regression</li>
+<li>7 KNN Regression</li>
+<li>8 Ensemble Modeling</li>
+<li>8.1 Bagging Regressor</li>
+<li>8.2 Bagging Regressor with Decision Tree Reg as base_estimator</li>
+<li>8.3 Random Forest Regressor</li>
+<li>8.4 AdaBoost Regressor</li>
+<li>8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</li>
+<li>8.6 Gradient Boosting Regressor</li>
+<li>8.7 Stacking Regressor</li>
+<li>9 Overview Results</li>
+<li>10 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In previous publications I have covered regression models from the scikit-learn library and the statsmodel library.
+But besides these, there are a lot of other machine learning algorithms that can be used to create regression models.
+In this publication I would like to introduce them to you.
+Short remark in advance: I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
+
+from sklearn.linear_model import LinearRegression</code></pre>
+<pre class="r"><code>house = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+<pre class="r"><code>house = house.drop([&#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;, &#39;date&#39;, &#39;id&#39;], axis=1)
+house.head()</code></pre>
+<p><img src="/post/2019-07-24-further-regression-algorithms_files/p68p1.png" /></p>
+<pre class="r"><code>x = house.drop(&#39;price&#39;, axis=1)
+y = house[&#39;price&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="linear-regression" class="section level1">
+<h1>3 Linear Regression</h1>
+<pre class="r"><code>lm = LinearRegression()
+
+lm.fit(trainX, trainY)
+y_pred = lm.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, round(metrics.mean_absolute_error(testY, y_pred), 2))  </code></pre>
+<p><img src="/post/2019-07-24-further-regression-algorithms_files/p68p2.png" /></p>
+<pre class="r"><code>mae_lm = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_lm = lm.score(trainX, trainY)</code></pre>
+</div>
+<div id="decision-tree-regression" class="section level1">
+<h1>4 Decision Tree Regression</h1>
+</div>
+<div id="support-vector-machines-regression" class="section level1">
+<h1>5 Support Vector Machines Regression</h1>
+</div>
+<div id="stochastic-gradient-descent-sgd-regression" class="section level1">
+<h1>6 Stochastic Gradient Descent (SGD) Regression</h1>
+</div>
+<div id="knn-regression" class="section level1">
+<h1>7 KNN Regression</h1>
+</div>
+<div id="ensemble-modeling" class="section level1">
+<h1>8 Ensemble Modeling</h1>
+</div>
+<div id="bagging-regressor" class="section level1">
+<h1>8.1 Bagging Regressor</h1>
+</div>
+<div id="bagging-regressor-with-decision-tree-reg-as-base_estimator" class="section level1">
+<h1>8.2 Bagging Regressor with Decision Tree Reg as base_estimator</h1>
+</div>
+<div id="random-forest-regressor" class="section level1">
+<h1>8.3 Random Forest Regressor</h1>
+</div>
+<div id="adaboost-regressor" class="section level1">
+<h1>8.4 AdaBoost Regressor</h1>
+</div>
+<div id="adaboost-regressor-with-decision-tree-reg-as-base_estimator" class="section level1">
+<h1>8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</h1>
+</div>
+<div id="gradient-boosting-regressor" class="section level1">
+<h1>8.6 Gradient Boosting Regressor</h1>
+</div>
+<div id="stacking-regressor" class="section level1">
+<h1>8.7 Stacking Regressor</h1>
+</div>
+<div id="overview-results" class="section level1">
+<h1>9 Overview Results</h1>
+<p><img src="/post/2019-07-24-further-regression-algorithms_files/p68p.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>10 Conclusion</h1>
+<p>In this post I have shown which different machine learning algorithms are available to create regression models.
+The explanation of the exact functionality of the individual algorithms was not central.
+But I did explain them when I used these algorithms for classification problems.
+Have a look here:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/">Decision Trees</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">Support Vector Machines</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">SGD Classifier</a></li>
+<li><a href="https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/">K Nearest Neighbor Classifier</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">Bagging</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">Boosting</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">Stacking</a></li>
+</ul>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

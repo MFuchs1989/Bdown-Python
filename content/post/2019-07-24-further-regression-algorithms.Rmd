@@ -1,0 +1,181 @@
+---
+title: Further Regression Algorithms
+author: Michael Fuchs
+date: '2019-07-24'
+slug: further-regression-algorithms
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Loading the libraries and the data
++ 3 Linear Regression
++ 4 Decision Tree Regression
++ 5 Support Vector Machines Regression
++ 6 Stochastic Gradient Descent (SGD) Regression
++ 7 KNN Regression
++ 8 Ensemble Modeling
++ 8.1 Bagging Regressor
++ 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
++ 8.3 Random Forest Regressor
++ 8.4 AdaBoost Regressor
++ 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
++ 8.6 Gradient Boosting Regressor
++ 8.7 Stacking Regressor
++ 9 Overview Results
++ 10 Conclusion
+
+
+
+
+
+# 1 Introduction
+
+In previous publications I have covered regression models from the scikit-learn library and the statsmodel library. 
+But besides these, there are a lot of other machine learning algorithms that can be used to create regression models.
+In this publication I would like to introduce them to you.
+Short remark in advance: I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.
+
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
+
+
+
+# 2 Loading the libraries and the data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
+
+from sklearn.linear_model import LinearRegression
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{r, eval=F, echo=T}
+house = pd.read_csv("path/to/file/houce_prices.csv")
+```
+
+```{r, eval=F, echo=T}
+house = house.drop(['zipcode', 'lat', 'long', 'date', 'id'], axis=1)
+house.head()
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p1.png)
+
+```{r, eval=F, echo=T}
+x = house.drop('price', axis=1)
+y = house['price']
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+# 3 Linear Regression
+
+```{r, eval=F, echo=T}
+lm = LinearRegression()
+
+lm.fit(trainX, trainY)
+y_pred = lm.predict(testX)
+```
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p2.png)
+
+
+```{r, eval=F, echo=T}
+mae_lm = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_lm = lm.score(trainX, trainY)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 4 Decision Tree Regression
+# 5 Support Vector Machines Regression
+# 6 Stochastic Gradient Descent (SGD) Regression
+# 7 KNN Regression
+# 8 Ensemble Modeling
+# 8.1 Bagging Regressor
+# 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
+# 8.3 Random Forest Regressor
+# 8.4 AdaBoost Regressor
+# 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
+# 8.6 Gradient Boosting Regressor
+# 8.7 Stacking Regressor
+# 9 Overview Results
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p.png)
+
+
+
+
+
+
+
+# 10 Conclusion
+
+In this post I have shown which different machine learning algorithms are available to create regression models. 
+The explanation of the exact functionality of the individual algorithms was not central. 
+But I did explain them when I used these algorithms for classification problems. 
+Have a look here:
+
++ [Decision Trees](https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/)
++ [Support Vector Machines](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/)
++ [SGD Classifier](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/)
++ [K Nearest Neighbor Classifier](https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/)
++ [Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
++ [Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
++ [Stacking](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
+
+
+
+
