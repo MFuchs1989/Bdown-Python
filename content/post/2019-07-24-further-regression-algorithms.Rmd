@@ -853,7 +853,7 @@ df
 
 ![](/post/2019-07-24-further-regression-algorithms_files/p68p35.png)
 
-Now we display the MSE values in ascending order.
+Now we display the MAE values in ascending order.
 
 
 ```{r, eval=F, echo=T}
