@@ -14,7 +14,12 @@ tags:
 # Table of Content
 
 + 1 Introduction
-+ 2 
++ 2 Scientific notations
++ 3 Import the libraries
+
+
+
+
 
 
 
@@ -22,8 +27,6 @@ tags:
 
 Scientific notations isn't helpful when you are trying to make quick comparisons across your dataset. 
 However, Pandas will introduce scientific notations by default when the data type is a float. In this post I want to show how to get around this problem.
-
-
 
 
 # 2 Scientific notations
@@ -36,7 +39,68 @@ Here are two examples of how to convert the scientifically written numbers into 
 
 $$ 2.553e8 = 2.553 \cdot 10^{8} = 255,300,000 $$
 
-$$ 3.328e-5 = 2.553 \cdot 10^{8} = 255,300,000 $$
+$$ 3.328e-5 = 3.328 \cdot 10^{-5} = 0.03328 $$
+
+Now we know how to convert these numbers. But to do this every time with a calculator or something similar is very complicated. Fortunately there are a few methods to do this automatically. 
+
+
+# 3 Import the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+```
+
+
+Here are a few more examples of how differently pandas floats are output. 
+
+
+```{r, eval=F, echo=T}
+n_1 = 0.0007
+n_1
+```
+
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p1.png)
+
+
+```{r, eval=F, echo=T}
+n_2 = 0.0000035
+n_2
+```
+
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p2.png)
+
+
+```{r, eval=F, echo=T}
+n_3 = 15622098465455462.02
+n_3
+```
+
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p3.png)
+
+
+```{r, eval=F, echo=T}
+n_ensemble = (n_1, n_2, n_3)
+n_ensemble
+```
+
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p4.png)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
