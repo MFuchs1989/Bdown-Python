@@ -14,4 +14,4 @@ If you have any questions or comments, just text me: FuchsMichaelAndi1989@gmail.
 
 
 
-![](/post/2020-05-05-ensemble-modeling-voting_files/p65p14.png)
+![](/post/1_random_pic/MFuchs.png)
