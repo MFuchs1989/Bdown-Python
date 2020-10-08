@@ -520,6 +520,15 @@ For this post the dataset House Sales in King County, USA from the statistic pla
     </item>
     
     <item>
+      <title>How to use Pandas set_option()</title>
+      <link>/2019/05/02/how-to-use-pandas-set-option/</link>
+      <pubDate>Thu, 02 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/05/02/how-to-use-pandas-set-option/</guid>
+      <description>Table of Content1 Introduction2 The use of pandas set_option()2.1 to determine max_rows2.2 to determine max_columns2.3 to determine text length2.4 to determine float_format3 Conclusion1 IntroductionIn my previous post “How to suppress scientific notation in Pandas” I have shown how to use the set_option-function of pandas to convert scientifically written numbers into more readable ones.I have taken this as an opportunity to introduce further possibilities of the set_options-function here.</description>
+    </item>
+    
+    <item>
       <title>How to suppress scientific notation in Pandas</title>
       <link>/2019/04/28/how-to-suppress-scientific-notation-in-pandas/</link>
       <pubDate>Sun, 28 Apr 2019 00:00:00 +0000</pubDate>

@@ -1,0 +1,97 @@
+---
+title: How to use Pandas set_option()
+author: Michael Fuchs
+date: '2019-05-02'
+slug: how-to-use-pandas-set-option
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 The use of pandas set_option()</li>
+<li>2.1 to determine max_rows</li>
+<li>2.2 to determine max_columns</li>
+<li>2.3 to determine text length</li>
+<li>2.4 to determine float_format</li>
+<li>3 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my previous post <a href="https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/">“How to suppress scientific notation in Pandas”</a> I have shown how to use the set_option-function of pandas to convert scientifically written numbers into more readable ones.
+I have taken this as an opportunity to introduce further possibilities of the set_options-function here.
+As already mentioned <a href="https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/">“at chapter 5.3”</a>, set_option() changes behavior globaly in Jupyter Notebooks.
+Therefore we have to reset them again!</p>
+</div>
+<div id="the-use-of-pandas-set_option" class="section level1">
+<h1>2 The use of pandas set_option()</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np</code></pre>
+<p>For the following examples I create a simple dataset with 100 rows and 4 columns.</p>
+<pre class="r"><code>df = pd.DataFrame(np.random.randint(0,100,size=(100, 4)), columns=list(&#39;ABCD&#39;))
+df</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p1.png" /></p>
+</div>
+<div id="to-determine-max_rows" class="section level1">
+<h1>2.1 to determine max_rows</h1>
+<pre class="r"><code>pd.set_option(&#39;display.max_rows&#39;, 2)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p2.png" /></p>
+<p>We can also display all lines of the complete data set.</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_rows&#39;, df.shape[0]+1)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p3.png" /></p>
+<p>As already mentioned at the beginning we reset the previous setting every time we use it.</p>
+<pre class="r"><code>pd.reset_option(&#39;display.max_rows&#39;)</code></pre>
+</div>
+<div id="to-determine-max_columns" class="section level1">
+<h1>2.2 to determine max_columns</h1>
+<p>Like the display of the rows, you can also schedule the output columns.</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_columns&#39;,2)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p4.png" /></p>
+<p>Now let’s set them to max:</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_columns&#39;, df.shape[1]+1)</code></pre>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p5.png" /></p>
+<pre class="r"><code>pd.reset_option(&#39;display.max_columns&#39;)</code></pre>
+</div>
+<div id="to-determine-text-length" class="section level1">
+<h1>2.3 to determine text length</h1>
+<p>To show this I’ll create a further dataframe:</p>
+<pre class="r"><code>df_text = pd.DataFrame({&#39;Novel&#39;: [1, 2, &#39;...&#39;],
+                        &#39;Text&#39;: [&#39;This is a very long text to show how well the set_option function works with &quot;display.max_colwidth&quot;&#39;, 
+                                 &#39;This is also a very long text to show how well the set_option function works with &quot;display.max_colwidth&quot;. I                                    am also a much longer string than that of Novel 1&#39;, 
+                                 &#39;...&#39;]})
+df_text</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p6.png" /></p>
+<p>Let’s see how long the string of the first row of the column text is.</p>
+<pre class="r"><code>len(df_text[&#39;Text&#39;][0])</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p7.png" /></p>
+<p>99 characters. Ok but we don’t know if this is also the longest string. We find out this as follows:</p>
+<pre class="r"><code>longest_text = df_text.Text.map(len).max()
+longest_text</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p8.png" /></p>
+<p>Let’s take this as input for our next set_option-function.</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_colwidth&#39;, int(longest_text+1))</code></pre>
+<pre class="r"><code>df_text</code></pre>
+<p><img src="/post/2019-05-02-how-to-use-pandas-set-option_files/p67p9.png" /></p>
+<pre class="r"><code>pd.reset_option(&#39;display.max_colwidth&#39;)</code></pre>
+</div>
+<div id="to-determine-float_format" class="section level1">
+<h1>2.4 to determine float_format</h1>
+<p>I have already introduced this part in my Post <a href="https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/">“How to suppress scientific notation in Pandas”</a>. If you want to learn more about this function of set_option please see chapter 5.3.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>3 Conclusion</h1>
+<p>The set_option function of Pandas has many more functions besides those presented here.
+Check out the official <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.set_option.html">“Pandas Homepage”</a> for this.</p>
+</div>
