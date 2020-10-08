@@ -1,0 +1,65 @@
+---
+title: How to suppress scientific notation in Pandas
+author: Michael Fuchs
+date: '2019-04-28'
+slug: how-to-suppress-scientific-notation-in-pandas
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 
+
+
+
+# 1 Introduction
+
+Scientific notations isn't helpful when you are trying to make quick comparisons across your dataset. 
+However, Pandas will introduce scientific notations by default when the data type is a float. In this post I want to show how to get around this problem.
+
+
+
+
+# 2 Scientific notations
+
+
+Scientific notation (numbers with e) is a way of writing very large or very small numbers in a clear way. 
+Unfortunately for many people these are not very tangible.
+Here are two examples of how to convert the scientifically written numbers into more readable ones.
+
+
+$$ 2.553e8 = 2.553 \cdot 10^{8} = 255,300,000 $$
+
+$$ 3.328e-5 = 2.553 \cdot 10^{8} = 255,300,000 $$
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
