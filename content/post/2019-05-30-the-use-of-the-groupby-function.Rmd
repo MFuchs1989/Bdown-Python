@@ -22,7 +22,7 @@ tags:
 + 3.4 with nunique
 + 3.5 with mean
 + 3.6 with agg.
-+ 4 Convert the group_by output to dataframe
++ 4 Convert the group_by output to a dataframe
 + 5 Conclusion
 
 
@@ -223,7 +223,7 @@ df_descriptive.head()
 
 
 
-# 4 Convert the group_by output to dataframe
+# 4 Convert the group_by output to a dataframe
 
 Sometimes we want to further analyze the output of a group_by command. 
 For this purpose it is suitable to transform the output into such a format.               
