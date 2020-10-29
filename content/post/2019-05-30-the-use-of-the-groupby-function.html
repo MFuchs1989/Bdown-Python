@@ -9,6 +9,9 @@ tags:
   - R Markdown
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <div id="table-of-content" class="section level1">
@@ -24,7 +27,8 @@ tags:
 <li>3.4 with nunique</li>
 <li>3.5 with mean</li>
 <li>3.6 with agg.</li>
-<li>4 Conclusion</li>
+<li>4 Convert the group_by output to dataframe</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -34,27 +38,19 @@ tags:
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
 <h1>2 Loading the libraries and the data</h1>
-<pre class="r"><code>import pandas as pd</code></pre>
+<pre class="r"><code>import pandas as pd
+import numpy as np</code></pre>
 <pre class="r"><code>flight = pd.read_csv(&quot;path/to/file/flight.csv&quot;)</code></pre>
 </div>
 <div id="group-by" class="section level1">
 <h1>3 Group by</h1>
 <pre class="r"><code>flight.groupby(&#39;Origin_Airport&#39;).size().head()</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p35.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p35.png" /></p>
 <pre class="r"><code>flight.groupby([&#39;Origin_Airport&#39;,&#39;DayOfWeek&#39;]).size().head(17).T</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p36.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p36.png" /></p>
 <pre class="r"><code>flight.groupby([&#39;Origin_Airport&#39;]).get_group(&#39;BOS&#39;).head()               
 #add. Filter on &#39;BOS&#39;</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p37.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p37.png" /></p>
 <div id="with-size" class="section level2">
 <h2>3.1 with size</h2>
 <pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
@@ -62,25 +58,16 @@ tags:
                    &quot;Age&quot;: [24., np.nan, 21., 33, 26],
                    &quot;Single&quot;: [False, True, True, True, False]})
 df </code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p38.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p38.png" /></p>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).size()       
 #the size function counts columns (including NAs !!) </code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p39.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p39.png" /></p>
 </div>
 <div id="with-count" class="section level2">
 <h2>3.2 with count</h2>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).count()     
 #the count function counts columns (excluding NAs !!)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p40.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p40.png" /></p>
 <div id="count-non---zero-observations" class="section level3">
 <h3>3.2.1 Count Non - Zero Observations</h3>
 <p><strong>Vertical count</strong></p>
@@ -88,16 +75,10 @@ df </code></pre>
                    [&quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;,                     &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;, &quot;Männlich&quot;, &quot;Weiblich&quot;],
                     &quot;Verspätung in Min.&quot;: [0, 0, 4., 0, 5, 1, 0, 0, 11, 5, 4, 0, 9]})
 df.head(6)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p41.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p41.png" /></p>
 <pre class="r"><code>df[&#39;Verspätet?&#39;] = np.where(df[&#39;Verspätung in Min.&#39;] &gt; 0, 1, 0)
 df[[&#39;Person&#39;, &#39;Verspätet?&#39;]].groupby([&#39;Person&#39;]).sum()</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p42.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p42.png" /></p>
 <p><strong>Horizontal count</strong></p>
 <pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;:
                    [&quot;Person 1&quot;, &quot;Person 2&quot;, &quot;Person 3&quot;],
@@ -108,60 +89,39 @@ df[[&#39;Person&#39;, &#39;Verspätet?&#39;]].groupby([&#39;Person&#39;]).sum()<
                    &quot;MZP3&quot;: 
                    [1, 7, 0]})
 df.head() </code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p43.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p43.png" /></p>
 <pre class="r"><code>df2 = df[[&#39;MZP1&#39;, &#39;MZP2&#39;, &#39;MZP3&#39;]]
 df2[&#39;Zwischensumme&#39;] = df.astype(bool).sum(axis=1)
 df2[&#39;Verspätungen&#39;] = df2.Zwischensumme - 1
 df2</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p44.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p44.png" /></p>
 <p><em>astype(bool).sum(axis=1)</em> also counts the index (and categorical variables if any). Therefore <em>select</em> and <em>“Zwischensmme - 1”</em></p>
 <pre class="r"><code>df[&#39;Anzahl Verspätungen&#39;] = df2.Verspätungen
 df = df[[&#39;Person&#39;, &#39;Anzahl Verspätungen&#39;]].sort_values(by=&#39;Anzahl Verspätungen&#39;, ascending=False)
 df</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p45.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p45.png" /></p>
 </div>
 </div>
 <div id="with-sum" class="section level2">
 <h2>3.3 with sum</h2>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).sum().reset_index() </code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p46.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p46.png" /></p>
 </div>
 <div id="with-nunique" class="section level2">
 <h2>3.4 with nunique</h2>
 <pre class="r"><code>df.groupby([&#39;Single&#39;]).nunique()       
 #nunique counts characteristics within the respective sorting (without NAs)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p47.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p47.png" /></p>
 </div>
 <div id="with-mean" class="section level2">
 <h2>3.5 with mean</h2>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).mean().reset_index() </code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p48.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p48.png" /></p>
 </div>
 <div id="with-agg." class="section level2">
 <h2>3.6 with agg.</h2>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p49.png" />
-
-</div>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p49.png" /></p>
 <pre class="r"><code>df_rank = flight.groupby(&#39;Origin_Airport&#39;)      #another way
 
 df_descriptive = df_rank[&#39;Dep_Delay&#39;].agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()
@@ -171,13 +131,37 @@ df_descriptive = df_rank[&#39;Dep_Delay&#39;].agg([&#39;mean&#39;, &#39;median&#
 df_descriptive = df_descriptive.rename(columns={&#39;Origin_Airport&#39;:&#39;Origin Airport&#39;, &#39;mean&#39;:&#39;Mean&#39;, &#39;median&#39;:&#39;Median&#39;, &#39;std&#39;:&#39;Standard Deviation&#39;, &#39;min&#39;:&#39;Minimum&#39;, &#39;max&#39;: &#39;Maximum&#39;})
 
 df_descriptive.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p50.png" />
-
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p50.png" /></p>
 </div>
 </div>
+<div id="convert-the-group_by-output-to-dataframe" class="section level1">
+<h1>4 Convert the group_by output to dataframe</h1>
+<p>Sometimes we want to further analyze the output of a group_by command.
+For this purpose it is suitable to transform the output into such a format.</p>
+<p>For this I create an example data set again:</p>
+<pre class="r"><code>df = pd.DataFrame({&quot;Person&quot;: [&quot;John&quot;, &quot;John&quot;, &quot;John&quot;, &quot;Myla&quot;, &quot;Myla&quot;],
+                   &quot;consumption&quot;: [40, 10, 40, 5, 15]})
+df</code></pre>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p51.png" /></p>
+<p>With most group_by commands (mean, sum and count) the format dataframe is already stored. Only some columns are still pivoted.
+This can be adjusted as follows.</p>
+<pre class="r"><code>grouped_df = df.groupby(&#39;Person&#39;).mean()
+grouped_df</code></pre>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p52.png" /></p>
+<pre class="r"><code>reset_df = grouped_df.reset_index()
+reset_df</code></pre>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p53.png" /></p>
+<p>For example if we use group_by with size we get the following output:</p>
+<pre class="r"><code>grouped_df_2 = df.groupby(&#39;Person&#39;).size()
+grouped_df_2</code></pre>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p54.png" /></p>
+<p>But we can also solve this problem with reset_index().
+Even better, we can even give the name the column should take.</p>
+<pre class="r"><code>reset_df_2 = grouped_df_2.reset_index(name=&#39;number_of_observations&#39;)
+reset_df_2</code></pre>
+<p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p55.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
-<h1>4 Conclusion</h1>
+<h1>5 Conclusion</h1>
 <p>This was a small insight, how the groupby function works.</p>
 </div>

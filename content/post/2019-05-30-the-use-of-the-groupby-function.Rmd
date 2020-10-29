@@ -10,7 +10,7 @@ tags:
 ---
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Loading the libraries and the data
@@ -22,10 +22,11 @@ tags:
 + 3.4 with nunique
 + 3.5 with mean
 + 3.6 with agg.
-+ 4 Conclusion
++ 4 Convert the group_by output to dataframe
++ 5 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 
 Goupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.
@@ -34,12 +35,13 @@ Goupby is one of the most used functions in data analysis. Therefore, it is wort
 For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 
 ```{r, eval=F, echo=T}
 import pandas as pd
+import numpy as np
 ```
 
 
@@ -50,7 +52,7 @@ flight = pd.read_csv("path/to/file/flight.csv")
 
 
 
-#3 Group by
+# 3 Group by
 
 ```{r, eval=F, echo=T}
 flight.groupby('Origin_Airport').size().head()
@@ -77,7 +79,7 @@ flight.groupby(['Origin_Airport']).get_group('BOS').head()
 
 
 
-##3.1 with size
+## 3.1 with size
 
 ```{r, eval=F, echo=T}
 df = pd.DataFrame({"Person":
@@ -97,7 +99,7 @@ df[['Single', 'Age']].groupby(['Single']).size()
 
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p39.png)
 
-##3.2 with count
+## 3.2 with count
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).count()     
@@ -107,7 +109,7 @@ df[['Single', 'Age']].groupby(['Single']).count()
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p40.png)
 
 
-###3.2.1 Count Non - Zero Observations
+### 3.2.1 Count Non - Zero Observations
 
 **Vertical count**
 
@@ -168,7 +170,7 @@ df
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p45.png)
 
 
-##3.3 with sum
+## 3.3 with sum
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).sum().reset_index() 
@@ -177,7 +179,7 @@ df[['Single', 'Age']].groupby(['Single']).sum().reset_index()
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p46.png)
 
 
-##3.4 with nunique
+## 3.4 with nunique
 
 ```{r, eval=F, echo=T}
 df.groupby(['Single']).nunique()       
@@ -187,7 +189,7 @@ df.groupby(['Single']).nunique()
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p47.png)
 
 
-##3.5 with mean
+## 3.5 with mean
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).mean().reset_index() 
@@ -196,7 +198,7 @@ df[['Single', 'Age']].groupby(['Single']).mean().reset_index()
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p48.png)
 
 
-##3.6 with agg.
+## 3.6 with agg.
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
@@ -219,6 +221,65 @@ df_descriptive.head()
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p50.png)
 
 
-#4 Conclusion
+
+
+# 4 Convert the group_by output to dataframe
+
+Sometimes we want to further analyze the output of a group_by command. 
+For this purpose it is suitable to transform the output into such a format.               
+
+
+For this I create an example data set again:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({"Person": ["John", "John", "John", "Myla", "Myla"],
+                   "consumption": [40, 10, 40, 5, 15]})
+df
+```
+
+![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p51.png)
+
+
+With most group_by commands (mean, sum and count) the format dataframe is already stored. Only some columns are still pivoted.
+This can be adjusted as follows.
+
+```{r, eval=F, echo=T}
+grouped_df = df.groupby('Person').mean()
+grouped_df
+```
+
+![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p52.png)
+
+```{r, eval=F, echo=T}
+reset_df = grouped_df.reset_index()
+reset_df
+```
+
+![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p53.png)
+
+
+For example if we use group_by with size we get the following output:
+
+```{r, eval=F, echo=T}
+grouped_df_2 = df.groupby('Person').size()
+grouped_df_2
+```
+
+![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p54.png)
+
+
+But we can also solve this problem with reset_index().
+Even better, we can even give the name the column should take.
+
+```{r, eval=F, echo=T}
+reset_df_2 = grouped_df_2.reset_index(name='number_of_observations')
+reset_df_2
+```
+
+![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p55.png)
+
+
+
+# 5 Conclusion
 
 This was a small insight, how the groupby function works.
