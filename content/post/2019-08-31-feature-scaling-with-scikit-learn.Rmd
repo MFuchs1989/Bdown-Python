@@ -18,8 +18,10 @@ tags:
 + 3.2 Min-Max Scaler
 + 3.3 Robust Scaler
 + 3.4 Comparison of the previously shown scaling methods
-+ 4 Feature Scaling in practice
-+ 5 Conclusion
++ 4 Inverse Transformation
++ 5 Export Scaler to use in another program
++ 6 Feature Scaling in practice
++ 7 Conclusion
 
 
 # 1 Introduction
@@ -48,8 +50,12 @@ from sklearn.preprocessing import MinMaxScaler
 #For chapter 3.3
 from sklearn.preprocessing import RobustScaler
 
-#For chapter 4
+#For chapter 5
+import pickle as pk
+
+#For chapter 6
 from sklearn.model_selection import train_test_split
+
 
 pd.set_option('float_format', '{:f}'.format)
 ```
@@ -331,8 +337,96 @@ plt.show()
 
 
 
+# 4 Inverse Transformation
 
-# 4 Feature Scaling in practice
+
+As already introduced in the post about ["encoders"](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/), there is also the inverse_transform function for the scaling methods. 
+The functionality and the procedure is very similar.
+
+Let's take this dataframe as an example:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Col_1': [1,7,2,4,8],
+                   'Col_2': [7,1,5,3,4],
+                   'Col_3': [3,8,0,3,9],
+                   'Col_4': [4,7,9,1,4]})
+df
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p15.png)
+
+Now we apply the standard scaler as shown before:
+
+```{r, eval=F, echo=T}
+col_names = df.columns
+features = df[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+scaled_features = pd.DataFrame(features, columns = col_names)
+scaled_features.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p16.png)
+
+The fit scaler has memorized the metrics with which he did the transformation. Therefore it is relatively easy to do the inverse transformation with the inverse_transform function. 
+
+```{r, eval=F, echo=T}
+re_scaled_features = scaler.inverse_transform(scaled_features)
+re_scaled_df = pd.DataFrame(re_scaled_features, columns = col_names)
+re_scaled_df
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p17.png)
+
+
+
+# 5 Export Scaler to use in another program
+
+It is extremely important to save the used scaler separately to be able to use it again for new predictions. 
+If you have scaled the training data with which the algorithm was created, you should also do this for predictions of new observations. In order to do this with the correct metrics, we use the originally fitted scaler. 
+
+```{r, eval=F, echo=T}
+pk.dump(scaler, open('scaler.pkl', 'wb'))
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p18.png)
+
+
+Now we reload the just saved scaler (scaler.pkl).
+
+```{r, eval=F, echo=T}
+scaler_reload = pk.load(open("scaler.pkl",'rb'))
+```
+
+
+Now we are going to use the same dataframe as bevore to see that the reloaded scaler works correctly.
+
+```{r, eval=F, echo=T}
+df_new = pd.DataFrame({'Col_1': [1,7,2,4,8],
+                   'Col_2': [7,1,5,3,4],
+                   'Col_3': [3,8,0,3,9],
+                   'Col_4': [4,7,9,1,4]})
+df_new
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p19.png)
+
+
+```{r, eval=F, echo=T}
+col_names2 = df_new.columns
+features2 = df_new[col_names]
+
+
+features2 = scaler_reload.fit_transform(features2.values)
+scaled_features2 = pd.DataFrame(features2, columns = col_names2)
+scaled_features2.head()
+```
+
+![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p20.png)
+
+
+# 6 Feature Scaling in practice
 
 In practice, not the complete data record is usually scaled There are two reasons for this:
 
@@ -397,14 +491,10 @@ df_scaled = sc.fit_transform(df)
 
 
 
-# 5 Conclusion
+# 7 Conclusion
 
 As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.
 
-
-```{r, eval=F, echo=T}
-
-```
 
 
 
