@@ -16,8 +16,10 @@ tags:
 
 <div id="table-of-content" class="section level1">
 <h1>Table of Content</h1>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
 <ul>
-<li>1 Introduction</li>
 <li>2 Loading the libraries and the data</li>
 <li>3 Encoder for predictor variables</li>
 <li>3.1 One Hot Encoder</li>
@@ -32,7 +34,7 @@ tags:
 <li>7 Conclusion</li>
 </ul>
 </div>
-<div id="introduction" class="section level1">
+<div id="introduction-1" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29s1.png" /></p>
 <p>As mentioned in my previous <a href="https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/">“post”</a>, before you can start modeling, a lot of preparatory work is often necessary when preparing the data. In this post the most common encoding algorithms from the scikit-learn library will be presented and how they are to be used.</p>
@@ -246,7 +248,7 @@ Logically we have to convert the categorical data into numerical data (via OHE).
 <p>Therefore we store the encoder separately and load it for new data to practice OHE. This way we can be sure that</p>
 <ul>
 <li>we get the same encoding and</li>
-<li>we also have one and the same learned categories.</li>
+<li>we also have the same learned categories.</li>
 </ul>
 <p>If new categories are added and the encoder is applied to the wrong column, we will see this immediately as the following examples will show.</p>
 <pre class="r"><code>df_dummy1 = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],

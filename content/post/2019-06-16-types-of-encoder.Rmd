@@ -11,7 +11,7 @@ tags:
 
 # Table of Content
 
-+ 1 Introduction
+# 1 Introduction
 + 2 Loading the libraries and the data
 + 3 Encoder for predictor variables
 + 3.1 One Hot Encoder
@@ -428,7 +428,7 @@ Logically we have to convert the categorical data into numerical data (via OHE).
 Therefore we store the encoder separately and load it for new data to practice OHE. This way we can be sure that 
 
 + we get the same encoding and 
-+ we also have one and the same learned categories.
++ we also have the same learned categories.
 
 If new categories are added and the encoder is applied to the wrong column, we will see this immediately as the following examples will show. 
 
