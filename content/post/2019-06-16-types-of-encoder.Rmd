@@ -489,7 +489,7 @@ df_dummy2
 
 
 ```{r, eval=F, echo=T}
-test_df_dummy2 = encoder_reload.inverse_transform(test333)
+test_df_dummy2 = encoder_reload.inverse_transform(df_dummy2)
 test_df_dummy2
 ```
 
@@ -512,7 +512,7 @@ df_dummy3
 
 
 ```{r, eval=F, echo=T}
-test_df_dummy3 = encoder_reload.inverse_transform(test334)
+test_df_dummy3 = encoder_reload.inverse_transform(df_dummy3)
 test_df_dummy3
 ```
 

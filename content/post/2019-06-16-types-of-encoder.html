@@ -274,7 +274,7 @@ test_df_dummy1_part2</code></pre>
                    &#39;Job_E&#39;: [0,0,1,0,0]})
 df_dummy2</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p30.png" /></p>
-<pre class="r"><code>test_df_dummy2 = encoder_reload.inverse_transform(test333)
+<pre class="r"><code>test_df_dummy2 = encoder_reload.inverse_transform(df_dummy2)
 test_df_dummy2</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p31.png" /></p>
 <p>In this example we changed the column names but used the same number. This works technically but the result makes no sense.</p>
@@ -284,7 +284,7 @@ test_df_dummy2</code></pre>
                    &#39;Job_D&#39;: [0,0,0,1,0]})
 df_dummy3</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p32.png" /></p>
-<pre class="r"><code>test_df_dummy3 = encoder_reload.inverse_transform(test334)
+<pre class="r"><code>test_df_dummy3 = encoder_reload.inverse_transform(df_dummy3)
 test_df_dummy3</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p33.png" /></p>
 <p>Here we have now left out a column. The reloaded encoder does not allow this either.</p>
