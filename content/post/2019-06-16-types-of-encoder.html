@@ -9,6 +9,9 @@ tags:
   - R Markdown
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <div id="table-of-content" class="section level1">
@@ -24,7 +27,9 @@ tags:
 <li>4 Encoder for target variables</li>
 <li>4.1 Label Binarizer</li>
 <li>4.2 Label Encoding</li>
-<li>5 Conclusion</li>
+<li>5 Inverse Transformation</li>
+<li>6 Export Encoder to use in another program</li>
+<li>7 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -44,7 +49,10 @@ from sklearn.preprocessing import OrdinalEncoder
 #for chapter 4.1
 from sklearn.preprocessing import LabelBinarizer
 #for chapter 4.2
-from sklearn.preprocessing import LabelEncoder</code></pre>
+from sklearn.preprocessing import LabelEncoder
+
+#for chapter 5
+import pickle as pk</code></pre>
 <pre class="r"><code>df = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],
                    &#39;Emotional_State&#39;: [&#39;good&#39;, &#39;bad&#39;, &#39;neutral&#39;, &#39;very_good&#39;, &#39;excellent&#39;],
                    &#39;Age&#39;: [32,22,62,44, 54],
@@ -170,8 +178,119 @@ df</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p18.png" /></p>
 <p>I would not recommend the use of this encoder for predictor variables, because the assigned order (0 &lt; 1 &lt; 2 &lt; 3 …) could have an incorrect influence on the model. Use One Hot Encoding instead.</p>
 </div>
+<div id="inverse-transformation" class="section level1">
+<h1>5 Inverse Transformation</h1>
+<p>Now that we have learned some methods of encoding I would like to introduce the inverse_transform function.
+The encoding of data is usually a necessary step for the training of machine learning algorithms.
+For a good interpretation of the results it is usually advantageous to transform the coded data back again.
+But this is easy to do.</p>
+<p>We take this dataframe as an example:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],
+                   &#39;Emotional_State&#39;: [&#39;good&#39;, &#39;bad&#39;, &#39;neutral&#39;, &#39;very_good&#39;, &#39;excellent&#39;],
+                   &#39;Age&#39;: [32,22,62,44, 54],
+                   &#39;Salary&#39;: [4700, 2400,4500,2500, 3500],
+                   &#39;Purchased&#39;: [&#39;Yes&#39;, &#39;No&#39;, &#39;No&#39;, &#39;Yes&#39;, &#39;No&#39;]})
+df</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p19.png" /></p>
+<p>and use one-hot encoding again:</p>
+<pre class="r"><code>encoder = OneHotEncoder()
+
+OHE_fit = encoder.fit(df.Job.values.reshape(-1,1))
+OHE_transform = OHE_fit.transform(df.Job.values.reshape(-1,1)).toarray()
+
+OHE_transform</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p20.png" /></p>
+<p>Can save the result as before in a dataframe. Both methods work.</p>
+<pre class="r"><code>df_OHE = pd.DataFrame(OHE_transform, columns = [&quot;Job_&quot; + str(encoder.categories_[0][i]) 
+                                     for i in range(len(encoder.categories_[0]))])
+
+df_OHE</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p21.png" /></p>
+<p>Now we are ready to use the inverse_transform function.</p>
+<pre class="r"><code>re_transformed_array = encoder.inverse_transform(OHE_transform)
+re_transformed_array</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p22.png" /></p>
+<pre class="r"><code>re_transformed_df = encoder.inverse_transform(df_OHE)
+re_transformed_df</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p23.png" /></p>
+<p>As we can see the inverse_transform function works with the created array as well as with the created dataframe.
+Now I append the re_transformed_array to the dataframe (df_OHE).</p>
+<pre class="r"><code>df_OHE[&#39;inverse_transform&#39;] = re_transformed_array
+df_OHE</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p23z1.png" /></p>
+</div>
+<div id="export-encoder-to-use-in-another-program" class="section level1">
+<h1>6 Export Encoder to use in another program</h1>
+<p>When we develop machine learning algorithms it is important to store the (in our current case) encoders separately so that they can be used again later.</p>
+<pre class="r"><code>pk.dump(encoder, open(&#39;encoder.pkl&#39;, &#39;wb&#39;))</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p23z2.png" /></p>
+<p>Now we reload the just saved encoder (encoder.pkl).</p>
+<pre class="r"><code>encoder_reload = pk.load(open(&quot;encoder.pkl&quot;,&#39;rb&#39;))</code></pre>
+<p>Now let’s test the reloaded encoder with the following dataframe.</p>
+<pre class="r"><code>df_new = pd.DataFrame({&#39;Job_Doctor&#39;: [1,0,0,0,0],
+                   &#39;Job_Electrician&#39;: [0,1,0,0,0],
+                   &#39;Job_Farmer&#39;: [0,0,0,0,1],
+                   &#39;Job_Pilot&#39;: [0,0,0,1,0],
+                   &#39;Job_Teacher&#39;: [0,0,1,0,0]})
+df_new</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p24.png" /></p>
+<pre class="r"><code>re_transformed_df_new = encoder_reload.inverse_transform(df_new)
+re_transformed_df_new</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p25.png" /></p>
+<p>It works!</p>
+<p>Of course you will need less the inverse_transform function of a stored encoder, but the advantage of an already fitted encoder is that you will notice immediately if something has changed compared to the original files (which you also used during training).</p>
+<p>What do I mean specifically?</p>
+<p>Suppose we have developed an algorithm using OneHotEncoding to prepare the data.
+Now we get new data on the basis of which we should make new predictions.
+Logically we have to convert the categorical data into numerical data (via OHE). Ideally in exactly the same way as with the original data on which the training of the used algorithm is based.</p>
+<p>Therefore we store the encoder separately and load it for new data to practice OHE. This way we can be sure that</p>
+<ul>
+<li>we get the same encoding and</li>
+<li>we also have one and the same learned categories.</li>
+</ul>
+<p>If new categories are added and the encoder is applied to the wrong column, we will see this immediately as the following examples will show.</p>
+<pre class="r"><code>df_dummy1 = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],
+                   &#39;Emotional_State&#39;: [&#39;good&#39;, &#39;bad&#39;, &#39;neutral&#39;, &#39;very_good&#39;, &#39;excellent&#39;],
+                   &#39;Age&#39;: [32,22,62,44, 54],
+                   &#39;Salary&#39;: [4700, 2400,4500,2500, 3500],
+                   &#39;Purchased&#39;: [&#39;Yes&#39;, &#39;No&#39;, &#39;No&#39;, &#39;Yes&#39;, &#39;No&#39;]})
+df_dummy1</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p26.png" /></p>
+<pre class="r"><code>test_df_dummy1 = encoder_reload.transform(df_dummy1.Emotional_State.values.reshape(-1,1)).toarray()
+test_df_dummy1</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p27.png" /></p>
+<p>Here we have specified a wrong column on which the encoder was not trained.</p>
+<pre class="r"><code>df_dummy1_part2 = pd.DataFrame({&#39;Job&#39;: [&#39;craftsman&#39;, &#39;merchant&#39;, &#39;sales&#39;]})
+df_dummy1_part2</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p28.png" /></p>
+<pre class="r"><code>test_df_dummy1_part2 = encoder_reload.transform(df_dummy1_part2.Job.values.reshape(-1,1)).toarray()
+test_df_dummy1_part2</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p29.png" /></p>
+<p>Here we have tried to apply the encoder to new categories. Logically this does not work either. In such a case, the training of the algorithm would have to be reset.</p>
+<pre class="r"><code>df_dummy2 = pd.DataFrame({&#39;Job_A&#39;: [1,0,0,0,0],
+                   &#39;Job_B&#39;: [0,1,0,0,0],
+                   &#39;Job_C&#39;: [0,0,0,0,1],
+                   &#39;Job_D&#39;: [0,0,0,1,0],
+                   &#39;Job_E&#39;: [0,0,1,0,0]})
+df_dummy2</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p30.png" /></p>
+<pre class="r"><code>test_df_dummy2 = encoder_reload.inverse_transform(test333)
+test_df_dummy2</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p31.png" /></p>
+<p>In this example we changed the column names but used the same number. This works technically but the result makes no sense.</p>
+<pre class="r"><code>df_dummy3 = pd.DataFrame({&#39;Job_A&#39;: [1,0,0,0,0],
+                   &#39;Job_B&#39;: [0,1,0,0,0],
+                   &#39;Job_C&#39;: [0,0,0,0,1],
+                   &#39;Job_D&#39;: [0,0,0,1,0]})
+df_dummy3</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p32.png" /></p>
+<pre class="r"><code>test_df_dummy3 = encoder_reload.inverse_transform(test334)
+test_df_dummy3</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p33.png" /></p>
+<p>Here we have now left out a column. The reloaded encoder does not allow this either.</p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>5 Conclusion</h1>
+<h1>7 Conclusion</h1>
 <p>Here is a brief overview of which encoding methods are available and when to use them:</p>
 <ul>
 <li><p>One Hot Encoder: Generates additional features by transforming categorical variables and converts them into numerical values.</p></li>
