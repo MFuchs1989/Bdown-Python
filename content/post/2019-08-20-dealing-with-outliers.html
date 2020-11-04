@@ -100,8 +100,8 @@ df_of_outlier[&#39;Rows_to_exclude&#39;] = df_of_outlier[&#39;Rows_to_exclude&#3
 outlier_list_final = df_of_outlier[&#39;Rows_to_exclude&#39;].tolist()
 outlier_list_final</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p9.png" /></p>
-<pre class="r"><code>filter_rows_to_excluse = df.index.isin(outlier_list_final)</code></pre>
-<pre class="r"><code>df_without_outliers = df[~filter_rows_to_excluse]
+<pre class="r"><code>filter_rows_to_exclude = df.index.isin(outlier_list_final)</code></pre>
+<pre class="r"><code>df_without_outliers = df[~filter_rows_to_exclude]
 
 df_without_outliers</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p10.png" /></p>

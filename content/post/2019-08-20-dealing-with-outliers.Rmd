@@ -168,11 +168,11 @@ outlier_list_final
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p9.png)
 
 ```{r, eval=F, echo=T}
-filter_rows_to_excluse = df.index.isin(outlier_list_final)
+filter_rows_to_exclude = df.index.isin(outlier_list_final)
 ```
 
 ```{r, eval=F, echo=T}
-df_without_outliers = df[~filter_rows_to_excluse]
+df_without_outliers = df[~filter_rows_to_exclude]
 
 df_without_outliers
 ```
