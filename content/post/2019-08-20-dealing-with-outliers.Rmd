@@ -10,7 +10,7 @@ tags:
 ---
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Loading the libraries and the data
@@ -23,7 +23,7 @@ tags:
 + 6 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 Next to ["higly correlated"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) and ["constant"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/) features outlier detection is also a central element of data pre-processing.
 
@@ -32,7 +32,7 @@ In statistics, outliers are data points that do not belong to any particular pop
 In the following three methods of outlier detection are presented.
 
 
-#2 Loading the libraries
+# 2 Loading the libraries
 
 ```{r, eval=F, echo=T}
 import numpy as np
@@ -42,7 +42,7 @@ import matplotlib.pyplot as plt
 ```
 
 
-#3 Boxplots - Method 
+# 3 Boxplots - Method 
 
 
 ```{r, eval=F, echo=T}
@@ -78,7 +78,7 @@ sns.boxplot(data=df['salary'])
 
 
 
-#4 Z-score method
+# 4 Z-score method
 
 In statistics, if a data distribution is approximately normal then about 68% of the data points lie within one standard deviation (sd) of the mean and about 95% are within two standard deviations, and about 99.7% lie within three standard deviations.
 
@@ -191,7 +191,7 @@ As we can see the two outliers were removed from the dataframe.
 
 
 
-#5 IQR method
+# 5 IQR method
 
 In addition to the Z-score method, outliers can also be identified using the IQR method. 
 Here we look at which data points are outside the whiskers.
@@ -217,8 +217,8 @@ df.shape
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p13.png)
 
 
-
-#5.1 Detect outlier for column 'age'
+ 
+# 5.1 Detect outlier for column 'age'
 
 ```{r, eval=F, echo=T}
 column_to_be_examined = df['age']
@@ -264,7 +264,7 @@ outlier_col_age
 
 
 
-#5.2 Detect outlier for column 'salary'
+# 5.2 Detect outlier for column 'salary'
 
 
 
@@ -284,7 +284,7 @@ outlier_col_salary
 
 
 
-#5.3 Remove outlier from dataframe
+# 5.3 Remove outlier from dataframe
 
 
 
@@ -313,20 +313,14 @@ outlier_list_final = np.concatenate((outlier_list_final_col_age, outlier_list_fi
 outlier_list_final
 ```
 
-
-```{r, eval=F, echo=T}
-filter_rows_to_excluse = df.index.isin(outlier_list_final)
-```
-
-
-```{r, eval=F, echo=T}
-df_without_outliers = df[~filter_rows_to_excluse]
-```
-
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p21.png)
 
 
 ```{r, eval=F, echo=T}
+filter_rows_to_exclude = df.index.isin(outlier_list_final)
+
+df_without_outliers = df[~filter_rows_to_exclude]
+
 df_without_outliers
 ```
 
@@ -340,7 +334,7 @@ df_without_outliers.shape
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p23.png)
 
 
-#6 Conclusion
+# 6 Conclusion
 
 
 Outlier in a dataframe can lead to strong distortions in predictions. It is therefore essential to examine your data for outlier or influential values before training machine learning models.
