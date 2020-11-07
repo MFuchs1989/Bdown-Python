@@ -10,10 +10,6 @@ tags:
 ---
 
 
-2020-11-07-the-data-science-process-crisp-dm
-
-
-
 
 **This post is still in the making**
 
@@ -22,4 +18,3 @@ tags:
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s1.png)
 
-Hier müsste ein Bild sein 
