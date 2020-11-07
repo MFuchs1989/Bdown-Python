@@ -1,0 +1,21 @@
+---
+title: The Data Science Process (CRISP-DM)
+author: Michael Fuchs
+date: '2020-11-07'
+slug: the-data-science-process-crisp-dm
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+2020-11-07-the-data-science-process-crisp-dm
+
+
+
+
+**This post is still in the making**
+
+
+
