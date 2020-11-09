@@ -324,10 +324,83 @@ sns.boxplot(x='price', data=df_without_outliers)
 Now we are going to check for missing values.
 
 ```{r, eval=F, echo=T}
-
+def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : 'Missing Values', 1 : '% of Total Values'})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        '% of Total Values', ascending=False).round(1)
+        
+        # Print some summary information
+        print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"      
+            "There are " + str(mis_val_table_ren_columns.shape[0]) +
+              " columns that have missing values.")
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+```{r, eval=F, echo=T}
+missing_values_table(df_without_outliers)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p12.png)
+
+
+Due to the high number of missing values (>75%) the column yr_renovated should not be considered in the further analysis. 
+
+
+```{r, eval=F, echo=T}
+'''
+Delete the column yr_renovated
+'''
+
+df_without_outliers = df_without_outliers.drop(['yr_renovated'], axis=1)
+df_without_outliers.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p13.png)
+
+Due to the low number of Missing Values within the grade column, this column will not be deleted as valuable information could be lost. The missing values should be filled with the mean value of the column instead.
+
+
+```{r, eval=F, echo=T}
+'''
+Impute missing values for column grade
+'''
+
+df_without_outliers['grade'] = df_without_outliers['grade'].fillna(df_without_outliers['grade'].mean())
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p14.png)
+
+Check if all missing values are removed or replaced.
+
+```{r, eval=F, echo=T}
+missing_values_table(df_without_outliers)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p15.png)
+
+According to our best practice approach we will assign a new name to the data set.
+
+```{r, eval=F, echo=T}
+df_without_MV = df_without_outliers
+```
+
 
 # 4.1.3 Handling Categorical Variables
 
