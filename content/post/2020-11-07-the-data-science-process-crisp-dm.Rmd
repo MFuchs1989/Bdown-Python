@@ -554,47 +554,187 @@ final_df_house_prices.to_csv('dataframes/final_df_house_prices.csv', index=False
 
 # 4.2 Research Question 1
 
+The first research question is:
 
+Is there a difference in the characteristics of the properties, if they are located on a waterfront?
 
 
 ```{r, eval=F, echo=T}
+print('Absolute distribution: ')
+print()
+print(final_df_house_prices['waterfront_encoded'].value_counts())
 
+print('-------------------------------------------------------')
+
+print('Percentage distribution: ')
+print()
+print(pd.DataFrame({'Percentage': final_df_house_prices.groupby(('waterfront_encoded')).size() / len(final_df_house_prices)}))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png)
+
+```{r, eval=F, echo=T}
+final_df_house_prices.groupby(('waterfront_encoded')).mean()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p21.png)
+
+Answer the first research question:
+
+The average price for waterfront properties is almost twice as high as for other properties.
+
+In contrast, however, plots without a water front have on average more square meters of living space and usable area. 
+Also in terms of condition and degree they are a little better off. 
+
+If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.
+
 
 # 4.3 Research Question 2
 
+The second research question is:
+
+What clusters are there in terms of real estate?
+
 
 ```{r, eval=F, echo=T}
+# Here we drop the column old_index because we do not want to cluster these features
 
+house_prices_cluster = final_df_house_prices.drop(['old_index'], axis=1)
+house_prices_cluster
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p22.png)
+
+Let's have another look at the distribution of the variable 'house prices'. This time not with a box plot but with a histogram.
+
+```{r, eval=F, echo=T}
+plt.hist(house_prices_cluster['price'], bins='auto')
+plt.title("Histogram for house prices")
+plt.xlim(xmin=0, xmax = 1200000)
+plt.show()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p23.png)
+
+
+```{r, eval=F, echo=T}
+mms = MinMaxScaler()
+mms.fit(house_prices_cluster)
+data_transformed = mms.transform(house_prices_cluster)
+```
+
+```{r, eval=F, echo=T}
+Sum_of_squared_distances = []
+K = range(1,15)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_transformed)
+    Sum_of_squared_distances.append(km.inertia_)
+```
+
+```{r, eval=F, echo=T}
+plt.plot(K, Sum_of_squared_distances, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Sum_of_squared_distances')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p24.png)
+
+```{r, eval=F, echo=T}
+km = KMeans(n_clusters=4, random_state=1)
+km.fit(house_prices_cluster)
+```
+
+```{r, eval=F, echo=T}
+predict=km.predict(house_prices_cluster)
+house_prices_cluster['clusters'] = pd.Series(predict, index=house_prices_cluster.index)
+```
+
+```{r, eval=F, echo=T}
+df_sub = house_prices_cluster[['sqft_living', 'price']].values
+
+plt.scatter(df_sub[predict==0, 0], df_sub[predict==0, 1], s=100, c='red', label ='Cluster 1')
+plt.scatter(df_sub[predict==1, 0], df_sub[predict==1, 1], s=100, c='blue', label ='Cluster 2')
+plt.scatter(df_sub[predict==2, 0], df_sub[predict==2, 1], s=100, c='green', label ='Cluster 3')
+plt.scatter(df_sub[predict==3, 0], df_sub[predict==3, 1], s=100, c='cyan', label ='Cluster 4')
+
+plt.title('Cluster of Houses')
+plt.xlim((0, 5000))
+plt.ylim((0,2000000))
+plt.xlabel('sqft_living \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan)')
+plt.ylabel('Price')
+plt.show()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p25.png)
+
+Answer the second research question:
+
+Within the data set 4 clusters could be identified.
+We can see in the graphic above that the target buyer groups of the houses can be clearly defined.
 
 
 
 # 4.4 Research Question 3
 
+The third research question is:
 
+Does the number of square meters have a significant influence on the price of the property?
+
+To answer the research question we filter the data set for the variable price and sqft_living.
 
 ```{r, eval=F, echo=T}
-
+HousePrices_SimplReg = final_df_house_prices[['price', 'sqft_living']]
+HousePrices_SimplReg.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p26.png)
+
+```{r, eval=F, echo=T}
+x = HousePrices_SimplReg['sqft_living']
+y = HousePrices_SimplReg['price']
+
+plt.scatter(x, y)
+plt.title('Scatter plot: sqft_living vs. price')
+plt.xlabel('sqft_living')
+plt.ylabel('price')
+plt.show()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p27.png)
+
+```{r, eval=F, echo=T}
+model1 = smf.ols(formula='price~sqft_living', data=HousePrices_SimplReg).fit()
+
+model1.summary()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p28.png)
+
+
+Answer the third research question:
+
+As we can see from the p value, it is highly significant. 
+It can therefore be assumed that the number of square meters is a significant predictor of the price of a property.
 
 
 
 # 5 Development of a Machine Learning Model End to End Process
 
+Now that the descriptive part has been completed and the research questions posed at the beginning have been answered, we now come to the second main part of this publication.
 
+The training of a machine learning model for predicting house prices. 
 
-```{r, eval=F, echo=T}
+**A golden rule in Data Science**
 
-```
+For the development of a machine learning algorithm it is imperative that all pre-processing steps 
+are applied to the training part only! Anything else would negatively affect the later performance of the algorithm. Outliers are the only exceptions to this rule. Here it always depends on the respective data set and its size.
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+Often I have found that this rule is not followed. This has been one of the motivations for me to describe a complete end-to-end process for the development of machine learning models in this post.
+
+The further procedure follows the Best Practice approach for ML Model Development. I have listed this approach at the end of this publication (chapter 7). You can also download these instructions here: ["DS Best Practice Guidlines for ML Model Development"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf). It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.
 
 
 # 5.1 Data pre-processing

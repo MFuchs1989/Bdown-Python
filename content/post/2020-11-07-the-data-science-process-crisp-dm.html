@@ -409,19 +409,112 @@ final_df_house_prices.to_csv(&#39;dataframes/final_df_house_prices.csv&#39;, ind
 </div>
 <div id="research-question-1" class="section level1">
 <h1>4.2 Research Question 1</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>The first research question is:</p>
+<p>Is there a difference in the characteristics of the properties, if they are located on a waterfront?</p>
+<pre class="r"><code>print(&#39;Absolute distribution: &#39;)
+print()
+print(final_df_house_prices[&#39;waterfront_encoded&#39;].value_counts())
+
+print(&#39;-------------------------------------------------------&#39;)
+
+print(&#39;Percentage distribution: &#39;)
+print()
+print(pd.DataFrame({&#39;Percentage&#39;: final_df_house_prices.groupby((&#39;waterfront_encoded&#39;)).size() / len(final_df_house_prices)}))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png" /></p>
+<pre class="r"><code>final_df_house_prices.groupby((&#39;waterfront_encoded&#39;)).mean()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p21.png" /></p>
+<p>Answer the first research question:</p>
+<p>The average price for waterfront properties is almost twice as high as for other properties.</p>
+<p>In contrast, however, plots without a water front have on average more square meters of living space and usable area.
+Also in terms of condition and degree they are a little better off.</p>
+<p>If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.</p>
 </div>
 <div id="research-question-2" class="section level1">
 <h1>4.3 Research Question 2</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>The second research question is:</p>
+<p>What clusters are there in terms of real estate?</p>
+<pre class="r"><code># Here we drop the column old_index because we do not want to cluster these features
+
+house_prices_cluster = final_df_house_prices.drop([&#39;old_index&#39;], axis=1)
+house_prices_cluster</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p22.png" /></p>
+<p>Let’s have another look at the distribution of the variable ‘house prices’. This time not with a box plot but with a histogram.</p>
+<pre class="r"><code>plt.hist(house_prices_cluster[&#39;price&#39;], bins=&#39;auto&#39;)
+plt.title(&quot;Histogram for house prices&quot;)
+plt.xlim(xmin=0, xmax = 1200000)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p23.png" /></p>
+<pre class="r"><code>mms = MinMaxScaler()
+mms.fit(house_prices_cluster)
+data_transformed = mms.transform(house_prices_cluster)</code></pre>
+<pre class="r"><code>Sum_of_squared_distances = []
+K = range(1,15)
+for k in K:
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_transformed)
+    Sum_of_squared_distances.append(km.inertia_)</code></pre>
+<pre class="r"><code>plt.plot(K, Sum_of_squared_distances, &#39;bx-&#39;)
+plt.xlabel(&#39;k&#39;)
+plt.ylabel(&#39;Sum_of_squared_distances&#39;)
+plt.title(&#39;Elbow Method For Optimal k&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p24.png" /></p>
+<pre class="r"><code>km = KMeans(n_clusters=4, random_state=1)
+km.fit(house_prices_cluster)</code></pre>
+<pre class="r"><code>predict=km.predict(house_prices_cluster)
+house_prices_cluster[&#39;clusters&#39;] = pd.Series(predict, index=house_prices_cluster.index)</code></pre>
+<pre class="r"><code>df_sub = house_prices_cluster[[&#39;sqft_living&#39;, &#39;price&#39;]].values
+
+plt.scatter(df_sub[predict==0, 0], df_sub[predict==0, 1], s=100, c=&#39;red&#39;, label =&#39;Cluster 1&#39;)
+plt.scatter(df_sub[predict==1, 0], df_sub[predict==1, 1], s=100, c=&#39;blue&#39;, label =&#39;Cluster 2&#39;)
+plt.scatter(df_sub[predict==2, 0], df_sub[predict==2, 1], s=100, c=&#39;green&#39;, label =&#39;Cluster 3&#39;)
+plt.scatter(df_sub[predict==3, 0], df_sub[predict==3, 1], s=100, c=&#39;cyan&#39;, label =&#39;Cluster 4&#39;)
+
+plt.title(&#39;Cluster of Houses&#39;)
+plt.xlim((0, 5000))
+plt.ylim((0,2000000))
+plt.xlabel(&#39;sqft_living \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan)&#39;)
+plt.ylabel(&#39;Price&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p25.png" /></p>
+<p>Answer the second research question:</p>
+<p>Within the data set 4 clusters could be identified.
+We can see in the graphic above that the target buyer groups of the houses can be clearly defined.</p>
 </div>
 <div id="research-question-3" class="section level1">
 <h1>4.4 Research Question 3</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>The third research question is:</p>
+<p>Does the number of square meters have a significant influence on the price of the property?</p>
+<p>To answer the research question we filter the data set for the variable price and sqft_living.</p>
+<pre class="r"><code>HousePrices_SimplReg = final_df_house_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
+HousePrices_SimplReg.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p26.png" /></p>
+<pre class="r"><code>x = HousePrices_SimplReg[&#39;sqft_living&#39;]
+y = HousePrices_SimplReg[&#39;price&#39;]
+
+plt.scatter(x, y)
+plt.title(&#39;Scatter plot: sqft_living vs. price&#39;)
+plt.xlabel(&#39;sqft_living&#39;)
+plt.ylabel(&#39;price&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p27.png" /></p>
+<pre class="r"><code>model1 = smf.ols(formula=&#39;price~sqft_living&#39;, data=HousePrices_SimplReg).fit()
+
+model1.summary()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p28.png" /></p>
+<p>Answer the third research question:</p>
+<p>As we can see from the p value, it is highly significant.
+It can therefore be assumed that the number of square meters is a significant predictor of the price of a property.</p>
 </div>
 <div id="development-of-a-machine-learning-model-end-to-end-process" class="section level1">
 <h1>5 Development of a Machine Learning Model End to End Process</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Now that the descriptive part has been completed and the research questions posed at the beginning have been answered, we now come to the second main part of this publication.</p>
+<p>The training of a machine learning model for predicting house prices.</p>
+<p><strong>A golden rule in Data Science</strong></p>
+<p>For the development of a machine learning algorithm it is imperative that all pre-processing steps
+are applied to the training part only! Anything else would negatively affect the later performance of the algorithm. Outliers are the only exceptions to this rule. Here it always depends on the respective data set and its size.</p>
+<p>Often I have found that this rule is not followed. This has been one of the motivations for me to describe a complete end-to-end process for the development of machine learning models in this post.</p>
+<p>The further procedure follows the Best Practice approach for ML Model Development. I have listed this approach at the end of this publication (chapter 7). You can also download these instructions here: <a href="https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf">“DS Best Practice Guidlines for ML Model Development”</a>. It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.</p>
 </div>
 <div id="data-pre-processing-1" class="section level1">
 <h1>5.1 Data pre-processing</h1>
