@@ -284,7 +284,7 @@ df_new</code></pre>
 features2 = df_new[col_names]
 
 
-features2 = scaler_reload.fit_transform(features2.values)
+features2 = scaler_reload.transform(features2.values)
 scaled_features2 = pd.DataFrame(features2, columns = col_names2)
 scaled_features2.head()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p20.png" /></p>
