@@ -1731,22 +1731,26 @@ In this publication I have shown how to prepare data in a meaningful way to extr
 Here is an overview how I proceeded with the development of a machine learning model:
 
 **Data pre-processing**
+
 + Outliers
 + Missing Values
 + Feature Encoding
 + Feature Scaling
 
 **Filter Methods**
+
 + Highly correlated features
 + Constant features
 + Duplicate features
 
 **Model Traing & Testing**
+
 + Simple Models (eg. linear Regression)
 + More Complex Models (eg. Random Forest / Neural Networks)
 + Hyperparameter Tuning
 
 **Feature Selection**
+
 + Slect K Best
 + RFE
 + ...
@@ -1755,11 +1759,38 @@ At this point the training and testing of the algorithms starts again.
 
 
 **Model Evaluation**
+
 As soon as an ML-model is created and tested I save the model and its performance metrics. 
 This allows me to compare the models with each other later and I can take out the model with the best performance. 
 
 
 # 7 Data Science Best Practice Guidlines for ML-Model Development
+
+In the post we have in front of us, I have strictly followed the best practice guidelines I created.
+
+The advantage is that you not only have a checklist of which steps in the data science process are next and you don't forget any, but also have a uniform naming convention.
+
+In the following I have created 4 diagrams that illustrate the development process of a machine learning algorithm.
+The complexity of the contents is constantly increasing.
+
+
+**Simple Developtment**
+
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p51.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 8 Limitations
 
 
