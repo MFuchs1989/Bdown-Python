@@ -181,24 +181,140 @@ You can also download these instructions here: ["DS Best Practice Guidlines for 
 # 4.1 Data pre-processing
 
 
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
 # 4.1.1 Check for Outliers
 
+First we will check the data frame for some outliers.
+This step is necessary first, because otherwise replacing missing values would be negatively affected.
+Categorical variables are not considered by this step.
 
+For the identification of outliers the z-score method is used.
+
+In statistics, if a data distribution is approximately normal then about 68% 
+of the data points lie within one standard deviation (sd) of the mean and about 95% 
+are within two standard deviations, and about 99.7% lie within three standard deviations.
+
+Therefore, if you have any data point that is more than 3 times the standard deviation, 
+then those points are very likely to be outliers.
+
+We are going to check observations above a sd of 3 and remove these as an outlier. 
 
 
 ```{r, eval=F, echo=T}
+'''
+Here I defined a function do identificate observations with an sd above 3.
+'''
 
+def outliers_z_score(df):
+    threshold = 3
+
+    mean = np.mean(df)
+    std = np.std(df)
+    z_scores = [(y - mean) / std for y in df]
+    return np.where(np.abs(z_scores) > threshold)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+For the further proceeding we just need numerical colunns.
+
+```{r, eval=F, echo=T}
+my_list = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+num_columns = list(house_prices.select_dtypes(include=my_list).columns)
+numerical_columns = house_prices[num_columns]
+numerical_columns.head(3)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p4.png)
+
+Now we are going to apply our outlier-function to all numerical columns
+
+```{r, eval=F, echo=T}
+outlier_list = numerical_columns.apply(lambda x: outliers_z_score(x))
+outlier_list
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p5.png)
+
+```{r, eval=F, echo=T}
+df_of_outlier = outlier_list.iloc[0]
+df_of_outlier = pd.DataFrame(df_of_outlier)
+df_of_outlier.columns = ['Rows_to_exclude']
+df_of_outlier
+```
+
+
+```{r, eval=F, echo=T}
+# Convert all values from column Rows_to_exclude to a numpy array
+outlier_list_final = df_of_outlier['Rows_to_exclude'].to_numpy()
+
+# Concatenate a whole sequence of arrays
+outlier_list_final = np.concatenate( outlier_list_final, axis=0 )
+
+# Drop dubplicate values
+outlier_list_final_unique = set(outlier_list_final)
+outlier_list_final_unique
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p6.png)
+
+Now we are going to exclude the identified outliers from original dataframe.
+
+```{r, eval=F, echo=T}
+filter_rows_to_exclude = house_prices.index.isin(outlier_list_final_unique)
+df_without_outliers = house_prices[~filter_rows_to_exclude]
+```
+
+```{r, eval=F, echo=T}
+print('Length of original dataframe: ' + str(len(house_prices)))
+
+print('Length of new dataframe without outliers: ' + str(len(df_without_outliers)))
+print('----------------------------------------------------------------------------------------------------')
+print('Difference between new and old dataframe: ' + str(len(house_prices) - len(df_without_outliers)))
+print('----------------------------------------------------------------------------------------------------')
+print('Length of unique outlier list: ' + str(len(outlier_list_final_unique)))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p7.png)
+
+Important!
+
+If you look at the index of the last two columns, you will notice that index 5 is missing. 
+This is because the values from row 5 for the variables bathrooms and sqft_living 
+were identified as outlier and removed accordingly. 
+
+The data set now has 1178 (the number of unique outliers) gaps at the corresponding position in the index. 
+This can lead to problems if you want to join other tables via the index. 
+
+Since I know that this will be the case as soon as I encode the categorical variables, 
+I proactively create a new index (via reset_index function) which will allow me to easily add new records later.
+
+Below you can see the difference between index and new_index.
+
+```{r, eval=F, echo=T}
+df_without_outliers = df_without_outliers.reset_index()
+
+df_without_outliers = df_without_outliers.rename(columns={'index':'old_index'})
+
+df_without_outliers.head(6)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p8.png)
+
+Here is a comparison of the distribution of values from the target variable 'house price' before and after outlier removal.
+
+```{r, eval=F, echo=T}
+# Distribution before outlier removal
+sns.boxplot(x='price', data=house_prices)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p9.png)
+
+
+```{r, eval=F, echo=T}
+# Distribution after outlier removal
+sns.boxplot(x='price', data=df_without_outliers)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p10.png)
+
 
 # 4.1.2 Check for Missing Values
 
