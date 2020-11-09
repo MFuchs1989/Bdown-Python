@@ -1779,7 +1779,7 @@ The complexity of the contents is constantly increasing.
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s2.png)
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s5.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s6.png)
 
 
 Here we see a simple process for developing an algorithm for machine learning.
