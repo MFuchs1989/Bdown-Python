@@ -953,7 +953,23 @@ testX_encoded.to_csv(&#39;dataframes/testX_encoded.csv&#39;, index=False)</code>
 </div>
 <div id="scaling-1" class="section level1">
 <h1>5.3.2.3 Scaling</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Like the coding, the testX data must be scaled using the same metrics calculated from the training data.</p>
+<pre class="r"><code># Load the necessary scaler
+scaler_reload = pk.load(open(&quot;scaler/StandardScaler.pkl&quot;,&#39;rb&#39;))
+
+
+col_names = testX_encoded.columns
+features = testX_encoded[col_names]
+
+features = scaler_reload.transform(features.values)
+testX_scaled = pd.DataFrame(features, columns = col_names)</code></pre>
+<p>Since we did not find any variables in the filter methods, we have to exclude them, this step is skipped in the test data.</p>
+<p>However, we still rename the data sets accordingly and store them separately.</p>
+<pre class="r"><code>testX_final = testX_scaled
+testY_final = testY
+
+testX_final.to_csv(&#39;dataframes/testX_final.csv&#39;, index=False)
+testY_final.to_csv(&#39;dataframes/testY_final.csv&#39;, index=False)</code></pre>
 </div>
 <div id="test-the-ml-model" class="section level1">
 <h1>5.3.2.4 Test the ML-Model</h1>
