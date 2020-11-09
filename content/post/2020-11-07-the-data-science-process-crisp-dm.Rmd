@@ -1774,7 +1774,7 @@ In the following I have created 4 diagrams that illustrate the development proce
 The complexity of the contents is constantly increasing.
 
 
-**Simple Developtment**
+**Simple Development**
 
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s2.png)
