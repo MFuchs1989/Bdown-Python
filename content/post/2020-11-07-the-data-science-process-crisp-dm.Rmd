@@ -65,30 +65,12 @@ tags:
 
 
 
-
-
-
-
-
-
-
-
-For this post the dataset *house-prices* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at my ["GitHub Repo"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post).
-
-
-
-
+# 1 Introduction
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s1.png)
 
-
-
-
-
-
-
-# 1 Introduction
-
+With reference to my project in the ["Data Science Nanodegree"](https://www.udacity.com/course/data-scientist-nanodegree--nd025) of ["Udacity"](https://www.udacity.com/) I would like to show the Data Science Process according to CRISP-DM.
+If you are interested in the exact content of this course look here: <https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/Data%2BScientist%2BNanodegree%2BSyllabus.pdf>
 
 
 For this post the dataset *house-prices* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at my ["GitHub Repo"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post).
