@@ -1777,11 +1777,13 @@ The complexity of the contents is constantly increasing.
 **Simple Developtment**
 
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p51.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s2.png)
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s5.png)
 
 
-
-
+Here we see a simple process for developing an algorithm for machine learning.
+Neither a filter method has given us a variable to exclude, nor have we used a feature selection.
 
 
 
