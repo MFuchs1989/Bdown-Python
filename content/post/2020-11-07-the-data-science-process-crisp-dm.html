@@ -973,7 +973,31 @@ testY_final.to_csv(&#39;dataframes/testY_final.csv&#39;, index=False)</code></pr
 </div>
 <div id="test-the-ml-model" class="section level1">
 <h1>5.3.2.4 Test the ML-Model</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Now it is time to test the saved lm model. For this we reload it and predicted the house prices.
+In the following an evaluation will take place.</p>
+<pre class="r"><code># Reload the model
+lm_reload = pk.load(open(&quot;model/lm_model.pkl&quot;,&#39;rb&#39;))
+
+# Predict values for test dataset
+y_pred = lm_reload.predict(testX_final)
+
+
+
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = [&#39;values_predicted&#39;]
+actual_vs_predicted = pd.concat([testY_final, y_pred_df], axis=1)
+
+df1 = actual_vs_predicted.head(30)
+df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
+plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
+plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
+plt.show()
+
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY_final, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY_final, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY_final, y_pred)))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p43.png" /></p>
 </div>
 <div id="feature-selection" class="section level1">
 <h1>5.4 Feature Selection</h1>

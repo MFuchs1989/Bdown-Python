@@ -1352,15 +1352,35 @@ testY_final.to_csv('dataframes/testY_final.csv', index=False)
 # 5.3.2.4 Test the ML-Model
 
 
-
+Now it is time to test the saved lm model. For this we reload it and predicted the house prices.
+In the following an evaluation will take place.
 
 ```{r, eval=F, echo=T}
+# Reload the model
+lm_reload = pk.load(open("model/lm_model.pkl",'rb'))
 
+# Predict values for test dataset
+y_pred = lm_reload.predict(testX_final)
+
+
+
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = ['values_predicted']
+actual_vs_predicted = pd.concat([testY_final, y_pred_df], axis=1)
+
+df1 = actual_vs_predicted.head(30)
+df1.plot(kind='bar',figsize=(10,6))
+plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+plt.show()
+
+
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY_final, y_pred))  
+print('Mean Squared Error:', metrics.mean_squared_error(testY_final, y_pred))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY_final, y_pred)))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
-
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p43.png)
 
 
 # 5.4 Feature Selection
