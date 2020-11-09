@@ -739,40 +739,174 @@ The further procedure follows the Best Practice approach for ML Model Developmen
 
 # 5.1 Data pre-processing
 
-
+Due to the fact that we have to approach the pre-processing steps a bit differently to create an ML algorithm, 
+we reload the original data set.
 
 
 ```{r, eval=F, echo=T}
-
+house_prices = pd.read_csv("house_prices_dataframe.csv")
+house_prices.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p29.png)
 
 # 5.1.1 Train Test Split
 
-
-
+Here we are going to split the data into a training part (80%) and a test part (20%).
 
 ```{r, eval=F, echo=T}
+x = house_prices.drop(['price'], axis=1)
+y = house_prices['price']
 
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+At this point it is recommended to reset the index of the 4 created 'records' and to delete 
+the old index (which is automatically generated as new column).
+
+```{r, eval=F, echo=T}
+trainX = trainX.reset_index().drop(['index'], axis=1)
+testX = testX.reset_index().drop(['index'], axis=1)
+trainY = trainY.reset_index().drop(['index'], axis=1)
+testY = testY.reset_index().drop(['index'], axis=1)
+```
 
 
 
 # 5.1.2 Removal of Outlier
 
+```{r, eval=F, echo=T}
+# Define the outlier-detect function
+def outliers_z_score(df):
+    threshold = 3
+
+    mean = np.mean(df)
+    std = np.std(df)
+    z_scores = [(y - mean) / std for y in df]
+    return np.where(np.abs(z_scores) > threshold)
+
+# For the further proceeding we just need numerical colunns
+my_list = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+num_columns = list(trainX.select_dtypes(include=my_list).columns)
+numerical_columns = trainX[num_columns]
+
+# Now we are going to apply our outlier-function to all numerical columns
+outlier_list = numerical_columns.apply(lambda x: outliers_z_score(x))
+outlier_list
+
+# Store the results within a dataframe
+df_of_outlier = outlier_list.iloc[0]
+df_of_outlier = pd.DataFrame(df_of_outlier)
+df_of_outlier.columns = ['Rows_to_exclude']
 
 
+# Convert all values from column Rows_to_exclude to a numpy array
+outlier_list_final = df_of_outlier['Rows_to_exclude'].to_numpy()
+
+# Concatenate a whole sequence of arrays
+outlier_list_final = np.concatenate( outlier_list_final, axis=0 )
+
+# Drop dubplicate values
+outlier_list_final_unique = set(outlier_list_final)
+
+# Create a new dataframe without the identified outlier
+filter_rows_to_exclude = trainX.index.isin(outlier_list_final_unique)
+trainX_wo_outlier = trainX[~filter_rows_to_exclude]
+
+# Reset the index again 
+trainX_wo_outlier = trainX_wo_outlier.reset_index().drop(['index'], axis=1)
+```
 
 
+```{r, eval=F, echo=T}
+print('Length of original dataframe: ' + str(len(trainX)))
+
+print('Length of new dataframe without outliers: ' + str(len(trainX_wo_outlier)))
+print('----------------------------------------------------------------------------------------------------')
+print('Difference between new and old dataframe: ' + str(len(trainX) - len(trainX_wo_outlier)))
+print('----------------------------------------------------------------------------------------------------')
+print('Length of unique outlier list: ' + str(len(outlier_list_final_unique)))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p30.png)
+
+Of course it is now also necessary to remove the corresponding Y values of the outlier.
+
+```{r, eval=F, echo=T}
+filter_rows_to_exclude = trainY.index.isin(outlier_list_final_unique)
+trainY_wo_outlier = trainY[~filter_rows_to_exclude]
+
+trainY_wo_outlier = trainY_wo_outlier.reset_index().drop(['index'], axis=1)
+```
+
+```{r, eval=F, echo=T}
+print('Length of original dataframe: ' + str(len(trainY)))
+
+print('Length of new dataframe without outliers: ' + str(len(trainY_wo_outlier)))
+print('----------------------------------------------------------------------------------------------------')
+print('Difference between new and old dataframe: ' + str(len(trainY) - len(trainY_wo_outlier)))
+print('----------------------------------------------------------------------------------------------------')
+print('Length of unique outlier list: ' + str(len(outlier_list_final_unique)))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p31.png)
 
 
 # 5.1.3 Missing Values
 
+```{r, eval=F, echo=T}
+def missing_values_table(df):
+        # Total missing values
+        mis_val = df.isnull().sum()
+        
+        # Percentage of missing values
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        # Make a table with the results
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        # Rename the columns
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : 'Missing Values', 1 : '% of Total Values'})
+        
+        # Sort the table by percentage of missing descending
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        '% of Total Values', ascending=False).round(1)
+        
+        # Print some summary information
+        print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"      
+            "There are " + str(mis_val_table_ren_columns.shape[0]) +
+              " columns that have missing values.")
+        
+        # Return the dataframe with missing information
+        return mis_val_table_ren_columns
 
+    
+missing_values_table(trainX_wo_outlier)
+```
 
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p32.png)
+
+```{r, eval=F, echo=T}
+# Deletion of the column yr_renovated because too many missing values.
+
+trainX_wo_outlier = trainX_wo_outlier.drop(['yr_renovated'], axis=1)
+```
+
+```{r, eval=F, echo=T}
+# Impute missing values for column grade with mean values of this columns
+
+trainX_wo_outlier['grade'] = trainX_wo_outlier['grade'].fillna(trainX_wo_outlier['grade'].mean())
+```
+
+```{r, eval=F, echo=T}
+# Check if all missing values are removed or replaced.
+
+missing_values_table(trainX_wo_outlier)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p33.png)
 
 
 
@@ -784,17 +918,159 @@ The further procedure follows the Best Practice approach for ML Model Developmen
 
 
 # 5.1.5 Scaling
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.2 Filter Methods
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
+
 # 5.2.1 Dealing with Highly Correlated Features
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
+
 # 5.2.2 Dealing with Constant Features
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
+
+
 # 5.2.3 Dealing with Duplicate Features
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.3 ML-Model Development
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.3.1 Training
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.3.2 Testing
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.3.2.1 Missing Values
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.3.2.2 Categorical Variables
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.3.2.3 Scaling
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
+
+
 # 5.3.2.4 Test the ML-Model
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.4 Feature Selection
 # 5.4.1 Recursive Feature Elimination
 # 5.4.2 Training
