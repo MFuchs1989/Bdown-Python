@@ -332,6 +332,18 @@ df_MC
 
 ![](/post/2019-03-12-data-manipulation_files/p3p27.png)
 
+You can also simply move the last column to the front. 
+This is often the case, for example, when you make predictions, which you would like to put in the original dataframe and usually in the first place. 
+
+```{r, eval=F, echo=T}
+cols = list(df_MC.columns)
+cols = [cols[-1]] + cols[:-1]
+df_MC = df_MC[cols]
+df_MC
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z6.png)
+
 
 # 4 Modifying Rows
 

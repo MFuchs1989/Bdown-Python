@@ -10,6 +10,8 @@ tags:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <div id="table-of-content" class="section level1">
@@ -188,6 +190,13 @@ df_MC</code></pre>
 df_MC = df_MC[clist]
 df_MC</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p27.png" /></p>
+<p>You can also simply move the last column to the front.
+This is often the case, for example, when you make predictions, which you would like to put in the original dataframe and usually in the first place.</p>
+<pre class="r"><code>cols = list(df_MC.columns)
+cols = [cols[-1]] + cols[:-1]
+df_MC = df_MC[cols]
+df_MC</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z6.png" /></p>
 </div>
 <div id="modifying-rows" class="section level1">
 <h1>4 Modifying Rows</h1>
