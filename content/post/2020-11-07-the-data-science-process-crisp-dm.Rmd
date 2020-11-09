@@ -385,7 +385,6 @@ Impute missing values for column grade
 df_without_outliers['grade'] = df_without_outliers['grade'].fillna(df_without_outliers['grade'].mean())
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p14.png)
 
 Check if all missing values are removed or replaced.
 
@@ -393,7 +392,7 @@ Check if all missing values are removed or replaced.
 missing_values_table(df_without_outliers)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p15.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p14.png)
 
 According to our best practice approach we will assign a new name to the data set.
 
@@ -417,7 +416,7 @@ print('There are ' + str(house_prices_categorical.shape[1]) + ' categorical colu
 house_prices_categorical.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p15.png)
 
 ```{r, eval=F, echo=T}
 print('Values of the variable waterfront:')
@@ -437,7 +436,7 @@ print()
 print(df_without_MV['property_typ'].value_counts())
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png)
 
 Based on the output shown above, the following scale level can be determined for the three categorical variables:
 
@@ -475,7 +474,7 @@ print('New Data Frame:')
 df_without_MV.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png)
 
 
 
@@ -504,7 +503,7 @@ print('New Data Frame:')
 df_without_MV.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png)
 
 
 
@@ -539,7 +538,7 @@ print('New Data Frame:')
 df_without_MV.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png)
 
 Now that the record is clean we can rename it accordingly.
 It is also recommended to save the clean data set at this point.

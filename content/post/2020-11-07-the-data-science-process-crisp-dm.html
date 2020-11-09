@@ -283,10 +283,9 @@ Impute missing values for column grade
 &#39;&#39;&#39;
 
 df_without_outliers[&#39;grade&#39;] = df_without_outliers[&#39;grade&#39;].fillna(df_without_outliers[&#39;grade&#39;].mean())</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p14.png" /></p>
 <p>Check if all missing values are removed or replaced.</p>
 <pre class="r"><code>missing_values_table(df_without_outliers)</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p15.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p14.png" /></p>
 <p>According to our best practice approach we will assign a new name to the data set.</p>
 <pre class="r"><code>df_without_MV = df_without_outliers</code></pre>
 </div>
@@ -301,7 +300,7 @@ print()
 print(&#39;There are &#39; + str(house_prices_categorical.shape[1]) + &#39; categorical columns within dataframe:&#39;)
 
 house_prices_categorical.head()</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p15.png" /></p>
 <pre class="r"><code>print(&#39;Values of the variable waterfront:&#39;)
 print()
 print(df_without_MV[&#39;waterfront&#39;].value_counts())
@@ -317,7 +316,7 @@ print(&#39;--------------------------------------------&#39;)
 print(&#39;Values of the variable property_typ:&#39;)
 print()
 print(df_without_MV[&#39;property_typ&#39;].value_counts())</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png" /></p>
 <p>Based on the output shown above, the following scale level can be determined for the three categorical variables:</p>
 <ul>
 <li>waterfront: binary</li>
@@ -349,7 +348,7 @@ print(&#39;-----------------------------&#39;)
 print()
 print(&#39;New Data Frame:&#39;)
 df_without_MV.head()</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png" /></p>
 <pre class="r"><code>&#39;&#39;&#39;
 In the following the column view is coded.
 Then the newly generated values are inserted into the original dataframe 
@@ -372,7 +371,7 @@ df_without_MV = df_without_MV.drop([&#39;view&#39;], axis=1)
 
 print(&#39;New Data Frame:&#39;)
 df_without_MV.head()</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png" /></p>
 <pre class="r"><code>&#39;&#39;&#39;
 In the following the column property_typ is coded.
 Then the newly generated values are inserted into the original dataframe 
@@ -401,7 +400,7 @@ df_without_MV = df_without_MV.drop([&#39;property_typ&#39;], axis=1)
 
 print(&#39;New Data Frame:&#39;)
 df_without_MV.head()</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png" /></p>
 <p>Now that the record is clean we can rename it accordingly.
 It is also recommended to save the clean data set at this point.</p>
 <pre class="r"><code>final_df_house_prices = df_without_MV
