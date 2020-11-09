@@ -75,6 +75,43 @@ If you are interested in the exact content of this course look ["here"](https://
 
 For this post the dataset *house-prices* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at my ["GitHub Repo"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post).
 
+
+**CRISP-DM**
+
+CRISP-DM stands for Cross Industry Standard Process for Data Mining and describes the six phases in a data mining project.
+
+
++ Phase 1:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
++ Phase 2:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
++ Phase 3:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
++ Phase 4:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
++ Phase 5:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
++ Phase 6:
+
+Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+
+
+
+
+
+
+
+
 # 2 Import the libraries
 
 
