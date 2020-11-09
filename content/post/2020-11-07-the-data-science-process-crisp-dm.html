@@ -1136,30 +1136,138 @@ print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(tes
 </div>
 <div id="out-of-the-box-data" class="section level1">
 <h1>5.5 Out-Of-The-Box-Data</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>So far we have prepared the data accordingly, developed a machine learning model and improved it using feature selection.
+Now we can test it again with completely new data.</p>
+<p>This is, for example, the description of the property I am currently living in.
+I am curious to see what value is predicted for my property.</p>
+<pre class="r"><code>my_property = pd.DataFrame({
+                   &#39;bedrooms&#39;: [3],
+                   &#39;bathrooms&#39;: [2],
+                   &#39;sqft_living&#39;: [180],
+                   &#39;sqft_lot&#39;: [1300],
+                   &#39;floors&#39;: [2],
+                   &#39;waterfront&#39;: [&#39;yes&#39;],
+                   &#39;view&#39;: [&#39;good&#39;],
+                   &#39;condition&#39;: [np.NaN],
+                   &#39;grade&#39;: [4],
+                   &#39;sqft_basement&#39;: [300],
+                   &#39;yr_built&#39;: [1950],
+                   &#39;yr_renovated&#39;: [2001],
+                   &#39;property_typ&#39;: [&#39;apartment&#39;]})
+my_property</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p50.png" /></p>
 </div>
 <div id="missing-values-2" class="section level1">
 <h1>5.5.1 Missing Values</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>First I replace all missing values again. This time the columned condition is filled with NaN and will be replaced by me.</p>
+<pre class="r"><code># Deletion of the column yr_renovated because too many missing values.
+my_property = my_property.drop([&#39;yr_renovated&#39;], axis=1)
+
+# Impute missing values for column condition with with the average values of this column from the training data set.
+mean_condition_reload = pk.load(open(&quot;metrics_MV/mean_condition.pkl&quot;,&#39;rb&#39;))
+my_property[&#39;condition&#39;] = my_property[&#39;condition&#39;].fillna(mean_condition_reload)
+
+my_property_wo_MV = my_property</code></pre>
 </div>
 <div id="cat-var" class="section level1">
 <h1>5.5.2 Cat Var</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>As known, the coding of the categorical variables is also carried out.</p>
+<pre class="r"><code># Load the necessary encoder/dic
+encoder_waterfront_reload = pk.load(open(&quot;encoder/encoder_waterfront.pkl&quot;,&#39;rb&#39;))
+view_dict_reload = pk.load(open(&quot;encoder/view_dict.pkl&quot;,&#39;rb&#39;))
+encoder_property_typ_reload = pk.load(open(&quot;encoder/encoder_property_typ.pkl&quot;,&#39;rb&#39;))
+
+
+
+# Application of the reload LabelBinarizer
+waterfront_encoded = encoder_waterfront_reload.transform(my_property_wo_MV.waterfront.values.reshape(-1,1))
+# Insertion of the coded values into the original data set
+my_property_wo_MV[&#39;waterfront_encoded&#39;] = waterfront_encoded
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop([&#39;waterfront&#39;], axis=1)
+
+
+# Map the reload dictionary on the column view and store the results in a new column
+my_property_wo_MV[&#39;view_encoded&#39;] = my_property_wo_MV.view.map(view_dict_reload)
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop([&#39;view&#39;], axis=1)
+
+
+
+# Application of the reload OneHotEncoder
+OHE = encoder_property_typ_reload.transform(my_property_wo_MV.property_typ.values.reshape(-1,1)).toarray()
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = [&quot;property_typ_&quot; + str(encoder_property_typ_reload.categories_[0][i]) 
+                                      for i in range(len(encoder_property_typ_reload.categories_[0]))])
+# Insertion of the coded values into the original data set
+my_property_wo_MV = pd.concat([my_property_wo_MV, df_OHE], axis=1)
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop([&#39;property_typ&#39;], axis=1)
+
+
+my_property_encoded = my_property_wo_MV</code></pre>
 </div>
 <div id="column-selection-according-rfe-2" class="section level1">
 <h1>5.5.3 Column Selection according RFE</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Next we are going to do the column selection according RFE</p>
+<pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
+
+my_property_encoded = my_property_encoded[filtered_features_RFE_reload]
+
+
+my_property_FS = my_property_encoded</code></pre>
 </div>
 <div id="scaling-2" class="section level1">
 <h1>5.5.4 Scaling</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Last but not least feature scaling.</p>
+<pre class="r"><code># Load the necessary scaler
+scaler2_reload = pk.load(open(&quot;scaler/StandardScaler2.pkl&quot;,&#39;rb&#39;))
+
+
+col_names = my_property_FS.columns
+features = my_property_FS[col_names]
+
+features = scaler2_reload.transform(features.values)
+
+my_property_FS_scaled = pd.DataFrame(features, columns = col_names)</code></pre>
 </div>
 <div id="prediction-of-new-values" class="section level1">
 <h1>5.5.5 Prediction of new Values</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Now I will use the final created model to predict the price for my property.</p>
+<pre class="r"><code># Reload the model
+lm2_reload = pk.load(open(&quot;model/lm2_model.pkl&quot;,&#39;rb&#39;))
+
+# Predict values for my dataset
+y_pred = lm2_reload.predict(my_property_FS_scaled)
+
+print(&#39;The predicted price for my property is: &#39; + str(y_pred))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p51.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
+<p>In this publication I have shown how to prepare data in a meaningful way to extract valuable insights (answers to research questions). I also covered all steps of developing and evaluating a machine learning model.</p>
+<p>Here is an overview how I proceeded with the development of a machine learning model:</p>
+<p><strong>Data pre-processing</strong>
++ Outliers
++ Missing Values
++ Feature Encoding
++ Feature Scaling</p>
+<p><strong>Filter Methods</strong>
++ Highly correlated features
++ Constant features
++ Duplicate features</p>
+<p><strong>Model Traing &amp; Testing</strong>
++ Simple Models (eg. linear Regression)
++ More Complex Models (eg. Random Forest / Neural Networks)
++ Hyperparameter Tuning</p>
+<p><strong>Feature Selection</strong>
++ Slect K Best
++ RFE
++ …</p>
+<p>At this point the training and testing of the algorithms starts again.</p>
+<p><strong>Model Evaluation</strong>
+As soon as an ML-model is created and tested I save the model and its performance metrics.
+This allows me to compare the models with each other later and I can take out the model with the best performance.</p>
 </div>
 <div id="data-science-best-practice-guidlines-for-ml-model-development" class="section level1">
 <h1>7 Data Science Best Practice Guidlines for ML-Model Development</h1>

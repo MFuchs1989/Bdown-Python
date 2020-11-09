@@ -1590,74 +1590,175 @@ As we have seen, the data preprocessing has taken the most time. Now comes the b
 
 # 5.5 Out-Of-The-Box-Data
 
+So far we have prepared the data accordingly, developed a machine learning model and improved it using feature selection.
+Now we can test it again with completely new data. 
 
+This is, for example, the description of the property I am currently living in. 
+I am curious to see what value is predicted for my property. 
 
 ```{r, eval=F, echo=T}
-
+my_property = pd.DataFrame({
+                   'bedrooms': [3],
+                   'bathrooms': [2],
+                   'sqft_living': [180],
+                   'sqft_lot': [1300],
+                   'floors': [2],
+                   'waterfront': ['yes'],
+                   'view': ['good'],
+                   'condition': [np.NaN],
+                   'grade': [4],
+                   'sqft_basement': [300],
+                   'yr_built': [1950],
+                   'yr_renovated': [2001],
+                   'property_typ': ['apartment']})
+my_property
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
-
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p50.png)
 
 
 # 5.5.1 Missing Values
 
-
+First I replace all missing values again. This time the columned condition is filled with NaN and will be replaced by me.
 
 ```{r, eval=F, echo=T}
+# Deletion of the column yr_renovated because too many missing values.
+my_property = my_property.drop(['yr_renovated'], axis=1)
 
+# Impute missing values for column condition with with the average values of this column from the training data set.
+mean_condition_reload = pk.load(open("metrics_MV/mean_condition.pkl",'rb'))
+my_property['condition'] = my_property['condition'].fillna(mean_condition_reload)
+
+my_property_wo_MV = my_property
 ```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
-
 
 
 # 5.5.2 Cat Var
 
+As known, the coding of the categorical variables is also carried out. 
 
 ```{r, eval=F, echo=T}
+# Load the necessary encoder/dic
+encoder_waterfront_reload = pk.load(open("encoder/encoder_waterfront.pkl",'rb'))
+view_dict_reload = pk.load(open("encoder/view_dict.pkl",'rb'))
+encoder_property_typ_reload = pk.load(open("encoder/encoder_property_typ.pkl",'rb'))
 
+
+
+# Application of the reload LabelBinarizer
+waterfront_encoded = encoder_waterfront_reload.transform(my_property_wo_MV.waterfront.values.reshape(-1,1))
+# Insertion of the coded values into the original data set
+my_property_wo_MV['waterfront_encoded'] = waterfront_encoded
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop(['waterfront'], axis=1)
+
+
+# Map the reload dictionary on the column view and store the results in a new column
+my_property_wo_MV['view_encoded'] = my_property_wo_MV.view.map(view_dict_reload)
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop(['view'], axis=1)
+
+
+
+# Application of the reload OneHotEncoder
+OHE = encoder_property_typ_reload.transform(my_property_wo_MV.property_typ.values.reshape(-1,1)).toarray()
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = ["property_typ_" + str(encoder_property_typ_reload.categories_[0][i]) 
+                                      for i in range(len(encoder_property_typ_reload.categories_[0]))])
+# Insertion of the coded values into the original data set
+my_property_wo_MV = pd.concat([my_property_wo_MV, df_OHE], axis=1)
+# Delete the original column to avoid duplication
+my_property_wo_MV = my_property_wo_MV.drop(['property_typ'], axis=1)
+
+
+my_property_encoded = my_property_wo_MV
 ```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
 
 
 # 5.5.3 Column Selection according RFE
 
+Next we are going to do the column selection according RFE
 
 ```{r, eval=F, echo=T}
+filtered_features_RFE_reload = pk.load(open("feature_selection_RFE/filtered_features_RFE.pkl",'rb'))
 
+my_property_encoded = my_property_encoded[filtered_features_RFE_reload]
+
+
+my_property_FS = my_property_encoded
 ```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
 
 
 # 5.5.4 Scaling
 
+Last but not least feature scaling.
 
 ```{r, eval=F, echo=T}
+# Load the necessary scaler
+scaler2_reload = pk.load(open("scaler/StandardScaler2.pkl",'rb'))
 
+
+col_names = my_property_FS.columns
+features = my_property_FS[col_names]
+
+features = scaler2_reload.transform(features.values)
+
+my_property_FS_scaled = pd.DataFrame(features, columns = col_names)
 ```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
 
 
 # 5.5.5 Prediction of new Values
 
-```{r, eval=F, echo=T}
+Now I will use the final created model to predict the price for my property.
 
+```{r, eval=F, echo=T}
+# Reload the model
+lm2_reload = pk.load(open("model/lm2_model.pkl",'rb'))
+
+# Predict values for my dataset
+y_pred = lm2_reload.predict(my_property_FS_scaled)
+
+print('The predicted price for my property is: ' + str(y_pred))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p51.png)
 
 
 # 6 Conclusion
+
+In this publication I have shown how to prepare data in a meaningful way to extract valuable insights (answers to research questions). I also covered all steps of developing and evaluating a machine learning model. 
+
+Here is an overview how I proceeded with the development of a machine learning model:
+
+**Data pre-processing**
++ Outliers
++ Missing Values
++ Feature Encoding
++ Feature Scaling
+
+**Filter Methods**
++ Highly correlated features
++ Constant features
++ Duplicate features
+
+**Model Traing & Testing**
++ Simple Models (eg. linear Regression)
++ More Complex Models (eg. Random Forest / Neural Networks)
++ Hyperparameter Tuning
+
+**Feature Selection**
++ Slect K Best
++ RFE
++ ...
+
+At this point the training and testing of the algorithms starts again. 
+
+
+**Model Evaluation**
+As soon as an ML-model is created and tested I save the model and its performance metrics. 
+This allows me to compare the models with each other later and I can take out the model with the best performance. 
+
+
 # 7 Data Science Best Practice Guidlines for ML-Model Development
 # 8 Limitations
 
