@@ -114,6 +114,8 @@ print(&#39;Difference between new and old dataframe: &#39; + str(len(df) - len(d
 print(&#39;----------------------------------------------------------------------------------------------------&#39;)
 print(&#39;Length of unique outlier list: &#39; + str(len(outlier_list_final)))</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p9z3.png" /></p>
+<p>Important!</p>
+<p>I recommend, if you remove outlier before a train test split when developing machine learning algorithms, that the index of the newly generated records is reassigned, otherwise you might have problems with joining.</p>
 </div>
 <div id="iqr-method" class="section level1">
 <h1>5 IQR method</h1>

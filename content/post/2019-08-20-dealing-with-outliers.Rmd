@@ -201,6 +201,11 @@ print('Length of unique outlier list: ' + str(len(outlier_list_final)))
 
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p9z3.png)
 
+Important!
+
+I recommend, if you remove outlier before a train test split when developing machine learning algorithms, that the index of the newly generated records is reassigned, otherwise you might have problems with joining. 
+
+
 
 # 5 IQR method
 
