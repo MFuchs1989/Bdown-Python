@@ -1001,51 +1001,162 @@ print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(tes
 </div>
 <div id="feature-selection" class="section level1">
 <h1>5.4 Feature Selection</h1>
+<p>Now that we have successfully developed a ml model, we try to improve it again by selecting only the most important features (via RFE).</p>
 </div>
 <div id="recursive-feature-elimination" class="section level1">
 <h1>5.4.1 Recursive Feature Elimination</h1>
+<pre class="r"><code>lr = LinearRegression()
+
+rfe = RFE(lr, n_features_to_select=10)
+rfe.fit(trainX_final, trainY_final)</code></pre>
+<pre class="r"><code>Columns = trainX_final.columns
+RFE_support = rfe.support_
+RFE_ranking = rfe.ranking_
+
+dataset = pd.DataFrame({&#39;Columns&#39;: Columns, &#39;RFE_support&#39;: RFE_support, &#39;RFE_ranking&#39;: RFE_ranking}, columns=[&#39;Columns&#39;, &#39;RFE_support&#39;, &#39;RFE_ranking&#39;])
+dataset</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p44.png" /></p>
+<pre class="r"><code>df = dataset[(dataset[&quot;RFE_support&quot;] == True) &amp; (dataset[&quot;RFE_ranking&quot;] == 1)]
+filtered_features = df[&#39;Columns&#39;]
+filtered_features</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p45.png" /></p>
+<pre class="r"><code>pk.dump(filtered_features, open(&#39;feature_selection_RFE/filtered_features_RFE.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
 <div id="training-1" class="section level1">
 <h1>5.4.2 Training</h1>
+<p>Due to the fact that we will now consider a new number of variables, we have to reapply and save the scaler. If we don’t do that, we will have problems later on to transform the data back to make it readable.</p>
+<p>The scaler remembers the number of columns and the order of the columns. For example, you can not scale 5 columns and only try to transform 4 back. If you take this into account in the preparation, you often save yourself additional work later.</p>
+<p>For this step we reload the anticipatory stored data set trainX_encoded, apply the filter from
+feature selection RFE (filtered_features_RFE) to it and rescale it (and of course save the new scaler again).</p>
+<pre class="r"><code>trainX_encoded_reload = pd.read_csv(&quot;dataframes/trainX_encoded.csv&quot;)
+trainX_encoded_reload.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p46.png" /></p>
 </div>
 <div id="column-selection-according-rfe" class="section level1">
 <h1>5.4.2.1 Column Selection according RFE</h1>
+<p>As announced shortly before, we load the filter from RFE and apply it.</p>
+<pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
+
+trainX_FS = trainX_encoded_reload[filtered_features_RFE_reload]</code></pre>
 </div>
 <div id="new-scaling" class="section level1">
 <h1>5.4.2.2 New Scaling</h1>
+<pre class="r"><code>col_names = trainX_FS.columns
+features = trainX_FS[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+
+trainX_FS_scaled = pd.DataFrame(features, columns = col_names)
+
+
+
+pk.dump(scaler, open(&#39;scaler/StandardScaler2.pkl&#39;, &#39;wb&#39;))</code></pre>
+<p>As a last step, we rename the data sets for x and y again and save them.</p>
+<pre class="r"><code>trainX_final2 = trainX_FS_scaled
+trainY_final2 = trainY_final
+
+trainX_final2.to_csv(&#39;dataframes/trainX_final2.csv&#39;, index=False)
+trainY_final2.to_csv(&#39;dataframes/trainY_final2.csv&#39;, index=False)</code></pre>
 </div>
 <div id="fit-the-new-ml-model" class="section level1">
 <h1>5.4.2.3 Fit the new ML-Model</h1>
+<p>Here a new training starts due to the data situation after feature selection.</p>
+<pre class="r"><code>lm2 = LinearRegression()
+lm2.fit(trainX_final2, trainY_final2)
+
+print(&#39;R² Score of fitted lm2-model: &#39; + str(lm2.score(trainX_final2, trainY_final2)))
+
+pk.dump(lm2, open(&#39;model/lm2_model.pkl&#39;, &#39;wb&#39;))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p47.png" /></p>
 </div>
 <div id="testing-1" class="section level1">
 <h1>5.4.3 Testing</h1>
+<p>As in the training part after RFE we have to select the column via the RFE filter and rescale it.</p>
+<pre class="r"><code>testX_encoded_reload = pd.read_csv(&quot;dataframes/testX_encoded.csv&quot;)
+testX_encoded_reload.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p48.png" /></p>
 </div>
 <div id="column-selection-according-rfe-1" class="section level1">
 <h1>5.4.3.1 Column Selection according RFE</h1>
+<p>As announced shortly before, we load the filter from RFE and apply it.</p>
+<pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
+
+testX_FS = testX_encoded_reload[filtered_features_RFE_reload]</code></pre>
 </div>
 <div id="new-scaling-1" class="section level1">
 <h1>5.4.3.2 New Scaling</h1>
+<p>Like the coding, the testX data must be scaled using the same metrics calculated from the training data.</p>
+<pre class="r"><code># Load the necessary scaler
+scaler2_reload = pk.load(open(&quot;scaler/StandardScaler2.pkl&quot;,&#39;rb&#39;))
+
+
+col_names = testX_FS.columns
+features = testX_FS[col_names]
+
+features = scaler2_reload.transform(features.values)
+
+testX_FS_scaled = pd.DataFrame(features, columns = col_names)</code></pre>
+<pre class="r"><code>testX_final2 = testX_FS_scaled
+testY_final2 = testY_final
+
+testX_final2.to_csv(&#39;dataframes/testX_final.csv&#39;, index=False)
+testY_final2.to_csv(&#39;dataframes/testY_final.csv&#39;, index=False)</code></pre>
 </div>
 <div id="test-the-new-ml-model" class="section level1">
 <h1>5.4.3.3 Test the new ML-Model</h1>
+<p>Now we will test the newly created lm model (based on feature selection).</p>
+<pre class="r"><code># Reload the model
+lm2_reload = pk.load(open(&quot;model/lm2_model.pkl&quot;,&#39;rb&#39;))
+
+# Predict values for test dataset
+y_pred = lm2_reload.predict(testX_final2)
+
+
+
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = [&#39;values_predicted&#39;]
+actual_vs_predicted = pd.concat([testY_final2, y_pred_df], axis=1)
+
+df1 = actual_vs_predicted.head(30)
+df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
+plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
+plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
+plt.show()
+
+
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY_final2, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY_final2, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY_final2, y_pred)))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p49.png" /></p>
+<p>As we can see from the Mean Absolut Error (MAE), the lm2 model has improved slightly compared to the first model. The same applies to the Mean Squared Error as well as Root Mean Squared Error.</p>
+<p>At this point we now have completely prepared training and test data on which the performance of various algorithms can be tested.My recommendation at this point is to always start with ‘simple’ algorithms (like the linear regression model) and then to use more and more complex algorithms (random forest, ensemble methods up to neural networks).</p>
+<p>Furthermore you can use hyperparameter tuning (with grid-search) to improve the performance.</p>
+<p>As we have seen, the data preprocessing has taken the most time. Now comes the best part, the magic with different machnie learning models.</p>
 </div>
 <div id="out-of-the-box-data" class="section level1">
 <h1>5.5 Out-Of-The-Box-Data</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="missing-values-2" class="section level1">
 <h1>5.5.1 Missing Values</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="cat-var" class="section level1">
 <h1>5.5.2 Cat Var</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="column-selection-according-rfe-2" class="section level1">
 <h1>5.5.3 Column Selection according RFE</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="scaling-2" class="section level1">
 <h1>5.5.4 Scaling</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="prediction-of-new-values" class="section level1">
 <h1>5.5.5 Prediction of new Values</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

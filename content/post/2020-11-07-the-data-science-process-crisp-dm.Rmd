@@ -1384,21 +1384,279 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY_final
 
 
 # 5.4 Feature Selection
+
+Now that we have successfully developed a ml model, we try to improve it again by selecting only the most important features (via RFE).
+
 # 5.4.1 Recursive Feature Elimination
+
+```{r, eval=F, echo=T}
+lr = LinearRegression()
+
+rfe = RFE(lr, n_features_to_select=10)
+rfe.fit(trainX_final, trainY_final)
+```
+
+
+```{r, eval=F, echo=T}
+Columns = trainX_final.columns
+RFE_support = rfe.support_
+RFE_ranking = rfe.ranking_
+
+dataset = pd.DataFrame({'Columns': Columns, 'RFE_support': RFE_support, 'RFE_ranking': RFE_ranking}, columns=['Columns', 'RFE_support', 'RFE_ranking'])
+dataset
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p44.png)
+
+
+```{r, eval=F, echo=T}
+df = dataset[(dataset["RFE_support"] == True) & (dataset["RFE_ranking"] == 1)]
+filtered_features = df['Columns']
+filtered_features
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p45.png)
+
+
+
+```{r, eval=F, echo=T}
+pk.dump(filtered_features, open('feature_selection_RFE/filtered_features_RFE.pkl', 'wb'))
+```
+
+
 # 5.4.2 Training
+
+Due to the fact that we will now consider a new number of variables, we have to reapply and save the scaler. If we don't do that, we will have problems later on to transform the data back to make it readable. 
+
+The scaler remembers the number of columns and the order of the columns. For example, you can not scale 5 columns and only try to transform 4 back. If you take this into account in the preparation, you often save yourself additional work later.  
+
+For this step we reload the anticipatory stored data set trainX_encoded, apply the filter from 
+feature selection RFE (filtered_features_RFE) to it and rescale it (and of course save the new scaler again).
+
+
+```{r, eval=F, echo=T}
+trainX_encoded_reload = pd.read_csv("dataframes/trainX_encoded.csv")
+trainX_encoded_reload.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p46.png)
+
+
 # 5.4.2.1 Column Selection according RFE
+
+As announced shortly before, we load the filter from RFE and apply it.
+
+```{r, eval=F, echo=T}
+filtered_features_RFE_reload = pk.load(open("feature_selection_RFE/filtered_features_RFE.pkl",'rb'))
+
+trainX_FS = trainX_encoded_reload[filtered_features_RFE_reload]
+```
+
+
 # 5.4.2.2 New Scaling
+
+
+```{r, eval=F, echo=T}
+col_names = trainX_FS.columns
+features = trainX_FS[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+
+trainX_FS_scaled = pd.DataFrame(features, columns = col_names)
+
+
+
+pk.dump(scaler, open('scaler/StandardScaler2.pkl', 'wb'))
+```
+
+As a last step, we rename the data sets for x and y again and save them.
+
+```{r, eval=F, echo=T}
+trainX_final2 = trainX_FS_scaled
+trainY_final2 = trainY_final
+
+trainX_final2.to_csv('dataframes/trainX_final2.csv', index=False)
+trainY_final2.to_csv('dataframes/trainY_final2.csv', index=False)
+```
+
+
 # 5.4.2.3 Fit the new ML-Model
+
+Here a new training starts due to the data situation after feature selection.
+
+```{r, eval=F, echo=T}
+lm2 = LinearRegression()
+lm2.fit(trainX_final2, trainY_final2)
+
+print('R² Score of fitted lm2-model: ' + str(lm2.score(trainX_final2, trainY_final2)))
+
+pk.dump(lm2, open('model/lm2_model.pkl', 'wb'))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p47.png)
+
+
 # 5.4.3 Testing
+
+As in the training part after RFE we have to select the column via the RFE filter and rescale it.
+
+```{r, eval=F, echo=T}
+testX_encoded_reload = pd.read_csv("dataframes/testX_encoded.csv")
+testX_encoded_reload.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p48.png)
+
+
 # 5.4.3.1 Column Selection according RFE
+
+As announced shortly before, we load the filter from RFE and apply it.
+
+```{r, eval=F, echo=T}
+filtered_features_RFE_reload = pk.load(open("feature_selection_RFE/filtered_features_RFE.pkl",'rb'))
+
+testX_FS = testX_encoded_reload[filtered_features_RFE_reload]
+```
+
+
 # 5.4.3.2 New Scaling
+
+Like the coding, the testX data must be scaled using the same metrics calculated from the training data.
+
+```{r, eval=F, echo=T}
+# Load the necessary scaler
+scaler2_reload = pk.load(open("scaler/StandardScaler2.pkl",'rb'))
+
+
+col_names = testX_FS.columns
+features = testX_FS[col_names]
+
+features = scaler2_reload.transform(features.values)
+
+testX_FS_scaled = pd.DataFrame(features, columns = col_names)
+```
+
+
+```{r, eval=F, echo=T}
+testX_final2 = testX_FS_scaled
+testY_final2 = testY_final
+
+testX_final2.to_csv('dataframes/testX_final.csv', index=False)
+testY_final2.to_csv('dataframes/testY_final.csv', index=False)
+```
+
+
+
 # 5.4.3.3 Test the new ML-Model
+
+Now we will test the newly created lm model (based on feature selection). 
+
+```{r, eval=F, echo=T}
+# Reload the model
+lm2_reload = pk.load(open("model/lm2_model.pkl",'rb'))
+
+# Predict values for test dataset
+y_pred = lm2_reload.predict(testX_final2)
+
+
+
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = ['values_predicted']
+actual_vs_predicted = pd.concat([testY_final2, y_pred_df], axis=1)
+
+df1 = actual_vs_predicted.head(30)
+df1.plot(kind='bar',figsize=(10,6))
+plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+plt.show()
+
+
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY_final2, y_pred))  
+print('Mean Squared Error:', metrics.mean_squared_error(testY_final2, y_pred))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY_final2, y_pred)))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p49.png)
+
+As we can see from the Mean Absolut Error (MAE), the lm2 model has improved slightly compared to the first model. The same applies to the Mean Squared Error as well as Root Mean Squared Error.
+
+At this point we now have completely prepared training and test data on which the performance of various algorithms can be tested.My recommendation at this point is to always start with 'simple' algorithms (like the linear regression model) and then to use more and more complex algorithms (random forest, ensemble methods up to neural networks).
+
+Furthermore you can use hyperparameter tuning (with grid-search) to improve the performance. 
+
+As we have seen, the data preprocessing has taken the most time. Now comes the best part, the magic with different machnie learning models. 
+
+
 # 5.5 Out-Of-The-Box-Data
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.5.1 Missing Values
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
 # 5.5.2 Cat Var
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.5.3 Column Selection according RFE
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.5.4 Scaling
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.5.5 Prediction of new Values
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 6 Conclusion
 # 7 Data Science Best Practice Guidlines for ML-Model Development
 # 8 Limitations
