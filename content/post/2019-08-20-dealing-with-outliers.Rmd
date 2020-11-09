@@ -143,39 +143,40 @@ outlier_list
 To get our dataframe tidy, we have to create a list with the detected outliers and remove them from the original dataframe.
 
 ```{r, eval=F, echo=T}
-columns_new = ['Rows_to_exclude']
-
-df_of_outlier = pd.DataFrame(outlier_list, columns=columns_new)
-
+df_of_outlier = outlier_list.iloc[0]
+df_of_outlier = pd.DataFrame(df_of_outlier)
+df_of_outlier.columns = ['Rows_to_exclude']
 df_of_outlier
 ```
-
 
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p8.png)
 
 
 
 ```{r, eval=F, echo=T}
-df_of_outlier['Rows_to_exclude'] = df_of_outlier['Rows_to_exclude'].astype(str)
-df_of_outlier.Rows_to_exclude = df_of_outlier.Rows_to_exclude.map(lambda x: x.split(',')[0])
-df_of_outlier = df_of_outlier.Rows_to_exclude.str.extract('(\d+)')
-df_of_outlier.columns = ['Rows_to_exclude']
-df_of_outlier['Rows_to_exclude'] = df_of_outlier['Rows_to_exclude'].astype(int)
-outlier_list_final = df_of_outlier['Rows_to_exclude'].tolist()
+outlier_list_final = df_of_outlier['Rows_to_exclude'].to_numpy()
 outlier_list_final
 ```
 
-![](/post/2019-08-20-dealing-with-outliers_files/p17p9.png)
+![](/post/2019-08-20-dealing-with-outliers_files/p17p9z1.png)
 
 ```{r, eval=F, echo=T}
-filter_rows_to_exclude = df.index.isin(outlier_list_final)
+outlier_list_final = np.concatenate( outlier_list_final, axis=0 )
+outlier_list_final
 ```
 
+![](/post/2019-08-20-dealing-with-outliers_files/p17p9z2.png)
+
+
+
 ```{r, eval=F, echo=T}
-df_without_outliers = df[~filter_rows_to_exclude]
+filter_rows_to_excluse = df.index.isin(outlier_list_final)
+
+df_without_outliers = df[~filter_rows_to_excluse]
 
 df_without_outliers
 ```
+
 ![](/post/2019-08-20-dealing-with-outliers_files/p17p10.png)
 
 
@@ -188,7 +189,17 @@ df_without_outliers.shape
 
 As we can see the two outliers were removed from the dataframe.
 
+```{r, eval=F, echo=T}
+print('Length of original dataframe: ' + str(len(df)))
 
+print('Length of new dataframe without outliers: ' + str(len(df_without_outliers)))
+print('----------------------------------------------------------------------------------------------------')
+print('Difference between new and old dataframe: ' + str(len(df) - len(df_without_outliers)))
+print('----------------------------------------------------------------------------------------------------')
+print('Length of unique outlier list: ' + str(len(outlier_list_final)))
+```
+
+![](/post/2019-08-20-dealing-with-outliers_files/p17p9z3.png)
 
 
 # 5 IQR method
