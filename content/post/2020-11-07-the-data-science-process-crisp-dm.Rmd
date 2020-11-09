@@ -81,29 +81,29 @@ For this post the dataset *house-prices* from the statistic platform ["Kaggle"](
 CRISP-DM stands for Cross Industry Standard Process for Data Mining and describes the six phases in a data mining project.
 
 
-+ Phase 1:
++ Phase 1 Business Understanding:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
 
-+ Phase 2:
++ Phase 2 Data Understanding:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+In the context of data understanding, an attempt is made to gain an initial overview of the available data and its quality. An analysis and evaluation of the data quality is carried out. Problems with the quality of the available data in relation to the tasks defined in the previous phase must be identified.
 
-+ Phase 3:
++ Phase 3 Data Preparation:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+The purpose of data preparation is to create a final data set that forms the basis for the next phase of modeling.
 
-+ Phase 4:
++ Phase 4 Modeling:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+Within the scope of modeling, the data mining methods suitable for the task are applied to the data set created in the data preparation. Typical for this phase are the optimization of parameters and the creation of several models.
 
-+ Phase 5:
++ Phase 5 Evaluation:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+The evaluation ensures an exact comparison of the created data models with the task at hand and selects the most suitable model.
 
-+ Phase 6:
++ Phase 6 Deployment:
 
-Business Understanding: In the business understanding phase, it is important to define the concrete goals and requirements for data mining. The result of this phase is the formulation of the task and the description of the planned rough procedure.
+The final phase of the CRISP-DM is the evaluation. In this phase, the obtained results are processed in order to present them and feed them into the decision process of the client.
 
 
 
