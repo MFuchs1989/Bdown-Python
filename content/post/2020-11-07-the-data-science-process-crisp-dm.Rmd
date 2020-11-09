@@ -1783,23 +1783,67 @@ The complexity of the contents is constantly increasing.
 
 
 Here we see a simple process for developing an algorithm for machine learning.
-Neither a filter method has given us a variable to exclude, nor have we used a feature selection.
+Neither a filter method has given us a variable to exclude nor have we used a feature selection.
 
 
 
+**Development with Filter Methods**
+
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s3.png)
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s6.png)
+
+
+Here we see an overview where the filter methods have given us the option to exclude further variables. 
+
+For the trainings part this means that we have to access the stored dataset 'trainX_encoded' to apply the given filters and to do new feature scaling. 
+
+In the test part we are already richer in this information and can apply the filter methods before scaling. 
 
 
 
+**Development with Feature Selection**
 
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s4.png)
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s6.png)
+
+
+Here we see an architecture where we did feature selection after a training. 
+This time a saved data set has to be reloaded and edited for the test part.
+
+
+**Development with Filter Methods and Feature Selection**
+
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s5.png)
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s6.png)
+
+
+Here we see a final architecture where we have applied filter methods and excluded variables. Furthermore we have done feature selection after the first training.
+
+The diagram shows which stored data sets have to be used to continue working and which naming conventions have to be applied to get a consistent and clear structure. 
+In this way you always have a good overview and don't get confused with the different objects / datasets etc. but always know where you are and in what state the dataset is. 
+
+The colored arrows show which metrics from which step were used in the test part and which data sets do not need to be renamed for which step (gray fields) because renaming would be pointless at this point. 
+We can also see in the overview at which position (red stars) it is recommended to save the data set separately. This does not make sense for the first diagram (simple development), but if feature selection is still running you will be thankful that you made a backup copy at this point. 
+
+I hope the overviews help to make the development process easier or at least clearer for other data scientists in the future.
+
+As already mentioned in some places in this publication, these guidelines can also be downloaded here: ["DS Best Practice Guidlines for ML Model Development"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf).
 
 
 # 8 Limitations
 
+As in every publication there are a few limitations to mention. 
+
++ No statistical linear model was created to find out which predictors are significant.
++ No further machine learning algorithms were trained for regression problems including hypter parameter tuning and tested to see if they might offer better performance. 
++ Not for all predictors average values (for later use) were saved. 
 
 
-```{r, eval=F, echo=T}
 
-```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
 
