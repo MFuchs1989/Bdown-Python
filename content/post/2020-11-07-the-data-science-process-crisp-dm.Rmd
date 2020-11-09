@@ -10,11 +10,52 @@ tags:
 ---
 
 
+# Table of Content
 
-**This post is still in the making**
++ 1 Introduction
 
 
 
+
+
+For this post the dataset *house-prices* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at my ["GitHub Repo"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post).
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79s1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
+
+
+
+
 
