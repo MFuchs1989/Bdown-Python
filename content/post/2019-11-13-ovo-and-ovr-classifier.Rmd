@@ -11,7 +11,7 @@ tags:
 
 
 
-#Table of Content
+# Table of Content
 
 + 1 Introduction
 + 2 Background information on OvO and OvR
@@ -27,7 +27,7 @@ tags:
 + 6 Conclusion
 
 
-#1 Introduction
+# 1 Introduction
 
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p1.png)
 
@@ -37,7 +37,7 @@ We already know from my previous posts how to train a binary classifier using ["
 For this post the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
 
 
-#2 Background information on OvO and OvR
+# 2 Background information on OvO and OvR
 
 First of all, let me briefly explain the idea behind One-vs-One and One-vs-Rest classification. Say we have a classification problem and there are N distinct classes. In this case, we’ll have to train a multiple classifier instead of a binary one.
 
@@ -64,7 +64,7 @@ Unlike One-vs-One, One-vs-Rest produced the same amount of learned models with t
 The only thing we really have to do now compared to multiple classifiers is to run N binary classifiers from just one. And that's it.
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -101,11 +101,11 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
 
-#4 OvO/OvR with Logistic Regression
+# 4 OvO/OvR with Logistic Regression
 
 Using OvO / OvR is fairly simple. See the usual training procedure here with Logistic Regression:
 
-#4.1 One-vs-Rest
+# 4.1 One-vs-Rest
 
 
 ```{r, eval=F, echo=T}
@@ -120,7 +120,7 @@ print('Accuracy of OvR Classifier: {:.2f}'.format(accuracy_score(testY, y_pred))
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p3.png)
 
 
-#4.2 One-vs-One
+# 4.2 One-vs-One
 
 
 ```{r, eval=F, echo=T}
@@ -134,7 +134,7 @@ print('Accuracy of OvO Classifier: {:.2f}'.format(accuracy_score(testY, y_pred))
 
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p4.png)
 
-#4.3 Grid Search
+# 4.3 Grid Search
 
 We even can use grid search to determine optimal hyperparameter:
 
@@ -207,12 +207,12 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p10.png)
 
 
-#5 OvO/OvR with SVM
+# 5 OvO/OvR with SVM
 
 The same procedure works with SVM as well.
 
 
-#5.1 One-vs-Rest
+# 5.1 One-vs-Rest
 
 
 ```{r, eval=F, echo=T}
@@ -227,7 +227,7 @@ print('Accuracy of OvR Classifier with SVC: {:.2f}'.format(accuracy_score(testY,
 
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p11.png)
 
-#5.2 One-vs-One
+# 5.2 One-vs-One
 
 
 ```{r, eval=F, echo=T}
@@ -242,7 +242,7 @@ print('Accuracy of OvO Classifier with SVC: {:.2f}'.format(accuracy_score(testY,
 
 ![](/post/2019-11-13-ovo-and-ovr-classifier_files/p34p12.png)
 
-#5.3 Grid Search
+# 5.3 Grid Search
 
 GridSearch also works with this method:
 
@@ -279,7 +279,7 @@ grid.fit(trainX, trainY)
 
 
 
-#6 Conclusion
+# 6 Conclusion
 
 
 This publication showed how to make binary classifiers (such as LogReg or SVM) multiple using the OvO and OvR method.
