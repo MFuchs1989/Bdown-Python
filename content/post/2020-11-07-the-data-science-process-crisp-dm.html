@@ -292,7 +292,121 @@ df_without_outliers[&#39;grade&#39;] = df_without_outliers[&#39;grade&#39;].fill
 </div>
 <div id="handling-categorical-variables" class="section level1">
 <h1>4.1.3 Handling Categorical Variables</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Now we are going to handle the categorical variables.</p>
+<pre class="r"><code>obj_col = [&#39;object&#39;]
+object_columns = list(df_without_MV.select_dtypes(include=obj_col).columns)
+house_prices_categorical = df_without_MV[object_columns]
+
+print()
+print(&#39;There are &#39; + str(house_prices_categorical.shape[1]) + &#39; categorical columns within dataframe:&#39;)
+
+house_prices_categorical.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png" /></p>
+<pre class="r"><code>print(&#39;Values of the variable waterfront:&#39;)
+print()
+print(df_without_MV[&#39;waterfront&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable view:&#39;)
+print()
+print(df_without_MV[&#39;view&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable property_typ:&#39;)
+print()
+print(df_without_MV[&#39;property_typ&#39;].value_counts())</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png" /></p>
+<p>Based on the output shown above, the following scale level can be determined for the three categorical variables:</p>
+<ul>
+<li>waterfront: binary</li>
+<li>view: ordinal</li>
+<li>property_typ: nominal</li>
+</ul>
+<p>The variables will be coded accordingly in the following.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+In the following the column waterfront is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+encoder_waterfront = LabelBinarizer()
+
+# Application of the LabelBinarizer
+waterfront_encoded = encoder_waterfront.fit_transform(df_without_MV.waterfront.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+df_without_MV[&#39;waterfront_encoded&#39;] = waterfront_encoded
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;waterfront&#39;], axis=1)
+
+# Getting the exact coding and show new dataframe
+print(encoder_waterfront.classes_)
+print(&#39;Codierung: no=0, yes=1&#39;)
+print(&#39;-----------------------------&#39;)
+print()
+print(&#39;New Data Frame:&#39;)
+df_without_MV.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+In the following the column view is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+# Create a dictionary how the observations should be coded
+view_dict = {&#39;bad&#39; : 0,
+             &#39;medium&#39; : 1,
+             &#39;good&#39; : 2,
+             &#39;very_good&#39; : 3,
+             &#39;excellent&#39; : 4}
+
+# Map the dictionary on the column view and store the results in a new column
+df_without_MV[&#39;view_encoded&#39;] = df_without_MV.view.map(view_dict)
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;view&#39;], axis=1)
+
+
+print(&#39;New Data Frame:&#39;)
+df_without_MV.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+In the following the column property_typ is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+encoder_property_typ = OneHotEncoder()
+
+# Application of the OneHotEncoder
+OHE = encoder_property_typ.fit_transform(df_without_MV.property_typ.values.reshape(-1,1)).toarray()
+
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = [&quot;property_typ_&quot; + str(encoder_property_typ.categories_[0][i]) 
+                                     for i in range(len(encoder_property_typ.categories_[0]))])
+
+
+
+
+# Insertion of the coded values into the original data set
+df_without_MV = pd.concat([df_without_MV, df_OHE], axis=1)
+
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;property_typ&#39;], axis=1)
+
+
+print(&#39;New Data Frame:&#39;)
+df_without_MV.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png" /></p>
+<p>Now that the record is clean we can rename it accordingly.
+It is also recommended to save the clean data set at this point.</p>
+<pre class="r"><code>final_df_house_prices = df_without_MV
+
+final_df_house_prices.to_csv(&#39;dataframes/final_df_house_prices.csv&#39;, index=False)</code></pre>
 </div>
 <div id="research-question-1" class="section level1">
 <h1>4.2 Research Question 1</h1>

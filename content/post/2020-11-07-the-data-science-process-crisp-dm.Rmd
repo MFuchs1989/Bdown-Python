@@ -404,13 +404,153 @@ df_without_MV = df_without_outliers
 
 # 4.1.3 Handling Categorical Variables
 
+Now we are going to handle the categorical variables.
+
+```{r, eval=F, echo=T}
+obj_col = ['object']
+object_columns = list(df_without_MV.select_dtypes(include=obj_col).columns)
+house_prices_categorical = df_without_MV[object_columns]
+
+print()
+print('There are ' + str(house_prices_categorical.shape[1]) + ' categorical columns within dataframe:')
+
+house_prices_categorical.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p16.png)
+
+```{r, eval=F, echo=T}
+print('Values of the variable waterfront:')
+print()
+print(df_without_MV['waterfront'].value_counts())
+
+print('--------------------------------------------')
+
+print('Values of the variable view:')
+print()
+print(df_without_MV['view'].value_counts())
+
+print('--------------------------------------------')
+
+print('Values of the variable property_typ:')
+print()
+print(df_without_MV['property_typ'].value_counts())
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p17.png)
+
+Based on the output shown above, the following scale level can be determined for the three categorical variables:
+
++ waterfront: binary
++ view: ordinal
++ property_typ: nominal
+
+The variables will be coded accordingly in the following.
 
 
 ```{r, eval=F, echo=T}
+'''
+In the following the column waterfront is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+'''
 
+encoder_waterfront = LabelBinarizer()
+
+# Application of the LabelBinarizer
+waterfront_encoded = encoder_waterfront.fit_transform(df_without_MV.waterfront.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+df_without_MV['waterfront_encoded'] = waterfront_encoded
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop(['waterfront'], axis=1)
+
+# Getting the exact coding and show new dataframe
+print(encoder_waterfront.classes_)
+print('Codierung: no=0, yes=1')
+print('-----------------------------')
+print()
+print('New Data Frame:')
+df_without_MV.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p18.png)
+
+
+
+```{r, eval=F, echo=T}
+'''
+In the following the column view is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+'''
+
+# Create a dictionary how the observations should be coded
+view_dict = {'bad' : 0,
+             'medium' : 1,
+             'good' : 2,
+             'very_good' : 3,
+             'excellent' : 4}
+
+# Map the dictionary on the column view and store the results in a new column
+df_without_MV['view_encoded'] = df_without_MV.view.map(view_dict)
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop(['view'], axis=1)
+
+
+print('New Data Frame:')
+df_without_MV.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p19.png)
+
+
+
+```{r, eval=F, echo=T}
+'''
+In the following the column property_typ is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+'''
+
+encoder_property_typ = OneHotEncoder()
+
+# Application of the OneHotEncoder
+OHE = encoder_property_typ.fit_transform(df_without_MV.property_typ.values.reshape(-1,1)).toarray()
+
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = ["property_typ_" + str(encoder_property_typ.categories_[0][i]) 
+                                     for i in range(len(encoder_property_typ.categories_[0]))])
+
+
+
+
+# Insertion of the coded values into the original data set
+df_without_MV = pd.concat([df_without_MV, df_OHE], axis=1)
+
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop(['property_typ'], axis=1)
+
+
+print('New Data Frame:')
+df_without_MV.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p20.png)
+
+Now that the record is clean we can rename it accordingly.
+It is also recommended to save the clean data set at this point.
+
+
+```{r, eval=F, echo=T}
+final_df_house_prices = df_without_MV
+
+final_df_house_prices.to_csv('dataframes/final_df_house_prices.csv', index=False)
+```
+
 
 
 # 4.2 Research Question 1
