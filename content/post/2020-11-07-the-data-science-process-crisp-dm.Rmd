@@ -240,6 +240,9 @@ df_of_outlier.columns = ['Rows_to_exclude']
 df_of_outlier
 ```
 
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p6.png)
+
+
 
 ```{r, eval=F, echo=T}
 # Convert all values from column Rows_to_exclude to a numpy array
@@ -253,7 +256,7 @@ outlier_list_final_unique = set(outlier_list_final)
 outlier_list_final_unique
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p6.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p7.png)
 
 Now we are going to exclude the identified outliers from original dataframe.
 
@@ -272,7 +275,7 @@ print('-------------------------------------------------------------------------
 print('Length of unique outlier list: ' + str(len(outlier_list_final_unique)))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p7.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p8.png)
 
 Important!
 
@@ -296,7 +299,7 @@ df_without_outliers = df_without_outliers.rename(columns={'index':'old_index'})
 df_without_outliers.head(6)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p8.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p9.png)
 
 Here is a comparison of the distribution of values from the target variable 'house price' before and after outlier removal.
 
@@ -305,7 +308,7 @@ Here is a comparison of the distribution of values from the target variable 'hou
 sns.boxplot(x='price', data=house_prices)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p9.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p10.png)
 
 
 ```{r, eval=F, echo=T}
@@ -313,12 +316,12 @@ sns.boxplot(x='price', data=house_prices)
 sns.boxplot(x='price', data=df_without_outliers)
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p10.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p11.png)
 
 
 # 4.1.2 Check for Missing Values
 
-
+Now we are going to check for missing values.
 
 ```{r, eval=F, echo=T}
 

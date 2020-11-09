@@ -193,6 +193,7 @@ outlier_list</code></pre>
 df_of_outlier = pd.DataFrame(df_of_outlier)
 df_of_outlier.columns = [&#39;Rows_to_exclude&#39;]
 df_of_outlier</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p6.png" /></p>
 <pre class="r"><code># Convert all values from column Rows_to_exclude to a numpy array
 outlier_list_final = df_of_outlier[&#39;Rows_to_exclude&#39;].to_numpy()
 
@@ -202,7 +203,7 @@ outlier_list_final = np.concatenate( outlier_list_final, axis=0 )
 # Drop dubplicate values
 outlier_list_final_unique = set(outlier_list_final)
 outlier_list_final_unique</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p6.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p7.png" /></p>
 <p>Now we are going to exclude the identified outliers from original dataframe.</p>
 <pre class="r"><code>filter_rows_to_exclude = house_prices.index.isin(outlier_list_final_unique)
 df_without_outliers = house_prices[~filter_rows_to_exclude]</code></pre>
@@ -213,7 +214,7 @@ print(&#39;---------------------------------------------------------------------
 print(&#39;Difference between new and old dataframe: &#39; + str(len(house_prices) - len(df_without_outliers)))
 print(&#39;----------------------------------------------------------------------------------------------------&#39;)
 print(&#39;Length of unique outlier list: &#39; + str(len(outlier_list_final_unique)))</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p7.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p8.png" /></p>
 <p>Important!</p>
 <p>If you look at the index of the last two columns, you will notice that index 5 is missing.
 This is because the values from row 5 for the variables bathrooms and sqft_living
@@ -228,17 +229,18 @@ I proactively create a new index (via reset_index function) which will allow me 
 df_without_outliers = df_without_outliers.rename(columns={&#39;index&#39;:&#39;old_index&#39;})
 
 df_without_outliers.head(6)</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p8.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p9.png" /></p>
 <p>Here is a comparison of the distribution of values from the target variable ‘house price’ before and after outlier removal.</p>
 <pre class="r"><code># Distribution before outlier removal
 sns.boxplot(x=&#39;price&#39;, data=house_prices)</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p9.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p10.png" /></p>
 <pre class="r"><code># Distribution after outlier removal
 sns.boxplot(x=&#39;price&#39;, data=df_without_outliers)</code></pre>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p10.png" /></p>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p11.png" /></p>
 </div>
 <div id="check-for-missing-values" class="section level1">
 <h1>4.1.2 Check for Missing Values</h1>
+<p>Now we are going to check for missing values.</p>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="handling-categorical-variables" class="section level1">
