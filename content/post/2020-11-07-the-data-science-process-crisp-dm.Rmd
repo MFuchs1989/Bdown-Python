@@ -908,6 +908,36 @@ missing_values_table(trainX_wo_outlier)
 
 ![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p33.png)
 
+Of course it can happen that the data we get later to the predicte also has some missing values. 
+To be able to fill these values in a meaningful way it is advisable to save the corresponding metrics from the original trainings part (for example the average value of a column).
+
+```{r, eval=F, echo=T}
+mean_grade = trainX_wo_outlier['grade'].mean()
+mean_condition = trainX_wo_outlier['condition'].mean()
+mean_sqft_living = trainX_wo_outlier['sqft_living'].mean()
+mean_sqft_lot = trainX_wo_outlier['sqft_lot'].mean()
+
+
+pk.dump(mean_grade, open('metrics_MV/mean_grade.pkl', 'wb'))
+pk.dump(mean_condition, open('metrics_MV/mean_condition.pkl', 'wb'))
+pk.dump(mean_sqft_living, open('metrics_MV/mean_sqft_living.pkl', 'wb'))
+pk.dump(mean_sqft_lot, open('metrics_MV/mean_sqft_lot.pkl', 'wb'))
+
+
+print('Mean of column grade: ' + str(mean_grade))
+print('Mean of column condition: ' + str(mean_condition))
+print('Mean of column sqft_living: ' + str(mean_sqft_living))
+print('Mean of column sqft_lot: ' + str(mean_sqft_lot))
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p34.png)
+
+
+To comply with the best practice approach, we assign a new name (trainX_wo_MV) to the data set (trainX_wo_outlier).
+
+```{r, eval=F, echo=T}
+trainX_wo_MV = trainX_wo_outlier
+```
 
 
 # 5.1.4 Categorical Variables

@@ -643,6 +643,27 @@ trainX_wo_outlier[&#39;grade&#39;] = trainX_wo_outlier[&#39;grade&#39;].fillna(t
 
 missing_values_table(trainX_wo_outlier)</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p33.png" /></p>
+<p>Of course it can happen that the data we get later to the predicte also has some missing values.
+To be able to fill these values in a meaningful way it is advisable to save the corresponding metrics from the original trainings part (for example the average value of a column).</p>
+<pre class="r"><code>mean_grade = trainX_wo_outlier[&#39;grade&#39;].mean()
+mean_condition = trainX_wo_outlier[&#39;condition&#39;].mean()
+mean_sqft_living = trainX_wo_outlier[&#39;sqft_living&#39;].mean()
+mean_sqft_lot = trainX_wo_outlier[&#39;sqft_lot&#39;].mean()
+
+
+pk.dump(mean_grade, open(&#39;metrics_MV/mean_grade.pkl&#39;, &#39;wb&#39;))
+pk.dump(mean_condition, open(&#39;metrics_MV/mean_condition.pkl&#39;, &#39;wb&#39;))
+pk.dump(mean_sqft_living, open(&#39;metrics_MV/mean_sqft_living.pkl&#39;, &#39;wb&#39;))
+pk.dump(mean_sqft_lot, open(&#39;metrics_MV/mean_sqft_lot.pkl&#39;, &#39;wb&#39;))
+
+
+print(&#39;Mean of column grade: &#39; + str(mean_grade))
+print(&#39;Mean of column condition: &#39; + str(mean_condition))
+print(&#39;Mean of column sqft_living: &#39; + str(mean_sqft_living))
+print(&#39;Mean of column sqft_lot: &#39; + str(mean_sqft_lot))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p34.png" /></p>
+<p>To comply with the best practice approach, we assign a new name (trainX_wo_MV) to the data set (trainX_wo_outlier).</p>
+<pre class="r"><code>trainX_wo_MV = trainX_wo_outlier</code></pre>
 </div>
 <div id="categorical-variables" class="section level1">
 <h1>5.1.4 Categorical Variables</h1>
