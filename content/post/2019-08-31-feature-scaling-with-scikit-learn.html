@@ -260,7 +260,9 @@ scaled_features = pd.DataFrame(features, columns = col_names)
 scaled_features.head()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p16.png" /></p>
 <p>The fit scaler has memorized the metrics with which he did the transformation. Therefore it is relatively easy to do the inverse transformation with the inverse_transform function.</p>
-<pre class="r"><code>re_scaled_features = scaler.inverse_transform(scaled_features)
+<pre class="r"><code>col_names = df.columns
+
+re_scaled_features = scaler.inverse_transform(scaled_features)
 re_scaled_df = pd.DataFrame(re_scaled_features, columns = col_names)
 re_scaled_df</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p17.png" /></p>

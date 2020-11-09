@@ -372,6 +372,8 @@ scaled_features.head()
 The fit scaler has memorized the metrics with which he did the transformation. Therefore it is relatively easy to do the inverse transformation with the inverse_transform function. 
 
 ```{r, eval=F, echo=T}
+col_names = df.columns
+
 re_scaled_features = scaler.inverse_transform(scaled_features)
 re_scaled_df = pd.DataFrame(re_scaled_features, columns = col_names)
 re_scaled_df
