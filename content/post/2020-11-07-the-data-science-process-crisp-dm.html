@@ -870,23 +870,86 @@ trainY_final.to_csv(&#39;dataframes/trainY_final.csv&#39;, index=False)</code></
 </div>
 <div id="ml-model-development" class="section level1">
 <h1>5.3 ML-Model Development</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="training" class="section level1">
 <h1>5.3.1 Training</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Subsequently, the regression model is created, trained and its R² value is calculated.</p>
+<p>It is also stored for test purposes and validation.</p>
+<pre class="r"><code>lm = LinearRegression()
+lm.fit(trainX_final, trainY_final)
+
+print(&#39;R² Score of fitted lm-model: &#39; + str(lm.score(trainX_final, trainY_final)))
+
+pk.dump(lm, open(&#39;model/lm_model.pkl&#39;, &#39;wb&#39;))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p42.png" /></p>
 </div>
 <div id="testing" class="section level1">
 <h1>5.3.2 Testing</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>You can consider the test data set as a completely independent new data set on which to make predictions. This means that we have to do all pre-processing steps (coding, scaling, removing columns etc.) again.</p>
+<p>This is a step that is a bit more complex and is avoided by many developers by first pre-processing
+the data and then doing a train-test split, but it is the closest to the truth.</p>
+<p>Now we will also need most of the previously saved files (saved mean values, scalers etc.).</p>
 </div>
 <div id="missing-values-1" class="section level1">
 <h1>5.3.2.1 Missing Values</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>We know from the previous analysis that we excluded the column yr_renovated because of the high number of missing values.</p>
+<p>We also know that the column grade also contains missing values and we should fill it with the stored mean_grade.</p>
+<p>We will do this in the following.</p>
+<p>Outliers are no longer identified and excluded, as it is now the test data set.</p>
+<pre class="r"><code># Deletion of the column yr_renovated because too many missing values.
+testX = testX.drop([&#39;yr_renovated&#39;], axis=1)
+
+# Impute missing values for column grade with with the average values of this column from the training data set.
+mean_grade_reload = pk.load(open(&quot;metrics_MV/mean_grade.pkl&quot;,&#39;rb&#39;))
+testX[&#39;grade&#39;] = testX[&#39;grade&#39;].fillna(mean_grade_reload)
+
+# Rename testX according best practice guideline
+testX_wo_MV = testX</code></pre>
 </div>
 <div id="categorical-variables-1" class="section level1">
 <h1>5.3.2.2 Categorical Variables</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>We also know from the past which variables are categorical and how they must be coded accordingly.
+This time we only use the saved encoders and the saved dictionaries.</p>
+<p>Watch out!</p>
+<p>With the loaded encoder only the transform function will be used from now on.
+In no case the fit_transform function is used, because otherwise new values would be generated.</p>
+<pre class="r"><code># Load the necessary encoder/dic
+encoder_waterfront_reload = pk.load(open(&quot;encoder/encoder_waterfront.pkl&quot;,&#39;rb&#39;))
+view_dict_reload = pk.load(open(&quot;encoder/view_dict.pkl&quot;,&#39;rb&#39;))
+encoder_property_typ_reload = pk.load(open(&quot;encoder/encoder_property_typ.pkl&quot;,&#39;rb&#39;))
+
+
+
+# Application of the reload LabelBinarizer
+waterfront_encoded = encoder_waterfront_reload.transform(testX_wo_MV.waterfront.values.reshape(-1,1))
+# Insertion of the coded values into the original data set
+testX_wo_MV[&#39;waterfront_encoded&#39;] = waterfront_encoded
+# Delete the original column to avoid duplication
+testX_wo_MV = testX_wo_MV.drop([&#39;waterfront&#39;], axis=1)
+
+
+# Map the reload dictionary on the column view and store the results in a new column
+testX_wo_MV[&#39;view_encoded&#39;] = testX_wo_MV.view.map(view_dict_reload)
+# Delete the original column to avoid duplication
+testX_wo_MV = testX_wo_MV.drop([&#39;view&#39;], axis=1)
+
+
+
+# Application of the reload OneHotEncoder
+OHE = encoder_property_typ_reload.transform(testX_wo_MV.property_typ.values.reshape(-1,1)).toarray()
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = [&quot;property_typ_&quot; + str(encoder_property_typ_reload.categories_[0][i]) 
+                                      for i in range(len(encoder_property_typ_reload.categories_[0]))])
+# Insertion of the coded values into the original data set
+testX_wo_MV = pd.concat([testX_wo_MV, df_OHE], axis=1)
+# Delete the original column to avoid duplication
+testX_wo_MV = testX_wo_MV.drop([&#39;property_typ&#39;], axis=1)</code></pre>
+<p>At this point we will rename the data set accordingly and also save it separately.</p>
+<pre class="r"><code># Rename testX_wo_MV according best practice guideline
+testX_encoded = testX_wo_MV
+
+
+testX_encoded.to_csv(&#39;dataframes/testX_encoded.csv&#39;, index=False)</code></pre>
 </div>
 <div id="scaling-1" class="section level1">
 <h1>5.3.2.3 Scaling</h1>
