@@ -1087,69 +1087,124 @@ trainX_encoded.to_csv('dataframes/trainX_encoded.csv', index=False)
 
 # 5.1.5 Scaling
 
-
+Another important pre-processing step is the scaling of the data. We will apply the standard scaler to the 
+trainX_wo_outlier data set and save the fitted scaler for later transformations.
 
 ```{r, eval=F, echo=T}
+col_names = trainX_encoded.columns
+features = trainX_encoded[col_names]
 
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+
+trainX_scaled = pd.DataFrame(features, columns = col_names)
+trainX_scaled.head()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p37.png)
 
+As announced also this scaler is stored for later predictions.
+
+```{r, eval=F, echo=T}
+pk.dump(scaler, open('scaler/StandardScaler.pkl', 'wb'))
+```
 
 
 # 5.2 Filter Methods
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
-
-
-
-
 # 5.2.1 Dealing with Highly Correlated Features
 
+Now that all variables are numeric it is easy to create a correlation plot. This gives a first insight into which variables seem to correlate highly. 
 
 ```{r, eval=F, echo=T}
-
+plt.figure(figsize=(8,6))
+cor = trainX_scaled.corr()
+sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+plt.show()
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p38.png)
 
+With the following commands I check if highly correlated variables exist. If so, we would have to exclude them, since this is a prerequisite for regression analysis. As we can see, this is not the case here.
 
+```{r, eval=F, echo=T}
+correlated_features = set()
+correlation_matrix = trainX_scaled.corr()
 
+threshold = 0.90
+
+for i in range(len(correlation_matrix .columns)):
+    for j in range(i):
+        if abs(correlation_matrix.iloc[i, j]) > threshold:
+            colname = correlation_matrix.columns[i]
+            correlated_features.add(colname)
+            
+            
+len(correlated_features)
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p39.png)
 
 
 # 5.2.2 Dealing with Constant Features
 
-
+It is as important as the highly correlated variables to check whether constant features or quasi constant features exist.
+Also this is not the case here. No further variables must be excluded.
 
 
 ```{r, eval=F, echo=T}
+constant_filter = VarianceThreshold(threshold=0)
+constant_filter.fit(trainX_scaled)
 
+
+constant_columns = [column for column in trainX_scaled.columns
+                    if column not in trainX_scaled.columns[constant_filter.get_support()]]
+
+
+
+
+qconstant_filter = VarianceThreshold(threshold=0.01)
+qconstant_filter.fit(trainX_scaled)
+
+
+qconstant_columns = [column for column in trainX_scaled.columns
+                    if column not in trainX_scaled.columns[qconstant_filter.get_support()]]
+
+
+
+print('Number of constant features: ' + str(len(constant_columns)))
+print('Number of constant features: ' + str(len(qconstant_columns)))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
-
-
-
-
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p40.png)
 
 
 # 5.2.3 Dealing with Duplicate Features
 
-
+Finally we check if duplicated features exist.
+This is also not the case.
 
 ```{r, eval=F, echo=T}
+trainX_scaled_T = trainX_scaled.T
 
+print('Number of duplicate features: ' + str(trainX_scaled_T.duplicated().sum()))
 ```
 
-![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p41.png)
 
+Due to the fact that we did not have to exclude any other features, the following two training data sets are the ones we want to continue working with:
 
+```{r, eval=F, echo=T}
+trainX_final = trainX_scaled
+trainY_final = trainY_wo_outlier
+```
+
+Furthermore, the respective final data sets are also to be stored at this point.
+
+```{r, eval=F, echo=T}
+trainX_final.to_csv('dataframes/trainX_final.csv', index=False)
+trainY_final.to_csv('dataframes/trainY_final.csv', index=False)
+```
 
 
 # 5.3 ML-Model Development

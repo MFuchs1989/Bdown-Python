@@ -785,23 +785,88 @@ trainX_encoded.to_csv(&#39;dataframes/trainX_encoded.csv&#39;, index=False)</cod
 </div>
 <div id="scaling" class="section level1">
 <h1>5.1.5 Scaling</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Another important pre-processing step is the scaling of the data. We will apply the standard scaler to the
+trainX_wo_outlier data set and save the fitted scaler for later transformations.</p>
+<pre class="r"><code>col_names = trainX_encoded.columns
+features = trainX_encoded[col_names]
+
+scaler = StandardScaler().fit(features.values)
+features = scaler.transform(features.values)
+
+trainX_scaled = pd.DataFrame(features, columns = col_names)
+trainX_scaled.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p37.png" /></p>
+<p>As announced also this scaler is stored for later predictions.</p>
+<pre class="r"><code>pk.dump(scaler, open(&#39;scaler/StandardScaler.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
 <div id="filter-methods" class="section level1">
 <h1>5.2 Filter Methods</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="dealing-with-highly-correlated-features" class="section level1">
 <h1>5.2.1 Dealing with Highly Correlated Features</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Now that all variables are numeric it is easy to create a correlation plot. This gives a first insight into which variables seem to correlate highly.</p>
+<pre class="r"><code>plt.figure(figsize=(8,6))
+cor = trainX_scaled.corr()
+sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p38.png" /></p>
+<p>With the following commands I check if highly correlated variables exist. If so, we would have to exclude them, since this is a prerequisite for regression analysis. As we can see, this is not the case here.</p>
+<pre class="r"><code>correlated_features = set()
+correlation_matrix = trainX_scaled.corr()
+
+threshold = 0.90
+
+for i in range(len(correlation_matrix .columns)):
+    for j in range(i):
+        if abs(correlation_matrix.iloc[i, j]) &gt; threshold:
+            colname = correlation_matrix.columns[i]
+            correlated_features.add(colname)
+            
+            
+len(correlated_features)</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p39.png" /></p>
 </div>
 <div id="dealing-with-constant-features" class="section level1">
 <h1>5.2.2 Dealing with Constant Features</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>It is as important as the highly correlated variables to check whether constant features or quasi constant features exist.
+Also this is not the case here. No further variables must be excluded.</p>
+<pre class="r"><code>constant_filter = VarianceThreshold(threshold=0)
+constant_filter.fit(trainX_scaled)
+
+
+constant_columns = [column for column in trainX_scaled.columns
+                    if column not in trainX_scaled.columns[constant_filter.get_support()]]
+
+
+
+
+qconstant_filter = VarianceThreshold(threshold=0.01)
+qconstant_filter.fit(trainX_scaled)
+
+
+qconstant_columns = [column for column in trainX_scaled.columns
+                    if column not in trainX_scaled.columns[qconstant_filter.get_support()]]
+
+
+
+print(&#39;Number of constant features: &#39; + str(len(constant_columns)))
+print(&#39;Number of constant features: &#39; + str(len(qconstant_columns)))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p40.png" /></p>
 </div>
 <div id="dealing-with-duplicate-features" class="section level1">
 <h1>5.2.3 Dealing with Duplicate Features</h1>
-<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
+<p>Finally we check if duplicated features exist.
+This is also not the case.</p>
+<pre class="r"><code>trainX_scaled_T = trainX_scaled.T
+
+print(&#39;Number of duplicate features: &#39; + str(trainX_scaled_T.duplicated().sum()))</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p41.png" /></p>
+<p>Due to the fact that we did not have to exclude any other features, the following two training data sets are the ones we want to continue working with:</p>
+<pre class="r"><code>trainX_final = trainX_scaled
+trainY_final = trainY_wo_outlier</code></pre>
+<p>Furthermore, the respective final data sets are also to be stored at this point.</p>
+<pre class="r"><code>trainX_final.to_csv(&#39;dataframes/trainX_final.csv&#39;, index=False)
+trainY_final.to_csv(&#39;dataframes/trainY_final.csv&#39;, index=False)</code></pre>
 </div>
 <div id="ml-model-development" class="section level1">
 <h1>5.3 ML-Model Development</h1>
