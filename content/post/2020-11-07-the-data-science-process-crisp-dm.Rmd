@@ -942,9 +942,147 @@ trainX_wo_MV = trainX_wo_outlier
 
 # 5.1.4 Categorical Variables
 
+```{r, eval=F, echo=T}
+obj_col = ['object']
+object_columns = list(trainX_wo_MV.select_dtypes(include=obj_col).columns)
+trainX_categorical = trainX_wo_MV[object_columns]
+
+print()
+print('There are ' + str(trainX_categorical.shape[1]) + ' categorical columns within dataframe(trainX).')
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p35.png)
+
+As we already know from the descriptive part, the three categorical variables are scaled as follows:
+
++ waterfront: binary
++ view: ordinal
++ property_typ: nominal
+
+The variables will be coded accordingly in the following.
+
+```{r, eval=F, echo=T}
+'''
+In the following the column waterfront is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+'''
+
+encoder_waterfront = LabelBinarizer()
+
+# Application of the LabelBinarizer
+waterfront_encoded = encoder_waterfront.fit_transform(trainX_wo_MV.waterfront.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+trainX_wo_MV['waterfront_encoded'] = waterfront_encoded
+
+# Delete the original column to avoid duplication
+trainX_wo_MV = trainX_wo_MV.drop(['waterfront'], axis=1)
+```
+
+
+```{r, eval=F, echo=T}
+'''
+In the following the column view is coded.
+Instead of the OrdinalEncoder from scikit learn I prefer to use a dictionary, 
+because I can specify the exact ordinal order here.
+I also design an inverse dictionary to encode the data back later if needed. 
+
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+
+'''
+
+# Create a dictionary how the observations should be coded
+view_dict = {'bad' : 0,
+             'medium' : 1,
+             'good' : 2,
+             'very_good' : 3,
+             'excellent' : 4}
+
+view_dict_inverse = {0 : 'bad',
+                     1 : 'medium',
+                     2 : 'good',
+                     3 : 'very_good',
+                     4 : 'excellent'}
+
+
+# Map the dictionary on the column view and store the results in a new column
+trainX_wo_MV['view_encoded'] = trainX_wo_MV.view.map(view_dict)
+
+# Delete the original column to avoid duplication
+trainX_wo_MV = trainX_wo_MV.drop(['view'], axis=1)
+```
+
+
+```{r, eval=F, echo=T}
+'''
+In the following the column property_typ is coded.
+Then the newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+'''
+
+encoder_property_typ = OneHotEncoder()
+
+# Application of the OneHotEncoder
+OHE = encoder_property_typ.fit_transform(trainX_wo_MV.property_typ.values.reshape(-1,1)).toarray()
+
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = ["property_typ_" + str(encoder_property_typ.categories_[0][i]) 
+                                     for i in range(len(encoder_property_typ.categories_[0]))])
 
 
 
+
+# Insertion of the coded values into the original data set
+trainX_wo_MV = pd.concat([trainX_wo_MV, df_OHE], axis=1)
+
+
+# Delete the original column to avoid duplication
+trainX_wo_MV = trainX_wo_MV.drop(['property_typ'], axis=1)
+```
+
+
+An often forgotten step but a very important necessity is to store the fitted encoders or used dictionaries separately to be able to use them after deployment for predictions on new data.
+
+
+```{r, eval=F, echo=T}
+pk.dump(encoder_waterfront, open('encoder/encoder_waterfront.pkl', 'wb'))
+pk.dump(view_dict, open('encoder/view_dict.pkl', 'wb'))
+pk.dump(view_dict_inverse, open('encoder/view_dict_inverse.pkl', 'wb'))
+pk.dump(encoder_property_typ, open('encoder/encoder_property_typ.pkl', 'wb'))
+
+
+print('Classes of encoder_waterfront :')
+print(encoder_waterfront.classes_)
+print('Codierung: no=0, yes=1')
+print()
+print('------------------------------------------------')
+print()
+print('Assignments by the dictionary for view :')
+print(view_dict)
+print()
+print('------------------------------------------------')
+print()
+print('Assignments by the inverse dictionary for view :')
+print(view_dict_inverse)
+print()
+print('------------------------------------------------')
+print()
+print('Categories of encoder_property_typ :')
+print(encoder_property_typ.categories_)
+print()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p36.png)
+
+Once again we keep to the naming convention and adhere to the requirement to save the currently created data set. 
+
+```{r, eval=F, echo=T}
+trainX_encoded = trainX_wo_MV
+
+trainX_encoded.to_csv('dataframes/trainX_encoded.csv', index=False)
+```
 
 
 # 5.1.5 Scaling
