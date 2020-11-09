@@ -106,36 +106,212 @@ The evaluation ensures an exact comparison of the created data models with the t
 The final phase of the CRISP-DM is the evaluation. In this phase, the obtained results are processed in order to present them and feed them into the decision process of the client.
 
 
-
-
-
-
+In the following I will complete these 6 phases using real data.
+I will explain each of the steps in detail and explain why they are necessary and why I have done them this way. 
 
 
 # 2 Import the libraries
 
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
 
 
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
 
 
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
 
+import statsmodels.formula.api as smf
+
+from sklearn.model_selection import train_test_split
+
+import pickle as pk
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.feature_selection import VarianceThreshold
+
+from sklearn import metrics
+
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression
+```
 
 
 # 3 Import the data
+
+Here we get a first overview of the data available to us.
+
+```{r, eval=F, echo=T}
+house_prices = pd.read_csv("house_prices_dataframe.csv")
+house_prices.head()
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p1.png)
+
+```{r, eval=F, echo=T}
+house_prices.shape
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p2.png)
+
+```{r, eval=F, echo=T}
+house_prices.dtypes
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p3.png)
+
+
 # 4 Answering Research Questions - Descriptive Statistics
+
+The further procedure follows the Best Practice approach for ML Model Development. 
+I have listed this approach at the end of this publication (chapter 7). 
+It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.
+You can also download these instructions here: ["DS Best Practice Guidlines for ML Model Development"](https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf).
+
+
 # 4.1 Data pre-processing
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
 # 4.1.1 Check for Outliers
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
 # 4.1.2 Check for Missing Values
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
 # 4.1.3 Handling Categorical Variables
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
 # 4.2 Research Question 1
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
 # 4.3 Research Question 2
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 4.4 Research Question 3
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5 Development of a Machine Learning Model End to End Process
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
 # 5.1 Data pre-processing
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
 # 5.1.1 Train Test Split
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png)
+
+
+
 # 5.1.2 Removal of Outlier
+
+
+
+
+
+
+
 # 5.1.3 Missing Values
+
+
+
+
+
+
 # 5.1.4 Categorical Variables
+
+
+
+
+
+
 # 5.1.5 Scaling
 # 5.2 Filter Methods
 # 5.2.1 Dealing with Highly Correlated Features

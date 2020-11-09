@@ -99,45 +99,99 @@ If you are interested in the exact content of this course look <a href="https://
 <li>Phase 6 Deployment:</li>
 </ul>
 <p>The final phase of the CRISP-DM is the evaluation. In this phase, the obtained results are processed in order to present them and feed them into the decision process of the client.</p>
+<p>In the following I will complete these 6 phases using real data.
+I will explain each of the steps in detail and explain why they are necessary and why I have done them this way.</p>
 </div>
 <div id="import-the-libraries" class="section level1">
 <h1>2 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+
+import statsmodels.formula.api as smf
+
+from sklearn.model_selection import train_test_split
+
+import pickle as pk
+
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.feature_selection import VarianceThreshold
+
+from sklearn import metrics
+
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression</code></pre>
 </div>
 <div id="import-the-data" class="section level1">
 <h1>3 Import the data</h1>
+<p>Here we get a first overview of the data available to us.</p>
+<pre class="r"><code>house_prices = pd.read_csv(&quot;house_prices_dataframe.csv&quot;)
+house_prices.head()</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p1.png" /></p>
+<pre class="r"><code>house_prices.shape</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p2.png" /></p>
+<pre class="r"><code>house_prices.dtypes</code></pre>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p3.png" /></p>
 </div>
 <div id="answering-research-questions---descriptive-statistics" class="section level1">
 <h1>4 Answering Research Questions - Descriptive Statistics</h1>
+<p>The further procedure follows the Best Practice approach for ML Model Development.
+I have listed this approach at the end of this publication (chapter 7).
+It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.
+You can also download these instructions here: <a href="https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf">“DS Best Practice Guidlines for ML Model Development”</a>.</p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4.1 Data pre-processing</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="check-for-outliers" class="section level1">
 <h1>4.1.1 Check for Outliers</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="check-for-missing-values" class="section level1">
 <h1>4.1.2 Check for Missing Values</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="handling-categorical-variables" class="section level1">
 <h1>4.1.3 Handling Categorical Variables</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="research-question-1" class="section level1">
 <h1>4.2 Research Question 1</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="research-question-2" class="section level1">
 <h1>4.3 Research Question 2</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="research-question-3" class="section level1">
 <h1>4.4 Research Question 3</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="development-of-a-machine-learning-model-end-to-end-process" class="section level1">
 <h1>5 Development of a Machine Learning Model End to End Process</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="data-pre-processing-1" class="section level1">
 <h1>5.1 Data pre-processing</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="train-test-split" class="section level1">
 <h1>5.1.1 Train Test Split</h1>
+<p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p.png" /></p>
 </div>
 <div id="removal-of-outlier" class="section level1">
 <h1>5.1.2 Removal of Outlier</h1>
