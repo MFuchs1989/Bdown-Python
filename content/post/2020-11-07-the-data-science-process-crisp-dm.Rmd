@@ -583,8 +583,7 @@ Answer the first research question:
 
 The average price for waterfront properties is almost twice as high as for other properties.
 
-In contrast, however, plots without a water front have on average more square meters of living space and usable area. 
-Also in terms of condition and degree they are a little better off. 
+On the other hand, the difference in the average plot size is not so great.
 
 If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.
 
@@ -1362,19 +1361,17 @@ lm_reload = pk.load(open("model/lm_model.pkl",'rb'))
 # Predict values for test dataset
 y_pred = lm_reload.predict(testX_final)
 
+# Create a dataset with actual and predicted values
+actual_vs_predicted = pd.DataFrame({'Actual': testY_final, 'Predicted': y_pred})
 
-
-y_pred_df = pd.DataFrame(y_pred)
-y_pred_df.columns = ['values_predicted']
-actual_vs_predicted = pd.concat([testY_final, y_pred_df], axis=1)
-
+# Visualize the results
 df1 = actual_vs_predicted.head(30)
 df1.plot(kind='bar',figsize=(10,6))
 plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
 plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
 
-
+# Print some validation metrics
 print('Mean Absolute Error:', metrics.mean_absolute_error(testY_final, y_pred))  
 print('Mean Squared Error:', metrics.mean_squared_error(testY_final, y_pred))  
 print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY_final, y_pred)))
@@ -1560,18 +1557,17 @@ lm2_reload = pk.load(open("model/lm2_model.pkl",'rb'))
 y_pred = lm2_reload.predict(testX_final2)
 
 
+# Create a dataset with actual and predicted values
+actual_vs_predicted = pd.DataFrame({'Actual': testY_final2, 'Predicted': y_pred})
 
-y_pred_df = pd.DataFrame(y_pred)
-y_pred_df.columns = ['values_predicted']
-actual_vs_predicted = pd.concat([testY_final2, y_pred_df], axis=1)
-
+# Visualize the results
 df1 = actual_vs_predicted.head(30)
 df1.plot(kind='bar',figsize=(10,6))
 plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
 plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
 
-
+# Print some validation metrics
 print('Mean Absolute Error:', metrics.mean_absolute_error(testY_final2, y_pred))  
 print('Mean Squared Error:', metrics.mean_squared_error(testY_final2, y_pred))  
 print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY_final2, y_pred)))

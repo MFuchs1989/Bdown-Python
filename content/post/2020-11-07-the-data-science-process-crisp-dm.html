@@ -425,8 +425,7 @@ print(pd.DataFrame({&#39;Percentage&#39;: final_df_house_prices.groupby((&#39;wa
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p21.png" /></p>
 <p>Answer the first research question:</p>
 <p>The average price for waterfront properties is almost twice as high as for other properties.</p>
-<p>In contrast, however, plots without a water front have on average more square meters of living space and usable area.
-Also in terms of condition and degree they are a little better off.</p>
+<p>On the other hand, the difference in the average plot size is not so great.</p>
 <p>If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.</p>
 </div>
 <div id="research-question-2" class="section level1">
@@ -982,19 +981,17 @@ lm_reload = pk.load(open(&quot;model/lm_model.pkl&quot;,&#39;rb&#39;))
 # Predict values for test dataset
 y_pred = lm_reload.predict(testX_final)
 
+# Create a dataset with actual and predicted values
+actual_vs_predicted = pd.DataFrame({&#39;Actual&#39;: testY_final, &#39;Predicted&#39;: y_pred})
 
-
-y_pred_df = pd.DataFrame(y_pred)
-y_pred_df.columns = [&#39;values_predicted&#39;]
-actual_vs_predicted = pd.concat([testY_final, y_pred_df], axis=1)
-
+# Visualize the results
 df1 = actual_vs_predicted.head(30)
 df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
 plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
 plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
 plt.show()
 
-
+# Print some validation metrics
 print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY_final, y_pred))  
 print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY_final, y_pred))  
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY_final, y_pred)))</code></pre>
@@ -1114,18 +1111,17 @@ lm2_reload = pk.load(open(&quot;model/lm2_model.pkl&quot;,&#39;rb&#39;))
 y_pred = lm2_reload.predict(testX_final2)
 
 
+# Create a dataset with actual and predicted values
+actual_vs_predicted = pd.DataFrame({&#39;Actual&#39;: testY_final2, &#39;Predicted&#39;: y_pred})
 
-y_pred_df = pd.DataFrame(y_pred)
-y_pred_df.columns = [&#39;values_predicted&#39;]
-actual_vs_predicted = pd.concat([testY_final2, y_pred_df], axis=1)
-
+# Visualize the results
 df1 = actual_vs_predicted.head(30)
 df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
 plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
 plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
 plt.show()
 
-
+# Print some validation metrics
 print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY_final2, y_pred))  
 print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY_final2, y_pred))  
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY_final2, y_pred)))</code></pre>
