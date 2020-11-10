@@ -15,7 +15,7 @@ tags:
 + 2 Data Understanding
 + 3 Prepare Data
 + 3.1 Check for outliers
-+ 3.2 Check for Missing Values¶
++ 3.2 Check for Missing Values
 + 3.3 Handling Categorical Variables
 + 4 Data Modeling
 + 4.1 Fit Model
