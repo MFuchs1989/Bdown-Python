@@ -1,0 +1,528 @@
+---
+title: Predicting House Prices and EDA
+author: Michael Fuchs
+date: '2020-11-10'
+slug: predicting-house-prices-and-eda
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Business Understanding</li>
+<li>2 Data Understanding</li>
+<li>3 Prepare Data</li>
+<li>3.1 Check for outliers</li>
+<li>3.2 Check for Missing Values¶</li>
+<li>3.3 Handling Categorical Variables</li>
+<li>4 Data Modeling</li>
+<li>4.1 Fit Model</li>
+<li>4.2 Validate the Model</li>
+<li>5 Evaluation</li>
+<li>5.1 Research Question 1</li>
+<li>5.1.1 Analyse</li>
+<li>5.1.2 Visualise</li>
+<li>5.1.3 Brief explanation for visualisation</li>
+<li>5.2 Research Question 2</li>
+<li>5.2.1 Analyse</li>
+<li>5.2.2 Visualise</li>
+<li>5.2.3 Brief explanation for visualisation</li>
+<li>5.3 Research Question 3</li>
+<li>5.3.1 Analyse</li>
+<li>5.3.2 Visualise</li>
+<li>5.3.3 Brief explanation for visualisation</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="business-understanding" class="section level1">
+<h1>1 Business Understanding</h1>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSs1.png" /></p>
+<p>This blogpost gives a quick overview of the data set ‘house_prices’ which contains over 21k observations of house characteristics. I decided on this topic because the real estate market is currently booming and it is therefore worth taking a look at the price differences and the factors influencing house prices.</p>
+<p>This notebook is not only for private persons who are currently thinking about investing in real estate but also for experts who would like to use my prediction model to make their own predictions about their real estate portfolio.</p>
+<p>Therefore I will try to answer the following three questions:</p>
+<ul>
+<li>Question 1: Is there a difference in the characteristics of the properties, if they are located on a waterfront?</li>
+<li>Question 2: What clusters are there in terms of real estate?</li>
+<li>Question 3: Does the number of square meters have a significant influence on the price of the property?</li>
+</ul>
+<p>For this post the dataset <em>house-prices</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at my <a href="https://github.com/MFuchs1989/Data-Science-Blog-Post">“GitHub Repo”</a>.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Initial Library Imports
+&#39;&#39;&#39;
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+import statsmodels.formula.api as smf
+from sklearn.model_selection import train_test_split
+import pickle as pk
+from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
+
+from sklearn.linear_model import LinearRegression</code></pre>
+</div>
+<div id="data-understanding" class="section level1">
+<h1>2 Data Understanding</h1>
+<p>Originally I planned to use all available variables for my analysis. However, I found that one predictor (‘yr_renovated’) contained too many missing values, which would have made the prediction model worse. For this reason I have excluded them below.</p>
+<pre class="r"><code>house_prices = pd.read_csv(&quot;house_prices_dataframe.csv&quot;)
+house_prices.head()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp1.png" /></p>
+<pre class="r"><code>house_prices.shape</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp2.png" /></p>
+<pre class="r"><code>house_prices.dtypes</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp3.png" /></p>
+</div>
+<div id="prepare-data" class="section level1">
+<h1>3 Prepare Data</h1>
+</div>
+<div id="check-for-outliers" class="section level1">
+<h1>3.1 Check for outliers</h1>
+<p>First we will check the data frame for some outliers. This step is necessary first, because otherwise replacing missing values would be negatively affected. Categorical variables are not considered by this step.</p>
+<p>For the identification of outliers the z-score method is used.</p>
+<p>In statistics, if a data distribution is approximately normal then about 68% of the data points lie within one standard deviation (sd) of the mean and about 95% are within two standard deviations, and about 99.7% lie within three standard deviations.</p>
+<p>Therefore, if you have any data point that is more than 3 times the standard deviation, then those points are very likely to be outliers.</p>
+<p>We are going to check observations above a sd of 3 and remove these as an outlier.</p>
+<pre class="r"><code>&#39;&#39;&#39;Function for outlier detection&#39;&#39;&#39;
+def outliers_z_score(df):
+    &#39;&#39;&#39;Set the threshold to 3 as this indicates the number of sd&#39;&#39;&#39;
+    threshold = 3
+
+    mean = np.mean(df)
+    std = np.std(df)
+    z_scores = [(y - mean) / std for y in df]
+    return np.where(np.abs(z_scores) &gt; threshold)
+
+&#39;&#39;&#39;Selection of numerical colunns.&#39;&#39;&#39;
+my_list = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+num_columns = list(house_prices.select_dtypes(include=my_list).columns)
+numerical_columns = house_prices[num_columns]
+
+
+&#39;&#39;&#39;Application of outlier-function to all numerical columns&#39;&#39;&#39;
+outlier_list = numerical_columns.apply(lambda x: outliers_z_score(x))
+
+&#39;&#39;&#39;Convert to dataframe&#39;&#39;&#39;
+df_of_outlier = outlier_list.iloc[0]
+df_of_outlier = pd.DataFrame(df_of_outlier)
+df_of_outlier.columns = [&#39;Rows_to_exclude&#39;]
+
+&#39;&#39;&#39;Convert all values from column Rows_to_exclude to a numpy array&#39;&#39;&#39;
+outlier_list_final = df_of_outlier[&#39;Rows_to_exclude&#39;].to_numpy()
+
+&#39;&#39;&#39;Concatenate a whole sequence of arrays&#39;&#39;&#39;
+outlier_list_final = np.concatenate( outlier_list_final, axis=0 )
+
+&#39;&#39;&#39;Drop dubplicate values&#39;&#39;&#39;
+outlier_list_final_unique = set(outlier_list_final)
+
+
+&#39;&#39;&#39;Exclusion of the identified outliers from original dataframe.&#39;&#39;&#39;
+filter_rows_to_exclude = house_prices.index.isin(outlier_list_final_unique)
+df_without_outliers = house_prices[~filter_rows_to_exclude]
+
+&#39;&#39;&#39;Print the results&#39;&#39;&#39;
+print(&#39;Length of original dataframe: &#39; + str(len(house_prices)))
+
+print(&#39;Length of new dataframe without outliers: &#39; + str(len(df_without_outliers)))
+print(&#39;----------------------------------------------------------------------------------------------------&#39;)
+print(&#39;Difference between new and old dataframe: &#39; + str(len(house_prices) - len(df_without_outliers)))
+print(&#39;----------------------------------------------------------------------------------------------------&#39;)
+print(&#39;Length of unique outlier list: &#39; + str(len(outlier_list_final_unique)))
+
+
+&#39;&#39;&#39;Preparation of the new data set&#39;&#39;&#39;
+
+df_without_outliers = df_without_outliers.reset_index()
+df_without_outliers = df_without_outliers.rename(columns={&#39;index&#39;:&#39;old_index&#39;})
+df_without_outliers.head(6)</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp4.png" /></p>
+<p>From the output shown above we can see that the removal of the outlier was successful.</p>
+<pre class="r"><code># Boxplot for the variables &#39;waterfront&#39; and &#39;price&#39; before outlier removal 
+sns.boxplot(x=&#39;waterfront&#39;, y=&#39;price&#39;, data=house_prices)</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp5.png" /></p>
+<pre class="r"><code># Boxplot for the variables &#39;waterfront&#39; and &#39;price&#39; after outlier removal 
+sns.boxplot(x=&#39;waterfront&#39;, y=&#39;price&#39;, data=df_without_outliers)</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp6.png" /></p>
+<p>With the two shown boxplots you can easily see the effects of outlier detection and removal.</p>
+</div>
+<div id="check-for-missing-values" class="section level1">
+<h1>3.2 Check for Missing Values¶</h1>
+<pre class="r"><code>def missing_values_table(df):
+    
+        &#39;&#39;&#39;
+        This function is used to detect missing values in a dataset 
+        and give a good overview of how many were found in a column.
+        &#39;&#39;&#39;
+    
+        &#39;&#39;&#39;Total missing values&#39;&#39;&#39;
+        mis_val = df.isnull().sum()
+        
+        &#39;&#39;&#39;Percentage of missing values&#39;&#39;&#39;
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        
+        &#39;&#39;&#39;Make a table with the results&#39;&#39;&#39;
+        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
+        
+        &#39;&#39;&#39;Rename the columns&#39;&#39;&#39;
+        mis_val_table_ren_columns = mis_val_table.rename(
+        columns = {0 : &#39;Missing Values&#39;, 1 : &#39;% of Total Values&#39;})
+        
+        &#39;&#39;&#39;Sort the table by percentage of missing descending&#39;&#39;&#39;
+        mis_val_table_ren_columns = mis_val_table_ren_columns[
+            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        &#39;% of Total Values&#39;, ascending=False).round(1)
+        
+        &#39;&#39;&#39;Print some summary information&#39;&#39;&#39;
+        print (&quot;Your selected dataframe has &quot; + str(df.shape[1]) + &quot; columns.\n&quot;      
+            &quot;There are &quot; + str(mis_val_table_ren_columns.shape[0]) +
+              &quot; columns that have missing values.&quot;)
+        
+        &#39;&#39;&#39;Return the dataframe with missing information&#39;&#39;&#39;
+        return mis_val_table_ren_columns</code></pre>
+<pre class="r"><code>missing_values_table(df_without_outliers)</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp7.png" /></p>
+<p>Due to the high number of missing values (&gt;75%) the column yr_renovated should not be considered in the further analysis.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Delete the column yr_renovated
+&#39;&#39;&#39;
+
+df_without_outliers = df_without_outliers.drop([&#39;yr_renovated&#39;], axis=1)</code></pre>
+<p>Due to the low number of Missing Values within the grade column, this column will not be deleted as valuable information could be lost. The missing values should be filled with the mean value of the column instead.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Impute missing values for column grade
+&#39;&#39;&#39;
+
+df_without_outliers[&#39;grade&#39;] = df_without_outliers[&#39;grade&#39;].fillna(df_without_outliers[&#39;grade&#39;].mean())</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Check if all missing values are removed or replaced.
+&#39;&#39;&#39;
+
+missing_values_table(df_without_outliers)</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp8.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Rename dataframe
+&#39;&#39;&#39;
+
+df_without_MV = df_without_outliers</code></pre>
+</div>
+<div id="handling-categorical-variables" class="section level1">
+<h1>3.3 Handling Categorical Variables</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Identification of categorical variables.
+&#39;&#39;&#39;
+
+obj_col = [&#39;object&#39;]
+object_columns = list(df_without_MV.select_dtypes(include=obj_col).columns)
+house_prices_categorical = df_without_MV[object_columns]
+
+print()
+print(&#39;There are &#39; + str(house_prices_categorical.shape[1]) + &#39; categorical columns within dataframe:&#39;)
+
+house_prices_categorical.head()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp9.png" /></p>
+<pre class="r"><code>print(&#39;Values of the variable waterfront:&#39;)
+print()
+print(df_without_MV[&#39;waterfront&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable view:&#39;)
+print()
+print(df_without_MV[&#39;view&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable property_typ:&#39;)
+print()
+print(df_without_MV[&#39;property_typ&#39;].value_counts())</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp10.png" /></p>
+<p>Based on the output shown above, the following scale level can be determined for the three categorical variables:</p>
+<ul>
+<li>waterfront: binary</li>
+<li>view: ordinal</li>
+<li>property_typ: nominal</li>
+</ul>
+<p>The variables will be coded accordingly in the following.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Coding of the variable waterfront.
+The newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+encoder_waterfront = LabelBinarizer()
+
+# Application of the LabelBinarizer
+waterfront_encoded = encoder_waterfront.fit_transform(df_without_MV.waterfront.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+df_without_MV[&#39;waterfront_encoded&#39;] = waterfront_encoded
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;waterfront&#39;], axis=1)</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Coding of the variable view.
+The newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+# Create a dictionary how the observations should be coded
+view_dict = {&#39;bad&#39; : 0,
+             &#39;medium&#39; : 1,
+             &#39;good&#39; : 2,
+             &#39;very_good&#39; : 3,
+             &#39;excellent&#39; : 4}
+
+# Map the dictionary on the column view and store the results in a new column
+df_without_MV[&#39;view_encoded&#39;] = df_without_MV.view.map(view_dict)
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;view&#39;], axis=1)</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Coding of the variable property_typ.
+The newly generated values are inserted into the original dataframe 
+and the old column will be deleted. 
+&#39;&#39;&#39;
+
+encoder_property_typ = OneHotEncoder()
+
+# Application of the OneHotEncoder
+OHE = encoder_property_typ.fit_transform(df_without_MV.property_typ.values.reshape(-1,1)).toarray()
+
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = [&quot;property_typ_&quot; + str(encoder_property_typ.categories_[0][i]) 
+                                     for i in range(len(encoder_property_typ.categories_[0]))])
+
+
+
+
+# Insertion of the coded values into the original data set
+df_without_MV = pd.concat([df_without_MV, df_OHE], axis=1)
+
+
+# Delete the original column to avoid duplication
+df_without_MV = df_without_MV.drop([&#39;property_typ&#39;], axis=1)</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Rename dataframe
+&#39;&#39;&#39;
+
+final_df_house_prices = df_without_MV</code></pre>
+</div>
+<div id="data-modeling" class="section level1">
+<h1>4 Data Modeling</h1>
+</div>
+<div id="fit-model" class="section level1">
+<h1>4.1 Fit Model</h1>
+<pre class="r"><code>x = final_df_house_prices.drop([&#39;price&#39;, &#39;old_index&#39;], axis=1)
+y = final_df_house_prices[&#39;price&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+<pre class="r"><code>lm = LinearRegression()
+lm.fit(trainX, trainY)
+
+pk.dump(lm, open(&#39;model/lm_model.pkl&#39;, &#39;wb&#39;))</code></pre>
+</div>
+<div id="validate-the-model" class="section level1">
+<h1>4.2 Validate the Model</h1>
+<pre class="r"><code># Reload the model
+lm_reload = pk.load(open(&quot;model/lm_model.pkl&quot;,&#39;rb&#39;))
+
+# Predict values for test dataset
+y_pred = lm_reload.predict(testX)</code></pre>
+<pre class="r"><code># Reload the model
+lm_reload = pk.load(open(&quot;model/lm_model.pkl&quot;,&#39;rb&#39;))
+
+# Predict values for test dataset
+y_pred = lm_reload.predict(testX)
+
+# Create a dataset with actual and predicted values
+actual_vs_predicted = pd.DataFrame({&#39;Actual&#39;: testY, &#39;Predicted&#39;: y_pred})
+
+# Visualize the results
+df1 = actual_vs_predicted.head(30)
+df1.plot(kind=&#39;bar&#39;,figsize=(10,6))
+plt.grid(which=&#39;major&#39;, linestyle=&#39;-&#39;, linewidth=&#39;0.5&#39;, color=&#39;green&#39;)
+plt.grid(which=&#39;minor&#39;, linestyle=&#39;:&#39;, linewidth=&#39;0.5&#39;, color=&#39;black&#39;)
+plt.show()
+
+# Print some validation metrics
+print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
+print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp11.png" /></p>
+</div>
+<div id="evaluation" class="section level1">
+<h1>5 Evaluation</h1>
+</div>
+<div id="research-question-1" class="section level1">
+<h1>5.1 Research Question 1</h1>
+<p>Is there a difference in the characteristics of the properties, if they are located on a waterfront?</p>
+</div>
+<div id="analyse" class="section level1">
+<h1>5.1.1 Analyse</h1>
+<pre class="r"><code>print(&#39;Absolute distribution: &#39;)
+print()
+print(final_df_house_prices[&#39;waterfront_encoded&#39;].value_counts())
+
+print(&#39;-------------------------------------------------------&#39;)
+
+print(&#39;Percentage distribution: &#39;)
+print()
+print(pd.DataFrame({&#39;Percentage&#39;: final_df_house_prices.groupby((&#39;waterfront_encoded&#39;)).size() / len(final_df_house_prices)}))</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp12.png" /></p>
+<pre class="r"><code>df = final_df_house_prices.groupby((&#39;waterfront_encoded&#39;)).mean().reset_index().drop([&#39;old_index&#39;], axis=1)
+df</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp13.png" /></p>
+</div>
+<div id="visualise" class="section level1">
+<h1>5.1.2 Visualise</h1>
+<pre class="r"><code>sns.barplot(x=&#39;waterfront_encoded&#39;, y=&quot;price&quot;, data=df)
+plt.title(&#39;Bar Chart: \n waterfront vs. price&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp14.png" /></p>
+<pre class="r"><code>sns.barplot(x=&#39;waterfront_encoded&#39;, y=&quot;sqft_basement&quot;, data=df)
+plt.title(&#39;Bar Chart: \n waterfront vs. sqft_basement&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp15.png" /></p>
+</div>
+<div id="brief-explanation-for-visualisation" class="section level1">
+<h1>5.1.3 Brief explanation for visualisation</h1>
+<p>The average price for waterfront properties is almost twice as high as for other properties.</p>
+<p>On the other hand, the difference in the average plot size is not so great.</p>
+<p>If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.</p>
+</div>
+<div id="research-question-2" class="section level1">
+<h1>5.2 Research Question 2</h1>
+<p>What clusters are there in terms of real estate?</p>
+</div>
+<div id="analyse-1" class="section level1">
+<h1>5.2.1 Analyse</h1>
+<pre class="r"><code># Drop the column old_index because we do not want to cluster these features
+
+house_prices_cluster = final_df_house_prices.drop([&#39;old_index&#39;], axis=1)</code></pre>
+<pre class="r"><code>plt.hist(house_prices_cluster[&#39;price&#39;], bins=&#39;auto&#39;)
+plt.title(&quot;Histogram for house prices&quot;)
+plt.xlim(xmin=0, xmax = 1200000)
+plt.title(&#39;Histogram for house prices&#39;)
+plt.xlabel(&#39;prices&#39;)
+plt.ylabel(&#39;counts&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp16.png" /></p>
+<p>As we can see the main part of the prices is between 250k and 450k.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Scaling the data for clustering
+&#39;&#39;&#39;
+mms = MinMaxScaler()
+mms.fit(house_prices_cluster)
+data_transformed = mms.transform(house_prices_cluster)</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Determine the optimal number of k
+&#39;&#39;&#39;
+
+Sum_of_squared_distances = []
+&#39;&#39;&#39;Set range for k&#39;&#39;&#39;
+K = range(1,15)
+for k in K:
+    &#39;&#39;&#39;For Loop to be able to visualize the best metrics for each k&#39;&#39;&#39;
+    km = KMeans(n_clusters=k)
+    km = km.fit(data_transformed)
+    Sum_of_squared_distances.append(km.inertia_)</code></pre>
+<pre class="r"><code>&#39;&#39;&#39;
+Plot the results from the for loop
+&#39;&#39;&#39;
+
+plt.plot(K, Sum_of_squared_distances, &#39;bx-&#39;)
+plt.xlabel(&#39;k&#39;)
+plt.ylabel(&#39;Sum_of_squared_distances&#39;)
+plt.title(&#39;Elbow Method For Optimal k&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp17.png" /></p>
+<p>The Elbow method can be used to determine which k should be applied to the present dataset. Here we can determine a k=4.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Fit the KMeans model with k=4
+&#39;&#39;&#39;
+
+km = KMeans(n_clusters=4, random_state=1)
+km.fit(house_prices_cluster)
+
+predict=km.predict(house_prices_cluster)
+house_prices_cluster[&#39;clusters&#39;] = pd.Series(predict, index=house_prices_cluster.index)</code></pre>
+</div>
+<div id="visualise-1" class="section level1">
+<h1>5.2.2 Visualise</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Visualize the results
+&#39;&#39;&#39;
+
+df_sub = house_prices_cluster[[&#39;sqft_living&#39;, &#39;price&#39;]].values
+
+plt.scatter(df_sub[predict==0, 0], df_sub[predict==0, 1], s=100, c=&#39;red&#39;, label =&#39;Cluster 1&#39;)
+plt.scatter(df_sub[predict==1, 0], df_sub[predict==1, 1], s=100, c=&#39;blue&#39;, label =&#39;Cluster 2&#39;)
+plt.scatter(df_sub[predict==2, 0], df_sub[predict==2, 1], s=100, c=&#39;green&#39;, label =&#39;Cluster 3&#39;)
+plt.scatter(df_sub[predict==3, 0], df_sub[predict==3, 1], s=100, c=&#39;cyan&#39;, label =&#39;Cluster 4&#39;)
+
+plt.title(&#39;Cluster of Houses&#39;)
+plt.xlim((0, 5000))
+plt.ylim((0,2000000))
+plt.xlabel(&#39;sqft_living \n\n Cluster1(Red), Cluster2 (Blue), Cluster3(Green), Cluster4(Cyan)&#39;)
+plt.ylabel(&#39;Price&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp18.png" /></p>
+</div>
+<div id="brief-explanation-for-visualisation-1" class="section level1">
+<h1>5.2.3 Brief explanation for visualisation</h1>
+<p>Within the data set 4 clusters could be identified. We can see in the graphic above that the target buyer groups of the houses can be clearly defined. In this case, targeted customer segmentation and personalized recommendations from a marketing point of view would now be an option.</p>
+</div>
+<div id="research-question-3" class="section level1">
+<h1>5.3 Research Question 3</h1>
+<p>Does the number of square meters have a significant influence on the price of the property?</p>
+</div>
+<div id="analyse-2" class="section level1">
+<h1>5.3.1 Analyse</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Select variables price and sqft_living.
+&#39;&#39;&#39;
+
+HousePrices_SimplReg = final_df_house_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]</code></pre>
+<pre class="r"><code>model1 = smf.ols(formula=&#39;price~sqft_living&#39;, data=HousePrices_SimplReg).fit()
+
+model1.summary()</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp19.png" /></p>
+</div>
+<div id="visualise-2" class="section level1">
+<h1>5.3.2 Visualise</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Visualisation of regression results
+&#39;&#39;&#39;
+
+sns.jointplot(x=&quot;sqft_living&quot;, y=&quot;price&quot;, data=HousePrices_SimplReg, kind=&#39;reg&#39;, joint_kws={&#39;line_kws&#39;:{&#39;color&#39;:&#39;red&#39;}})</code></pre>
+<p><img src="/post/2020-11-10-predicting-house-prices-and-eda_files/pDSp20.png" /></p>
+</div>
+<div id="brief-explanation-for-visualisation-2" class="section level1">
+<h1>5.3.3 Brief explanation for visualisation</h1>
+<p>As we can see from the p value, it is highly significant. It can therefore be assumed that the number of square meters is a significant predictor of the price of a property.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I have analyzed the dataset ‘house-prices’ from the statistics platform kaggle. The following findings came out:</p>
+<ul>
+<li><p>Houses that are located at the water have a disproportionately higher price at the same conditions.</p></li>
+<li><p>4 clusters could be identified within the dataset, which can now be used for further analysis.</p></li>
+<li><p>It was found that the number of square meters has a significant influence on the price of a property.</p></li>
+</ul>
+<p>Furthermore, I have created a linear regression model to predict house prices of real estate.</p>
+</div>
