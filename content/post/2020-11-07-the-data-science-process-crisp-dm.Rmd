@@ -118,7 +118,6 @@ import numpy as np
 
 
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
 
 import matplotlib.pyplot as plt
