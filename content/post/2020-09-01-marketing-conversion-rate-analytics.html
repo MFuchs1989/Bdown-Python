@@ -1,0 +1,56 @@
+---
+title: Marketing - Conversion Rate Analytics
+author: Michael Fuchs
+date: '2020-09-01'
+slug: marketing-conversion-rate-analytics
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Loading the libraries</li>
+<li>3 Manifold Learning Methods</li>
+<li>3.1 Locally Linear Embedding</li>
+<li>3.2 Modified Locally Linear Embedding</li>
+<li>3.3 Isomap</li>
+<li>3.4 Spectral Embedding</li>
+<li>3.5 Multi-dimensional Scaling (MDS)</li>
+<li>3.6 t-SNE</li>
+<li>4 Comparison of the calculation time</li>
+<li>5 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>After having reported very detailed in numerous posts about the different machine learning areas I will now work on various analytics fields.</p>
+<p>I start with Marketing Analytics.</p>
+<p>To be precise, the analysis of conversion rates, their influencing factors and how machine learning algorithms can be used to generate valuable insights from this kind of data.</p>
+<p>In this post I will use the data set ‘bank-additional-full’ and ‘WA_Fn-UseC_-Marketing-Customer-Value-Analysis’.
+Both are from the website <a href="https://archive.ics.uci.edu/ml/datasets/bank+marketing">“UCI Machine Learning Repository”</a>.</p>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p1.png" /></p>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn import datasets
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+import time
+
+
+from sklearn.manifold import LocallyLinearEmbedding
+from sklearn.manifold import Isomap
+from sklearn.manifold import SpectralEmbedding
+from sklearn.manifold import MDS
+from sklearn.manifold import TSNE</code></pre>
+</div>
