@@ -12,8 +12,19 @@ tags:
 # Table of Content
 
 + 1 Introduction
-+ 2 
-
++ 2 Import the libraries
++ 3 Descriptive Analytics (Conversion Rate)
++ 4 Drivers behind Marketing Engagement
++ 4.1 Select Numerical Columns
++ 4.2 Select and Encode Categorical Columns
++ 4.3 Create final Dataframe
++ 4.4 Regression Analysis (Logit)
++ 5 Predicting the Likelihood of Marketing Engagement
++ 5.1 Fit the Model
++ 5.2 Feature Importance
++ 5.3 Model Evaluation
++ 6 Engagement to Conversion
++ 7 Conclusion
 
 
 
@@ -29,3 +40,64 @@ To be precise, the analysis of conversion rates, their influencing factors and h
 In this post I will use the data set 'bank-additional-full' and 'WA_Fn-UseC_-Marketing-Customer-Value-Analysis'. 
 Both are from the website ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/bank+marketing).
 You can also download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
