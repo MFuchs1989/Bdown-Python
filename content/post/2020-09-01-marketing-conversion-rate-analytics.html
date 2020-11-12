@@ -41,5 +41,436 @@ tags:
 <p>In this post I will use the data set ‘bank-additional-full’ and ‘WA_Fn-UseC_-Marketing-Customer-Value-Analysis’.
 Both are from the website <a href="https://archive.ics.uci.edu/ml/datasets/bank+marketing">“UCI Machine Learning Repository”</a>.
 You can also download them from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets">“GitHub Repository”</a>.</p>
-<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p.png" /></p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import OneHotEncoder
+
+import statsmodels.api as sm
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_curve, auc
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import plot_tree</code></pre>
+</div>
+<div id="descriptive-analytics-conversion-rate" class="section level1">
+<h1>3 Descriptive Analytics (Conversion Rate)</h1>
+<p>Definition Conversion Rate:</p>
+<p>The conversion rate describes the ratio of visits/clicks to conversions achieved. Conversions are conversions from prospects to customers or buyers. They can for example consist of purchases or downloads.</p>
+<pre class="r"><code>df = pd.read_csv(&#39;bank-additional-full.csv&#39;, sep=&#39;;&#39;)
+df.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p1.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+In the following the column y is coded.
+Then the newly generated values are inserted into the original dataframe. 
+The old column is still retained in this case.
+&#39;&#39;&#39;
+
+encoder_y = LabelBinarizer()
+
+# Application of the LabelBinarizer
+y_encoded = encoder_y.fit_transform(df.y.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+df[&#39;conversion&#39;] = y_encoded
+
+# Getting the exact coding and show new dataframe
+print(encoder_y.classes_)
+print(&#39;Codierung: no=0, yes=1&#39;)
+print(&#39;-----------------------------&#39;)
+print()
+print(&#39;New Data Frame:&#39;)
+df.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p2.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Absolut conversions vs. conversion rate
+&#39;&#39;&#39;
+
+print(&#39;Conversions (absolut): %i out of %i&#39; % (df.conversion.sum(), df.shape[0]))
+
+print(&#39;Conversion Rate: %0.2f%%&#39; % (df.conversion.sum() / df.shape[0] * 100.0))</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p3.png" /></p>
+<p><strong>Age</strong></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Calculate the conversion rate by age
+&#39;&#39;&#39;
+
+conversion_rate_by_age = df.groupby(by=&#39;age&#39;)[&#39;conversion&#39;].sum() / df.groupby(by=&#39;age&#39;)[&#39;conversion&#39;].count() * 100.0
+pd.DataFrame(conversion_rate_by_age.reset_index().rename(columns={&#39;conversion&#39;:&#39;conversion_%&#39;})).head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p4.png" /></p>
+<pre class="r"><code>ax = conversion_rate_by_age.plot(
+    grid=True,
+    figsize=(10, 7),
+    title=&#39;Conversion Rates by Age&#39;)
+
+ax.set_xlabel(&#39;age&#39;)
+ax.set_ylabel(&#39;conversion rate (%)&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p5.png" /></p>
+<pre class="r"><code>def age_group_function(df):
+
+    if (df[&#39;age&#39;] &gt;= 70):
+        return &#39;70&lt;&#39;
+    
+    elif (df[&#39;age&#39;] &lt; 70) and (df[&#39;age&#39;] &gt;= 60):
+        return &#39;[60, 70]&#39;
+              
+    elif (df[&#39;age&#39;] &lt;= 60) and (df[&#39;age&#39;] &gt;= 50):
+        return &#39;[50, 60]&#39;
+
+    elif (df[&#39;age&#39;] &lt;= 50) and (df[&#39;age&#39;] &gt;= 40):
+        return &#39;[40, 50]&#39;
+    
+    elif (df[&#39;age&#39;] &lt;= 40) and (df[&#39;age&#39;] &gt;= 30):
+        return &#39;[30, 40]&#39;
+    
+    elif (df[&#39;age&#39;] &lt;= 30) and (df[&#39;age&#39;] &gt;= 20):
+        return &#39;[20, 30]&#39;
+    
+    elif (df[&#39;age&#39;] &lt; 20):
+        return &#39;&lt;20&#39;    
+    
+df[&#39;age_group&#39;] = df.apply(age_group_function, axis = 1)
+df.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p6.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Calculate the conversion rate by age_group
+&#39;&#39;&#39;
+
+conversion_rate_by_age_group = df.groupby(by=&#39;age_group&#39;)[&#39;conversion&#39;].sum() / df.groupby(by=&#39;age_group&#39;)[&#39;conversion&#39;].count() * 100.0
+pd.DataFrame(conversion_rate_by_age_group.reset_index().rename(columns={&#39;conversion&#39;:&#39;conversion_%&#39;}))</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p7.png" /></p>
+<pre class="r"><code>ax = conversion_rate_by_age_group.loc[[&#39;&lt;20&#39;, &#39;[20, 30]&#39;, &#39;[30, 40]&#39;, &#39;[40, 50]&#39;, &#39;[50, 60]&#39;, &#39;[60, 70]&#39;, &#39;70&lt;&#39;]].plot(
+    kind=&#39;bar&#39;,
+    color=&#39;skyblue&#39;,
+    grid=True,
+    figsize=(10, 7),
+    title=&#39;Conversion Rates by Age Groups&#39;)
+
+ax.set_xlabel(&#39;age_group&#39;)
+ax.set_ylabel(&#39;conversion rate (%)&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p8.png" /></p>
+<p><strong>Marital Status</strong></p>
+<pre class="r"><code>conversions_by_marital_status = pd.pivot_table(df, values=&#39;y&#39;, index=&#39;marital&#39;, columns=&#39;conversion&#39;, aggfunc=len)
+conversions_by_marital_status.columns = [&#39;non_conversions&#39;, &#39;conversions&#39;]
+conversions_by_marital_status</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p9.png" /></p>
+<pre class="r"><code>conversions_by_marital_status.plot(
+    kind=&#39;pie&#39;,
+    figsize=(15, 7),
+    startangle=90,
+    subplots=True,
+    autopct=lambda x: &#39;%0.1f%%&#39; % x)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p10.png" /></p>
+<p><strong>Age Groups and Marital Status</strong></p>
+<pre class="r"><code>age_marital = df.groupby([&#39;age_group&#39;, &#39;marital&#39;])[&#39;conversion&#39;].sum().unstack(&#39;marital&#39;).fillna(0)
+age_marital</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p11.png" /></p>
+<pre class="r"><code>age_marital = age_marital.divide(
+    df.groupby(
+    by=&#39;age_group&#39;
+    )[&#39;conversion&#39;].count(), 
+    axis=0)
+
+age_marital</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p12.png" /></p>
+<pre class="r"><code>ax = age_marital.loc[
+    [&#39;&lt;20&#39;, &#39;[20, 30]&#39;, &#39;[30, 40]&#39;, &#39;[40, 50]&#39;, &#39;[50, 60]&#39;, &#39;[60, 70]&#39;, &#39;70&lt;&#39;]].plot(
+    kind=&#39;bar&#39;, 
+    stacked=True,
+    grid=True,
+    figsize=(10,7))
+
+ax.set_title(&#39;Conversion rates by Age &amp; Marital Status&#39;)
+ax.set_xlabel(&#39;age group&#39;)
+ax.set_ylabel(&#39;conversion rate (%)&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p13.png" /></p>
+</div>
+<div id="drivers-behind-marketing-engagement" class="section level1">
+<h1>4 Drivers behind Marketing Engagement</h1>
+<p>Definiton Marketing Engagement:</p>
+<p>In marketing engagement, the aim is to involve the customer in the marketing measures and thus encourage him to actively interact with the content. This should generate a positive experience and a positive association with the brand and the company, thus strengthening the customer’s loyalty to the company. This can lead to identification with the company and its values and can ultimately increase the chance of conversions.</p>
+<pre class="r"><code>df = pd.read_csv(&#39;WA_Fn-UseC_-Marketing-Customer-Value-Analysis.csv&#39;)
+df[&#39;Engaged&#39;] = df[&#39;Response&#39;].apply(lambda x: 0 if x == &#39;No&#39; else 1)
+df.head().T</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p14.png" /></p>
+</div>
+<div id="select-numerical-columns" class="section level1">
+<h1>4.1 Select Numerical Columns</h1>
+<pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+numerical_columns = list(df.select_dtypes(include=num_col).columns)
+df_numeric = df[numerical_columns]
+df_numeric.dtypes</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p15.png" /></p>
+</div>
+<div id="select-and-encode-categorical-columns" class="section level1">
+<h1>4.2 Select and Encode Categorical Columns</h1>
+<pre class="r"><code>obj_col = [&#39;object&#39;]
+object_columns = list(df.select_dtypes(include=obj_col).columns)
+df_categorical = df[object_columns]
+df_categorical.dtypes</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p16.png" /></p>
+<p>We just take 3 of the cat variables otherwise this step would take too long
+and this is just an example of how to handle cat variables.</p>
+<pre class="r"><code>df_categorical = df_categorical[[&#39;State&#39;, &#39;Education&#39;, &#39;Gender&#39;]]
+df_categorical.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p17.png" /></p>
+<pre class="r"><code>print(&#39;Values of the variable State:&#39;)
+print()
+print(df_categorical[&#39;State&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable Education:&#39;)
+print()
+print(df_categorical[&#39;Education&#39;].value_counts())
+
+print(&#39;--------------------------------------------&#39;)
+
+print(&#39;Values of the variable EmploymentStatus:&#39;)
+print()
+print(df_categorical[&#39;Gender&#39;].value_counts())</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p18.png" /></p>
+<p>Here we have 3 different kind of categorical variables.</p>
+<ul>
+<li>State: nominal</li>
+<li>Education: ordinal</li>
+<li>Gender: binary</li>
+</ul>
+<p>In the following the column State is coded.
+Then the newly generated values are inserted into the original dataframe
+and the old column will be deleted.</p>
+<pre class="r"><code>encoder_State = OneHotEncoder()
+
+# Application of the OneHotEncoder
+OHE = encoder_State.fit_transform(df_categorical.State.values.reshape(-1,1)).toarray()
+
+# Conversion of the newly generated data to a dataframe
+df_OHE = pd.DataFrame(OHE, columns = [&quot;State_&quot; + str(encoder_State.categories_[0][i]) 
+                                     for i in range(len(encoder_State.categories_[0]))])
+
+
+
+
+# Insertion of the coded values into the original data set
+df_categorical = pd.concat([df_categorical, df_OHE], axis=1)
+
+
+# Delete the original column to avoid duplication
+df_categorical = df_categorical.drop([&#39;State&#39;], axis=1)</code></pre>
+<p>In the following the column Education is coded.
+Then the newly generated values are inserted into the original dataframe
+and the old column will be deleted.</p>
+<pre class="r"><code># Create a dictionary how the observations should be coded
+education_dict = {&#39;High School or Below&#39; : 0,
+                  &#39;College&#39; : 1,
+                  &#39;Bachelor&#39; : 2,
+                  &#39;Master&#39; : 3,
+                  &#39;Doctor&#39; : 4}
+
+# Map the dictionary on the column view and store the results in a new column
+df_categorical[&#39;Education_encoded&#39;] = df_categorical.Education.map(education_dict)
+
+# Delete the original column to avoid duplication
+df_categorical = df_categorical.drop([&#39;Education&#39;], axis=1)</code></pre>
+<p>In the following the column Gender is coded.
+Then the newly generated values are inserted into the original dataframe
+and the old column will be deleted.</p>
+<pre class="r"><code>encoder_Gender = LabelBinarizer()
+
+# Application of the LabelBinarizer
+Gender_encoded = encoder_Gender.fit_transform(df_categorical.Gender.values.reshape(-1,1))
+
+# Insertion of the coded values into the original data set
+df_categorical[&#39;Gender_encoded&#39;] = Gender_encoded
+
+# Delete the original column to avoid duplication
+df_categorical = df_categorical.drop([&#39;Gender&#39;], axis=1)</code></pre>
+</div>
+<div id="create-final-dataframe" class="section level1">
+<h1>4.3 Create final Dataframe</h1>
+<pre class="r"><code>df_final = pd.concat([df_numeric, df_categorical], axis=1)
+df_final.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p19.png" /></p>
+</div>
+<div id="regression-analysis-logit" class="section level1">
+<h1>4.4 Regression Analysis (Logit)</h1>
+<p>If we work with the sm library, we have to add a constant to the predictor(s).
+With the Statsmodels Formula library, this would not have been necessary manually,
+but the disadvantage of this variant is that we have to enumerate the predictors individually in the formula.</p>
+<pre class="r"><code>x = sm.add_constant(df_final.drop(&#39;Engaged&#39;, axis=1))
+
+y = df_final[&#39;Engaged&#39;]</code></pre>
+<pre class="r"><code>logit = sm.Logit(y,x)
+
+logit_fit = logit.fit()
+
+logit_fit.summary()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p20.png" /></p>
+<p>2 variables are significant (Education_encoded and Total Claim Amount). Both with a positive relationship to the target variable Engaged.</p>
+<p>This means (in the case of the variable Education_encoded), the higher the education the more the customer will be receptive to marketing calls.</p>
+</div>
+<div id="predicting-the-likelihood-of-marketing-engagement" class="section level1">
+<h1>5 Predicting the Likelihood of Marketing Engagement</h1>
+<p>Here we can again use the previously created data set (df_final).
+Note at this point: We have not included all categorical variables.
+The reason for this was that the correct coding was not done for all variables for reasons of overview/time.</p>
+<pre class="r"><code># Replacement of all whitespaces within the column names 
+df_final.columns = [x.replace(&#39; &#39;, &#39;_&#39;) for x in df_final.columns]
+df_final</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p21.png" /></p>
+<pre class="r"><code>x = df_final.drop([&#39;Engaged&#39;], axis=1)
+y = df_final[&#39;Engaged&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="fit-the-model" class="section level1">
+<h1>5.1 Fit the Model</h1>
+<pre class="r"><code>rf_model = RandomForestClassifier(n_estimators=200, max_depth=5)
+rf_model.fit(trainX, trainY)</code></pre>
+</div>
+<div id="feature-importance" class="section level1">
+<h1>5.2 Feature Importance</h1>
+<pre class="r"><code>feat_imps = pd.DataFrame({&#39;importance&#39;: rf_model.feature_importances_}, index=trainX.columns)
+feat_imps.sort_values(by=&#39;importance&#39;, ascending=False, inplace=True)
+feat_imps</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p22.png" /></p>
+<pre class="r"><code>feat_imps.plot(kind=&#39;bar&#39;, figsize=(10,7))
+
+plt.legend()
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p23.png" /></p>
+</div>
+<div id="model-evaluation" class="section level1">
+<h1>5.3 Model Evaluation</h1>
+<p><strong>Accuracy</strong></p>
+<pre class="r"><code>rf_preds_train = rf_model.predict(trainX)
+rf_preds_test = rf_model.predict(testX)
+
+print(&#39;Random Forest Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on test data = {:.4f}&#39;.format(
+    accuracy_score(trainY, rf_preds_train),
+    accuracy_score(testY, rf_preds_test)
+))</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p24.png" /></p>
+<p><strong>ROC &amp; AUC</strong></p>
+<pre class="r"><code>rf_preds_train = rf_model.predict_proba(trainX)[:,1]
+rf_preds_test = rf_model.predict_proba(testX)[:,1]</code></pre>
+<pre class="r"><code>train_fpr, train_tpr, train_thresholds = roc_curve(trainY, rf_preds_train)
+test_fpr, test_tpr, test_thresholds = roc_curve(testY, rf_preds_test)</code></pre>
+<pre class="r"><code>train_roc_auc = auc(train_fpr, train_tpr)
+test_roc_auc = auc(test_fpr, test_tpr)
+
+print(&#39;Train AUC: %0.4f&#39; % train_roc_auc)
+print(&#39;Test AUC: %0.4f&#39; % test_roc_auc)</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p25.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(10,7))
+
+plt.plot(test_fpr, test_tpr, color=&#39;darkorange&#39;, label=&#39;Test ROC curve (area = %0.4f)&#39; % test_roc_auc)
+plt.plot(train_fpr, train_tpr, color=&#39;navy&#39;, label=&#39;Train ROC curve (area = %0.4f)&#39; % train_roc_auc)
+plt.plot([0, 1], [0, 1], color=&#39;gray&#39;, lw=1, linestyle=&#39;--&#39;)
+plt.grid()
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel(&#39;False Positive Rate&#39;)
+plt.ylabel(&#39;True Positive Rate&#39;)
+plt.title(&#39;RandomForest Model ROC Curve&#39;)
+plt.legend(loc=&quot;lower right&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p26.png" /></p>
+</div>
+<div id="engagement-to-conversion" class="section level1">
+<h1>6 Engagement to Conversion</h1>
+<p>Now that we have examined the conversion rate by means of descriptive statistics, have determined the influencing factors of engagement and can also predict these by means of a machine learning model, it is now time to extract further insights, such as a target group determination, from the data to the conversion rate.</p>
+<pre class="r"><code>df = pd.read_csv(&#39;bank-additional-full.csv&#39;, sep=&#39;;&#39;)
+df.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p27.png" /></p>
+<pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
+numerical_columns = list(df.select_dtypes(include=num_col).columns)
+df_numeric = df[numerical_columns]
+df_numeric = df_numeric[[&#39;age&#39;, &#39;campaign&#39;]]
+df_numeric.dtypes</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p28.png" /></p>
+<pre class="r"><code>obj_col = [&#39;object&#39;]
+object_columns = list(df.select_dtypes(include=obj_col).columns)
+df_categorical = df[object_columns]
+df_categorical = df_categorical[[&#39;job&#39;, &#39;marital&#39;, &#39;y&#39;]]
+df_categorical.dtypes</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p29.png" /></p>
+<pre class="r"><code>dummy_job = pd.get_dummies(df_categorical[&#39;job&#39;], prefix=&quot;job&quot;)
+column_name = df_categorical.columns.values.tolist()
+column_name.remove(&#39;job&#39;)
+df_categorical = df_categorical[column_name].join(dummy_job)
+
+dummy_marital = pd.get_dummies(df_categorical[&#39;marital&#39;], prefix=&quot;marital&quot;)
+column_name = df_categorical.columns.values.tolist()
+column_name.remove(&#39;marital&#39;)
+df_categorical = df_categorical[column_name].join(dummy_marital)
+
+
+df_categorical.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p30.png" /></p>
+<pre class="r"><code>df_final = pd.concat([df_categorical, df_numeric], axis=1)
+df_final.head()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p31.png" /></p>
+<pre class="r"><code>x = df_final.drop([&#39;y&#39;], axis=1)
+y = df_final[&#39;y&#39;]</code></pre>
+<pre class="r"><code>clf_dt = DecisionTreeClassifier()
+clf_dt.fit(x, y)</code></pre>
+<pre class="r"><code>features = x.columns.tolist()
+classes = y.unique().tolist()
+
+plt.figure(figsize=(15, 15))
+plot_tree(clf_dt, feature_names=features, class_names=classes, filled=True)
+plt.savefig(&#39;tree.png&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p32.png" /></p>
+<p>Not yet really readable / interpretable.</p>
+<pre class="r"><code>clf = DecisionTreeClassifier(max_depth=4)
+clf.fit(x, y)</code></pre>
+<pre class="r"><code>features = x.columns.tolist()
+classes = y.unique().tolist()
+
+plt.figure(figsize=(150, 150))
+plot_tree(clf, feature_names=features, class_names=classes, filled=True)
+plt.savefig(&#39;tree2.png&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p33.png" /></p>
+<p>Already much better.
+I personally always save the generated chart separately to be able to view the results in more detail if necessary.</p>
+<p>Those customers that belong to the eleventh leaf node from the left are those with a 0 value for the self_employed variable, age greater than 75.5 and a campaign variable with a value of less than 3.5.</p>
+<p>In other words, those who are not self employed, older than 75.5 and have come in contact with the campaigns 1-3 have a high chance of converting.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>The following points were covered in the main chapters 3-6:</p>
+<ul>
+<li>Descriptive Analysis at Conversion Rate.</li>
+<li>Determine reasons for Marketing Engagement.</li>
+<li>Prediction of marketing engagement.</li>
+<li>Determination and analysis of the target group that causes conversions.</li>
+</ul>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.</p>
+<p>Provost, F., &amp; Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O’Reilly Media, Inc.".</p>
+<p>Wedel, M., Kamakura, W., &amp; Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.</p>
+<p>Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.</p>
 </div>
