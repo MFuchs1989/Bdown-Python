@@ -9,21 +9,10 @@ tags:
   - R Markdown
 ---
 
-
-
 # Table of Content
 
 + 1 Introduction
-+ 2 Loading the libraries
-+ 3 Manifold Learning Methods
-+ 3.1 Locally Linear Embedding
-+ 3.2 Modified Locally Linear Embedding
-+ 3.3 Isomap
-+ 3.4 Spectral Embedding
-+ 3.5 Multi-dimensional Scaling (MDS)
-+ 3.6 t-SNE
-+ 4 Comparison of the calculation time
-+ 5 Conclusion
++ 2 
 
 
 
@@ -39,37 +28,4 @@ To be precise, the analysis of conversion rates, their influencing factors and h
 
 In this post I will use the data set 'bank-additional-full' and 'WA_Fn-UseC_-Marketing-Customer-Value-Analysis'. 
 Both are from the website ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/bank+marketing).
-
-
-
-
-
-
-
-
-
-![](/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p1.png)
-
-
-
-```{r, eval=F, echo=T}
-import pandas as pd
-import numpy as np
-
-from sklearn import datasets
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-import time
-
-
-from sklearn.manifold import LocallyLinearEmbedding
-from sklearn.manifold import Isomap
-from sklearn.manifold import SpectralEmbedding
-from sklearn.manifold import MDS
-from sklearn.manifold import TSNE
-```
-
-
-
-
+You can also download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
