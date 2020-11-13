@@ -31,7 +31,6 @@ tags:
 # 1 Introduction
 
 I entered the field of marketing analytics with the topic conversion rate analysis.
-
 Now we come to two other important areas:
 
 + Prdouct Analytics and
