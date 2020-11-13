@@ -1,0 +1,174 @@
+---
+title: Marketing - Product Analytics and Recommendations
+author: Michael Fuchs
+date: '2020-09-08'
+slug: marketing-product-analytics-and-recommendations
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Import the libraries
++ 3 Product Analytics
++ 3.1 Number of Orders over Time
++ 3.2 Revenue over Time
++ 3.3 Repeat Customers over Time
++ 3.4 Repeat Customers Revenue over Time
++ 3.5 Popular Items over Time
++ 4 Product Recommendations
++ 4.1 Collaborative Filtering
++ 4.1.1 User-based Collaborative Filtering
++ 4.1.2 Item-based Collaborative Filtering
++ 5 Conclusion
+
+
+
+# 1 Introduction
+
+I entered the field of marketing analytics with the topic conversion rate analysis.
+
+Now we come to two other important areas:
+
++ Prdouct Analytics and
++ Recommendations
+
+
+For this post the dataset *Online Retail* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+
+
+
+# 2 Import the libraries
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from sklearn.metrics.pairwise import cosine_similarity
+```
+
+
+# 3 Product Analytics
+
+
+
+# 3.1 Number of Orders over Time
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+# 3.2 Revenue over Time
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+# 3.3 Repeat Customers over Time
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+# 3.4 Repeat Customers Revenue over Time
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+# 3.5 Popular Items over Time
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+
+# 4 Product Recommendations
+# 4.1 Collaborative Filtering
+# 4.1.1 User-based Collaborative Filtering
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+
+# 4.1.2 Item-based Collaborative Filtering
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p.png)
+
+
+
+
+
+# 5 Conclusion
+
+
+
+
+
+
+
+
+# References
+
+Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
+
+Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
+
+Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
+
+Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
+
+
+
+
+
