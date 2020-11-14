@@ -717,6 +717,9 @@ Furthermore I showed how to develop and apply product recommendations with colla
 
 # References
 
+
+Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.
+
 Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
 
 Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
@@ -725,7 +728,7 @@ Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and de
 
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
 
-
+Xu, Z., Frankwick, G. L., & Ramirez, E. (2016). Effects of big data analytics and traditional marketing analytics on new product success: A knowledge fusion perspective. Journal of Business Research, 69(5), 1562-1566.
 
 
 
