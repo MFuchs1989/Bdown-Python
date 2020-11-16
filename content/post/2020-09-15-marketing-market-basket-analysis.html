@@ -58,9 +58,9 @@ Given two items, X and Y, confidence measures the percentage of times that item 
 <li>Confidence = Freq(X,Y)/Freq(X)</li>
 </ul>
 <p><em>Lift</em>:
-Unlike the confidence metric whose value may vary depending on direction (eg: confidence{X -&gt;Y} may be different from confidence{Y -&gt;X}), lift has no direction. This means that the lift{X,Y} is always equal to the lift{Y,X}.</p>
+Unlike the confidence metric whose value may vary depending on direction [eg: confidence(X -&gt;Y) may be different from confidence(Y -&gt;X)], lift has no direction. This means that the lift(X,Y) is always equal to the lift(Y,X).</p>
 <ul>
-<li>Lift{X,Y} = Lift{Y,X} = Support{X,Y} / (Support{X} * Support{Y})</li>
+<li>Lift(X,Y) = Lift(Y,X) = Support(X,Y) / [Support(X) * Support(Y)]</li>
 </ul>
 <p><em>Leverage</em>:
 Leverage measures the difference of X and Y appearing together in the data set and what would be expected if X and Y where statistically dependent. The rational in a sales setting is to find out how many more units (items X and Y together) are sold than expected from the independent sells.</p>

@@ -77,9 +77,9 @@ Given two items, X and Y, confidence measures the percentage of times that item 
 
 
 *Lift*: 
-Unlike the confidence metric whose value may vary depending on direction (eg: confidence{X ->Y} may be different from confidence{Y ->X}), lift has no direction. This means that the lift{X,Y} is always equal to the lift{Y,X}.
+Unlike the confidence metric whose value may vary depending on direction [eg: confidence(X ->Y) may be different from confidence(Y ->X)], lift has no direction. This means that the lift(X,Y) is always equal to the lift(Y,X).
 
-+ Lift{X,Y} = Lift{Y,X} = Support{X,Y} / (Support{X} * Support{Y})
++ Lift(X,Y) = Lift(Y,X) = Support(X,Y) / [Support(X) * Support(Y)]
 
 
 *Leverage*: 
