@@ -1,0 +1,183 @@
+---
+title: Marketing - Market Basket Analysis
+author: Michael Fuchs
+date: '2020-09-15'
+slug: marketing-market-basket-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Market Basket Analysis
++ 3 Import the libraries and the data
++ 4 Data pre-processing
++ 5 Executing the Apriori Algorithm
++ 6 Deriving Association Rules
++ 7 Conclusion
+
+
+
+# 1 Introduction
+
+Another exciting topic in marketing analytics is Market Basket Analysis. This is the topic of this publication. 
+At the beginning of this post I will be introducing some key terms and metrics aimed at giving a sense of what “association” in a rule means and some ways to quantify the strength of this association. Then I will show how to generate these rules from the dataset 'Online Retail' using the Apriori Algorithm.
+
+
+For this post the dataset *Online Retail* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+
+
+# 2 Market Basket Analysis
+
+
+![](/post/2020-09-15-marketing-market-basket-analysis_files/p82s1.png)
+
+**Definition Market Basket Analysis**
+
+Market Basket Analysis is a analysis technique which identifies the strength of association between pairs of products purchased together and identify patterns of co-occurrence.
+
+Market Basket Analysis creates If-Then scenario rules (association rules), for example, if item A is purchased then item B is likely to be purchased. The rules are probabilistic in nature or, in other words, they are derived from the frequencies of co-occurrence in the observations. Frequency is the proportion of baskets that contain the items of interest. The rules can be used in pricing strategies, product placement, and various types of cross-selling strategies. 
+
+
+**How association rules work**
+
+Association rule mining, at a basic level, involves the use of machine learning models to analyze data for patterns, or co-occurrences, in a database. It identifies frequent if-then associations, which themselves are the association rules.
+
+An association rule has two parts: an antecedent (if) and a consequent (then). An antecedent is an item found within the data. A consequent is an item found in combination with the antecedent.
+
+Association rules are created by searching data for frequent if-then patterns and using the criteria support and confidence to identify the most important relationships. Support is an indication of how frequently the items appear in the data. Confidence indicates the number of times the if-then statements are found true. A third metric, called lift, can be used to compare confidence with expected confidence, or how many times an if-then statement is expected to be found true.
+
+Association rules are calculated from itemsets, which are made up of two or more items. If rules are built from analyzing all the possible itemsets, there could be so many rules that the rules hold little meaning. With that, association rules are typically created from rules well-represented in data.
+
+
+**Important Probabilistic Metrics**
+
+Association Rules is one of the very important concepts of machine learning being used in Market Basket Analysis.
+
+Market Basket Analysis is built upon the computation of several probabilistic metrics.
+The five major metrics covered here are support, confidence, lift, leverage and conviction. 
+
+
+
+*Support*: 
+Percentage of orders that contain the item set. 
+
++ Support = Freq(X,Y)/N
+
+
+*Confidence*: 
+Given two items, X and Y, confidence measures the percentage of times that item Y is purchased, given that item X was purchased.
+
++ Confidence = Freq(X,Y)/Freq(X)
+
+
+*Lift*: 
+Unlike the confidence metric whose value may vary depending on direction (eg: confidence{X ->Y} may be different from confidence{Y ->X}), lift has no direction. This means that the lift{X,Y} is always equal to the lift{Y,X}.
+
++ Lift{X,Y} = Lift{Y,X} = Support{X,Y} / (Support{X} * Support{Y})
+
+
+*Leverage*: 
+Leverage measures the difference of X and Y appearing together in the data set and what would be expected if X and Y where statistically dependent. The rational in a sales setting is to find out how many more units (items X and Y together) are sold than expected from the independent sells. 
+
++ Leverage(X -> Y) = P(X and Y) - (P(X)P(Y))
+
+
+
+*Conviction*: 
+Conviction compares the probability that X appears without Y if they were dependent with the actual frequency of the appearance of X without Y. In that respect it is similar to lift (see section about lift on this page), however, it contrast to lift it is a directed measure. Furthermore, conviction is monotone in confidence and lift. 
+
++ Conviction(X -> Y) = P(X)P(not Y)/P(X and not Y)=(1-sup(Y))/(1-conf(X -> Y))
+
+
+
+**Difference between Association and Recommendation**
+
+ 
+Association rules do not extract an individual's preference, rather find relationships between sets of elements of every distinct transaction. This is what makes them different than Collaborative filtering which is used in recommendation systems.
+
+
+
+# 3 Import the libraries and the data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+
+import mlxtend.preprocessing
+import mlxtend.frequent_patterns
+
+import matplotlib.pyplot as plt
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_excel("Online Retail.xlsx", sheet_name="Online Retail")
+df
+```
+
+![](/post/2020-09-15-marketing-market-basket-analysis_files/p82p1.png)
+
+
+# 4 Data pre-processing
+# 5 Executing the Apriori Algorithm
+# 6 Deriving Association Rules
+# 7 Conclusion
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-15-marketing-market-basket-analysis_files/p82p.png)
+
+
+
+
+
+
+
+
+
+
+
+# References
+
+
+Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.
+
+Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
+
+Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
+
+Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
+
+Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
+
+Johnston, B., Jones, A. & Kruger, C. (2019). Applied Unsupervised Learning with Python : Discover hidden patterns and relationships in unstructured data with Python. 
+Packt Publishing Ltd.
+
+Xu, Z., Frankwick, G. L., & Ramirez, E. (2016). Effects of big data analytics and traditional marketing analytics on new product success: A knowledge fusion perspective. Journal of Business Research, 69(5), 1562-1566.
+
+
+
+
+
+
+
+
+
+
+
+
+
