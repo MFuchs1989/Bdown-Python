@@ -91,16 +91,163 @@ df</code></pre>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4 Data pre-processing</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Create an indicator column stipulating whether the invoice number begins with &#39;C&#39;
+&#39;&#39;&#39;
+
+df[&#39;Is_C_Present&#39;] = (
+    online[&#39;InvoiceNo&#39;]
+    .astype(str)
+    .apply(lambda x: 1 if x.find(&#39;C&#39;) != -1 else 0))
+
+df</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p2.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Filter out all transactions having either zero or a negative number of items.
+Remove all invoice numbers starting with &#39;C&#39; (using columns &#39;Is_C_Present&#39;).
+Subset the dataframe down to &#39;InvoiceNo&#39; and &#39;Descritpion&#39;.
+Drop all rows with at least one missing value.
+&#39;&#39;&#39;
+
+
+df_clean = (
+    df
+    # filter out non-positive quantity values
+    .loc[df[&quot;Quantity&quot;] &gt; 0]
+    # remove InvoiceNos starting with C
+    .loc[df[&#39;Is_C_Present&#39;] != 1]
+    # column filtering
+    .loc[:, [&quot;InvoiceNo&quot;, &quot;Description&quot;]]
+    # dropping all rows with at least one missing value
+    .dropna()
+)
+
+df_clean</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p3.png" /></p>
+<pre class="r"><code>print(
+    &quot;Data dimension (row count, col count): {dim}&quot;
+    .format(dim=df_clean.shape)
+)
+print(
+    &quot;Count of unique invoice numbers: {cnt}&quot;
+    .format(cnt=df_clean.InvoiceNo.nunique())
+)</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p4.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Transform the data into a list of lists called invoice_item_list
+
+&#39;&#39;&#39;
+
+invoice_item_list = []
+for num in list(set(df_clean.InvoiceNo.tolist())):
+    # filter data set down to one invoice number
+    tmp_df = df_clean.loc[df_clean[&#39;InvoiceNo&#39;] == num]
+    # extract item descriptions and convert to list
+    tmp_items = tmp_df.Description.tolist()
+    # append list invoice_item_list
+    invoice_item_list.append(tmp_items)
+
+print(invoice_item_list[1:3])</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p5.png" /></p>
+<p>To be able to run any models the data, currently in the list of lists form, needs to be encoded and recast as a dataframe. Outputted from the encoder is a multidimensional array, where each row is the length of the total number of unique items in the transaction dataset and the elements are Boolean variables, indicating whether that particular item is linked to the invoice number that row presents. With the data encoded, we can recast it as a dataframe where the rows are the invoice numbers and the columns are the unique items in the transaction dataset.</p>
+<pre class="r"><code># Initialize and fit the transaction encoder
+online_encoder = mlxtend.preprocessing.TransactionEncoder()
+online_encoder_array = online_encoder.fit_transform(invoice_item_list)
+
+# Recast the encoded array as a dataframe
+online_encoder_df = pd.DataFrame(online_encoder_array, columns=online_encoder.columns_)
+
+# Print the results
+online_encoder_df</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p6.png" /></p>
 </div>
 <div id="executing-the-apriori-algorithm" class="section level1">
 <h1>5 Executing the Apriori Algorithm</h1>
+<p>The Apriori algorithm is one of the most common techniques in Market Basket Analysis.</p>
+<p>It is used to analyze the frequent itemsets in a transactional database, which then is used to generate association rules between the products.</p>
+<pre class="r"><code>&#39;&#39;&#39;
+Run the Apriori Algorithm with min_support = 0.01 (by default 0.5)
+&#39;&#39;&#39;
+
+apriori_model = mlxtend.frequent_patterns.apriori(online_encoder_df, min_support=0.01)
+apriori_model</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p7.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Run the same model again, but this time with use_colnames=True.
+This will replace the numerical designations with the actual item names.
+&#39;&#39;&#39;
+
+apriori_model_colnames = mlxtend.frequent_patterns.apriori(
+    online_encoder_df, 
+    min_support=0.01,
+    use_colnames=True
+)
+
+apriori_model_colnames</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p8.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Add an additional column to the output of apriori_model_colnames that contains the size of the item set.
+This will help with filtering and further analysis. 
+&#39;&#39;&#39;
+
+apriori_model_colnames[&#39;length&#39;] = (
+    apriori_model_colnames[&#39;itemsets&#39;].apply(lambda x: len(x))
+)
+
+apriori_model_colnames</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p9.png" /></p>
+<pre class="r"><code>apriori_model_colnames[
+    apriori_model_colnames[&#39;itemsets&#39;] == frozenset(
+        {&#39;12 PENCIL SMALL TUBE WOODLAND&#39;})]</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p10.png" /></p>
+<p>The output gives us the support value for ‘12 PENCIL SMALL TUBE WOODLAND’. The support value says that this specific item appears in 1,76% of the transactions.</p>
+<pre class="r"><code>apriori_model_colnames[
+    (apriori_model_colnames[&#39;length&#39;] == 2) &amp; 
+    (apriori_model_colnames[&#39;support&#39;] &gt;= 0.02) &amp;
+    (apriori_model_colnames[&#39;support&#39;] &lt; 0.021)
+]</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p11.png" /></p>
+<p>This dataframe contains all the item sets (pairs of items bought together) whose support value is in the range between 2% and 2.1% of transactions.</p>
+<p>When you are filtering on support, it is wise to specify a range instead of a sprecific value since it is quite possible to pick a value for which there are no item sets.</p>
+<pre class="r"><code>apriori_model_colnames.hist(&quot;support&quot;, grid=False, bins=30)
+plt.title(&quot;Support&quot;)</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p12.png" /></p>
 </div>
 <div id="deriving-association-rules" class="section level1">
 <h1>6 Deriving Association Rules</h1>
+<pre class="r"><code>&#39;&#39;&#39;
+Generate derive association rules for the online retail dataset.
+Here we use confidence as the measure of interestingness.
+Set the minimum threshold to 0.6.
+Return all metrics, not just support.
+&#39;&#39;&#39;
+
+rules = mlxtend.frequent_patterns.association_rules(
+    apriori_model_colnames, 
+    metric=&quot;confidence&quot;,
+    min_threshold=0.6, 
+    support_only=False
+)
+
+rules</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p13.png" /></p>
+<pre class="r"><code>print(&quot;Number of Associations: {}&quot;.format(rules.shape[0]))</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p14.png" /></p>
+<pre class="r"><code>rules.plot.scatter(&quot;support&quot;, &quot;confidence&quot;, alpha=0.5, marker=&quot;*&quot;)
+plt.xlabel(&quot;Support&quot;)
+plt.ylabel(&quot;Confidence&quot;)
+plt.title(&quot;Association Rules&quot;)
+plt.show()</code></pre>
+<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p15.png" /></p>
+<p>There are not any association rules with both extremly high confidence and extremely high support.</p>
+<p>This make sense. If an item set has high support, the items are likely to appear with many other items, making the chances of high confidence very low.</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>
-<p><img src="/post/2020-09-15-marketing-market-basket-analysis_files/p82p.png" /></p>
+<p>In this publication I have written about what market basket analysis is and how to perform it.</p>
+<p>With this kind of analysis from the field of mareting you can now determine which products are most often bought in combination with each other.
+With this knowledge it is possible to arrange the products efficiently in the store. In the best case, products that are often bought together are positioned in the opposite direction in the store so that customers are forced to walk past as many other products as possible.</p>
+<p>Furthermore, one can now consider targeted discount campaigns. If you discount a product that is often bought in combination with others, you increase the chance of buying these products in combination, whereby a small discount is granted on only one.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
