@@ -131,10 +131,15 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 5.3 Cluster Algorithms
 
-
-
-
-
++ ["Spectral Clustering"](https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/)
++ ["Mean Shift Clustering"](https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/)
++ ["Affinity Propagation"](https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/)
++ ["Bayesian Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/26/bayesian-gaussian-mixture-models/)
++ ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/)
++ ["HDBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/20/hdbscan/)
++ ["DBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/)
++ ["Hierarchical Clustering"](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/)
++ ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
 
 
 # 5.4 Dimensionality Reduction Algorithms
