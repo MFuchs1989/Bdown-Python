@@ -102,8 +102,33 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 # 5 Machine Learning
+
 # 5.1 Regression Algorithms
+
++ ["Further Regression Algorithms"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ ["Non-linear regression analysis"](https://michael-fuchs-python.netlify.app/2019/07/14/non-linear-regression-analysis/)
++ ["statsmodel.formula.api vs statsmodel.api"](https://michael-fuchs-python.netlify.app/2019/07/02/statsmodel-formula-api-vs-statsmodel-api/)
++ ["Introduction to regression analysis and predictions "](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/)
+
+
 # 5.2 Classification Algorithms
+
+
+
+
++ ["here"]()
+
+
+
+
+
+
+
+
+
+
+
+
 # 5.3 Cluster Algorithms
 # 5.4 Dimensionality Reduction Algorithms
 # 6 Some Python Stuff
