@@ -152,14 +152,20 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 # 6 Some Python Stuff
+
++ ["How to use Pandas set_option()"](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
++ ["How to suppress scientific notation in Pandas"](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)
++ ["Saving machine learning models to disc"](https://michael-fuchs-python.netlify.app/2020/02/29/saving-machine-learning-models-to-disc/)
++ ["Read and write to files"](https://michael-fuchs-python.netlify.app/2019/03/01/read-and-write-to-files/)
+
+
 # 7 Some Intuitions
 
-
-
-
-
-
-+ ["here"]()
++ ["How to create artificial datasets"](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/)
++ ["NumPy. An intuition."](https://michael-fuchs-python.netlify.app/2019/05/07/numpy-an-intuition/)
++ ["Pivot Tables with Python"](https://michael-fuchs-python.netlify.app/2019/04/24/pivot-tables-with-python/)
++ ["Python's Pipe - Operator"](https://michael-fuchs-python.netlify.app/2019/04/04/python-s-pipe-operator/)
++ ["String Manipulation. An intuition."](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/)
 
 
 
