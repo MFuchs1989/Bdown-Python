@@ -63,7 +63,17 @@ One way to estimate a customer’s lifetime span is to look at the average month
 </div>
 <div id="import-the-libraries-and-the-data" class="section level1">
 <h1>2 Import the libraries and the data</h1>
-<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png" /></p>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics</code></pre>
+<pre class="r"><code>df = pd.read_excel(&#39;Online Retail.xlsx&#39;, sheet_name=&#39;Online Retail&#39;)
+df</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
