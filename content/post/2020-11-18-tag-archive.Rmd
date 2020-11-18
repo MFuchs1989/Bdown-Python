@@ -113,23 +113,30 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 5.2 Classification Algorithms
 
-
-
-
-+ ["here"]()
-
-
-
-
-
-
-
-
-
-
++ ["Ensemble Modeling - Voting"](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
++ ["Stacking with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
++ ["Ensemble Modeling - Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
++ ["Ensemble Modeling - Boosting"](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
++ ["Ensemble Modeling - Bagging"](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
++ ["Introduction to KNN Classifier"](https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/)
++ ["Introduction to Naive Bayes Classifier"](https://michael-fuchs-python.netlify.app/2019/12/15/introduction-to-naive-bayes-classifier/)
++ ["Introduction to Decision Trees"](https://michael-fuchs-python.netlify.app/2019/11/30/introduction-to-decision-trees/)
++ ["Multinomial logistic regression"](https://michael-fuchs-python.netlify.app/2019/11/15/multinomial-logistic-regression/)
++ ["Introduction to Perceptron Algorithm"](https://michael-fuchs-python.netlify.app/2019/11/14/introduction-to-perceptron-algorithm/)
++ ["OvO and OvR Classifier"](https://michael-fuchs-python.netlify.app/2019/11/13/ovo-and-ovr-classifier/)
++ ["Introduction to SGD Classifier"](https://michael-fuchs-python.netlify.app/2019/11/11/introduction-to-sgd-classifier/)
++ ["Introduction to Support Vector Machines"](https://michael-fuchs-python.netlify.app/2019/11/08/introduction-to-support-vector-machines/)
++ ["Introduction to Logistic Regression"](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/)
 
 
 # 5.3 Cluster Algorithms
+
+
+
+
+
+
+
 # 5.4 Dimensionality Reduction Algorithms
 # 6 Some Python Stuff
 # 7 Some Intuitions
