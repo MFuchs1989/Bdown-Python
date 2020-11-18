@@ -14,11 +14,36 @@ tags:
 # Table of Content
 
 + 1 Introduction
-+ 2
++ 2 Import the libraries and the data
++ 3 Data pre-processing
++ 3.1 Negative Quantity
++ 3.2 Missing Values within CustomerID
++ 3.3 Handling incomplete data
++ 3.4 Total Sales
++ 3.5 Create final dataframe
++ 4 Descriptive Analytics
++ 4.1 Final Dataframe for Descriptive Analytics
++ 4.2 Visualizations
++ 5 Predicting 3-Month CLV
++ 5.1 Final Dataframe for Prediction Models
++ 5.2 Building Sample Set
++ 5.3 Train Test Split
++ 5.4 Linear Regression
++ 5.5 Model Evaluation
++ 6 Conclusion
+
 
 
 
 # 1 Introduction
+
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83s1.png)
+
+
+
+
+
 
 For this post the dataset *Online Retail* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
 
@@ -26,6 +51,182 @@ For this post the dataset *Online Retail* from the statistic platform ["Kaggle"]
 
 
 
+# 2 Import the libraries and the data
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+# 3 Data pre-processing
+# 3.1 Negative Quantity
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 3.2 Missing Values within CustomerID
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 3.3 Handling incomplete data
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+# 3.4 Total Sales
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 3.5 Create final dataframe
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+
+# 4 Descriptive Analytics
+# 4.1 Final Dataframe for Descriptive Analytics
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 4.2 Visualizations
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 5 Predicting 3-Month CLV
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 5.1 Final Dataframe for Prediction Models
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 5.2 Building Sample Set
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 5.3 Train Test Split
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+
+# 5.4 Linear Regression
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+
+# 5.5 Model Evaluation
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+
+# 6 Conclusion
 
 
 
@@ -40,5 +241,30 @@ For this post the dataset *Online Retail* from the statistic platform ["Kaggle"]
 ```
 
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+
+
+
+# References
+
+
+Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.
+
+Do Ruibin, K., & Vintilescu Borglöv, T. (2018). Predicting Customer Lifetime Value: Understanding its accuracy and drivers from a frequent flyer program perspective.
+
+Glady, N., Baesens, B., & Croux, C. (2009). Modeling churn using customer lifetime value. European Journal of Operational Research, 197(1), 402-411.
+
+Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
+
+Johnston, B., Jones, A. & Kruger, C. (2019). Applied Unsupervised Learning with Python : Discover hidden patterns and relationships in unstructured data with Python. 
+Packt Publishing Ltd.
+
+Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
+
+Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
+
+Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
+
+Xu, Z., Frankwick, G. L., & Ramirez, E. (2016). Effects of big data analytics and traditional marketing analytics on new product success: A knowledge fusion perspective. Journal of Business Research, 69(5), 1562-1566.
+
 
 
