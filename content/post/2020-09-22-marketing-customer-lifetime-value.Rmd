@@ -168,136 +168,358 @@ df.head()
 # 3.5 Create final dataframe
 
 ```{r, eval=F, echo=T}
+'''
+Here we group the dataframe by CustimerID and InvoiceNo and 
+aggregate the Sales column as well as the InvoiceDate.
+'''
 
+orders_df = df.groupby(['CustomerID', 'InvoiceNo']).agg({
+    'Sales': sum,
+    'InvoiceDate': max
+})
+
+orders_df.head()
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
-
-
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p7.png)
 
 
 
 # 4 Descriptive Analytics
+
 # 4.1 Final Dataframe for Descriptive Analytics
+
+```{r, eval=F, echo=T}
+'''
+For the preparation of the data for descriptive part we need the following functions:
+'''
+
+
+def groupby_mean(x):
+    return x.mean()
+
+def groupby_count(x):
+    return x.count()
+
+def purchase_duration(x):
+    return (x.max() - x.min()).days
+
+def avg_frequency(x):
+    return (x.max() - x.min()).days/x.count()
+
+groupby_mean.__name__ = 'avg'
+groupby_count.__name__ = 'count'
+purchase_duration.__name__ = 'purchase_duration'
+avg_frequency.__name__ = 'purchase_frequency'
+```
+
+We re-group the record by CustomerID and aggregate the Sales and InvoiceDate columns with the previously created functions.
+
+```{r, eval=F, echo=T}
+summary_df = orders_df.reset_index().groupby('CustomerID').agg({
+    'Sales': [min, max, sum, groupby_mean, groupby_count],
+    'InvoiceDate': [min, max, purchase_duration, avg_frequency]
+})
+
+summary_df.head()
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p8.png)
+
+This still looks a bit messy now but we can / must make it a bit nicer.
 
 
 ```{r, eval=F, echo=T}
-
+summary_df.columns = ['_'.join(col).lower() for col in summary_df.columns]
+summary_df = summary_df.reset_index()
+summary_df.head()
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p9.png)
 
+This dataset gives us an idea of the purchases each customer has made. Let's have a look at CustomerID 12346 (first row). This customer made only one purchase on January 18,2011.
+
+The second customer (12347) has made six purchases within December 7, 2010 and October 31, 2011. The timespan here is about 327 days. The average amount this customer spent on each order is 680. We also see from the record, that this customer made a purchase every 54.5 days.
 
 
 
 # 4.2 Visualizations
 
+For the visualization part we are only interested in the purchases that the repeat customers have made.
 
 ```{r, eval=F, echo=T}
-
+summary_df = summary_df.loc[summary_df['invoicedate_purchase_duration'] > 0]
+summary_df.shape
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p10.png)
 
+As we can see, there are only 2692 (of 4298) repeat customers in the record.
+
+
+
+```{r, eval=F, echo=T}
+'''
+This plot shows the distributions of the number of purchases that the repeat customers have made
+'''
+
+ax = summary_df.groupby('sales_count').count()['sales_avg'][:20].plot(
+    kind='bar', 
+    color='skyblue',
+    figsize=(12,7), 
+    grid=True
+)
+
+ax.set_ylabel('count')
+plt.title('Number of purchases that the repeat customers have made')
+
+plt.show()
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p11.png)
+
+As we can see from this plot, the majority of customers have made 10 or less purchases.
+Here a few more metrics about sales_count:
+
+
+```{r, eval=F, echo=T}
+summary_df['sales_count'].describe()
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p12.png)
+
+Now we are going to have a look at the average number of days between purchases for these repeat customers.
+
+```{r, eval=F, echo=T}
+'''
+This plot shows the average number of days between purchases for repeat customers.
+It is an overall view of how frequently repeat customers made purchases historically.
+'''
+
+ax = summary_df['invoicedate_purchase_frequency'].hist(
+    bins=20,
+    color='skyblue',
+    rwidth=0.7,
+    figsize=(12,7)
+)
+
+ax.set_xlabel('avg. number of days between purchases')
+ax.set_ylabel('count')
+plt.title('Number of days between purchases for repeat customers')
+
+plt.show()
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p13.png)
+
+As we can see from this plot, the majority of repeat customers made purchases every 20-50 days.
 
 
 
 # 5 Predicting 3-Month CLV
 
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
-
-
-
-
 # 5.1 Final Dataframe for Prediction Models
 
-
+We use the final created dataset *orders_df* at this point (chapter Data pre-processing / Create final dataframe)
 
 
 ```{r, eval=F, echo=T}
+# Determine the frequency
+clv_freq = '3M'
 
+# Group by CustomerID 
+# Break down the data into chunks of 3 months for each customer
+# Aggregate the sales column by sum
+# Aggregate the sales column by average_sum and count (both with the previous created functions)
+data_df = orders_df.reset_index().groupby([
+    'CustomerID',
+    pd.Grouper(key='InvoiceDate', freq=clv_freq)
+]).agg({
+    'Sales': [sum, groupby_mean, groupby_count],
+})
+
+# Bring the dataset in a readable format
+data_df.columns = ['_'.join(col).lower() for col in data_df.columns]
+data_df = data_df.reset_index()
+data_df.head()
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p14.png)
+
+Now we are going to encode the InvoiceDate column values so that they are easier to read than the current date format.
 
 
+```{r, eval=F, echo=T}
+# Set the length of the column InvoiceDate. In our case = 10
+length_of_InvoiceDate = 10
+
+date_month_map = {
+    str(x)[:length_of_InvoiceDate]: 'M_%s' % (i+1) for i, x in enumerate(
+        sorted(data_df.reset_index()['InvoiceDate'].unique(), reverse=True)
+    )
+}
+date_month_map
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p15.png)
+
+As you can see, we encoded the date values into M_1, M_2 and so on. 
+
+
+```{r, eval=F, echo=T}
+'''
+Apply the generated dictionary to the dataframe for prediction models
+'''
+
+data_df['M'] = data_df['InvoiceDate'].apply(lambda x: date_month_map[str(x)[:length_of_InvoiceDate]])
+data_df.head(10)
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p16.png)
 
 
 # 5.2 Building Sample Set
 
+Now we are ready to create a sample set with features and target variables. In this case, we are going to use the last 3 months as the target variable and the rest as the features. In other words, we are going to train a machie learning model that predicts the last 3 months'customer value with the rest of the data.
 
 
 ```{r, eval=F, echo=T}
+# Exclude M_1 because this will be our predictor variable.
+features_df = pd.pivot_table(
+    data_df.loc[data_df['M'] != 'M_1'], 
+    values=['sales_sum', 'sales_avg', 'sales_count'], 
+    columns='M', 
+    index='CustomerID'
+)
 
+# Prepare the features dataframe for better view
+features_df.columns = ['_'.join(col) for col in features_df.columns]
+
+# Encode NaN values with 0.0
+features_df = features_df.fillna(0)
+features_df
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p17.png)
+
+```{r, eval=F, echo=T}
+# Just select M_1 because this is our target variable
+response_df = data_df.loc[
+    data_df['M'] == 'M_1',
+    ['CustomerID', 'sales_sum']
+]
+
+# Rename the columns accordingly
+response_df.columns = ['CustomerID', 'CLV_'+clv_freq]
+response_df
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p18.png)
 
 
+```{r, eval=F, echo=T}
+# Join the features_df and response_df  on CustomerID
+sample_set_df = features_df.merge(
+    response_df, 
+    left_index=True, 
+    right_on='CustomerID',
+    how='left'
+)
+
+# Encode NaN values with 0.0
+sample_set_df = sample_set_df.fillna(0)
+
+sample_set_df
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p19.png)
 
 
 # 5.3 Train Test Split
 
 
-
 ```{r, eval=F, echo=T}
+target_var = 'CLV_'+clv_freq
+all_features = [x for x in sample_set_df.columns if x not in ['CustomerID', target_var]]
 
+print()
+print('Target Variable: ' + str(target_var))
+print()
+print('----------------------------------------------------')
+print()
+print('Predictor Variables:')
+print(all_features)
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p20.png)
 
 
+```{r, eval=F, echo=T}
+'''
+Here we are going to do a train test split with a division of 70% to 30%.
+'''
 
+trainX, testX, trainY, testY  = train_test_split(
+    sample_set_df[all_features], 
+    sample_set_df[target_var], 
+    test_size=0.3
+)
+```
 
 
 # 5.4 Linear Regression
 
-
-
 ```{r, eval=F, echo=T}
-
+lm = LinearRegression()
+lm.fit(trainX, trainY)
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+```{r, eval=F, echo=T}
+coef = pd.DataFrame(list(zip(all_features, lm.coef_)))
+coef.columns = ['feature', 'Coefficient']
 
+coef
+```
 
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p21.png)
 
+Whith this overview we easily can see which features have negative or positive correlation with the target variable.
+
+For example, the previous 3 month period's average purchase amount, sales_avg_M_2 (line 1), has positive impacts on the next 3 month customer value. This means that the higher the previous 3 month period's average purchase amount is, the higher the next 3 month purchase amount will be.
+
+On the other hand, the second and third most recent 3 month period's average purchase amounts, sales_avg_M_3 and sales_avg_M_4, are negatively correlated with the next 3 month customer value. In other words, the more a customer made purchases 3 months to 9 months ago, the lower value he or she will bring in the next 3 months.
 
 
 # 5.5 Model Evaluation
 
 
-
 ```{r, eval=F, echo=T}
+y_pred = lm.predict(testX)
 
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY, y_pred))  
+print('Mean Squared Error:', metrics.mean_squared_error(testY, y_pred))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pred)))
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
-
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p22.png)
 
 
 
 # 6 Conclusion
 
 
+In this post I have explained what the customer lifetime value is and how to run descriptive statistics on its underlying metrics.
 
+I also showed how to prepare the data set for a three month prediction of the CLV and train a machine learning model.
 
+I explained how to draw valuable conclusions about past periods from the results of the linear model and evaluate these insights.
 
+Finally, I will say a few words about the advantages of such an analysis for a company:
 
+Since you know the expected revenue or purchase amount from individual customers for the next 3 months, you can set a better informed budget for your marketing campaign. This should not be set too high but also not too low, so that the target customers are still reached but the ROI does not suffer.
 
+On the other hand you can also use these 3 month customer value prediction output values to specifically target these high-value customers for the next 3 months. This can help you to create marketing campaigns with a higher ROI, as those high-value customers, predicted by the machine learning model, are likely to bring in more revenue than the others.
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
 
 
 
