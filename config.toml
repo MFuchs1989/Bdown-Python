@@ -27,6 +27,10 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[menu.main]]
     name = "zum R-Blog"
     url = "https://michael-fuchs.netlify.com/"
+[[menu.main]]
+    name = "Tag_Archive"
+    url = "/Tag_Archive/"
+
 
 [params]
     description = "A website built through Hugo and blogdown."
