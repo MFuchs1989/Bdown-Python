@@ -18,6 +18,56 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 ![](/post/2020-11-18-tag-archive_files/TagArchive.png)
 
 
+# Overview
+
++ 1 Roadmaps
++ 2 Data Science
++ 3 Analytics Fields
++ 3.1 Marketing Analytics
++ 4 Data pre-processing
++ 4.1 for Classification
++ 4.2 for Regression
++ 4.3 General
++ 5 Machine Learning
++ 5.1 Regression Algorithms
++ 5.2 Classification Algorithms
++ 5.3 Cluster Algorithms
++ 5.4 Dimensionality Reduction Algorithms
++ 6 Some Python Stuff
++ 7 Some Intuitions
+
+
+
+# 1 Roadmaps
+
++ ["Roadmap for the Machine Learning fields"](https://michael-fuchs-python.netlify.app/2020/08/20/roadmap-for-the-machine-learning-fields/)
++ ["Roadmap for Dimensionality Reduction"](https://michael-fuchs-python.netlify.app/2020/08/18/roadmap-for-dimensionality-reduction/)
++ ["Roadmap for Cluster Analysis"](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/)
++ ["Roadmap for Classification Tasks"](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/)
++ ["Roadmap for Regression Analysis"](https://michael-fuchs-python.netlify.app/2019/10/14/roadmap-for-regression-analysis/)
+
+
+# 2 Data Science
+# 3 Analytics Fields
+# 3.1 Marketing Analytics
+# 4 Data pre-processing
+# 4.1 for Classification
+# 4.2 for Regression
+# 4.3 General
+# 5 Machine Learning
+# 5.1 Regression Algorithms
+# 5.2 Classification Algorithms
+# 5.3 Cluster Algorithms
+# 5.4 Dimensionality Reduction Algorithms
+# 6 Some Python Stuff
+# 7 Some Intuitions
+
+
+
+
+
+
+
 
 
 
