@@ -64,17 +64,45 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Selection of columns per data type"](https://michael-fuchs-python.netlify.app/2019/03/04/selection-of-columns-per-data-type/)
 
 
+
 # 3 Analytics Fields
+
 # 3.1 Marketing Analytics
 
-+ ["here"]()
-
++ ["Customer Lifetime Value"](https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/)
++ ["Market Basket Analysis"](https://michael-fuchs-python.netlify.app/2020/09/15/marketing-market-basket-analysis/)
++ ["Product Analytics and Recommendations"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
++ ["Conversion Rate Analytics"](https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/)
 
 
 # 4 Data pre-processing
+
 # 4.1 for Classification
+
++ ["Feature selection methods for classification tasks"](https://michael-fuchs-python.netlify.app/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ ["Dealing with imbalanced classes"](https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/)
+
+
 # 4.2 for Regression
+
++ ["Embedded methods"](https://michael-fuchs-python.netlify.app/2019/10/08/embedded-methods/)
++ ["Wrapper methods"](https://michael-fuchs-python.netlify.app/2019/09/27/wrapper-methods/)
+
+
 # 4.3 General
+
++ ["Feature Scaling with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/)
++ ["Check for normal distribution "](https://michael-fuchs-python.netlify.app/2019/09/13/check-for-normal-distribution/)
++ ["Dealing with outliers"](https://michael-fuchs-python.netlify.app/2019/08/20/dealing-with-outliers/)
++ ["Dealing with constant and duplicate features"](https://michael-fuchs-python.netlify.app/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ ["Dealing with highly correlated features"](https://michael-fuchs-python.netlify.app/2019/07/28/dealing-with-highly-correlated-features/)
++ ["Random sampling "](https://michael-fuchs-python.netlify.app/2019/05/16/random-sampling/)
++ ["Types of Encoder "](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/)
++ ["The use of dummy variables"](https://michael-fuchs-python.netlify.app/2019/06/14/the-use-of-dummy-variables/)
++ ["Dealing with missing values"](https://michael-fuchs-python.netlify.app/2019/03/18/dealing-with-missing-values/)
+
+
+
 # 5 Machine Learning
 # 5.1 Regression Algorithms
 # 5.2 Classification Algorithms
