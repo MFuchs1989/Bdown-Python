@@ -143,6 +143,14 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 # 5.4 Dimensionality Reduction Algorithms
+
++ ["Manifold Learning"](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
++ ["Linear Discriminant Analysis (LDA)"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
++ ["PCA for speed up ML models"](https://michael-fuchs-python.netlify.app/2020/07/31/pca-for-speed-up-ml-models/)
++ ["PCA for Visualization"](https://michael-fuchs-python.netlify.app/2020/07/27/pca-for-visualization/)
++ ["Principal Component Analysis (PCA)"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
+
+
 # 6 Some Python Stuff
 # 7 Some Intuitions
 
