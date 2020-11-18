@@ -10,25 +10,22 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "About"
+    name = "1 About"
     url = "/about/"
 [[menu.main]]
-    name = "GitHub"
+    name = "2 GitHub"
     url = "https://github.com/MFuchs1989/"
 [[menu.main]]
-    name = "LinkedIn"
+    name = "3 LinkedIn"
     url = "https://www.linkedin.com/in/michael-fuchs-139172131/"
 [[menu.main]]
-    name = "XING"
-    url = "https://www.xing.com/profile/Michael_Fuchs426/cv?sc_o=mxb_p"
-[[menu.main]]
-    name = "Twitter"
+    name = "4 Twitter"
     url = "https://twitter.com/Stat_Michael"
 [[menu.main]]
-    name = "zum R-Blog"
+    name = "6 R-Blog"
     url = "https://michael-fuchs.netlify.com/"
 [[menu.main]]
-    name = "Tag Archive"
+    name = "5 Tag Archive"
     url = "https://michael-fuchs-python.netlify.app/2019/01/01/tag-archive/"
 
 [params]
