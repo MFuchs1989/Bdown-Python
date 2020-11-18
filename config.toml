@@ -30,10 +30,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[menu.main]]
     name = "Tag Archive"
     url = "/Tag_Archive/"
-[social]
-    github = "https://github.com/MFuchs1989"
-    twitter = "https://twitter.com/Stat_Michael"
-
 
 
 
