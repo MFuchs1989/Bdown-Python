@@ -91,19 +91,24 @@ df
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p1.png)
 
 
-
-
-
 # 3 Data pre-processing
+
 # 3.1 Negative Quantity
 
 
 ```{r, eval=F, echo=T}
+'''
+Canceled orders could cause negative values in the data record.
+To be on the safe side, these are removed.
+'''
 
+df = df.loc[df['Quantity'] > 0]
+df.shape
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p2.png)
 
+As we can see from the output, this was not the case in this record.
 
 
 
@@ -111,34 +116,52 @@ df
 
 
 ```{r, eval=F, echo=T}
+'''
+We need to drop observations with no CustomerID
+'''
 
+df = df[pd.notnull(df['CustomerID'])]
+df.shape
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
-
-
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p3.png)
 
 
 # 3.3 Handling incomplete data
 
 
 ```{r, eval=F, echo=T}
-
+print('Invoice Date Range: %s - %s' % (df['InvoiceDate'].min(), df['InvoiceDate'].max()))
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p4.png)
 
+
+
+```{r, eval=F, echo=T}
+'''
+Due to the fact that we only need full months for future analysis, we will shorten this data set accordingly.
+'''
+
+df = df.loc[df['InvoiceDate'] < '2011-12-01']
+df.shape
+```
+
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p5.png)
 
 
 # 3.4 Total Sales
 
 
 ```{r, eval=F, echo=T}
-
+'''
+For further analysis we need another column Sales.
+'''
+df['Sales'] = df['Quantity'] * df['UnitPrice']
+df.head()
 ```
 
-![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png)
-
+![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p6.png)
 
 
 

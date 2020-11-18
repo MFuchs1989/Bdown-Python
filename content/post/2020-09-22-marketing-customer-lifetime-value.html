@@ -80,19 +80,46 @@ df</code></pre>
 </div>
 <div id="negative-quantity" class="section level1">
 <h1>3.1 Negative Quantity</h1>
-<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Canceled orders could cause negative values in the data record.
+To be on the safe side, these are removed.
+&#39;&#39;&#39;
+
+df = df.loc[df[&#39;Quantity&#39;] &gt; 0]
+df.shape</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p2.png" /></p>
+<p>As we can see from the output, this was not the case in this record.</p>
 </div>
 <div id="missing-values-within-customerid" class="section level1">
 <h1>3.2 Missing Values within CustomerID</h1>
-<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+We need to drop observations with no CustomerID
+&#39;&#39;&#39;
+
+df = df[pd.notnull(df[&#39;CustomerID&#39;])]
+df.shape</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p3.png" /></p>
 </div>
 <div id="handling-incomplete-data" class="section level1">
 <h1>3.3 Handling incomplete data</h1>
-<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png" /></p>
+<pre class="r"><code>print(&#39;Invoice Date Range: %s - %s&#39; % (df[&#39;InvoiceDate&#39;].min(), df[&#39;InvoiceDate&#39;].max()))</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p4.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+Due to the fact that we only need full months for future analysis, we will shorten this data set accordingly.
+&#39;&#39;&#39;
+
+df = df.loc[df[&#39;InvoiceDate&#39;] &lt; &#39;2011-12-01&#39;]
+df.shape</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p5.png" /></p>
 </div>
 <div id="total-sales" class="section level1">
 <h1>3.4 Total Sales</h1>
-<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p.png" /></p>
+<pre class="r"><code>&#39;&#39;&#39;
+For further analysis we need another column Sales.
+&#39;&#39;&#39;
+df[&#39;Sales&#39;] = df[&#39;Quantity&#39;] * df[&#39;UnitPrice&#39;]
+df.head()</code></pre>
+<p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p6.png" /></p>
 </div>
 <div id="create-final-dataframe" class="section level1">
 <h1>3.5 Create final dataframe</h1>
