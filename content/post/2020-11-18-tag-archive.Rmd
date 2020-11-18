@@ -48,8 +48,29 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 # 2 Data Science
+
+
++ ["The Data Science Process (CRISP-DM)"](https://michael-fuchs-python.netlify.app/2020/11/07/the-data-science-process-crisp-dm/)
++ ["Randomized Search"](https://michael-fuchs-python.netlify.app/2019/11/06/randomized-search/)
++ ["Grid Search"](https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/)
+
++ ["Data Management"](https://michael-fuchs-python.netlify.app/2019/04/16/data-management/)
++ ["Data Manipulation"](https://michael-fuchs-python.netlify.app/2019/03/12/data-manipulation/)
++ ["Data type conversion"](https://michael-fuchs-python.netlify.app/2019/03/10/data-type-conversion/)
++ ["Add new columns"](https://michael-fuchs-python.netlify.app/2019/03/06/add-new-columns/)
++ ["Data Wrangling"](https://michael-fuchs-python.netlify.app/2019/03/03/data-wrangling/)
+
++ ["The use of the groupby function"](https://michael-fuchs-python.netlify.app/2019/05/30/the-use-of-the-groupby-function/)
++ ["Selection of columns per data type"](https://michael-fuchs-python.netlify.app/2019/03/04/selection-of-columns-per-data-type/)
+
+
 # 3 Analytics Fields
 # 3.1 Marketing Analytics
+
++ ["here"]()
+
+
+
 # 4 Data pre-processing
 # 4.1 for Classification
 # 4.2 for Regression
@@ -67,7 +88,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 
-
++ ["here"]()
 
 
 
