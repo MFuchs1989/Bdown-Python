@@ -226,8 +226,6 @@ print("p-Value: " + str('{:.7f}'.format(p)))
 ![](/post/2020-09-29-marketing-a-b-testing_files/p84p10.png)
 
 
-
-
 **Promotion 1 vs. 3**
 
 ```{r, eval=F, echo=T}
@@ -263,12 +261,17 @@ print("p-Value: " + str('{:.7f}'.format(p)))
 
 ![](/post/2020-09-29-marketing-a-b-testing_files/p84p12.png)
 
+**Interpretation**
+
+As we can see from the p-value, the average value of the sales figures in promotion 1 and 3 do not differ significantly.
+But the difference between promotion 1 and 2 does as well as promotion 2 vs. 3.
+If you look at the corresponding t-value, you can say that promotion 1 and 3 were better than promotion 2.
+
 
 # 5 Conclusion
 
-
-
-
+In this post I discussed the performance and interpretation of A/B tests. 
+Since a lot depends on the decisions of the marketing department, it is worthwhile, especially for far-reaching decisions, to carry out extensive A/B tests to get the desired results. 
 
 
 # References
