@@ -67,6 +67,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 3.1 Marketing Analytics
 
++ ["A/B Testing"](https://michael-fuchs-python.netlify.app/2020/09/29/marketing-a-b-testing/)
 + ["Customer Lifetime Value"](https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/)
 + ["Market Basket Analysis"](https://michael-fuchs-python.netlify.app/2020/09/15/marketing-market-basket-analysis/)
 + ["Product Analytics and Recommendations"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
