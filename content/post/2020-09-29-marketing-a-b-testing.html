@@ -19,13 +19,171 @@ tags:
 <ul>
 <li>1 Introduction</li>
 <li>2 Import the libraries and the data</li>
+<li>3 Descriptive Analytics</li>
+<li>4 Significance Tests</li>
+<li>5 Conclusion</li>
 </ul>
-<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p.png" /></p>
 </div>
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
+<p>At this point we have already covered some topics from the field of marketing:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/">“Customer Lifetime Value”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/09/15/marketing-market-basket-analysis/">“Market Basket Analysis”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/">“Product Analytics and Recommendations”</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/">“Conversion Rate Analytics”</a></li>
+</ul>
+<p>Now we turn to a smaller but equally important area: A/B Testing.
+The decisions that are made in the marketing area can be very far-reaching.
+New product designs are developed, a new layout of the customer flyer is created and so on.
+Such efforts are usually associated with high costs and should therefore achieve the desired effect.
+Whether this is the case can be determined in advance using A/B tests.
+This way, business decisions are not only made on the basis of gut feeling, but are supported by figures and facts.</p>
 <p>For this post the dataset <em>WA_Fn-UseC_-Marketing-Campaign-Eff-UseC_-FastF</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets">“GitHub Repository”</a>.</p>
-<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p.png" /></p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from scipy import stats</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;WA_Fn-UseC_-Marketing-Campaign-Eff-UseC_-FastF.csv&#39;)
+df</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p1.png" /></p>
+</div>
+<div id="descriptive-analytics" class="section level1">
+<h1>3 Descriptive Analytics</h1>
+<p>As usual we start with descriptive statistics.
+What interests us in this analysis is which campaign was most successful in terms of sales figures.</p>
+<p><strong>Total Sales</strong></p>
+<pre class="r"><code>ax = df.groupby(
+    &#39;Promotion&#39;
+).sum()[
+    &#39;SalesInThousands&#39;
+].plot.pie(
+    figsize=(7, 7),
+    autopct=&#39;%1.0f%%&#39;
+)
+
+
+prom = [&#39;Promotion 1&#39;, &#39;Promotion 2&#39;, &#39;Promotion 3&#39;]
+
+
+ax.set_ylabel(&#39;&#39;)
+ax.set_title(&#39;Sales distribution across different promotions&#39;)
+plt.legend(prom, loc=&quot;upper right&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p2.png" /></p>
+<p><strong>Market Size</strong></p>
+<pre class="r"><code>df.groupby(&#39;MarketSize&#39;).count()[&#39;MarketID&#39;]</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p3.png" /></p>
+<pre class="r"><code>ax = df.groupby([
+    &#39;Promotion&#39;, &#39;MarketSize&#39;
+]).sum()[
+    &#39;SalesInThousands&#39;
+].unstack(
+    &#39;MarketSize&#39;
+).plot(
+    kind=&#39;bar&#39;,
+    figsize=(12,10),
+    grid=True,
+    stacked=True
+)
+
+ax.set_ylabel(&#39;Sales (in Thousands)&#39;)
+ax.set_title(&#39;breakdowns of market sizes across different promotions&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p4.png" /></p>
+<p><strong>Store Age</strong></p>
+<pre class="r"><code>df[&#39;AgeOfStore&#39;].describe()</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p5.png" /></p>
+<pre class="r"><code>ax = df.groupby(
+    &#39;AgeOfStore&#39;
+).count()[
+    &#39;MarketID&#39;
+].plot(
+    kind=&#39;bar&#39;, 
+    color=&#39;skyblue&#39;,
+    figsize=(10,7),
+    grid=True
+)
+
+ax.set_xlabel(&#39;age&#39;)
+ax.set_ylabel(&#39;count&#39;)
+ax.set_title(&#39;overall distributions of age of store&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p6.png" /></p>
+<pre class="r"><code>ax = df.groupby(
+    [&#39;AgeOfStore&#39;, &#39;Promotion&#39;]
+).count()[
+    &#39;MarketID&#39;
+].unstack(
+    &#39;Promotion&#39;
+).iloc[::-1].plot(
+    kind=&#39;barh&#39;, 
+    figsize=(12,15),
+    grid=True
+)
+
+ax.set_ylabel(&#39;age&#39;)
+ax.set_xlabel(&#39;count&#39;)
+ax.set_title(&#39;overall distributions of age of store&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p7.png" /></p>
+<pre class="r"><code>df.groupby(&#39;Promotion&#39;).describe()[&#39;AgeOfStore&#39;]</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p8.png" /></p>
+</div>
+<div id="significance-tests" class="section level1">
+<h1>4 Significance Tests</h1>
+<p>Now it is time for significance tests.
+To investigate which campaign was most successful we use the t-test.
+What exactly does a t-test do?
+Simply put, it looks to see if the mean values of two groups differ significantly.
+Let’s take a look at the average sales figures broken down by campaign.</p>
+<pre class="r"><code>means = df.groupby(&#39;Promotion&#39;).mean()[&#39;SalesInThousands&#39;]
+means</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p9.png" /></p>
+<p>The mean values are different. But are these differences also significant? This question can be answered with a t-test. For this we use the t-test function from the library scipy.</p>
+<p>There are two important statistics in a t-Test, the <em>t-value</em> and the <em>p-value</em>.</p>
+<p>The t-value measures the degree of difference relative to the variation in the data. The larger the t-value is, the more difference there is between two groups.</p>
+<p>On the other hand the p-value measures the probability that the results would occur by chance. The smaller the p-value is, the more statistically significant difference there will be between the two groups.</p>
+<p><strong>Promotion 1 vs. 2</strong></p>
+<pre class="r"><code>t, p = stats.ttest_ind(
+    df.loc[df[&#39;Promotion&#39;] == 1, &#39;SalesInThousands&#39;].values, 
+    df.loc[df[&#39;Promotion&#39;] == 2, &#39;SalesInThousands&#39;].values, 
+    equal_var=False
+)</code></pre>
+<pre class="r"><code>print(&quot;t-Value: &quot; + str(&#39;{:.7f}&#39;.format(t)))
+print(&quot;p-Value: &quot; + str(&#39;{:.7f}&#39;.format(p)))</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p10.png" /></p>
+<p><strong>Promotion 1 vs. 3</strong></p>
+<pre class="r"><code>t, p = stats.ttest_ind(
+    df.loc[df[&#39;Promotion&#39;] == 1, &#39;SalesInThousands&#39;].values, 
+    df.loc[df[&#39;Promotion&#39;] == 3, &#39;SalesInThousands&#39;].values, 
+    equal_var=False
+)</code></pre>
+<pre class="r"><code>print(&quot;t-Value: &quot; + str(&#39;{:.7f}&#39;.format(t)))
+print(&quot;p-Value: &quot; + str(&#39;{:.7f}&#39;.format(p)))</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p11.png" /></p>
+<p><strong>Promotion 2 vs. 3</strong></p>
+<pre class="r"><code>t, p = stats.ttest_ind(
+    df.loc[df[&#39;Promotion&#39;] == 2, &#39;SalesInThousands&#39;].values, 
+    df.loc[df[&#39;Promotion&#39;] == 3, &#39;SalesInThousands&#39;].values, 
+    equal_var=False
+)</code></pre>
+<pre class="r"><code>print(&quot;t-Value: &quot; + str(&#39;{:.7f}&#39;.format(t)))
+print(&quot;p-Value: &quot; + str(&#39;{:.7f}&#39;.format(p)))</code></pre>
+<p><img src="/post/2020-09-29-marketing-a-b-testing_files/p84p12.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
