@@ -73,6 +73,10 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Product Analytics and Recommendations"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
 + ["Conversion Rate Analytics"](https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/)
 
+# 3.2 Recommendation Systems
+
+in production
+
 
 # 4 Data pre-processing
 
