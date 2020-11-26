@@ -1,0 +1,117 @@
+---
+title: Recommendation Systems - Knowledged-based Recommender
+author: Michael Fuchs
+date: '2020-10-01'
+slug: recommendation-systems-knowledged-based-recommender
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Import the libraries and the data
++ 3 Data pre-processing
++ 3.1 Extract the release year
++ 3.2 Convert the genres features
++ 4 Build the Knowledged-based Recommender
++ 5 Conclusion
+
+
+# 1 Introduction
+
+After Marketing Analytics it is now time to dedicate yourself to a new field of Analytics. 
+As we have already touched on ["recommendations in the marketing context"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/), it makes sense to continue with the topic of recommendation systems at this point. 
+
+We will start with a very simple recommender: The **Knowledged-based Recommender**
+
+
+For this post the dataset ** from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+
+
+
+# 2 Import the libraries and the data
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png)
+
+
+
+
+
+
+
+# 3 Data pre-processing
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png)
+
+
+
+
+# 3.1 Extract the release year
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png)
+
+
+
+
+# 3.2 Convert the genres features
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png)
+
+
+
+
+# 4 Build the Knowledged-based Recommender
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png)
+
+
+
+
+
+
+# 5 Conclusion
+
+
+
+
+# References
+
+
+
+
+
+
+
+
