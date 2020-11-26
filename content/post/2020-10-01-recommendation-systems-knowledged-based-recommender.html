@@ -31,31 +31,161 @@ tags:
 <p>After Marketing Analytics it is now time to dedicate yourself to a new field of Analytics.
 As we have already touched on <a href="https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/">“recommendations in the marketing context”</a>, it makes sense to continue with the topic of recommendation systems at this point.</p>
 <p>We will start with a very simple recommender: The <strong>Knowledged-based Recommender</strong></p>
-<p>For this post the dataset ** from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets">“GitHub Repository”</a>.</p>
+<p>For this post the dataset <em>movies_metadata</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets">“GitHub Repository”</a>.</p>
 </div>
 <div id="import-the-libraries-and-the-data" class="section level1">
 <h1>2 Import the libraries and the data</h1>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png" /></p>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+from ast import literal_eval</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;movies_metadata.csv&#39;)
+
+# Select just relevant features
+relevant_features = [&#39;title&#39;,&#39;genres&#39;, &#39;release_date&#39;, &#39;runtime&#39;, &#39;vote_average&#39;, &#39;vote_count&#39;]
+df = df[relevant_features]
+
+# Print the dataframe
+df.head()</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png" /></p>
+<p>Here we have two tasks to complete. On the one hand we need the release date, which has to be extracted. Second, we have to format the column with the genres it contains so that it fits the recommender.</p>
 </div>
 <div id="extract-the-release-year" class="section level1">
 <h1>3.1 Extract the release year</h1>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png" /></p>
+<p>We want to extract year-values from the column relese_date.
+Therefore we have to convert this column, extract the year, convert the year-column (from float to int) and drop the release_date column.</p>
+<pre class="r"><code>#Convert release_date into pandas datetime format
+df[&#39;release_date&#39;] = pd.to_datetime(df[&#39;release_date&#39;], errors=&#39;coerce&#39;)
+
+# Extract year from release_date-column and store the values into a new year-column
+df[&#39;year&#39;] = pd.DatetimeIndex(df[&#39;release_date&#39;]).year
+
+#Helper function to convert NaN to 0, if there are any, and all other years to integers.
+def convert_int(x):
+    try:
+        return int(x)
+    except:
+        return 0
+
+
+#Apply convert_int to the year feature
+df[&#39;year&#39;] = df[&#39;year&#39;].apply(convert_int)
+
+#Drop the release_date column
+df = df.drop(&#39;release_date&#39;, axis=1)
+
+
+#Display the dataframe
+df.head()</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p2.png" /></p>
 </div>
 <div id="convert-the-genres-features" class="section level1">
 <h1>3.2 Convert the genres features</h1>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png" /></p>
+<p>Have a look here on the column ‘genres’ of the second movie.</p>
+<pre class="r"><code>#Print genres of the second movie
+df.iloc[1][&#39;genres&#39;]</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p3.png" /></p>
+<p>Only the information about the genre needs to be extracted. We can do this as follows:</p>
+<pre class="r"><code>#Convert all NaN into stringified empty lists
+df[&#39;genres&#39;] = df[&#39;genres&#39;].fillna(&#39;[]&#39;)
+
+#Apply literal_eval to convert stringified empty lists to the list object
+df[&#39;genres&#39;] = df[&#39;genres&#39;].apply(literal_eval)
+
+#Convert list of dictionaries to a list of strings
+df[&#39;genres&#39;] = df[&#39;genres&#39;].apply(lambda x: [i[&#39;name&#39;].lower() for i in x] if isinstance(x, list) else [])
+
+df</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p4.png" /></p>
+<p>Perfect, now we have extracted the genres and saved them in a separate column.
+Now we want a separate line to be generated for each genre that has been assigned to a film.</p>
+<pre class="r"><code>#Create a new feature by exploding genres
+s = df.apply(lambda x: pd.Series(x[&#39;genres&#39;]),axis=1).stack().reset_index(level=1, drop=True)
+
+#Name the new feature as &#39;genre&#39;
+s.name = &#39;genre&#39;
+
+#Create a new dataframe gen_df which by dropping the old &#39;genres&#39; feature and adding the new &#39;genre&#39;.
+gen_df = df.drop(&#39;genres&#39;, axis=1).join(s)
+
+#Print the head of the new gen_df
+gen_df.head()</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p5.png" /></p>
+<p>Now we are ready to build the Knoledged-based Recommender!</p>
 </div>
 <div id="build-the-knowledged-based-recommender" class="section level1">
 <h1>4 Build the Knowledged-based Recommender</h1>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p.png" /></p>
+<pre class="r"><code>def build_chart(gen_df, percentile=0.8):
+    #Ask for preferred genres
+    print(&quot;Input preferred genre&quot;)
+    genre = input()
+    
+    #Ask for lower limit of duration
+    print(&quot;Input shortest duration&quot;)
+    low_time = int(input())
+    
+    #Ask for upper limit of duration
+    print(&quot;Input longest duration&quot;)
+    high_time = int(input())
+    
+    #Ask for lower limit of timeline
+    print(&quot;Input earliest year&quot;)
+    low_year = int(input())
+    
+    #Ask for upper limit of timeline
+    print(&quot;Input latest year&quot;)
+    high_year = int(input())
+    
+    #Define a new movies variable to store the preferred movies. Copy the contents of gen_df to movies
+    movies = gen_df.copy()
+    
+    #Filter based on the condition
+    movies = movies[(movies[&#39;genre&#39;] == genre) &amp; 
+                    (movies[&#39;runtime&#39;] &gt;= low_time) &amp; 
+                    (movies[&#39;runtime&#39;] &lt;= high_time) &amp; 
+                    (movies[&#39;year&#39;] &gt;= low_year) &amp; 
+                    (movies[&#39;year&#39;] &lt;= high_year)]
+    
+    #Compute the values of C and m for the filtered movies
+    C = movies[&#39;vote_average&#39;].mean()
+    m = movies[&#39;vote_count&#39;].quantile(percentile)
+    
+    #Only consider movies that have higher than m votes. Save this in a new dataframe q_movies
+    q_movies = movies.copy().loc[movies[&#39;vote_count&#39;] &gt;= m]
+    
+    #Calculate score using the IMDB formula
+    q_movies[&#39;score&#39;] = q_movies.apply(lambda x: (x[&#39;vote_count&#39;]/(x[&#39;vote_count&#39;]+m) * x[&#39;vote_average&#39;]) 
+                                       + (m/(m+x[&#39;vote_count&#39;]) * C), axis=1)
+
+    #Sort movies in descending order of their scores
+    q_movies = q_movies.sort_values(&#39;score&#39;, ascending=False)
+    
+    return q_movies</code></pre>
+<p>When we execute this function we are asked the following 5 questions:</p>
+<ul>
+<li>Input preferred genre</li>
+<li>Input shortest duration</li>
+<li>Input longest duration</li>
+<li>Input earliest year</li>
+<li>Input latest year</li>
+</ul>
+<p>Let’s try it out.</p>
+<pre class="r"><code>personal_recommendations = build_chart(gen_df).head(8)</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p6.png" /></p>
+<pre class="r"><code>personal_recommendations</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p7.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
+<p>In this post I have shown how to prepare a data set (in this case one about movies) to create a simple knowldeged based recommender.
+In the following posts I will go deeper into the subject Recommendation Systems and show more complex methods.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
+<p>Alfarhood, M., &amp; Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.</p>
+<p>Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.</p>
+<p>Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.</p>
+<p>Richert, W. (2013). Building machine learning systems with Python. Packt Publishing Ltd.</p>
 </div>
