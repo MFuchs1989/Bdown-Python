@@ -75,7 +75,8 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 3.2 Recommendation Systems
 
-in production
++ ["Knowledged-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
+
 
 
 # 4 Data pre-processing
