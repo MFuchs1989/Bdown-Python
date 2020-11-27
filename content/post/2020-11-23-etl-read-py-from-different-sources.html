@@ -19,6 +19,9 @@ tags:
 <ul>
 <li>1 Introduction</li>
 <li>2 The Setup</li>
+<li>3 Run the python scripts</li>
+<li>4 Content of the python scripts</li>
+<li>5 Conclusion</li>
 </ul>
 </div>
 <div id="introduction" class="section level1">
@@ -36,5 +39,70 @@ In the following publications I will present different types of ETL variations.<
 </div>
 <div id="the-setup" class="section level1">
 <h1>2 The Setup</h1>
+<p>My actual setup looks a little different, but we will come back later.
+Here I created a project folder where I put one python script in folder_1, another one in folder_2 and a third one under notebooks.</p>
 <p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p1.png" /></p>
+<ul>
+<li>Step 1: Navigate to the notebooks folder</li>
+<li>Step 2: Start the jupyter notebook from this point</li>
+</ul>
+<p>From here I can call the python scripts as follows:</p>
+<pre class="r"><code>import sys
+
+# Specifies the file path where the first .py file is located.
+sys.path.insert(1, &#39;../folder1&#39;)
+import py_script_source_1 as source1
+
+# Specifies the file path where the second .py file is located.
+sys.path.insert(1, &#39;../folder2&#39;)
+import py_script_source_2 as source2</code></pre>
+</div>
+<div id="run-the-python-scripts" class="section level1">
+<h1>3 Run the python scripts</h1>
+<p>Run script 1:</p>
+<pre class="r"><code># Run function from py_script_source_1 file
+source1.happyBirthdayDaniel()</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p2.png" /></p>
+<p>Run script 2:</p>
+<pre class="r"><code># Run function from py_script_source_2 file
+source2.greetingsDaniel()</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p3.png" /></p>
+<p>‘Normal’ libraries can still be imported as usual.</p>
+<pre class="r"><code>import pandas 
+import numpy</code></pre>
+<p>Even .py files which are located in the same folder as the .jpynb script can be called without specifying another path.</p>
+<pre class="r"><code>import py_script_source_3 as source3</code></pre>
+<p>Let’s try this script, too.</p>
+<pre class="r"><code># Run function from py_script_source_3 file
+source3.thanks_for_reading()</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p4.png" /></p>
+</div>
+<div id="content-of-the-python-scripts" class="section level1">
+<h1>4 Content of the python scripts</h1>
+<p>As we could see, the methods we used were not breathtaking. They were only used for illustrative purposes at this point.</p>
+<p>But here is an overview of their exact contents:</p>
+<p><strong>Script 1:</strong></p>
+<pre class="r"><code>def happyBirthdayDaniel(): #program does nothing as written
+    print(&quot;Happy Birthday to you!&quot;)
+    print(&quot;Happy Birthday to you!&quot;)
+    print(&quot;Happy Birthday, dear Daniel.&quot;)
+    print(&quot;Happy Birthday to you!&quot;)</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p5.png" /></p>
+<p><strong>Script 2:</strong></p>
+<pre class="r"><code>def greetingsDaniel(): #program does nothing as written
+    print(&quot;Thanks for your visit.&quot;)
+    print(&quot;Thanks for being there.&quot;)
+    print(&quot;Nice to have seen you again.&quot;)
+    print(&quot;See you soon!&quot;)</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p6.png" /></p>
+<p><strong>Script 3:</strong></p>
+<pre class="r"><code>def thanks_for_reading(): #program does nothing as written
+    print(&quot;Thank you for reading this article.!&quot;)</code></pre>
+<p><img src="/post/2020-11-23-etl-read-py-from-different-sources_files/p86p7.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this article I have shown exemplary how to call python scripts from different locations.
+As already announced I will talk about different variaions of ETLs in the following posts.
+Keep reading.</p>
 </div>
