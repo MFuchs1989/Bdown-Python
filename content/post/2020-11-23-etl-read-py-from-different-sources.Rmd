@@ -12,7 +12,7 @@ tags:
 # Table of Content
 
 + 1 Introduction
-+ 2 
++ 2 The Setup
 
 
 
@@ -31,6 +31,10 @@ In this post I want to introduce how to call such python files from different so
 In the following publications I will present different types of ETL variations.
 
 
+# 2 The Setup
+
+
+
 
 
 
@@ -39,7 +43,7 @@ In the following publications I will present different types of ETL variations.
 
 ```
 
-![](/post/2020-11-23-etl-read-py-from-different-sources_files/p86p.png)
+![](/post/2020-11-23-etl-read-py-from-different-sources_files/p86p1.png)
 
 
 
