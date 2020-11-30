@@ -85,8 +85,13 @@ You can get the corresponding python script here: ["GitHub-Michael_Fuchs_Pipelin
 The object-oriented programming used in the creation of ETLs is extremely helpful in everyday coding. I therefore advise everyone to learn this kind of programming!
 
 
+Here again clearly listed all links about ETL:
 
-
++ ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
++ ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
++ ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
++ ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
++ ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
 
 
 
