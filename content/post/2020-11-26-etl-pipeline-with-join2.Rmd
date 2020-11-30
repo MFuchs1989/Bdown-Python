@@ -1,0 +1,166 @@
+---
+title: ETL - Pipeline with join2
+author: Michael Fuchs
+date: '2020-11-26'
+slug: etl-pipeline-with-join2
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Setup
++ 3 ETL Pipeline with join2
++ 3.1 Extract
++ 3.2 Transform
++ 3.3 Load
++ 4 Create etl_pipeline.py
++ 5 Test etl_pipeline.py 
++ 5.1 from jupyter notebook
++ 5.2 from command line
++ 6 Conclusion
+
+
+
+
+# 1 Introduction
+
+Let us come to another variant of ETL. The ["last time"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/) I prepared two data sets and then merged them. 
+Now I will again load two records, edit one of them to make a join possible, merge the records and edit them further.
+Finally I want to save the final dataset.
+
+**Overview of the ETL steps:**
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89s1.png)
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89s2.png)
+
+At the end I will test the created ETL. I will show this from another jupyter notebook and a fully automatic call from the command line. 
+
+For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join). 
+
+
+# 2 Setup
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+# 3 ETL Pipeline with join2
+# 3.1 Extract
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+# 3.2 Transform
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+# 3.3 Load
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+# 4 Create etl_pipeline.py
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+# 5 Test etl_pipeline.py 
+# 5.1 from jupyter notebook
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+# 5.2 from command line
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-26-etl-pipeline-with-join2_files/p89p.png)
+
+
+
+
+# 6 Conclusion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
