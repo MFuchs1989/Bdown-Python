@@ -1,0 +1,10 @@
+---
+title: ETL - Simple Pipeline
+author: Michael Fuchs
+date: '2020-11-24'
+slug: etl-simple-pipeline
+categories:
+  - R
+tags:
+  - R Markdown
+---
