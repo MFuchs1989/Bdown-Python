@@ -197,8 +197,9 @@ def main():
 
 #if __name__ == &#39;__main__&#39;:
 #    main()</code></pre>
-<p>We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.
-Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file.
+<p>We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.</p>
+<p>We have removed the part self.preprocess_countries(), because it is not used here. We continue to work with the new_df after the join. The option to save the loaded file countries.csv, in this case, as we have loaded it, remains, because you might want to have all relevant records in the output folder.</p>
+<p>Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file.
 I prefer <a href="https://code.visualstudio.com/">“Visual Studio Code”</a> from Microsoft.
 But I also put the file in my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2">“GitHub Repo”</a> from where you can get it.</p>
 </div>

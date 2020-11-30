@@ -275,6 +275,9 @@ def main():
 ```
 
 We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.
+
+We have removed the part self.preprocess_countries(), because it is not used here. We continue to work with the new_df after the join. The option to save the loaded file countries.csv, in this case, as we have loaded it, remains, because you might want to have all relevant records in the output folder.
+
 Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file. 
 I prefer ["Visual Studio Code"](https://code.visualstudio.com/) from Microsoft.
 But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2) from where you can get it.
