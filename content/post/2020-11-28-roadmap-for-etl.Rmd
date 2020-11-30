@@ -46,31 +46,32 @@ You can find this post her:
 + ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
 
 Furthermore I have designed the following variants of pipelines. Each can be developed further as desired. 
+Here is the corresponding legend in advance:
+![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
+
 
 # 2.1 ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/SimplePipeline.png)
 
-![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
+
 
 # 2.2 ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineJoin.png)
 
-![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
+
 
 # 2.3 ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineJoin2.png)
 
-![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
+
 
 # 2.4 ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineIntermediateStorage.png)
 
-
-![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
 
 
 
