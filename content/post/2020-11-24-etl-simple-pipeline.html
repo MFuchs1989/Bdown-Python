@@ -14,3 +14,205 @@ tags:
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Setup</li>
+<li>3 ETL Simple Pipeline</li>
+<li>3.1 Extract</li>
+<li>3.2 Transform</li>
+<li>3.3 Load</li>
+<li>4 Create etl_pipeline.py</li>
+<li>5 Test etl_pipeline.py</li>
+<li>5.1 from jupyter notebook</li>
+<li>5.2 from command line</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Now that we’ve gotten into the subject of ETL and I’ve shown how to call <a href="https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/">“.py files from different sources”</a>, it’s time to write a simple but profitable ETL for data analysis.</p>
+<p>In this article I will discuss in chapter 3 which process steps (divided into extract, transform and load) I want to do exactly and then I will show in chapter 4 how to write the previously shown steps into a .py file.</p>
+<p><strong>Overview of the ETL steps:</strong></p>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87s1.png" /></p>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87s2.png" /></p>
+<p>At the end I will test the created ETL. I will show this from another jupyter notebook and a fully automatic call from the command line.</p>
+<p>For this post I use two specially created sample data sets. A copy of them is stored in my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Simple%20Pipeline">“GitHub Repo”</a>.</p>
+</div>
+<div id="setup" class="section level1">
+<h1>2 Setup</h1>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p1.png" /></p>
+<p>This diagram shows my usual setup.
+I always use a data-folder in which I insert another file ‘input’ and put my original data there.
+The shown output-folder is automatically created by the ETL.
+The etl_pipeline.py is stored in the data-folder.
+Furthermore I create a notebook folder from which I start the jupyter notebooks.
+Let’s start with the simple ETL pipeline.</p>
+</div>
+<div id="etl-simple-pipeline" class="section level1">
+<h1>3 ETL Simple Pipeline</h1>
+<p>As already announced in the introduction, I start my analysis including all ETL steps as usual in a jupyter notebook (‘ETL Simple Pipeline.ipynb’).</p>
+</div>
+<div id="extract" class="section level1">
+<h1>3.1 Extract</h1>
+<pre class="r"><code>countries = pd.read_csv(&#39;../data/input/Countries.csv&#39;)
+countries</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p2.png" /></p>
+<pre class="r"><code>countries_metadata = pd.read_csv(&#39;../data/input/Countries_metadata.csv&#39;)
+countries_metadata</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p3.png" /></p>
+</div>
+<div id="transform" class="section level1">
+<h1>3.2 Transform</h1>
+<p>I will use only a small number of transformation steps for both datasets. These steps can be extended according to your needs and possibilities.</p>
+<pre class="r"><code>countries[&#39;Population&#39;] = countries[&#39;Population&#39;]/1000
+countries = countries.rename(columns={&#39;Population&#39;:&#39;Population_per_k&#39;})
+countries</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p4.png" /></p>
+<pre class="r"><code>countries_metadata[&#39;Land_Area&#39;] = countries_metadata[&#39;Land_Area&#39;]/1000
+countries_metadata = countries_metadata.rename(columns={&#39;Land_Area&#39;:&#39;Land_Area_per_k&#39;})
+countries_metadata</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p5.png" /></p>
+</div>
+<div id="load" class="section level1">
+<h1>3.3 Load</h1>
+<pre class="r"><code>countries.to_csv(&#39;../data/output/countries.csv&#39;)
+countries_metadata.to_csv(&#39;../data/output/countries_metadata.csv&#39;)</code></pre>
+</div>
+<div id="create-etl_pipeline.py" class="section level1">
+<h1>4 Create etl_pipeline.py</h1>
+<p>Since we either don’t want to have the complete syntax of the steps (extract, transform and load) in our analyse notebook or we want to run through these steps automatically, I write all commands in a .py file.
+This file will be named ‘etl_pipeline.py’ and saved under our data-folder.
+Important note here: all used libraries must be called again in the .py file.</p>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import os
+
+
+class DataPreprocessor:
+    def __init__(self, path_folder = &quot;C:/Users/Michael Fuchs/OneDrive - CANCOM GmbH/3_General/Python/Jupyter Script/Backlog/ETL/ETL Step by Step/2 ETL - Simple Pipeline/data&quot;):
+
+        self.path_folder = path_folder
+        
+        # Path to input
+        self.path_input_folder = &quot;{}/input/&quot;.format(path_folder)
+        self.path_input_countries = self.path_input_folder + &#39;Countries.csv&#39;
+        self.path_input_countries_metadata = self.path_input_folder + &#39;Countries_metadata.csv&#39;
+
+        # Path on which output tables are saved
+        self.path_output_folder = &quot;{}/output/&quot;.format(path_folder)
+        self.path_output_countries = self.path_output_folder + &#39;Countries.csv&#39;
+        self.path_output_countries_metadata = self.path_output_folder + &#39;Countries_metadata.csv&#39;
+
+        # create dictionaries for read dtypes
+        self.read_dtypes_countries = {&#39;Countries&#39;:&#39;category&#39;}
+        self.read_dtypes_countries_metadata = {&#39;country_names&#39;:&#39;category&#39;}
+
+        # create folders for output if not existent yet
+        if not os.path.exists(self.path_output_folder):
+            os.makedirs(self.path_output_folder) 
+
+    def read_data_from_raw_input(self):
+
+        print(&quot;Start:\tRead in countries Dataset&quot;)
+        self.countries = pd.read_csv(self.path_input_countries, dtype=self.read_dtypes_countries)
+        print(&quot;Finish:\tRead in countries Dataset&quot;)
+
+        print(&quot;Start:\tRead in countries_metadata Dataset&quot;)       
+        self.countries_metadata = pd.read_csv(self.path_input_countries_metadata, dtype=self.read_dtypes_countries_metadata)
+        print(&quot;Finish:\tRead in countries_metadata Dataset&quot;)
+
+    def preprocess_data(self, save_preprocess_countries=True, save_preprocess_countries_metadata=True):
+
+        print(&quot;Start:\tPreprocessing countries Dataset&quot;)
+        self.preprocess_countries()
+        print(&quot;Finish:\tPreprocessing countries Dataset&quot;)
+
+        print(&quot;Start:\tPreprocessing countries_metadata Dataset&quot;)
+        self.preprocess_countries_metadata()
+        print(&quot;Finish:\tPreprocessing countries_metadata Dataset&quot;)
+
+        if save_preprocess_countries:
+            print(&quot;Start:\tSave countries Dataset to disc&quot;)
+            self.countries.to_csv(self.path_output_countries, index=False)
+            print(&quot;Finish:\tSave countries Dataset to disc&quot;)
+
+        if save_preprocess_countries_metadata:
+            print(&quot;Start:\tSave countries_metadata Dataset to disc&quot;)
+            self.countries_metadata.to_csv(self.path_output_countries_metadata, index=False)
+            print(&quot;Finish:\tSave countries_metadata Dataset to disc&quot;)
+
+        return self.countries, self.countries_metadata
+
+    def preprocess_countries(self):
+        
+        self.countries[&#39;Population&#39;] = self.countries[&#39;Population&#39;]/1000
+        self.countries = self.countries.rename(columns={&#39;Population&#39;:&#39;Population_per_k&#39;})
+
+    def preprocess_countries_metadata(self):
+        
+        self.countries_metadata[&#39;Land_Area&#39;] = self.countries_metadata[&#39;Land_Area&#39;]/1000
+        self.countries_metadata = self.countries_metadata.rename(columns={&#39;Land_Area&#39;:&#39;Land_Area_per_k&#39;})
+
+    def read_preprocessed_tables(self):
+        
+        print(&quot;Start:\tRead in modified countries Dataset&quot;)
+        self.countries = pd.read_csv(self.path_output_countries, dtype=self.read_dtypes_countries)
+        print(&quot;Finish:\tRead in modified countries Dataset&quot;)
+
+        print(&quot;Start:\tRead in modified countries_metadata Dataset&quot;)       
+        self.countries_metadata = pd.read_csv(self.path_output_countries_metadata, dtype=self.read_dtypes_countries_metadata)
+        print(&quot;Finish:\tRead in modified countries_metadata Dataset&quot;)
+
+        return self.countries, self.countries_metadata
+
+
+def main():
+
+    datapreprocesssor = DataPreprocessor()
+    datapreprocesssor.read_data_from_raw_input()
+    datapreprocesssor.preprocess_data()
+    print(&#39;ETL has been successfully completed !!&#39;)
+
+#if __name__ == &#39;__main__&#39;:
+#    main()</code></pre>
+<p>We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.</p>
+</div>
+<div id="test-etl_pipeline.py" class="section level1">
+<h1>5 Test etl_pipeline.py</h1>
+<p>Now we want to test our created ETL.</p>
+</div>
+<div id="from-jupyter-notebook" class="section level1">
+<h1>5.1 from jupyter notebook</h1>
+<p>First I want to test the ETL from a notebook. For this we create and start a <strong>new</strong> notebook in the notebooks-folder with the name ‘Test ETL Simple Pipeline.ipynb’.</p>
+<pre class="r"><code>import sys
+
+# Specifies the file path where the first .py file is located.
+sys.path.insert(1, &#39;../data&#39;)
+import etl_pipeline</code></pre>
+<pre class="r"><code>datapreprocessor = etl_pipeline.DataPreprocessor()
+datapreprocessor.read_data_from_raw_input()</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p6.png" /></p>
+<pre class="r"><code>countries, countries_metadata = datapreprocessor.preprocess_data(save_preprocess_countries=True, save_preprocess_countries_metadata=True)</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p7.png" /></p>
+<pre class="r"><code>countries, countries_metadata = datapreprocessor.read_preprocessed_tables()</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p8.png" /></p>
+<pre class="r"><code>countries</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p9.png" /></p>
+<pre class="r"><code>countries_metadata</code></pre>
+<p><img src="/post/2020-11-24-etl-simple-pipeline_files/p87p10.png" /></p>
+</div>
+<div id="from-command-line" class="section level1">
+<h1>5.2 from command line</h1>
+<p>Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
+It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.</p>
+<p>Type only the following commands in your command prompt:</p>
+<pre class="r"><code>cd &quot;path/to/your/data/folder&quot;
+python etl_pipeline.py</code></pre>
+<p>That’s it!</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I have shown a simple ETL, how to set it up and let it run through fully automated.</p>
+</div>
