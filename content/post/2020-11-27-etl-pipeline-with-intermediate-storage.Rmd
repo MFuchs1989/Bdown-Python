@@ -58,6 +58,9 @@ For this post I use two specially created sample data sets. A copy of them is st
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p1.png)
 
 
+
+
+
 # 3 ETL Pipeline with intermediate storage
 # 3.1 Extract
 # 3.2 Transform_1
