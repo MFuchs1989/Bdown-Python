@@ -1,0 +1,76 @@
+---
+title: ETL - Pipeline with intermediate storage
+author: Michael Fuchs
+date: '2020-11-27'
+slug: etl-pipeline-with-intermediate-storage
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Setup
++ 3 ETL Pipeline with intermediate storage
++ 3.1 Extract
++ 3.2 Transform_1
++ 3.3 Transform_2
++ 3.4 Load
++ 4 Create etl_pipeline.py
++ 5 Test etl_pipeline.py 
++ 5.1 from jupyter notebook
++ 5.2 from command line
++ 6 Conclusion
+
+
+
+# 1 Introduction
+
+So far, we have already got to know several variants of ETL with which a large part of use cases can be covered.
+
+But one important point has not been applied yet.
+
+It often happens that the data has to be loaded or read out in an 'unfavorable' format. 
+Especially with large data sets this can take hours until you have the possibility to edit the data to make the loading process more effective.
+
+At this point it is worthwhile to save the loaded data only partially processed.
+So far we have always been lucky to be able to load, edit and save the data without any problems. 
+But if, as en example, numerical values are formatted as strings, the loading process can take an infinite amount of time. Hence this post about the introduction of an ETL with intermediate storage.
+
+**Overview of the ETL steps:**
+
+![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90s1.png)
+
+![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90s2.png)
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p.png)
+
+
+
+# 2 Setup
+# 3 ETL Pipeline with intermediate storage
+# 3.1 Extract
+# 3.2 Transform_1
+# 3.3 Transform_2
+# 3.4 Load
+# 4 Create etl_pipeline.py
+# 5 Test etl_pipeline.py 
+# 5.1 from jupyter notebook
+# 5.2 from command line
+# 6 Conclusion
+
+
+
+
+

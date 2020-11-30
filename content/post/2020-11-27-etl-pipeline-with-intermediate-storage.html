@@ -1,0 +1,80 @@
+---
+title: ETL - Pipeline with intermediate storage
+author: Michael Fuchs
+date: '2020-11-27'
+slug: etl-pipeline-with-intermediate-storage
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="table-of-content" class="section level1">
+<h1>Table of Content</h1>
+<ul>
+<li>1 Introduction</li>
+<li>2 Setup</li>
+<li>3 ETL Pipeline with intermediate storage</li>
+<li>3.1 Extract</li>
+<li>3.2 Transform_1</li>
+<li>3.3 Transform_2</li>
+<li>3.4 Load</li>
+<li>4 Create etl_pipeline.py</li>
+<li>5 Test etl_pipeline.py</li>
+<li>5.1 from jupyter notebook</li>
+<li>5.2 from command line</li>
+<li>6 Conclusion</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>So far, we have already got to know several variants of ETL with which a large part of use cases can be covered.</p>
+<p>But one important point has not been applied yet.</p>
+<p>It often happens that the data has to be loaded or read out in an ‘unfavorable’ format.
+Especially with large data sets this can take hours until you have the possibility to edit the data to make the loading process more effective.</p>
+<p>At this point it is worthwhile to save the loaded data only partially processed.
+So far we have always been lucky to be able to load, edit and save the data without any problems.
+But if, as en example, numerical values are formatted as strings, the loading process can take an infinite amount of time. Hence this post about the introduction of an ETL with intermediate storage.</p>
+<p><strong>Overview of the ETL steps:</strong></p>
+<p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90s1.png" /></p>
+<p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90s2.png" /></p>
+<p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p.png" /></p>
+</div>
+<div id="setup" class="section level1">
+<h1>2 Setup</h1>
+</div>
+<div id="etl-pipeline-with-intermediate-storage" class="section level1">
+<h1>3 ETL Pipeline with intermediate storage</h1>
+</div>
+<div id="extract" class="section level1">
+<h1>3.1 Extract</h1>
+</div>
+<div id="transform_1" class="section level1">
+<h1>3.2 Transform_1</h1>
+</div>
+<div id="transform_2" class="section level1">
+<h1>3.3 Transform_2</h1>
+</div>
+<div id="load" class="section level1">
+<h1>3.4 Load</h1>
+</div>
+<div id="create-etl_pipeline.py" class="section level1">
+<h1>4 Create etl_pipeline.py</h1>
+</div>
+<div id="test-etl_pipeline.py" class="section level1">
+<h1>5 Test etl_pipeline.py</h1>
+</div>
+<div id="from-jupyter-notebook" class="section level1">
+<h1>5.1 from jupyter notebook</h1>
+</div>
+<div id="from-command-line" class="section level1">
+<h1>5.2 from command line</h1>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+</div>
