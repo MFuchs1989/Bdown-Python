@@ -33,8 +33,9 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + 5.2 Classification Algorithms
 + 5.3 Cluster Algorithms
 + 5.4 Dimensionality Reduction Algorithms
-+ 6 Some Python Stuff
-+ 7 Some Intuitions
++ 6 ETL
++ 7 Some Python Stuff
++ 8 Some Intuitions
 
 
 
@@ -157,7 +158,17 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Principal Component Analysis (PCA)"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
 
 
-# 6 Some Python Stuff
+
+# 6 ETL
+
++ ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
++ ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
++ ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
++ ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
++ ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
+
+
+# 7 Some Python Stuff
 
 + ["How to use Pandas set_option()"](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
 + ["How to suppress scientific notation in Pandas"](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)
@@ -165,7 +176,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Read and write to files"](https://michael-fuchs-python.netlify.app/2019/03/01/read-and-write-to-files/)
 
 
-# 7 Some Intuitions
+# 8 Some Intuitions
 
 + ["How to create artificial datasets"](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/)
 + ["NumPy. An intuition."](https://michael-fuchs-python.netlify.app/2019/05/07/numpy-an-intuition/)
