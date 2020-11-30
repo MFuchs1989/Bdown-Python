@@ -48,17 +48,16 @@ But if, as en example, numerical values are formatted as strings, the loading pr
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90s2.png)
 
 
+At the end I will test the created ETL. I will show this from another jupyter notebook and a fully automatic call from the command line. 
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p.png)
-
+For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20intermediate%20storage). 
 
 
 # 2 Setup
+
+![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p1.png)
+
+
 # 3 ETL Pipeline with intermediate storage
 # 3.1 Extract
 # 3.2 Transform_1
@@ -71,6 +70,9 @@ But if, as en example, numerical values are formatted as strings, the loading pr
 # 6 Conclusion
 
 
+```{r, eval=F, echo=T}
 
+```
 
+![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p.png)
 
