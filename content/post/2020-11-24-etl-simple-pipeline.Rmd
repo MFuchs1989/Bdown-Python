@@ -300,6 +300,6 @@ That's it!
 
 
 In this post I have shown a simple ETL, how to set it up and let it run through fully automated. 
-In further publications i will present further ETL structures.
+In further publications I will present further ETL structures.
 
 
