@@ -5,7 +5,7 @@ import os
 
 
 class DataPreprocessor:
-    def __init__(self, path_folder = "C:/Users/Michael Fuchs/OneDrive - CANCOM GmbH/3_General/Python/Jupyter Script/Backlog/ETL/ETL Step by Step/4 ETL - Pipeline with join2/data"):
+    def __init__(self, path_folder = "path/to/data"):
 
         self.path_folder = path_folder
         
