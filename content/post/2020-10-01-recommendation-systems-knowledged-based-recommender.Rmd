@@ -30,7 +30,7 @@ As we have already touched on ["recommendations in the marketing context"](https
 We will start with a very simple recommender: The **Knowledged-based Recommender**
 
 
-For this post the dataset *movies_metadata* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+For this post the dataset *movies_metadata* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Reommender).
 
 
 
