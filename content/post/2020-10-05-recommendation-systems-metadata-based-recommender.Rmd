@@ -1,0 +1,30 @@
+---
+title: Recommendation Systems - Metadata-based Recommender
+author: Michael Fuchs
+date: '2020-10-05'
+slug: recommendation-systems-metadata-based-recommender
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+For this post the datasets *movies_metadata*, *keywords* and *credits* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender) and here:
+
++ ["keywords datafraem"](https://drive.google.com/file/d/130LECn3_7LoBL6nMHVIGG0zw6DqitPib/view?usp=sharing)
++ ["credits datafraem"](https://drive.google.com/file/d/1ReopPjfDglnCiKeJs_TfnMP0T5wM36zx/view?usp=sharing)
+
+
