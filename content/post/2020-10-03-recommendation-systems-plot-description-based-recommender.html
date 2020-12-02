@@ -40,7 +40,9 @@ tags:
 <pre class="r"><code>import pandas as pd
 import numpy as np
 
-import preprocessing_recommender_systems as prs</code></pre>
+import preprocessing_recommender_systems as prs
+
+from sklearn.feature_extraction.text import TfidfVectorizer</code></pre>
 <p>We are going to use the same dataframe as in the previous post.</p>
 <pre class="r"><code>df = pd.read_csv(&#39;movies_metadata.csv&#39;)
 df.head()</code></pre>
