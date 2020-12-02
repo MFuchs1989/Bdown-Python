@@ -41,6 +41,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 1 Roadmaps
 
++ ["Roadmap for ETL"](https://michael-fuchs-python.netlify.app/2020/11/28/roadmap-for-etl/)
 + ["Roadmap for the Machine Learning fields"](https://michael-fuchs-python.netlify.app/2020/08/20/roadmap-for-the-machine-learning-fields/)
 + ["Roadmap for Dimensionality Reduction"](https://michael-fuchs-python.netlify.app/2020/08/18/roadmap-for-dimensionality-reduction/)
 + ["Roadmap for Cluster Analysis"](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/)
@@ -76,6 +77,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 3.2 Recommendation Systems
 
++ ["Plot Description-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/)
 + ["Knowledged-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
 
 
@@ -161,11 +163,12 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 6 ETL
 
-+ ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
-+ ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
-+ ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
-+ ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
 + ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
++ ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
++ ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
++ ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
++ ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
+
 
 
 # 7 Some Python Stuff
