@@ -59,35 +59,134 @@ df</code></pre>
 </div>
 <div id="data-pre-processing-part-ii" class="section level1">
 <h1>4 Data pre-processing Part II</h1>
-<p>The recommendation model I want to develop will be based on the pairwise similarity between bodies of text.</p>
+<p>The recommendation model I want to develop will be based on the pairwise similarity between bodies of text.
+But how do we numerically quantify the similarity between two bodies of text?
+The answer is Vectorizing.</p>
 </div>
 <div id="introduction-of-the-countvectorizer" class="section level1">
 <h1>4.1 Introduction of the CountVectorizer</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<p>The CountVectorizer is the simplest vectorizer and is best explained with the help of an example:</p>
+<pre class="r"><code>d = {&#39;Line&#39;: [1, 2, 3], &#39;Text&#39;: [&#39;The sun is a star&#39;, &#39;My love is like a red, red rose&#39;, &#39;Mary had a little lamb&#39;]}
+test = pd.DataFrame(data=d)
+test</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p3.png" /></p>
+<p>In the following we will convert the column text on the test dataset into its vector form.
+The first step is to calculate the size of the vocabulary. The vocabulary is the is the number of unique words present across all text rows.
+Due to the fact that the sentences contain some words that are not meaningful (so-called stop words) they are removed from the vocabulary.</p>
+<pre class="r"><code>#Import CountVectorizer from the scikit-learn library
+from sklearn.feature_extraction.text import CountVectorizer
+
+#Define a CountVectorizer Object. Remove all english stopwords
+vectorizer = CountVectorizer(stop_words=&#39;english&#39;)</code></pre>
+<pre class="r"><code>#Construct the CountVectorizer matrix
+vectorizer_matrix = vectorizer.fit_transform(test[&#39;Text&#39;])
+vectorizer_matrix.shape</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p4.png" /></p>
+<pre class="r"><code>feature_names = vectorizer.get_feature_names()
+print(feature_names)
+print()
+print(&#39;Length of vocabulary: &#39; + str(len(feature_names)))</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p5.png" /></p>
+<p>As we can see the length of the vocabulary is now 9.</p>
+<pre class="r"><code>result_vectorizer = pd.DataFrame(vectorizer_matrix.toarray(), columns = vectorizer.get_feature_names())
+result_vectorizer</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p6.png" /></p>
+<p>The overview can now be interpreted as follows:</p>
+<p>The first dimension will represent the number if times the word ‘lamb’ occurs, the second will represent the number of times the word ‘like’ occurs and so on.</p>
 </div>
 <div id="introduction-of-the-tf-idfvectorizer" class="section level1">
 <h1>4.2 Introduction of the TF-IDFVectorizer</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<p>Not all words in a document carry equal weight.
+If you want to consider the weighting you should use the TF-IDFVectorizer. The syntax of the TF-IDFVectorizer is almost identical:</p>
+<pre class="r"><code>#Import TfIdfVectorizer from the scikit-learn library
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+#Define a TF-IDF Vectorizer Object. Remove all english stopwords
+tfidf = TfidfVectorizer(stop_words=&#39;english&#39;)</code></pre>
+<pre class="r"><code>#Construct the TF-IDF matrix
+tfidf_matrix = tfidf.fit_transform(test[&#39;Text&#39;])
+tfidf_matrix.shape</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p7.png" /></p>
+<pre class="r"><code>feature_names = tfidf.get_feature_names()
+feature_names</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p8.png" /></p>
+<pre class="r"><code>result_tfidf = pd.DataFrame(tfidf_matrix.toarray(), columns = tfidf.get_feature_names())
+result_tfidf</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p9.png" /></p>
 </div>
 <div id="create-tf-idf-vectors" class="section level1">
 <h1>4.3 Create TF-IDF vectors</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<p>Let us return to our original data set after this short digression and apply here the TF-IDF to our movie dataset.</p>
+<pre class="r"><code>#Import TfIdfVectorizer from the scikit-learn library
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+#Define a TF-IDF Vectorizer Object. Remove all english stopwords
+tfidf = TfidfVectorizer(stop_words=&#39;english&#39;)
+
+#Replace NaN with an empty string
+df[&#39;overview&#39;] = df[&#39;overview&#39;].fillna(&#39;&#39;)
+
+#Construct the required TF-IDF matrix by applying the fit_transform method on the overview feature
+tfidf_matrix = tfidf.fit_transform(df[&#39;overview&#39;])
+
+#Output the shape of tfidf_matrix
+tfidf_matrix.shape</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p10.png" /></p>
 </div>
 <div id="compute-the-pairwise-cosin-similarity" class="section level1">
 <h1>4.4 Compute the pairwise cosin similarity</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<pre class="r"><code># Import linear_kernel to compute the dot product
+from sklearn.metrics.pairwise import linear_kernel
+
+# Compute the cosine similarity matrix
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)</code></pre>
+<p>The cosin score can take any value between -1 and 1. The higher the cosin score, the more similar the documents are to each other.
+Now it’s time to build the Plot Description-based Recommender.</p>
 </div>
 <div id="build-the-plot-description-based-recommender" class="section level1">
 <h1>5 Build the Plot Description-based Recommender</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<pre class="r"><code>#Construct a reverse mapping of indices and movie titles, and drop duplicate titles, if any
+indices = pd.Series(df.index, index=df[&#39;title&#39;]).drop_duplicates()
+indices</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p11.png" /></p>
+<pre class="r"><code># Function that takes in movie title as input and gives recommendations 
+def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
+    # Obtain the index of the movie that matches the title
+    idx = indices[title]
+
+    # Get the pairwsie similarity scores of all movies with that movie
+    # And convert it into a list of tuples as described above
+    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    # Sort the movies based on the cosine similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Get the scores of the 10 most similar movies. Ignore the first movie.
+    sim_scores = sim_scores[1:11]
+
+    # Get the movie indices
+    movie_indices = [i[0] for i in sim_scores]
+
+    # Return the top 10 most similar movies
+    return df[&#39;title&#39;].iloc[movie_indices]</code></pre>
 </div>
 <div id="test-the-recommender" class="section level1">
 <h1>6 Test the recommender</h1>
-<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png" /></p>
+<p>Now we are going to test the recommender.
+Let’s have a look for similar movies for Toy Story.</p>
+<pre class="r"><code>#Get recommendations for Toy Story
+content_recommender(&#39;Toy Story&#39;)</code></pre>
+<p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p12.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>
+<p>In this post I talked about creating a Plot Description-based Recommender.
+Compared to the Knowledge-based Recommender this has the advantage that it suggests movies that the user may not know from their content but have a strong relation to each other according to our similarity matrix.</p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
+<p>Alfarhood, M., &amp; Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.</p>
+<p>Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.</p>
+<p>Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.</p>
+<p>Richert, W. (2013). Building machine learning systems with Python. Packt Publishing Ltd.</p>
 </div>
