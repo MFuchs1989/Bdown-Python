@@ -9,14 +9,26 @@ tags:
   - R Markdown
 ---
 
+# Table of Content
+
++ 1 Introduction
++ 2 Import the libraries and the data
++ 3 Data pre-processing
++ 3.1 Clean id column of df
++ 3.2 Join the dataframes
++ 3.3 Wrangling crew, cast, keywords and genres
++ 3.4 Sanitize data
++ 3.5 Create a soup of desired metadata
++ 3.6 Create vectors with CountVectorizer
++ 3.7 Compute the pairwise similarity
++ 4 Build the Metadata-based Recommender
++ 5 Test the recommender
++ 6 Conclusion
 
 
 
 
-
-
-
-
+# 1 Introduction
 
 
 
@@ -26,6 +38,24 @@ For this post the datasets *movies_metadata*, *keywords* and *credits* from the 
 
 + ["keywords dataframe"](https://drive.google.com/file/d/130LECn3_7LoBL6nMHVIGG0zw6DqitPib/view?usp=sharing)
 + ["credits dataframe"](https://drive.google.com/file/d/1ReopPjfDglnCiKeJs_TfnMP0T5wM36zx/view?usp=sharing)
+
+
+
+# 2 Import the libraries and the data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import preprocessing_recommender_systems as prs
+
+from ast import literal_eval
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+```
+
+
 
 
 
@@ -49,8 +79,158 @@ This file is also stored on my ["GitHub Account"](https://github.com/MFuchs1989/
 
 
 
+# 3 Data pre-processing
 
 
 
 
+
+
+
+# 3.1 Clean id column of df
+
+
+
+
+
+
+
+
+
+# 3.2 Join the dataframes
+
+
+
+
+
+
+
+
+# 3.3 Wrangling crew, cast, keywords and genres
+
+
+
+
+
+
+**Column 'crew'**
+
+
+
+
+
+
+
+**Column 'cast'**
+
+
+
+
+
+
+
+
+
+**Column 'keywords'**
+
+
+
+
+
+
+
+**Column 'genres'**
+
+
+
+
+
+
+
+
+
+# 3.4 Sanitize data
+
+
+
+
+
+
+
+# 3.5 Create a soup of desired metadata
+
+
+
+
+
+
+
+
+
+# 3.6 Create vectors with CountVectorizer
+
+
+
+
+
+
+
+
+
+# 3.7 Compute the pairwise similarity
+
+
+
+
+
+
+
+
+
+
+
+
+# 4 Build the Metadata-based Recommender
+
+
+
+
+
+
+
+
+
+
+
+
+# 5 Test the recommender
+
+
+
+
+
+
+
+
+
+
+
+
+# 6 Conclusion
+
+
+
+
+
+
+
+# References
+
+Alfarhood, M., & Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.
+
+Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.
+
+Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.
+
+Richert, W. (2013). Building machine learning systems with Python. Packt Publishing Ltd.
 
