@@ -1,0 +1,158 @@
+---
+title: Recommendation Systems - Plot Description-based Recommender
+author: Michael Fuchs
+date: '2020-10-03'
+slug: recommendation-systems-plot-description-based-recommender
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+# Table of Content
+
++ 1 Introduction
++ 2 Import the libraries and the data
++ 3 Data pre-processing Part I
++ 4 Data pre-processing Part II
++ 4.1 Introduction of the CountVectorizer
++ 4.2 Introduction of the TF-IDFVectorizer
++ 4.3 Create TF-IDF vectors
++ 4.4 Compute the pairwise cosin similarity
++ 5 Build the Plot Description-based Recommender
++ 6 Test the recommender
++ 7 Conclusion
+
+
+
+# 1 Introduction
+
+
+After having developed a simple ["Knowledge-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/) we now come to another recommender: the Plot Description-based Recommender.
+
+
+For this post the dataset *movies_metadata* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Plot%20Description-based%20Recommender).
+
+
+
+# 2 Import the libraries and the data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import preprocessing_recommender_systems as prs
+```
+
+
+We are going to use the same dataframe as in the previous post.
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('movies_metadata.csv')
+df.head()
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p1.png)
+
+Some pre-processing steps are similar to those of the ["Knowledge-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/).
+Since I don't want to list them one by one again I have written them into a separate python file (preprocessing_recommender_systems.py).
+This file is also stored on my ["GitHub Account"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Plot%20Description-based%20Recommender) and can be downloaded from there. 
+
+
+# 3 Data pre-processing Part I
+
+The process steps can be traced individually in Post ["Knowledge-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/) up to and including Chapter 3.2.
+The only difference is that we additionally keep the columns 'overview' and 'id'. 
+
+
+```{r, eval=F, echo=T}
+df = prs.clean_data(df)
+df
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p2.png)
+
+
+
+
+# 4 Data pre-processing Part II
+
+The recommendation model I want to develop will be based on the pairwise similarity between bodies of text.
+
+# 4.1 Introduction of the CountVectorizer
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+# 4.2 Introduction of the TF-IDFVectorizer
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+# 4.3 Create TF-IDF vectors
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+# 4.4 Compute the pairwise cosin similarity
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+# 5 Build the Plot Description-based Recommender
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+
+# 6 Test the recommender
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p.png)
+
+
+
+# 7 Conclusion
+
+
+
+# References
+
+
+
