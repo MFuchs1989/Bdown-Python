@@ -69,136 +69,327 @@ df
 ![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p1.png)
 
 
-
-
-
-
-
+Let's load the other two datasets as well:
 
 
 ```{r, eval=F, echo=T}
-
+cred_df = pd.read_csv('credits.csv')
+cred_df.head()
 ```
 
-![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p.png)
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p2.png)
 
+
+```{r, eval=F, echo=T}
+key_df = pd.read_csv('keywords.csv')
+key_df.head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p3.png)
 
 
 
 # 3 Data pre-processing
 
-
-
-
-
+For the preparation of the data we have to take some steps.
 
 
 # 3.1 Clean id column of df
 
 
+```{r, eval=F, echo=T}
+# Function to convert all non-integer IDs to NaN
+def clean_ids(x):
+    try:
+        return int(x)
+    except:
+        return np.nan
 
+    
+#Clean the ids of df
+df['id'] = df['id'].apply(clean_ids)
 
-
-
+#Filter all rows where ID is not null
+df = df[df['id'].notnull()] 
+```
 
 
 
 # 3.2 Join the dataframes
 
 
+Here we get a final dataset with the columns cast, crew and keywords from the last loaded records.
 
 
+```{r, eval=F, echo=T}
+# Convert IDs into integer
+df['id'] = df['id'].astype('int')
+key_df['id'] = key_df['id'].astype('int')
+cred_df['id'] = cred_df['id'].astype('int')
 
+# Merge keywords and credits into our updated metadata dataframe
+df = df.merge(cred_df, on='id')
+df = df.merge(key_df, on='id')
+
+#Display the head of df
+df.head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p4.png)
 
 
 
 # 3.3 Wrangling crew, cast, keywords and genres
 
+In the following we will work on the columns crew, cast, keywords and genres so that they are usable for the recommender.
+
+```{r, eval=F, echo=T}
+# Convert the stringified objects into the native python objects
+from ast import literal_eval
+
+features = ['cast', 'crew', 'keywords']
+for feature in features:
+    df[feature] = df[feature].apply(literal_eval)
+```
 
 
+```{r, eval=F, echo=T}
+df.head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p5.png)
+
+
+In the pre-processing step via preprocessing_recommender_systems.py literal_eval has already been applied to the column genres. For this reason it is not listed in the features here.
 
 
 
 **Column 'crew'**
 
+Here we are only interested in the director.
+
+```{r, eval=F, echo=T}
+#Print the first crew member of the first movie in df
+df.iloc[0]['crew'][0]
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p6.png)
 
 
+```{r, eval=F, echo=T}
+# Extract the director's name. If director is not listed, return NaN
+def get_director(x):
+    for crew_member in x:
+        if crew_member['job'] == 'Director':
+            return crew_member['name']
+    return np.nan
+```
 
+
+```{r, eval=F, echo=T}
+#Define the new director feature
+df['director'] = df['crew'].apply(get_director)
+
+#Print the directors of the first five movies
+df['director'].head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p7.png)
 
 
 
 **Column 'cast'**
 
+Here we are interested in the first three cast members.
 
 
+```{r, eval=F, echo=T}
+#Print the first cast member of the first movie in df
+df.iloc[0]['cast'][0]
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p8.png)
 
 
+```{r, eval=F, echo=T}
+# Returns the list top 3 elements or entire list; whichever is more.
+def generate_list(x):
+    if isinstance(x, list):
+        names = [i['name'] for i in x]
+        #Check if more than 3 elements exist. If yes, return only first three. If no, return entire list.
+        if len(names) > 3:
+            names = names[:3]
+        return names
 
+    #Return empty list in case of missing/malformed data
+    return []
+```
+
+
+```{r, eval=F, echo=T}
+#Apply the generate_list function to cast
+df['cast'] = df['cast'].apply(generate_list)
+```
 
 
 
 **Column 'keywords'**
 
+Here we are interested in the first three keywords.
 
 
+```{r, eval=F, echo=T}
+#Print the first keyword of the first movie in df
+df.iloc[0]['keywords'][3]
+```
 
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p9.png)
 
+We can again use the generate_list function here.
+
+```{r, eval=F, echo=T}
+#Apply the generate_list function to keywords
+df['keywords'] = df['keywords'].apply(generate_list)
+```
 
 
 **Column 'genres'**
 
 
-
-
-
-
+```{r, eval=F, echo=T}
+#Only consider a maximum of 3 genres
+df['genres'] = df['genres'].apply(lambda x: x[:3])
+```
 
 
 
 # 3.4 Sanitize data
 
+Our current data set looks like this:
 
 
+```{r, eval=F, echo=T}
+# Print the new features of the first 5 movies along with title
+df[['title', 'cast', 'director', 'keywords', 'genres']].head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p10.png)
+
+We will again apply a vectorizer to the text columns, as we did with the Plot Description-based Recommender. 
+In order for it to work correctly, we need to remove the spaces between all the names and keywords (if there are any) and convert them into lowercase.
 
 
+```{r, eval=F, echo=T}
+# Function to sanitize data to prevent ambiguity. It removes spaces and converts to lowercase
+def sanitize(x):
+    if isinstance(x, list):
+        #Strip spaces and convert to lowercase
+        return [str.lower(i.replace(" ", "")) for i in x]
+    else:
+        #Check if director exists. If not, return empty string
+        if isinstance(x, str):
+            return str.lower(x.replace(" ", ""))
+        else:
+            return ''
+```
+
+
+```{r, eval=F, echo=T}
+#Apply the sanitize function to cast, keywords, director and genres
+for feature in ['cast', 'director', 'genres', 'keywords']:
+    df[feature] = df[feature].apply(sanitize)
+```
+
+
+```{r, eval=F, echo=T}
+df[['title', 'cast', 'director', 'keywords', 'genres']].head()
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p11.png)
 
 
 # 3.5 Create a soup of desired metadata
 
 
+```{r, eval=F, echo=T}
+#Function that creates a soup out of the desired metadata
+def create_soup(x):
+    return ' '.join(x['keywords']) + ' ' + ' '.join(x['cast']) + ' ' + x['director'] + ' ' + ' '.join(x['genres'])
+```
 
 
+```{r, eval=F, echo=T}
+# Create the new soup feature
+df['soup'] = df.apply(create_soup, axis=1)
+```
 
 
+```{r, eval=F, echo=T}
+#Display the soup of the first movie
+df.iloc[0]['soup']
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p12.png)
 
 
 
 # 3.6 Create vectors with CountVectorizer
 
 
+```{r, eval=F, echo=T}
+# Import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 
-
-
-
-
+#Define a new CountVectorizer object and create vectors for the soup
+count = CountVectorizer(stop_words='english')
+count_matrix = count.fit_transform(df['soup'])
+```
 
 
 # 3.7 Compute the pairwise similarity
 
 
+```{r, eval=F, echo=T}
+#Import cosine_similarity function
+from sklearn.metrics.pairwise import cosine_similarity
 
-
-
-
-
-
-
-
+#Compute the cosine similarity score (equivalent to dot product for tf-idf vectors)
+cosine_sim = cosine_similarity(count_matrix, count_matrix)
+```
 
 
 # 4 Build the Metadata-based Recommender
 
 
+```{r, eval=F, echo=T}
+# Reset index of your df and construct reverse mapping again
+df = df.reset_index()
+indices = pd.Series(df.index, index=df['title'])
+```
+
+
+```{r, eval=F, echo=T}
+# Function that takes in movie title as input and gives recommendations 
+def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
+    # Obtain the index of the movie that matches the title
+    idx = indices[title]
+
+    # Get the pairwsie similarity scores of all movies with that movie
+    # And convert it into a list of tuples as described above
+    sim_scores = list(enumerate(cosine_sim[idx]))
+
+    # Sort the movies based on the cosine similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+    # Get the scores of the 10 most similar movies. Ignore the first movie.
+    sim_scores = sim_scores[1:11]
+
+    # Get the movie indices
+    movie_indices = [i[0] for i in sim_scores]
+
+    # Return the top 10 most similar movies
+    return df['title'].iloc[movie_indices]
+```
 
 
 
@@ -216,6 +407,11 @@ df
 
 
 
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p.png)
 
 
 
