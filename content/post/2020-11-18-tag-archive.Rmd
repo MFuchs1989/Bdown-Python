@@ -77,6 +77,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 3.2 Recommendation Systems
 
++ ["Metadata-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/05/recommendation-systems-metadata-based-recommender/)
 + ["Plot Description-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/)
 + ["Knowledged-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
 
