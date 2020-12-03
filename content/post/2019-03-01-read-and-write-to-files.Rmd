@@ -9,8 +9,6 @@ tags:
   - R Markdown
 ---
 
-HI Dani
-
 
 # Table of Content
 
