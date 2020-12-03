@@ -392,14 +392,6 @@ def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
 ```
 
 
-
-
-
-
-
-
-
-
 # 5 Test the recommender
 
 
@@ -408,21 +400,17 @@ def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
 
 
 ```{r, eval=F, echo=T}
-
+content_recommender('Toy Story', cosine_sim, df, indices)
 ```
 
-![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p.png)
-
-
-
+![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p13.png)
 
 
 
 # 6 Conclusion
 
-
-
-
+Done.
+Now we have designed a recommender that takes into account any amount of additional data such as the participating actors or the director in charge.
 
 
 
