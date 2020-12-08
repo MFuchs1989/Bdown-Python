@@ -272,7 +272,7 @@ now.month
 To get the current quarter, I wrote the following function:
 
 ```{r, eval=F, echo=T}
-def get_quater(month):
+def get_quarter(month):
 
     if (month <= 3):
         return 'Q1'
@@ -291,7 +291,7 @@ Let's test the created function:
 
 ```{r, eval=F, echo=T}
 for i in range(1, 13):
-    total = get_quater(i)
+    total = get_quarter(i)
     print(total)
 ```
 
@@ -312,8 +312,8 @@ now_year
 ```{r, eval=F, echo=T}
 month = now.month
 
-now_quater = get_quater(month)
-now_quater
+now_quarter = get_quarter(month)
+now_quarter
 ```
 
 ![](/post/2019-03-01-read-and-write-to-files_files/p23z7.png)
@@ -323,8 +323,8 @@ Then we combine the two objects:
 
 
 ```{r, eval=F, echo=T}
-year_quater = str(now_year) + now_quater
-year_quater
+year_quarter = str(now_year) + now_quarter
+year_quarter
 ```
 
 ![](/post/2019-03-01-read-and-write-to-files_files/p23z8.png)

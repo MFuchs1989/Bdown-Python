@@ -168,7 +168,7 @@ For example year and month:</p>
 <pre class="r"><code>now.month</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z4.png" /></p>
 <p>To get the current quarter, I wrote the following function:</p>
-<pre class="r"><code>def get_quater(month):
+<pre class="r"><code>def get_quarter(month):
 
     if (month &lt;= 3):
         return &#39;Q1&#39;
@@ -183,7 +183,7 @@ For example year and month:</p>
         return &#39;Q4&#39; </code></pre>
 <p>Let’s test the created function:</p>
 <pre class="r"><code>for i in range(1, 13):
-    total = get_quater(i)
+    total = get_quarter(i)
     print(total)</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z5.png" /></p>
 <p>Works fine!</p>
@@ -193,12 +193,12 @@ now_year</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z6.png" /></p>
 <pre class="r"><code>month = now.month
 
-now_quater = get_quater(month)
-now_quater</code></pre>
+now_quarter = get_quarter(month)
+now_quarter</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z7.png" /></p>
 <p>Then we combine the two objects:</p>
-<pre class="r"><code>year_quater = str(now_year) + now_quater
-year_quater</code></pre>
+<pre class="r"><code>year_quarter = str(now_year) + now_quarter
+year_quarter</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z8.png" /></p>
 <p>Last but not least the current date:</p>
 <pre class="r"><code>now_date = now.strftime(&quot;%Y-%m-%d&quot;)
