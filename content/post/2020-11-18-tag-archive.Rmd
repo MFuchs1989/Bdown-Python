@@ -7,11 +7,27 @@ categories:
   - R
 tags:
   - R Markdown
-  
 output:
   blogdown::html_page:
     toc: true
+    toc_depth: 2
+    toc_float: true
 ---
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('movies_metadata.csv')
+
+# Select just relevant features
+relevant_features = ['title','genres', 'release_date', 'runtime', 'vote_average', 'vote_count']
+df = df[relevant_features]
+
+# Print the dataframe
+df.head()
+```
+
+![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p1.png)
+
 
 Due to the fact that blogging on data science topics is getting more and more extensive it is time to create a day archive. 
 The goal is to cluster all publications in a meaningful way so that they can be found quickly when needed.

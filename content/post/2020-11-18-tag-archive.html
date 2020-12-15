@@ -7,10 +7,10 @@ categories:
   - R
 tags:
   - R Markdown
-  
 output:
   blogdown::html_page:
     toc: true
+    toc_depth: 2
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
@@ -40,6 +40,15 @@ output:
 </ul>
 </div>
 
+<pre class="r"><code>df = pd.read_csv(&#39;movies_metadata.csv&#39;)
+
+# Select just relevant features
+relevant_features = [&#39;title&#39;,&#39;genres&#39;, &#39;release_date&#39;, &#39;runtime&#39;, &#39;vote_average&#39;, &#39;vote_count&#39;]
+df = df[relevant_features]
+
+# Print the dataframe
+df.head()</code></pre>
+<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p1.png" /></p>
 <p>Due to the fact that blogging on data science topics is getting more and more extensive it is time to create a day archive.
 The goal is to cluster all publications in a meaningful way so that they can be found quickly when needed.</p>
 <p><img src="/post/2020-11-18-tag-archive_files/TagArchive.png" /></p>
