@@ -7,6 +7,10 @@ categories:
   - R
 tags:
   - R Markdown
+  
+output:
+  blogdown::html_page:
+    toc: true
 ---
 
 Due to the fact that blogging on data science topics is getting more and more extensive it is time to create a day archive. 
