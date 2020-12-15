@@ -10,9 +10,8 @@ tags:
 output:
   blogdown::html_page:
     toc: true
-    toc_depth: 2
-header:
-  image: "headers/MFuchs.png"
+    toc_depth: 5
+
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
@@ -21,7 +20,6 @@ header:
 
 <div id="TOC">
 <ul>
-<li><a href="#overview">Overview</a></li>
 <li><a href="#roadmaps">1 Roadmaps</a></li>
 <li><a href="#data-science">2 Data Science</a></li>
 <li><a href="#analytics-fields">3 Analytics Fields</a></li>
@@ -42,40 +40,10 @@ header:
 </ul>
 </div>
 
-<p><img src="/img/headers/MFuchs.png" /></p>
-<pre class="r"><code>df = pd.read_csv(&#39;movies_metadata.csv&#39;)
-
-# Select just relevant features
-relevant_features = [&#39;title&#39;,&#39;genres&#39;, &#39;release_date&#39;, &#39;runtime&#39;, &#39;vote_average&#39;, &#39;vote_count&#39;]
-df = df[relevant_features]
-
-# Print the dataframe
-df.head()</code></pre>
-<p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p1.png" /></p>
+<p><strong>Introduction</strong></p>
 <p>Due to the fact that blogging on data science topics is getting more and more extensive it is time to create a day archive.
 The goal is to cluster all publications in a meaningful way so that they can be found quickly when needed.</p>
 <p><img src="/post/2020-11-18-tag-archive_files/TagArchive.png" /></p>
-<div id="overview" class="section level1">
-<h1>Overview</h1>
-<ul>
-<li>1 Roadmaps</li>
-<li>2 Data Science</li>
-<li>3 Analytics Fields</li>
-<li>3.1 Marketing Analytics</li>
-<li>4 Data pre-processing</li>
-<li>4.1 for Classification</li>
-<li>4.2 for Regression</li>
-<li>4.3 General</li>
-<li>5 Machine Learning</li>
-<li>5.1 Regression Algorithms</li>
-<li>5.2 Classification Algorithms</li>
-<li>5.3 Cluster Algorithms</li>
-<li>5.4 Dimensionality Reduction Algorithms</li>
-<li>6 ETL</li>
-<li>7 Some Python Stuff</li>
-<li>8 Some Intuitions</li>
-</ul>
-</div>
 <div id="roadmaps" class="section level1">
 <h1>1 Roadmaps</h1>
 <ul>

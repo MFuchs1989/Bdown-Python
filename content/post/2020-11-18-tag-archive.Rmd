@@ -10,27 +10,13 @@ tags:
 output:
   blogdown::html_page:
     toc: true
-    toc_depth: 2
-header:
-  image: "headers/MFuchs.png"
+    toc_depth: 5
+
 ---
 
-![](/img/headers/MFuchs.png)
 
 
-```{r, eval=F, echo=T}
-df = pd.read_csv('movies_metadata.csv')
-
-# Select just relevant features
-relevant_features = ['title','genres', 'release_date', 'runtime', 'vote_average', 'vote_count']
-df = df[relevant_features]
-
-# Print the dataframe
-df.head()
-```
-
-![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p1.png)
-
+**Introduction**
 
 Due to the fact that blogging on data science topics is getting more and more extensive it is time to create a day archive. 
 The goal is to cluster all publications in a meaningful way so that they can be found quickly when needed.
@@ -39,26 +25,6 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 ![](/post/2020-11-18-tag-archive_files/TagArchive.png)
-
-
-# Overview
-
-+ 1 Roadmaps
-+ 2 Data Science
-+ 3 Analytics Fields
-+ 3.1 Marketing Analytics
-+ 4 Data pre-processing
-+ 4.1 for Classification
-+ 4.2 for Regression
-+ 4.3 General
-+ 5 Machine Learning
-+ 5.1 Regression Algorithms
-+ 5.2 Classification Algorithms
-+ 5.3 Cluster Algorithms
-+ 5.4 Dimensionality Reduction Algorithms
-+ 6 ETL
-+ 7 Some Python Stuff
-+ 8 Some Intuitions
 
 
 
