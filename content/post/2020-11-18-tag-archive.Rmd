@@ -12,10 +12,10 @@ output:
     toc: true
     toc_depth: 2
 header:
-  image: "img/MFuchs.png"
+  image: "headers/MFuchs.png"
 ---
 
-![](/im/MFuchs.png)
+![](/img/MFuchs.png)
 
 
 ```{r, eval=F, echo=T}
