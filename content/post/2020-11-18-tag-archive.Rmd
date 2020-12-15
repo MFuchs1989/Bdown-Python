@@ -12,7 +12,6 @@ output:
     toc: true
     toc_depth: 2
 image_preview: 'MFuchs.png'
-
 ---
 
 
