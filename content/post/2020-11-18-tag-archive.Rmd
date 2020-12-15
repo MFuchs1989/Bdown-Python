@@ -11,8 +11,11 @@ output:
   blogdown::html_page:
     toc: true
     toc_depth: 2
-image_preview: 'static/MFuchs.png'
+header:
+  image: "img/MFuchs.png"
 ---
+
+![](/im/MFuchs.png)
 
 
 ```{r, eval=F, echo=T}
