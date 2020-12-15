@@ -8,9 +8,10 @@ categories:
 tags:
   - R Markdown
 output:
-  blogdown::html_document:
+  blogdown::html_page:
     toc: true
     toc_depth: 2
+image_preview: 'MFuchs.png'
 
 ---
 
