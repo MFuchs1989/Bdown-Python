@@ -15,7 +15,7 @@ header:
   image: "headers/MFuchs.png"
 ---
 
-![](/img/MFuchs.png)
+![](/img/headers/MFuchs.png)
 
 
 ```{r, eval=F, echo=T}
