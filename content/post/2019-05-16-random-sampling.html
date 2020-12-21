@@ -7,22 +7,28 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Preparation</li>
-<li>3 Split-Methods</li>
-<li>3.1 Customer Churn Model</li>
-<li>3.2 Train-Test Split via scikit-learn</li>
-<li>4 Train-Test-Validation Split</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#preparation">2 Preparation</a></li>
+<li><a href="#split-methods">3 Split-Methods</a></li>
+<li><a href="#customer-churn-model">3.1 Customer Churn Model</a></li>
+<li><a href="#train-test-split-via-scikit-learn">3.2 Train-Test Split via scikit-learn</a></li>
+<li><a href="#train-test-validation-split">4 Train-Test-Validation Split</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Splitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model. Generally, the training and testing datasets are split in the ratio of 75:25 or 80:20. There are various ways to split the data into two halves. Here I will show two methods to do this.</p>
@@ -37,10 +43,7 @@ import numpy as np</code></pre>
 <p>For the two methods shown below, the first hundred lines from the record <em>flight</em> are used.</p>
 <pre class="r"><code>sampling = flight.iloc[0:100,:]
 sampling.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p1.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p1.png" /></p>
 </div>
 <div id="split-methods" class="section level1">
 <h1>3 Split-Methods</h1>
@@ -53,45 +56,27 @@ check=a&lt;0.8
 training=sampling[check]
 testing=sampling[~check]</code></pre>
 <pre class="r"><code>len(training)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p2.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p2.png" /></p>
 <pre class="r"><code>len(testing)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p3.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p3.png" /></p>
 </div>
 <div id="train-test-split-via-scikit-learn" class="section level1">
 <h1>3.2 Train-Test Split via scikit-learn</h1>
 <pre class="r"><code>from sklearn.model_selection import train_test_split
 train, test = train_test_split(sampling, test_size = 0.2)</code></pre>
 <pre class="r"><code>len(train)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p4.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p4.png" /></p>
 <pre class="r"><code>len(test)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p5.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p5.png" /></p>
 </div>
 <div id="train-test-validation-split" class="section level1">
 <h1>4 Train-Test-Validation Split</h1>
 <p>Particular in the deep learning area (for example artificial neural networks), it is necessary to hold back part of the data set for validation purposes in addition to the training and test part.We can also do this with the train test split function shown above from scikit-learn. You only have to use this function twice in a row and change the percentage of the division. Let’s see here with the self-generated sample data set:</p>
 <pre class="r"><code>df = pd.DataFrame(np.random.randint(0,100,size=(10000, 4)), columns=[&#39;Var1&#39;, &#39;Var2&#39;, &#39;Var3&#39;, &#39;Target_Var&#39;])
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p6.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p6.png" /></p>
 <pre class="r"><code>df.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p7.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p7.png" /></p>
 <p>Ok we have generated 4 columns with 10k rows each.</p>
 <p>Now we assign the predictors and the criterion to an object. This is a common step to train a machine learning model and could have already done with the previous methods as well.</p>
 <pre class="r"><code>x = df.drop(&#39;Target_Var&#39;, axis=1)
@@ -106,10 +91,7 @@ print(testX.shape)
 print(trainY.shape)
 print(validationY.shape)
 print(testY.shape)</code></pre>
-<div class="figure">
-<img src="/post/2019-05-16-random-sampling_files/p10p8.png" />
-
-</div>
+<p><img src="/post/2019-05-16-random-sampling_files/p10p8.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>

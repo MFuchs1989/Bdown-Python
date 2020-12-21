@@ -7,21 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Preparation
-+ 3 Split-Methods
-+ 3.1 Customer Churn Model
-+ 3.2 Train-Test Split via scikit-learn
-+ 4 Train-Test-Validation Split
-+ 5 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 Splitting the dataset in training and testing the dataset is one operation every Data Scientist has to perform befor applying any models. The training dataset is the one on which the model is built and the testing dataset is used to check the accuracy of the model. Generally, the training and testing datasets are split in the ratio of 75:25 or 80:20. There are various ways to split the data into two halves. Here I will show two methods to do this.
 
@@ -41,7 +34,7 @@ flight = pd.read_csv("path/to/file/flight.csv")
 ```
 
 
-#2 Preparation
+# 2 Preparation
 
 For the two methods shown below, the first hundred lines from the record *flight* are used.
 
@@ -54,9 +47,9 @@ sampling.shape
 
 
 
-#3 Split-Methods
+# 3 Split-Methods
 
-#3.1 Customer Churn Model
+# 3.1 Customer Churn Model
 
 The division took place here in a ratio of 80:20.
 ```{r, eval=F, echo=T}
@@ -80,7 +73,7 @@ len(testing)
 
 ![](/post/2019-05-16-random-sampling_files/p10p3.png)
 
-#3.2 Train-Test Split via scikit-learn
+# 3.2 Train-Test Split via scikit-learn
 
 
 ```{r, eval=F, echo=T}
@@ -102,7 +95,7 @@ len(test)
 ![](/post/2019-05-16-random-sampling_files/p10p5.png)
 
 
-#4 Train-Test-Validation Split
+# 4 Train-Test-Validation Split
 
 
 Particular in the deep learning area (for example artificial neural networks), it is necessary to hold back part of the data set for validation purposes in addition to the training and test part.We can also do this with the train test split function shown above from scikit-learn. You only have to use this function twice in a row and change the percentage of the division. Let's see here with the self-generated sample data set:
@@ -157,6 +150,6 @@ print(testY.shape)
 ![](/post/2019-05-16-random-sampling_files/p10p8.png)
 
 
-#5 Conclusion
+# 5 Conclusion
 
 Now we are ready for predictive modelling. 

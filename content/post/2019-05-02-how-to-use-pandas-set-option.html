@@ -7,23 +7,28 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 The use of pandas set_option()</li>
-<li>2.1 to determine max_rows</li>
-<li>2.2 to determine max_columns</li>
-<li>2.3 to determine text length</li>
-<li>2.4 to determine float_format</li>
-<li>3 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#the-use-of-pandas-set_option">2 The use of pandas set_option()</a></li>
+<li><a href="#to-determine-max_rows">2.1 to determine max_rows</a></li>
+<li><a href="#to-determine-max_columns">2.2 to determine max_columns</a></li>
+<li><a href="#to-determine-text-length">2.3 to determine text length</a></li>
+<li><a href="#to-determine-float_format">2.4 to determine float_format</a></li>
+<li><a href="#conclusion">3 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In my previous post <a href="https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/">“How to suppress scientific notation in Pandas”</a> I have shown how to use the set_option-function of pandas to convert scientifically written numbers into more readable ones.

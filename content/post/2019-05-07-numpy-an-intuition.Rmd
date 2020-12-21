@@ -7,33 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Attributes of NumPy Arrays
-+ 3 Indexing of Arrays
-+ 3.1 Access to individual elements
-+ 3.2 via Slicing
-+ 3.3 Multidimensional subsets of an Array
-+ 4 Reshape
-+ 5 Concatenate Arrays
-+ 6 Split Arrays
-+ 7 UFuncs
-+ 7.1 Array-Arithmetik
-+ 7.2 Exponential function
-+ 7.3 Logarithm
-+ 7.4 Comparison operators
-+ 8 Aggregation
-+ 8.1 Multi-dimensional aggregation
-+ 9 Timing of functions
-+ 10 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 NumPy is a library of Python that makes it easy to handle vectors, matrices, or large multidimensional arrays in general. In addition to the data structures, NumPy also offers efficiently implemented functions for numerical calculations.
 
@@ -46,7 +27,7 @@ import numpy as np
 
 
 
-#2 Attributes of NumPy Arrays
+# 2 Attributes of NumPy Arrays
 
 ```{r, eval=F, echo=T}
 np.random.seed(0)
@@ -70,9 +51,9 @@ print("x3 size: ", x3.size)
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p1.png)
 
 
-#3 Indexing of Arrays
+# 3 Indexing of Arrays
 
-#3.1 Access to individual elements
+# 3.1 Access to individual elements
 
 ```{r, eval=F, echo=T}
 x1
@@ -115,7 +96,7 @@ x2[0, 0]
 
 
 
-#3.2 via Slicing
+# 3.2 via Slicing
 
 
 ```{r, eval=F, echo=T}
@@ -148,7 +129,7 @@ x1[::-1] #all elements in reverse order
 
 
 
-#3.3 Multidimensional subsets of an Array
+# 3.3 Multidimensional subsets of an Array
 
 ```{r, eval=F, echo=T}
 x2
@@ -164,7 +145,7 @@ x2[:2, :3] #two rows, three columns
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p12.png)
 
 
-#4 Reshape
+# 4 Reshape
 
 ```{r, eval=F, echo=T}
 RESHAPE = np.arange(1, 10)
@@ -181,7 +162,7 @@ RESHAPE.reshape((3, 3))
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p14.png)
 
 
-#5 Concatenate Arrays
+# 5 Concatenate Arrays
 
 ```{r, eval=F, echo=T}
 x = np.array([1,2,3])
@@ -203,7 +184,7 @@ show_con
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p16.png)
 
 
-#6 Split Arrays
+# 6 Split Arrays
 
 ```{r, eval=F, echo=T}
 x1, x2, x3 = np.split(show_con, [3, 6])
@@ -214,9 +195,9 @@ print(x1, x2, x3)
 
 
 
-#7 UFuncs
+# 7 UFuncs
 
-#7.1 Array-Arithmetik
+# 7.1 Array-Arithmetik
 
 ```{r, eval=F, echo=T}
 x = np.array([1,2,3])
@@ -231,7 +212,7 @@ print("x ** 2 =", x ** 2)
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p18.png)
 
 
-#7.2 Exponential function
+# 7.2 Exponential function
 
 
 ```{r, eval=F, echo=T}
@@ -245,7 +226,7 @@ print("3^x =", np.power(3, x))
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p19.png)
 
 
-#7.3 Logarithm
+# 7.3 Logarithm
 
 
 ```{r, eval=F, echo=T}
@@ -260,7 +241,7 @@ print("log10(x) =", np.log10(x))
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p20.png)
 
 
-#7.4 Comparison operators
+# 7.4 Comparison operators
 
 ```{r, eval=F, echo=T}
 x = np.array([1, 2, 3, 4, 5])
@@ -303,7 +284,7 @@ np.all(x < 10)
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p24.png)
 
 
-#8 Aggregation
+# 8 Aggregation
 
 ```{r, eval=F, echo=T}
 MyBigArray = np.random.random(1000000)
@@ -318,7 +299,7 @@ print("max =", np.max(MyBigArray))
 
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p25.png)
 
-#8.1 Multi-dimensional aggregation
+# 8.1 Multi-dimensional aggregation
 
 ```{r, eval=F, echo=T}
 MultiArray = np.random.random((3, 4))
@@ -352,7 +333,7 @@ MultiArray.max(axis=1)
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p29.png)
 
 
-#9 Timing of functions
+# 9 Timing of functions
 
 ```{r, eval=F, echo=T}
 test = np.random.random(1000000)
@@ -365,7 +346,7 @@ test = np.random.random(1000000)
 
 
 
-#10 Conclusion
+# 10 Conclusion
 
 NumPy is a very useful library from Python. In my opinion, their use is essential in data science.
 
