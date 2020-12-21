@@ -30,7 +30,7 @@ import pandas as pd
 
 # 2 Separate
 
-# 2.1 via map - function
+## 2.1 via map - function
 
 Map property applies changes to every element of a column
 ```{r, eval=F, echo=T}
@@ -78,7 +78,7 @@ print (z)
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p5.png)
 
 
-# 2.2 via string function
+## 2.2 via string function
 
 ```{r, eval=F, echo=T}
 show_str_split = string_manipulation.copy()
@@ -130,7 +130,7 @@ small_show_str_split
 
 # 3 Unite
 
-# 3.1 two columns
+## 3.1 two columns
 
 ```{r, eval=F, echo=T}
 df = pd.DataFrame({'Year': ['2014', '2015'], 'quarter': ['q1', 'q2']})
@@ -148,7 +148,7 @@ df
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p12.png)
 
 
-# 3.2 three and more columns
+## 3.2 three and more columns
 
 
 ```{r, eval=F, echo=T}

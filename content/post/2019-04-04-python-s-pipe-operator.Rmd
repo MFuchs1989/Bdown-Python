@@ -51,7 +51,7 @@ df.head()
 
 ![](/post/2019-04-04-python-s-pipe-operator_files/p6p1.png)
 
-# 2.1 Filter and select
+## 2.1 Filter and select
 
 ```{r, eval=F, echo=T}
 df = (
@@ -66,7 +66,7 @@ df.head()
 ![](/post/2019-04-04-python-s-pipe-operator_files/p6p2.png)
 
 
-# 2.2 Multiple filter and select
+## 2.2 Multiple filter and select
 
 ```{r, eval=F, echo=T}
 df = (
@@ -81,7 +81,7 @@ df.head()
 ![](/post/2019-04-04-python-s-pipe-operator_files/p6p3.png)
 
 
-# 2.3 Sample and sort
+## 2.3 Sample and sort
 
 ```{r, eval=F, echo=T}
 (
@@ -95,7 +95,7 @@ df.head()
 ![](/post/2019-04-04-python-s-pipe-operator_files/p6p4.png)
 
 
-# 2.4 Multiple group by and summarize
+## 2.4 Multiple group by and summarize
 
 ```{r, eval=F, echo=T}
 df = (               
@@ -116,7 +116,7 @@ df.head(12)
 ![](/post/2019-04-04-python-s-pipe-operator_files/p6p5.png)
 
 
-# 2.5 Group by and multiple summarize
+## 2.5 Group by and multiple summarize
 
 
 ```{r, eval=F, echo=T}

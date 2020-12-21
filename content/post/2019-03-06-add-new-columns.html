@@ -22,9 +22,11 @@ output:
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#normal-calculation">2 Normal Calculation</a></li>
 <li><a href="#if-else-statements">3 If-else statements</a></li>
-<li><a href="#multiple-if-else-statements">4 Multiple If-else statements</a></li>
+<li><a href="#multiple-if-else-statements">4 Multiple If-else statements</a>
+<ul>
 <li><a href="#with-conditional-output-values">4.1 with conditional output values</a></li>
 <li><a href="#with-conditional-calculation">4.2 with conditional calculation</a></li>
+</ul></li>
 <li><a href="#row-sum">5 Row Sum</a></li>
 <li><a href="#with-a-defined-list">6 With a defined list</a></li>
 <li><a href="#conclusion">7 Conclusion</a></li>
@@ -57,9 +59,8 @@ flight2.head()</code></pre>
 </div>
 <div id="multiple-if-else-statements" class="section level1">
 <h1>4 Multiple If-else statements</h1>
-</div>
-<div id="with-conditional-output-values" class="section level1">
-<h1>4.1 with conditional output values</h1>
+<div id="with-conditional-output-values" class="section level2">
+<h2>4.1 with conditional output values</h2>
 <pre class="r"><code>def new_Delay_detailed(df):
 
     if (df[&#39;new_Delay&#39;] &gt;= 45):
@@ -75,8 +76,8 @@ flight2[&#39;new_Delay_detailed&#39;] = flight2.apply(new_Delay_detailed, axis =
 flight2.head()</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2p4.png" /></p>
 </div>
-<div id="with-conditional-calculation" class="section level1">
-<h1>4.2 with conditional calculation</h1>
+<div id="with-conditional-calculation" class="section level2">
+<h2>4.2 with conditional calculation</h2>
 <p>Of course there are also situations in which we do not only need a certain playback depending on the condition.
 The following example shows how a calculated value is output (depending on the condition).</p>
 <p>Imagine that we have transaction data with different currencies available:</p>
@@ -115,6 +116,7 @@ Umrechnungskurs_THB_EUR = 0.5</code></pre>
 df.head()</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2z4.png" /></p>
 <p>This also works with this method.</p>
+</div>
 </div>
 <div id="row-sum" class="section level1">
 <h1>5 Row Sum</h1>

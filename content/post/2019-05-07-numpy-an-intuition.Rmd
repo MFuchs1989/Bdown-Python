@@ -53,7 +53,7 @@ print("x3 size: ", x3.size)
 
 # 3 Indexing of Arrays
 
-# 3.1 Access to individual elements
+## 3.1 Access to individual elements
 
 ```{r, eval=F, echo=T}
 x1
@@ -96,7 +96,7 @@ x2[0, 0]
 
 
 
-# 3.2 via Slicing
+## 3.2 via Slicing
 
 
 ```{r, eval=F, echo=T}
@@ -129,7 +129,7 @@ x1[::-1] #all elements in reverse order
 
 
 
-# 3.3 Multidimensional subsets of an Array
+## 3.3 Multidimensional subsets of an Array
 
 ```{r, eval=F, echo=T}
 x2
@@ -197,7 +197,7 @@ print(x1, x2, x3)
 
 # 7 UFuncs
 
-# 7.1 Array-Arithmetik
+## 7.1 Array-Arithmetik
 
 ```{r, eval=F, echo=T}
 x = np.array([1,2,3])
@@ -212,7 +212,7 @@ print("x ** 2 =", x ** 2)
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p18.png)
 
 
-# 7.2 Exponential function
+## 7.2 Exponential function
 
 
 ```{r, eval=F, echo=T}
@@ -226,7 +226,7 @@ print("3^x =", np.power(3, x))
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p19.png)
 
 
-# 7.3 Logarithm
+## 7.3 Logarithm
 
 
 ```{r, eval=F, echo=T}
@@ -241,7 +241,7 @@ print("log10(x) =", np.log10(x))
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p20.png)
 
 
-# 7.4 Comparison operators
+## 7.4 Comparison operators
 
 ```{r, eval=F, echo=T}
 x = np.array([1, 2, 3, 4, 5])
@@ -299,7 +299,7 @@ print("max =", np.max(MyBigArray))
 
 ![](/post/2019-05-07-numpy-an-intuition_files/p9p25.png)
 
-# 8.1 Multi-dimensional aggregation
+## 8.1 Multi-dimensional aggregation
 
 ```{r, eval=F, echo=T}
 MultiArray = np.random.random((3, 4))

@@ -49,7 +49,7 @@ sampling.shape
 
 # 3 Split-Methods
 
-# 3.1 Customer Churn Model
+## 3.1 Customer Churn Model
 
 The division took place here in a ratio of 80:20.
 ```{r, eval=F, echo=T}
@@ -73,7 +73,7 @@ len(testing)
 
 ![](/post/2019-05-16-random-sampling_files/p10p3.png)
 
-# 3.2 Train-Test Split via scikit-learn
+## 3.2 Train-Test Split via scikit-learn
 
 
 ```{r, eval=F, echo=T}

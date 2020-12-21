@@ -69,7 +69,7 @@ flight2.head()
 
 # 4 Multiple If-else statements 
 
-# 4.1 with conditional output values
+## 4.1 with conditional output values
 
 ```{r, eval=F, echo=T}
 def new_Delay_detailed(df):
@@ -91,7 +91,7 @@ flight2.head()
 
 
 
-# 4.2 with conditional calculation
+## 4.2 with conditional calculation
 
 Of course there are also situations in which we do not only need a certain playback depending on the condition.
 The following example shows how a calculated value is output (depending on the condition).

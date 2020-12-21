@@ -39,7 +39,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 ```
 
-# 2.1 Make Simulated Data For Regression
+## 2.1 Make Simulated Data For Regression
 
 
 ```{r, eval=F, echo=T}
@@ -103,7 +103,7 @@ print(SM_model.summary())
 ![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p5.png)
 
 
-# 2.1 Make Simulated Data For Classification
+## 2.1 Make Simulated Data For Classification
 
 With almost the same procedure we can also create data for classification tasks.
 
@@ -167,7 +167,7 @@ pd.DataFrame(output, columns=['Target']).value_counts()
 ![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p8.png)
 
 
-# 2.1 Make Simulated Data For Clustering
+## 2.1 Make Simulated Data For Clustering
 
 Last but not least we'll generate some data for cluster-problems.
 

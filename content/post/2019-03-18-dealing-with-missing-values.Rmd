@@ -51,7 +51,7 @@ df1.isnull().sum()
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
 
 
-# 2.1 Missing Value Function
+## 2.1 Missing Value Function
 
 
 ```{r, eval=F, echo=T}
@@ -90,7 +90,7 @@ missing_values_table(df1)
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p20.png)
 
-# 2.2 Visualization of missing values
+## 2.2 Visualization of missing values
 
 To demonstrate the following visualization, we load the data set mentioned under introduction and select some specific columns for this case. Furthermore we create some missing values for demonstration purposes.
 
@@ -162,7 +162,7 @@ df_del.dropna(subset=['Name', 'Alter'])
 
 # 4 Replace missings with values
 
-# 4.1 Variant 1
+## 4.1 Variant 1
 
 Missing values from only one column (here "Name") are replaced. 
 ```{r, eval=F, echo=T}
@@ -183,7 +183,7 @@ df1_MbyW_Var1
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p7.png)
 
-# 4.2 Variant 2
+## 4.2 Variant 2
 
 ```{r, eval=F, echo=T}
 df1_MbyW_Var2 = df1.copy()
@@ -197,7 +197,7 @@ df1_MbyW_Var2
 
 # 5 Replace values with missings
 
-# 5.1 Variant 1
+## 5.1 Variant 1
 
 Missing values from only one column (here "Gehalt") are replaced.
 ```{r, eval=F, echo=T}
@@ -220,7 +220,7 @@ df1_WbyM_Var1
 
 
 
-# 5.2 Variant 2
+## 5.2 Variant 2
 
 ```{r, eval=F, echo=T}
 df1_WbyM_Var2 = df1_MbyW_Var1.copy()
@@ -240,7 +240,7 @@ df_basic
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
 
-# 6.1 with mean
+## 6.1 with mean
 
 Here all missing values will be replaced with the mean of the column "Alter".
 
@@ -267,7 +267,7 @@ df_basic
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p15.png)
 
 
-# 6.2 with ffill
+## 6.2 with ffill
 
 *ffill* replace the missing values with the nearest preceding non-missing value.
 
@@ -287,7 +287,7 @@ df_basic
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
 
 
-# 6.3  with backfill
+## 6.3  with backfill
 
 *backfill* replace the missing values with the nearest succeeding non-missing value.
 

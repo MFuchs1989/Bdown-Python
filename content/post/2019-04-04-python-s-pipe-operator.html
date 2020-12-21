@@ -20,12 +20,14 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#pythons-pipe---operator-like-rs">2 Python’s Pipe - Operator like R’s %&gt;%</a></li>
+<li><a href="#pythons-pipe---operator-like-rs">2 Python’s Pipe - Operator like R’s %&gt;%</a>
+<ul>
 <li><a href="#filter-and-select">2.1 Filter and select</a></li>
 <li><a href="#multiple-filter-and-select">2.2 Multiple filter and select</a></li>
 <li><a href="#sample-and-sort">2.3 Sample and sort</a></li>
 <li><a href="#multiple-group-by-and-summarize">2.4 Multiple group by and summarize</a></li>
 <li><a href="#group-by-and-multiple-summarize">2.5 Group by and multiple summarize</a></li>
+</ul></li>
 <li><a href="#conclusion">3 Conclusion</a></li>
 </ul>
 </div>
@@ -48,9 +50,8 @@ Python also has a similar one that will be presented in different versions below
 
 df.head()</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p1.png" /></p>
-</div>
-<div id="filter-and-select" class="section level1">
-<h1>2.1 Filter and select</h1>
+<div id="filter-and-select" class="section level2">
+<h2>2.1 Filter and select</h2>
 <pre class="r"><code>df = (
     flight
     [flight.DayOfWeek &gt; 3]
@@ -60,8 +61,8 @@ df.head()</code></pre>
 df.head()</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p2.png" /></p>
 </div>
-<div id="multiple-filter-and-select" class="section level1">
-<h1>2.2 Multiple filter and select</h1>
+<div id="multiple-filter-and-select" class="section level2">
+<h2>2.2 Multiple filter and select</h2>
 <pre class="r"><code>df = (
     flight
     [(flight.DayOfWeek &gt; 3) &amp; (flight.Origin_Airport == &#39;JFK&#39;)]
@@ -71,8 +72,8 @@ df.head()</code></pre>
 df.head()</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p3.png" /></p>
 </div>
-<div id="sample-and-sort" class="section level1">
-<h1>2.3 Sample and sort</h1>
+<div id="sample-and-sort" class="section level2">
+<h2>2.3 Sample and sort</h2>
 <pre class="r"><code>(
     flight
     .sample(n=3)
@@ -81,8 +82,8 @@ df.head()</code></pre>
 )</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p4.png" /></p>
 </div>
-<div id="multiple-group-by-and-summarize" class="section level1">
-<h1>2.4 Multiple group by and summarize</h1>
+<div id="multiple-group-by-and-summarize" class="section level2">
+<h2>2.4 Multiple group by and summarize</h2>
 <pre class="r"><code>df = (               
     flight
     .groupby([&#39;Origin_Airport&#39;, &#39;DayOfWeek&#39;])
@@ -98,8 +99,8 @@ df.head()</code></pre>
 df.head(12)</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p5.png" /></p>
 </div>
-<div id="group-by-and-multiple-summarize" class="section level1">
-<h1>2.5 Group by and multiple summarize</h1>
+<div id="group-by-and-multiple-summarize" class="section level2">
+<h2>2.5 Group by and multiple summarize</h2>
 <pre class="r"><code>df = (               
     flight
     .groupby([&#39;Origin_Airport&#39;])
@@ -120,6 +121,7 @@ df.head(12)</code></pre>
 
 df.head(12)</code></pre>
 <p><img src="/post/2019-04-04-python-s-pipe-operator_files/p6p6.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>3 Conclusion</h1>

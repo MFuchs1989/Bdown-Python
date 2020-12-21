@@ -78,7 +78,7 @@ result.loc['Frame3']
 
 # 3 Merge two dataframes
 
-# 3.1 Merge with inner join
+## 3.1 Merge with inner join
 
 
 DayOfWeek 6 included in both
@@ -90,7 +90,7 @@ pd.merge(a, c, on='DayOfWeek', how='inner')
 
 
 
-# 3.2 Merge with outer join
+## 3.2 Merge with outer join
 
 What are the differences between the two data frames regarding DayOfWeek?
 ```{r, eval=F, echo=T}
@@ -100,7 +100,7 @@ pd.merge(a, c, on='DayOfWeek', how='outer')
 ![](/post/2019-04-16-data-management_files/p7p6.png)
 
 
-# 3.3 Merge with concat
+## 3.3 Merge with concat
 
 You can also easily merge two data sets with the concat method, provided they have the same column length.
 
@@ -132,7 +132,7 @@ df_final
 
 # 4 Merge multiple data frames
 
-# 4.1 Preparation
+## 4.1 Preparation
 
 ```{r, eval=F, echo=T}
 a  =(               
@@ -198,7 +198,7 @@ d.head()
 
 
 
-# 4.2 Merge up to 3 data frames
+## 4.2 Merge up to 3 data frames
 
 ```{r, eval=F, echo=T}
 multiple_merge = pd.merge(pd.merge(a,b,on='Origin_Airport'),c,on='Origin_Airport')
@@ -209,7 +209,7 @@ multiple_merge.head()
 
 
 
-# 4.3 Merge more than 3 data frames
+## 4.3 Merge more than 3 data frames
 
 
 ```{r, eval=F, echo=T}

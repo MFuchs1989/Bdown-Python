@@ -20,12 +20,16 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#separate">2 Separate</a></li>
+<li><a href="#separate">2 Separate</a>
+<ul>
 <li><a href="#via-map---function">2.1 via map - function</a></li>
 <li><a href="#via-string-function">2.2 via string function</a></li>
-<li><a href="#unite">3 Unite</a></li>
+</ul></li>
+<li><a href="#unite">3 Unite</a>
+<ul>
 <li><a href="#two-columns">3.1 two columns</a></li>
 <li><a href="#three-and-more-columns">3.2 three and more columns</a></li>
+</ul></li>
 <li><a href="#add_prefix">4 add_prefix</a></li>
 <li><a href="#add_suffix">5 add_suffix</a></li>
 <li><a href="#conclusion">6 Conclusion</a></li>
@@ -41,9 +45,8 @@ Here are some useful build in methods for <em>string manipulation</em> from Pyth
 </div>
 <div id="separate" class="section level1">
 <h1>2 Separate</h1>
-</div>
-<div id="via-map---function" class="section level1">
-<h1>2.1 via map - function</h1>
+<div id="via-map---function" class="section level2">
+<h2>2.1 via map - function</h2>
 <p>Map property applies changes to every element of a column</p>
 <pre class="r"><code>string_manipulation = pd.DataFrame({&#39;Name&#39;: [&#39;1.Anton&#39;, &#39;2.Susi&#39;, &#39;3.Moni&#39;, &#39;4.Renate&#39;],
                      &#39;Alter&#39;: [32,22,62,44],
@@ -66,8 +69,8 @@ print (y)</code></pre>
 print (z)</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p5.png" /></p>
 </div>
-<div id="via-string-function" class="section level1">
-<h1>2.2 via string function</h1>
+<div id="via-string-function" class="section level2">
+<h2>2.2 via string function</h2>
 <pre class="r"><code>show_str_split = string_manipulation.copy()
 show_str_split</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p6.png" /></p>
@@ -89,11 +92,11 @@ small_show_str_split = small_show_str_split[clist_new]
 small_show_str_split</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p10.png" /></p>
 </div>
+</div>
 <div id="unite" class="section level1">
 <h1>3 Unite</h1>
-</div>
-<div id="two-columns" class="section level1">
-<h1>3.1 two columns</h1>
+<div id="two-columns" class="section level2">
+<h2>3.1 two columns</h2>
 <pre class="r"><code>df = pd.DataFrame({&#39;Year&#39;: [&#39;2014&#39;, &#39;2015&#39;], &#39;quarter&#39;: [&#39;q1&#39;, &#39;q2&#39;]})
 df</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p11.png" /></p>
@@ -101,8 +104,8 @@ df</code></pre>
 df</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p12.png" /></p>
 </div>
-<div id="three-and-more-columns" class="section level1">
-<h1>3.2 three and more columns</h1>
+<div id="three-and-more-columns" class="section level2">
+<h2>3.2 three and more columns</h2>
 <pre class="r"><code>df = pd.DataFrame([[&#39;USA&#39;, &#39;Nevada&#39;, &#39;Las Vegas&#39;], [&#39;Brazil&#39;, &#39;Pernambuco&#39;, &#39;Recife&#39;]], columns=[&#39;Country&#39;, &#39;State&#39;, &#39;City&#39;],)
 df</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p13.png" /></p>
@@ -110,6 +113,7 @@ df</code></pre>
                     {} &amp; {}&#39;.format(x[0],x[1],x[2]), axis=1)
 df</code></pre>
 <p><img src="/post/2019-03-27-string-manipulation-an-intuition_files/p5p14.png" /></p>
+</div>
 </div>
 <div id="add_prefix" class="section level1">
 <h1>4 add_prefix</h1>

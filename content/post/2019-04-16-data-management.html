@@ -21,14 +21,18 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#join-the-two-dataframes-along-rows">2 Join the two dataframes along rows</a></li>
-<li><a href="#merge-two-dataframes">3 Merge two dataframes</a></li>
+<li><a href="#merge-two-dataframes">3 Merge two dataframes</a>
+<ul>
 <li><a href="#merge-with-inner-join">3.1 Merge with inner join</a></li>
 <li><a href="#merge-with-outer-join">3.2 Merge with outer join</a></li>
 <li><a href="#merge-with-concat">3.3 Merge with concat</a></li>
-<li><a href="#merge-multiple-data-frames">4 Merge multiple data frames</a></li>
+</ul></li>
+<li><a href="#merge-multiple-data-frames">4 Merge multiple data frames</a>
+<ul>
 <li><a href="#preparation">4.1 Preparation</a></li>
 <li><a href="#merge-up-to-3-data-frames">4.2 Merge up to 3 data frames</a></li>
 <li><a href="#merge-more-than-3-data-frames">4.3 Merge more than 3 data frames</a></li>
+</ul></li>
 <li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
@@ -66,21 +70,20 @@ result</code></pre>
 </div>
 <div id="merge-two-dataframes" class="section level1">
 <h1>3 Merge two dataframes</h1>
-</div>
-<div id="merge-with-inner-join" class="section level1">
-<h1>3.1 Merge with inner join</h1>
+<div id="merge-with-inner-join" class="section level2">
+<h2>3.1 Merge with inner join</h2>
 <p>DayOfWeek 6 included in both</p>
 <pre class="r"><code>pd.merge(a, c, on=&#39;DayOfWeek&#39;, how=&#39;inner&#39;)</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p5.png" /></p>
 </div>
-<div id="merge-with-outer-join" class="section level1">
-<h1>3.2 Merge with outer join</h1>
+<div id="merge-with-outer-join" class="section level2">
+<h2>3.2 Merge with outer join</h2>
 <p>What are the differences between the two data frames regarding DayOfWeek?</p>
 <pre class="r"><code>pd.merge(a, c, on=&#39;DayOfWeek&#39;, how=&#39;outer&#39;)</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p6.png" /></p>
 </div>
-<div id="merge-with-concat" class="section level1">
-<h1>3.3 Merge with concat</h1>
+<div id="merge-with-concat" class="section level2">
+<h2>3.3 Merge with concat</h2>
 <p>You can also easily merge two data sets with the concat method, provided they have the same column length.</p>
 <pre class="r"><code>df_Salary = pd.DataFrame({&#39;Transaction&#39;: [&#39;Tim&#39;, &#39;Mike&#39;, &#39;Elli&#39;],
                    &#39;Salary&#39;: [4000,5000,3000]})
@@ -93,11 +96,11 @@ df_Job</code></pre>
 df_final</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p15.png" /></p>
 </div>
+</div>
 <div id="merge-multiple-data-frames" class="section level1">
 <h1>4 Merge multiple data frames</h1>
-</div>
-<div id="preparation" class="section level1">
-<h1>4.1 Preparation</h1>
+<div id="preparation" class="section level2">
+<h2>4.1 Preparation</h2>
 <pre class="r"><code>a  =(               
     flight
     .groupby([&#39;Origin_Airport&#39;])
@@ -138,17 +141,18 @@ d  =(
 <pre class="r"><code>d.head()</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p10.png" /></p>
 </div>
-<div id="merge-up-to-3-data-frames" class="section level1">
-<h1>4.2 Merge up to 3 data frames</h1>
+<div id="merge-up-to-3-data-frames" class="section level2">
+<h2>4.2 Merge up to 3 data frames</h2>
 <pre class="r"><code>multiple_merge = pd.merge(pd.merge(a,b,on=&#39;Origin_Airport&#39;),c,on=&#39;Origin_Airport&#39;)
 multiple_merge.head()</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p11.png" /></p>
 </div>
-<div id="merge-more-than-3-data-frames" class="section level1">
-<h1>4.3 Merge more than 3 data frames</h1>
+<div id="merge-more-than-3-data-frames" class="section level2">
+<h2>4.3 Merge more than 3 data frames</h2>
 <pre class="r"><code>multiple_merge2 = pd.merge(multiple_merge, d, on=&#39;Origin_Airport&#39;, how=&#39;left&#39;)
 multiple_merge2.head()</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p12.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>

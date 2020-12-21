@@ -40,7 +40,7 @@ df
 ![](/post/2019-05-02-how-to-use-pandas-set-option_files/p67p1.png)
 
 
-# 2.1 to determine max_rows
+## 2.1 to determine max_rows
 
 ```{r, eval=F, echo=T}
 pd.set_option('display.max_rows', 2)
@@ -72,7 +72,7 @@ pd.reset_option('display.max_rows')
 ```
 
 
-# 2.2 to determine max_columns
+## 2.2 to determine max_columns
 
 Like the display of the rows, you can also schedule the output columns. 
 
@@ -107,7 +107,7 @@ pd.reset_option('display.max_columns')
 
 
 
-# 2.3 to determine text length
+## 2.3 to determine text length
 
 
 To show this I'll create a further dataframe:
@@ -161,7 +161,7 @@ pd.reset_option('display.max_colwidth')
 
 
 
-# 2.4 to determine float_format
+## 2.4 to determine float_format
 
 I have already introduced this part in my Post ["How to suppress scientific notation in Pandas"](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/). If you want to learn more about this function of set_option please see chapter 5.3.
 

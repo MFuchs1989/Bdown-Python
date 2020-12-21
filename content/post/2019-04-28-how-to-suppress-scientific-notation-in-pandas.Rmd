@@ -131,7 +131,7 @@ df_multiple
 
 
 
-# 5.1 Use round()
+## 5.1 Use round()
 
 We simply can use the round-function:
 
@@ -149,7 +149,7 @@ df_multiple.round(5)
 ![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p11.png)
 
 
-# 5.2 Use apply()
+## 5.2 Use apply()
 
 Also we can apply a lambda function:
 
@@ -170,7 +170,7 @@ df_multiple_apply
 ![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p13.png)
 
 
-# 5.3 Use set_option()
+## 5.3 Use set_option()
 
 Finally, I would like to introduce the set_option function.
 Note that set_option() **changes behavior globaly** in Jupyter Notebooks, so it is not a temporary fix.

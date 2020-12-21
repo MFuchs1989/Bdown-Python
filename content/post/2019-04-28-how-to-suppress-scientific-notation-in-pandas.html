@@ -23,10 +23,12 @@ output:
 <li><a href="#scientific-notations">2 Scientific notations</a></li>
 <li><a href="#import-the-libraries">3 Import the libraries</a></li>
 <li><a href="#display-values-as-strings">4 Display Values as Strings</a></li>
-<li><a href="#functions">5 Functions</a></li>
+<li><a href="#functions">5 Functions</a>
+<ul>
 <li><a href="#use-round">5.1 Use round()</a></li>
 <li><a href="#use-apply">5.2 Use apply()</a></li>
 <li><a href="#use-set_option">5.3 Use set_option()</a></li>
+</ul></li>
 <li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
@@ -84,17 +86,16 @@ df2 = pd.DataFrame(np.random.random(5)**10, columns=[&#39;random_numbers2&#39;])
 df_multiple = pd.concat([df1, df2], axis=1)
 df_multiple</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p9.png" /></p>
-</div>
-<div id="use-round" class="section level1">
-<h1>5.1 Use round()</h1>
+<div id="use-round" class="section level2">
+<h2>5.1 Use round()</h2>
 <p>We simply can use the round-function:</p>
 <pre class="r"><code>df.round(5)</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p10.png" /></p>
 <pre class="r"><code>df_multiple.round(5)</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p11.png" /></p>
 </div>
-<div id="use-apply" class="section level1">
-<h1>5.2 Use apply()</h1>
+<div id="use-apply" class="section level2">
+<h2>5.2 Use apply()</h2>
 <p>Also we can apply a lambda function:</p>
 <pre class="r"><code>df.apply(lambda x: &#39;%.5f&#39; % x, axis=1)</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p12.png" /></p>
@@ -104,8 +105,8 @@ df_multiple_apply = pd.concat([df_apply1, df_apply2], axis=1)
 df_multiple_apply</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p13.png" /></p>
 </div>
-<div id="use-set_option" class="section level1">
-<h1>5.3 Use set_option()</h1>
+<div id="use-set_option" class="section level2">
+<h2>5.3 Use set_option()</h2>
 <p>Finally, I would like to introduce the set_option function.
 Note that set_option() <strong>changes behavior globaly</strong> in Jupyter Notebooks, so it is not a temporary fix.</p>
 <pre class="r"><code>pd.set_option(&#39;display.float_format&#39;, lambda x: &#39;%.5f&#39; % x)</code></pre>
@@ -117,6 +118,7 @@ Note that set_option() <strong>changes behavior globaly</strong> in Jupyter Note
 <pre class="r"><code>pd.reset_option(&#39;display.float_format&#39;)</code></pre>
 <pre class="r"><code>df</code></pre>
 <p><img src="/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p16.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

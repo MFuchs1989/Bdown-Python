@@ -7,23 +7,32 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Implementing linear regression with the statsmodel library</li>
-<li>3.1 Simple linear Regression</li>
-<li>3.2 Multiple Regression</li>
-<li>3.3 Model validation</li>
-<li>4 Linear Regression with scikit-learn</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#implementing-linear-regression-with-the-statsmodel-library">3 Implementing linear regression with the statsmodel library</a>
+<ul>
+<li><a href="#simple-linear-regression">3.1 Simple linear Regression</a></li>
+<li><a href="#multiple-regression">3.2 Multiple Regression</a></li>
+<li><a href="#model-validation">3.3 Model validation</a></li>
+</ul></li>
+<li><a href="#linear-regression-with-scikit-learn">4 Linear Regression with scikit-learn</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
+<li><a href="#source">Source</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Regression analyzes are very common and should therefore be mastered by every data scientist.</p>
@@ -42,9 +51,8 @@ from sklearn import metrics</code></pre>
 </div>
 <div id="implementing-linear-regression-with-the-statsmodel-library" class="section level1">
 <h1>3 Implementing linear regression with the statsmodel library</h1>
-</div>
-<div id="simple-linear-regression" class="section level1">
-<h1>3.1 Simple linear Regression</h1>
+<div id="simple-linear-regression" class="section level2">
+<h2>3.1 Simple linear Regression</h2>
 <p>Following, a simple linear regression with the variables ‘price’ and ‘sqft_living’ is to be performed.</p>
 <pre class="r"><code>HousePrices_SimplReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
 HousePrices_SimplReg.head()</code></pre>
@@ -89,8 +97,8 @@ RSE, criteria_mean, error</code></pre>
 <pre class="r"><code>HousePrices_SimplReg.head()</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p7.png" /></p>
 </div>
-<div id="multiple-regression" class="section level1">
-<h1>3.2 Multiple Regression</h1>
+<div id="multiple-regression" class="section level2">
+<h2>3.2 Multiple Regression</h2>
 <p>Now we try to improve the predictive power of the model by adding more predictors.
 Therefore we’ll have a look at the R-squared, the F-statistic and the Prob (F-statistic).</p>
 <pre class="r"><code>HousePrices_MultReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
@@ -146,8 +154,8 @@ RSE, criteria_mean, error</code></pre>
 <p>Below is an overview of the major results of the created models:</p>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p16.png" /></p>
 </div>
-<div id="model-validation" class="section level1">
-<h1>3.3 Model validation</h1>
+<div id="model-validation" class="section level2">
+<h2>3.3 Model validation</h2>
 <p>We saw that model 3 delivered the best values. Therefore, our linear model is trained with this. Afterwards the performance will be measured.</p>
 <pre class="r"><code>a = np.random.randn(len(HousePrices_MultReg))
 check = a &lt; 0.8
@@ -184,6 +192,7 @@ RSE, criteria_mean, error</code></pre>
 </ul>
 <p>Both models are almost identical in comparison. However, the F-values are worse for the split model.
 This is normal because there was less data available for creating the model.</p>
+</div>
 </div>
 <div id="linear-regression-with-scikit-learn" class="section level1">
 <h1>4 Linear Regression with scikit-learn</h1>

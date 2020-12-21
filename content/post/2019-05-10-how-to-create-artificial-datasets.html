@@ -20,10 +20,12 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#simulated-data">2 Simulated Data</a></li>
+<li><a href="#simulated-data">2 Simulated Data</a>
+<ul>
 <li><a href="#make-simulated-data-for-regression">2.1 Make Simulated Data For Regression</a></li>
 <li><a href="#make-simulated-data-for-classification">2.1 Make Simulated Data For Classification</a></li>
 <li><a href="#make-simulated-data-for-clustering">2.1 Make Simulated Data For Clustering</a></li>
+</ul></li>
 <li><a href="#conclusion">3 Conclusion</a></li>
 </ul>
 </div>
@@ -45,9 +47,8 @@ from sklearn.datasets import make_blobs
 from matplotlib import pyplot as plt
 
 import pandas as pd</code></pre>
-</div>
-<div id="make-simulated-data-for-regression" class="section level1">
-<h1>2.1 Make Simulated Data For Regression</h1>
+<div id="make-simulated-data-for-regression" class="section level2">
+<h2>2.1 Make Simulated Data For Regression</h2>
 <pre class="r"><code>features, output = make_regression(n_samples=100, n_features=1)</code></pre>
 <pre class="r"><code># plot regression dataset
 plt.scatter(features,output)
@@ -74,8 +75,8 @@ SM_model = sm.OLS(output, features).fit()
 print(SM_model.summary())</code></pre>
 <p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p5.png" /></p>
 </div>
-<div id="make-simulated-data-for-classification" class="section level1">
-<h1>2.1 Make Simulated Data For Classification</h1>
+<div id="make-simulated-data-for-classification" class="section level2">
+<h2>2.1 Make Simulated Data For Classification</h2>
 <p>With almost the same procedure we can also create data for classification tasks.</p>
 <pre class="r"><code>features, output = make_classification(n_samples=100, n_features=25)</code></pre>
 <pre class="r"><code>pd.DataFrame(features).head() </code></pre>
@@ -103,8 +104,8 @@ Of course, we can also create data sets for <strong>multi-classification tasks</
 <pre class="r"><code>pd.DataFrame(output, columns=[&#39;Target&#39;]).value_counts()</code></pre>
 <p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p8.png" /></p>
 </div>
-<div id="make-simulated-data-for-clustering" class="section level1">
-<h1>2.1 Make Simulated Data For Clustering</h1>
+<div id="make-simulated-data-for-clustering" class="section level2">
+<h2>2.1 Make Simulated Data For Clustering</h2>
 <p>Last but not least we’ll generate some data for cluster-problems.</p>
 <pre class="r"><code>X, y = make_blobs(n_samples=1000, n_features = 2, centers = 3, cluster_std = 0.7)
 
@@ -115,6 +116,7 @@ plt.show()</code></pre>
 <p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p9.png" /></p>
 <pre class="r"><code>pd.DataFrame(X).head()</code></pre>
 <p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p10.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>3 Conclusion</h1>

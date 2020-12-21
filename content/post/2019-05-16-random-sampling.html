@@ -21,9 +21,11 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#preparation">2 Preparation</a></li>
-<li><a href="#split-methods">3 Split-Methods</a></li>
+<li><a href="#split-methods">3 Split-Methods</a>
+<ul>
 <li><a href="#customer-churn-model">3.1 Customer Churn Model</a></li>
 <li><a href="#train-test-split-via-scikit-learn">3.2 Train-Test Split via scikit-learn</a></li>
+</ul></li>
 <li><a href="#train-test-validation-split">4 Train-Test-Validation Split</a></li>
 <li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
@@ -47,9 +49,8 @@ sampling.shape</code></pre>
 </div>
 <div id="split-methods" class="section level1">
 <h1>3 Split-Methods</h1>
-</div>
-<div id="customer-churn-model" class="section level1">
-<h1>3.1 Customer Churn Model</h1>
+<div id="customer-churn-model" class="section level2">
+<h2>3.1 Customer Churn Model</h2>
 <p>The division took place here in a ratio of 80:20.</p>
 <pre class="r"><code>a=np.random.randn(len(sampling))
 check=a&lt;0.8
@@ -60,14 +61,15 @@ testing=sampling[~check]</code></pre>
 <pre class="r"><code>len(testing)</code></pre>
 <p><img src="/post/2019-05-16-random-sampling_files/p10p3.png" /></p>
 </div>
-<div id="train-test-split-via-scikit-learn" class="section level1">
-<h1>3.2 Train-Test Split via scikit-learn</h1>
+<div id="train-test-split-via-scikit-learn" class="section level2">
+<h2>3.2 Train-Test Split via scikit-learn</h2>
 <pre class="r"><code>from sklearn.model_selection import train_test_split
 train, test = train_test_split(sampling, test_size = 0.2)</code></pre>
 <pre class="r"><code>len(train)</code></pre>
 <p><img src="/post/2019-05-16-random-sampling_files/p10p4.png" /></p>
 <pre class="r"><code>len(test)</code></pre>
 <p><img src="/post/2019-05-16-random-sampling_files/p10p5.png" /></p>
+</div>
 </div>
 <div id="train-test-validation-split" class="section level1">
 <h1>4 Train-Test-Validation Split</h1>

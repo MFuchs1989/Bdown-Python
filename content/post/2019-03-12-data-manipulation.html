@@ -20,25 +20,35 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#index">2 Index</a></li>
+<li><a href="#index">2 Index</a>
+<ul>
 <li><a href="#resetting-index">2.1 Resetting index</a></li>
 <li><a href="#resetting-multiindex">2.2 Resetting multiindex</a></li>
 <li><a href="#setting-index">2.3 Setting index</a></li>
-<li><a href="#modifying-columns">3 Modifying Columns</a></li>
-<li><a href="#rename-columns">3.1 Rename Columns</a></li>
+</ul></li>
+<li><a href="#modifying-columns">3 Modifying Columns</a>
+<ul>
+<li><a href="#rename-columns">3.1 Rename Columns</a>
+<ul>
 <li><a href="#add_prefix">3.1.1 add_prefix</a></li>
+</ul></li>
 <li><a href="#add-columns">3.3 Add columns</a></li>
 <li><a href="#drop-and-delete-columns">3.4 Drop and Delete Columns</a></li>
 <li><a href="#insert-columns">3.5 Insert Columns</a></li>
 <li><a href="#rearrange-columns">3.6 Rearrange Columns</a></li>
-<li><a href="#modifying-rows">4 Modifying Rows</a></li>
+</ul></li>
+<li><a href="#modifying-rows">4 Modifying Rows</a>
+<ul>
 <li><a href="#round-each-column">4.1 Round each column</a></li>
 <li><a href="#round-columns-differently-within-a-df">4.2 Round columns differently within a df</a></li>
 <li><a href="#add-rows-with-the-stack-function">4.3 Add rows with the stack() function</a></li>
-<li><a href="#replacing-values">5 Replacing Values</a></li>
+</ul></li>
+<li><a href="#replacing-values">5 Replacing Values</a>
+<ul>
 <li><a href="#one-by-one">5.1 One by One</a></li>
 <li><a href="#collective-replacement">5.2 Collective replacement</a></li>
 <li><a href="#conditional-replacement">5.3 Conditional replacement</a></li>
+</ul></li>
 <li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
@@ -54,9 +64,8 @@ import numpy as np</code></pre>
 <div id="index" class="section level1">
 <h1>2 Index</h1>
 <p>If you’ve worked with R before, you may not be used to working with an index. This is common in Python.</p>
-</div>
-<div id="resetting-index" class="section level1">
-<h1>2.1 Resetting index</h1>
+<div id="resetting-index" class="section level2">
+<h2>2.1 Resetting index</h2>
 <pre class="r"><code>df = pd.DataFrame({&#39;A&#39;: [1, 2, 3], &#39;B&#39;: [4, 5, 6]}, index=[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;])
 df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p1.png" /></p>
@@ -71,8 +80,8 @@ df</code></pre>
 <pre class="r"><code>df[&#39;A&#39;].tolist()</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p5.png" /></p>
 </div>
-<div id="resetting-multiindex" class="section level1">
-<h1>2.2 Resetting multiindex</h1>
+<div id="resetting-multiindex" class="section level2">
+<h2>2.2 Resetting multiindex</h2>
 <pre class="r"><code># Create a multiindex 
 
 
@@ -95,8 +104,8 @@ health_data = health_data.reset_index()
 health_data</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p7.png" /></p>
 </div>
-<div id="setting-index" class="section level1">
-<h1>2.3 Setting index</h1>
+<div id="setting-index" class="section level2">
+<h2>2.3 Setting index</h2>
 <p>Here we have the previously created data frame.</p>
 <pre class="r"><code>df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p8.png" /></p>
@@ -108,11 +117,11 @@ health_data</code></pre>
 <pre class="r"><code>df.set_index([&#39;A&#39;, &#39;B&#39;])</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p11.png" /></p>
 </div>
+</div>
 <div id="modifying-columns" class="section level1">
 <h1>3 Modifying Columns</h1>
-</div>
-<div id="rename-columns" class="section level1">
-<h1>3.1 Rename Columns</h1>
+<div id="rename-columns" class="section level2">
+<h2>3.1 Rename Columns</h2>
 <pre class="r"><code>show_rename = pd.DataFrame({&#39;Name&#39;: [&#39;1.Anton&#39;, &#39;2.Susi&#39;, &#39;3.Moni&#39;, &#39;4.Renate&#39;],
                    &#39;Alter&#39;: [32,22,62,44],
                    &#39;Gehalt&#39;: [4700, 2400,4500,2500]})
@@ -127,17 +136,17 @@ show_rename</code></pre>
 <pre class="r"><code>show_rename.columns = [&#39;MA&#39;, &#39;Bzghk.&#39;, &#39;MGe.&#39;]
 show_rename</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p15.png" /></p>
-</div>
-<div id="add_prefix" class="section level1">
-<h1>3.1.1 add_prefix</h1>
+<div id="add_prefix" class="section level3">
+<h3>3.1.1 add_prefix</h3>
 <pre class="r"><code>show_prefix = show_rename.copy()
 show_prefix</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p16.png" /></p>
 <pre class="r"><code>show_prefix.add_prefix(&#39;alte_MA_&#39;)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p17.png" /></p>
 </div>
-<div id="add-columns" class="section level1">
-<h1>3.3 Add columns</h1>
+</div>
+<div id="add-columns" class="section level2">
+<h2>3.3 Add columns</h2>
 <pre class="r"><code>data = {&#39;country&#39;: [&#39;Italy&#39;,&#39;Spain&#39;,&#39;Greece&#39;,&#39;France&#39;,&#39;Portugal&#39;],
         &#39;popu&#39;: [61, 46, 11, 65, 10],
         &#39;percent&#39;: [0.83,0.63,0.15,0.88,0.14]}
@@ -162,8 +171,8 @@ df_MC[&#39;Internet domain&#39;] = ser
 df_MC</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p21.png" /></p>
 </div>
-<div id="drop-and-delete-columns" class="section level1">
-<h1>3.4 Drop and Delete Columns</h1>
+<div id="drop-and-delete-columns" class="section level2">
+<h2>3.4 Drop and Delete Columns</h2>
 <p>The drop-function don’t delete columns.</p>
 <pre class="r"><code>df_MC.drop(columns=[&#39;country&#39;, &#39;popu&#39;, &#39;percent&#39;])</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p22.png" /></p>
@@ -178,8 +187,8 @@ df_MC</code></pre>
 df_MC.head(3)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p25.png" /></p>
 </div>
-<div id="insert-columns" class="section level1">
-<h1>3.5 Insert Columns</h1>
+<div id="insert-columns" class="section level2">
+<h2>3.5 Insert Columns</h2>
 <p>Now I want to have my previously deleted column “Internet domain” back at a certain point.</p>
 <pre class="r"><code>ser = pd.Series([&#39;es&#39;,&#39;it&#39;,&#39;fr&#39;,&#39;pt&#39;,&#39;gr&#39;], index = [&#39;ESP&#39;,&#39;ITA&#39;,&#39;FRA&#39;,&#39;PRT&#39;,&#39;GRC&#39;]) 
 #previously created syntax
@@ -187,8 +196,8 @@ df_MC.insert(1,&#39;Internet domains&#39;,ser)
 df_MC</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p26.png" /></p>
 </div>
-<div id="rearrange-columns" class="section level1">
-<h1>3.6 Rearrange Columns</h1>
+<div id="rearrange-columns" class="section level2">
+<h2>3.6 Rearrange Columns</h2>
 <pre class="r"><code>clist = [&#39;capital city&#39;,&#39;Internet domains&#39;,&#39;country&#39;]
 df_MC = df_MC[clist]
 df_MC</code></pre>
@@ -200,6 +209,7 @@ cols = [cols[-1]] + cols[:-1]
 df_MC = df_MC[cols]
 df_MC</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z6.png" /></p>
+</div>
 </div>
 <div id="modifying-rows" class="section level1">
 <h1>4 Modifying Rows</h1>
@@ -221,14 +231,13 @@ df =(
 
 df.head(5)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p28.png" /></p>
-</div>
-<div id="round-each-column" class="section level1">
-<h1>4.1 Round each column</h1>
+<div id="round-each-column" class="section level2">
+<h2>4.1 Round each column</h2>
 <pre class="r"><code>df.round(2).head(2)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p29.png" /></p>
 </div>
-<div id="round-columns-differently-within-a-df" class="section level1">
-<h1>4.2 Round columns differently within a df</h1>
+<div id="round-columns-differently-within-a-df" class="section level2">
+<h2>4.2 Round columns differently within a df</h2>
 <pre class="r"><code>df.round({&#39;avg_Scheduled_Departure&#39;: 1, 
           &#39;avg_Dep_Delay&#39;: 2,
          &#39;avg_Scheduled_Arrival&#39;:3,
@@ -238,8 +247,8 @@ df.head(5)</code></pre>
 df.round(decimals).head(2)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p31.png" /></p>
 </div>
-<div id="add-rows-with-the-stack-function" class="section level1">
-<h1>4.3 Add rows with the stack() function</h1>
+<div id="add-rows-with-the-stack-function" class="section level2">
+<h2>4.3 Add rows with the stack() function</h2>
 <p>For some analysis methods it is necessary to have the values per line in one column available separately.
 Have a look at this dataframe:</p>
 <pre class="r"><code>df = pd.DataFrame({&#39;title&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;],
@@ -273,11 +282,11 @@ final</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z5.png" /></p>
 <p>Here we go !</p>
 </div>
+</div>
 <div id="replacing-values" class="section level1">
 <h1>5 Replacing Values</h1>
-</div>
-<div id="one-by-one" class="section level1">
-<h1>5.1 One by One</h1>
+<div id="one-by-one" class="section level2">
+<h2>5.1 One by One</h2>
 <pre class="r"><code>df = flight[[&#39;DayOfWeek&#39;]] 
 df = df.replace(5, &#39;Friday&#39;)
 df = df.replace(6, &#39;Saturday&#39;)
@@ -285,8 +294,8 @@ df = df.replace(6, &#39;Saturday&#39;)
 df.head(5)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p32.png" /></p>
 </div>
-<div id="collective-replacement" class="section level1">
-<h1>5.2 Collective replacement</h1>
+<div id="collective-replacement" class="section level2">
+<h2>5.2 Collective replacement</h2>
 <pre class="r"><code>df = flight[[&#39;DayOfWeek&#39;]]
 vals_to_replace = {1:&#39;Monday&#39;, 2:&#39;Tuesday&#39;, 3:&#39;Wednesday&#39;, 4:&#39;Thursday&#39;, 5:&#39;Friday&#39;, 6:&#39;Saturday&#39;, 7:&#39;Sunday&#39;}
 
@@ -294,8 +303,8 @@ df[&#39;DayOfWeek&#39;] = df[&#39;DayOfWeek&#39;].map(vals_to_replace)
 df.head()</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p33.png" /></p>
 </div>
-<div id="conditional-replacement" class="section level1">
-<h1>5.3 Conditional replacement</h1>
+<div id="conditional-replacement" class="section level2">
+<h2>5.3 Conditional replacement</h2>
 <p>For an example of conditional replacement have a look at this dataframe:</p>
 <pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Anton&#39;, &#39;Anton&#39;, &#39;Moni&#39;, &#39;Moni&#39;, &#39;Justus&#39;],
                    &#39;Alter&#39;: [32,22,np.NaN,62,18],
@@ -319,6 +328,7 @@ df</code></pre>
 <pre class="r"><code>df[&#39;Gehalt&#39;] = np.where((df.Name == &#39;Moni&#39;) &amp; (df.Alter &gt; 50), 4000, df.Gehalt)
 df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p38.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

@@ -24,14 +24,18 @@ output:
 <li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
 <li><a href="#overview-of-the-data">3 Overview of the data</a></li>
 <li><a href="#get-some-statistics">4 Get some statistics</a></li>
-<li><a href="#select-data">5 Select data</a></li>
+<li><a href="#select-data">5 Select data</a>
+<ul>
 <li><a href="#easy-selection">5.1 Easy selection</a></li>
 <li><a href="#conditional-selection">5.2 Conditional selection</a></li>
 <li><a href="#set-option">5.3 Set option</a></li>
-<li><a href="#filter">6 Filter</a></li>
+</ul></li>
+<li><a href="#filter">6 Filter</a>
+<ul>
 <li><a href="#normal-filter">6.1 Normal filter</a></li>
 <li><a href="#filter-with-a-defined-list">6.2 Filter with a defined list</a></li>
 <li><a href="#exclude-some-columns-with-a-defined-list">6.3 Exclude some columns with a defined list</a></li>
+</ul></li>
 <li><a href="#pandas-query">7 Panda’s query</a></li>
 <li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
@@ -80,9 +84,8 @@ flight.Origin_Airport.unique()</code></pre>
 </div>
 <div id="select-data" class="section level1">
 <h1>5 Select data</h1>
-</div>
-<div id="easy-selection" class="section level1">
-<h1>5.1 Easy selection</h1>
+<div id="easy-selection" class="section level2">
+<h2>5.1 Easy selection</h2>
 <pre class="r"><code>flight[[&#39;Year&#39;]].head()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p10.png" /></p>
 <pre class="r"><code>flight[[&#39;Year&#39;, &#39;WeatherDelay&#39;]].head()</code></pre>
@@ -96,8 +99,8 @@ flight.Origin_Airport.unique()</code></pre>
 <pre class="r"><code>flight.iloc[1:4,[1,3,5]]</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p15.png" /></p>
 </div>
-<div id="conditional-selection" class="section level1">
-<h1>5.2 Conditional selection</h1>
+<div id="conditional-selection" class="section level2">
+<h2>5.2 Conditional selection</h2>
 <p>Var.1 (here I see how many cases are affected)</p>
 <pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000)].shape[0]        </code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p16.png" /></p>
@@ -120,8 +123,8 @@ filter_list = [&#39;ATL&#39;, &#39;BOS&#39;, &#39;JFK&#39;]
 flight[flight.Origin_Airport.isin(filter_list)][&#39;Origin_Airport&#39;].value_counts()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p21.png" /></p>
 </div>
-<div id="set-option" class="section level1">
-<h1>5.3 Set option</h1>
+<div id="set-option" class="section level2">
+<h2>5.3 Set option</h2>
 <p>With the set option function one can determine, how many lines and columns should be issued.</p>
 <pre class="r"><code>flight.head()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p22.png" /></p>
@@ -130,17 +133,17 @@ pd.set_option(&#39;display.max_columns&#39;, 2)
 flight.head(200)</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p23.png" /></p>
 </div>
+</div>
 <div id="filter" class="section level1">
 <h1>6 Filter</h1>
-</div>
-<div id="normal-filter" class="section level1">
-<h1>6.1 Normal filter</h1>
+<div id="normal-filter" class="section level2">
+<h2>6.1 Normal filter</h2>
 <p>Select columns containing ‘Delay’</p>
 <pre class="r"><code>flight.filter(like=&#39;Delay&#39;, axis=1).head()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p23z.png" /></p>
 </div>
-<div id="filter-with-a-defined-list" class="section level1">
-<h1>6.2 Filter with a defined list</h1>
+<div id="filter-with-a-defined-list" class="section level2">
+<h2>6.2 Filter with a defined list</h2>
 <p>Here we creat a list (top 4 airports with max. delay)</p>
 <pre class="r"><code>df = (                              
     flight
@@ -170,8 +173,8 @@ df = df.reset_index()
 df</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
 </div>
-<div id="exclude-some-columns-with-a-defined-list" class="section level1">
-<h1>6.3 Exclude some columns with a defined list</h1>
+<div id="exclude-some-columns-with-a-defined-list" class="section level2">
+<h2>6.3 Exclude some columns with a defined list</h2>
 <pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
 df.head()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" /></p>
@@ -180,6 +183,7 @@ df.head()</code></pre>
 reduced_df = df.drop(col_to_exclude, axis=1)
 reduced_df.head()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" /></p>
+</div>
 </div>
 <div id="pandas-query" class="section level1">
 <h1>7 Panda’s query</h1>

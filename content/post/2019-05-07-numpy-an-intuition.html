@@ -21,20 +21,26 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#attributes-of-numpy-arrays">2 Attributes of NumPy Arrays</a></li>
-<li><a href="#indexing-of-arrays">3 Indexing of Arrays</a></li>
+<li><a href="#indexing-of-arrays">3 Indexing of Arrays</a>
+<ul>
 <li><a href="#access-to-individual-elements">3.1 Access to individual elements</a></li>
 <li><a href="#via-slicing">3.2 via Slicing</a></li>
 <li><a href="#multidimensional-subsets-of-an-array">3.3 Multidimensional subsets of an Array</a></li>
+</ul></li>
 <li><a href="#reshape">4 Reshape</a></li>
 <li><a href="#concatenate-arrays">5 Concatenate Arrays</a></li>
 <li><a href="#split-arrays">6 Split Arrays</a></li>
-<li><a href="#ufuncs">7 UFuncs</a></li>
+<li><a href="#ufuncs">7 UFuncs</a>
+<ul>
 <li><a href="#array-arithmetik">7.1 Array-Arithmetik</a></li>
 <li><a href="#exponential-function">7.2 Exponential function</a></li>
 <li><a href="#logarithm">7.3 Logarithm</a></li>
 <li><a href="#comparison-operators">7.4 Comparison operators</a></li>
-<li><a href="#aggregation">8 Aggregation</a></li>
+</ul></li>
+<li><a href="#aggregation">8 Aggregation</a>
+<ul>
 <li><a href="#multi-dimensional-aggregation">8.1 Multi-dimensional aggregation</a></li>
+</ul></li>
 <li><a href="#timing-of-functions">9 Timing of functions</a></li>
 <li><a href="#conclusion">10 Conclusion</a></li>
 </ul>
@@ -63,9 +69,8 @@ print(&quot;x3 size: &quot;, x3.size)</code></pre>
 </div>
 <div id="indexing-of-arrays" class="section level1">
 <h1>3 Indexing of Arrays</h1>
-</div>
-<div id="access-to-individual-elements" class="section level1">
-<h1>3.1 Access to individual elements</h1>
+<div id="access-to-individual-elements" class="section level2">
+<h2>3.1 Access to individual elements</h2>
 <pre class="r"><code>x1</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p2.png" /></p>
 <pre class="r"><code>print(x1[0])
@@ -79,8 +84,8 @@ print(x1[-2])</code></pre>
 <pre class="r"><code>x2[0, 0]</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p6.png" /></p>
 </div>
-<div id="via-slicing" class="section level1">
-<h1>3.2 via Slicing</h1>
+<div id="via-slicing" class="section level2">
+<h2>3.2 via Slicing</h2>
 <pre class="r"><code>x1[:3] #first 3 elements</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p7.png" /></p>
 <pre class="r"><code>x1[3:] #from element 3 onwards</code></pre>
@@ -90,12 +95,13 @@ print(x1[-2])</code></pre>
 <pre class="r"><code>x1[::-1] #all elements in reverse order</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p10.png" /></p>
 </div>
-<div id="multidimensional-subsets-of-an-array" class="section level1">
-<h1>3.3 Multidimensional subsets of an Array</h1>
+<div id="multidimensional-subsets-of-an-array" class="section level2">
+<h2>3.3 Multidimensional subsets of an Array</h2>
 <pre class="r"><code>x2</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p11.png" /></p>
 <pre class="r"><code>x2[:2, :3] #two rows, three columns</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p12.png" /></p>
+</div>
 </div>
 <div id="reshape" class="section level1">
 <h1>4 Reshape</h1>
@@ -126,9 +132,8 @@ print(x1, x2, x3)</code></pre>
 </div>
 <div id="ufuncs" class="section level1">
 <h1>7 UFuncs</h1>
-</div>
-<div id="array-arithmetik" class="section level1">
-<h1>7.1 Array-Arithmetik</h1>
+<div id="array-arithmetik" class="section level2">
+<h2>7.1 Array-Arithmetik</h2>
 <pre class="r"><code>x = np.array([1,2,3])
 
 print(&quot;x - 3 =&quot;, x - 3)
@@ -138,8 +143,8 @@ print(&quot;x / 2 =&quot;, x / 2)
 print(&quot;x ** 2 =&quot;, x ** 2)</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p18.png" /></p>
 </div>
-<div id="exponential-function" class="section level1">
-<h1>7.2 Exponential function</h1>
+<div id="exponential-function" class="section level2">
+<h2>7.2 Exponential function</h2>
 <pre class="r"><code>x = np.array([1,2,3])
 
 print(&quot;e^x =&quot;, np.exp(x))
@@ -147,8 +152,8 @@ print(&quot;2^x =&quot;, np.exp2(x))
 print(&quot;3^x =&quot;, np.power(3, x))</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p19.png" /></p>
 </div>
-<div id="logarithm" class="section level1">
-<h1>7.3 Logarithm</h1>
+<div id="logarithm" class="section level2">
+<h2>7.3 Logarithm</h2>
 <pre class="r"><code>x = np.array([1, 2, 4, 10])
 
 print(&quot;x =&quot;, x)
@@ -157,8 +162,8 @@ print(&quot;log2(x) =&quot;, np.log2(x))
 print(&quot;log10(x) =&quot;, np.log10(x))</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p20.png" /></p>
 </div>
-<div id="comparison-operators" class="section level1">
-<h1>7.4 Comparison operators</h1>
+<div id="comparison-operators" class="section level2">
+<h2>7.4 Comparison operators</h2>
 <pre class="r"><code>x = np.array([1, 2, 3, 4, 5])
 
 x &lt; 3     # less than
@@ -181,6 +186,7 @@ print(&quot;x == 3&quot;, x == 3)</code></pre>
 #are all values less than 10 ? </code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p24.png" /></p>
 </div>
+</div>
 <div id="aggregation" class="section level1">
 <h1>8 Aggregation</h1>
 <pre class="r"><code>MyBigArray = np.random.random(1000000)</code></pre>
@@ -188,9 +194,8 @@ print(&quot;x == 3&quot;, x == 3)</code></pre>
 print(&quot;min =&quot;, np.min(MyBigArray))
 print(&quot;max =&quot;, np.max(MyBigArray))</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p25.png" /></p>
-</div>
-<div id="multi-dimensional-aggregation" class="section level1">
-<h1>8.1 Multi-dimensional aggregation</h1>
+<div id="multi-dimensional-aggregation" class="section level2">
+<h2>8.1 Multi-dimensional aggregation</h2>
 <pre class="r"><code>MultiArray = np.random.random((3, 4))
 print(MultiArray)</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p26.png" /></p>
@@ -203,6 +208,7 @@ print(MultiArray)</code></pre>
 <pre class="r"><code>MultiArray.max(axis=1)          
 #max of a row</code></pre>
 <p><img src="/post/2019-05-07-numpy-an-intuition_files/p9p29.png" /></p>
+</div>
 </div>
 <div id="timing-of-functions" class="section level1">
 <h1>9 Timing of functions</h1>

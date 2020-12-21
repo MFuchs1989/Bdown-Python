@@ -24,10 +24,14 @@ output:
 <li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
 <li><a href="#reading-csv-files">3 Reading csv-files</a></li>
 <li><a href="#reading-json-files">4 Reading json files</a></li>
-<li><a href="#read-text-files">5 Read text files</a></li>
+<li><a href="#read-text-files">5 Read text files</a>
+<ul>
 <li><a href="#with-a-for-loop">5.1 with a for loop</a></li>
-<li><a href="#with-read_csv">5.2 with read_csv</a></li>
+<li><a href="#with-read_csv">5.2 with read_csv</a>
+<ul>
 <li><a href="#convert-epoch-time-to-datetime">5.2.1 Convert epoch time to DateTime</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#write-to-csv">6 Write to csv</a></li>
 <li><a href="#write-to-excel">7 Write to excel</a></li>
 <li><a href="#how-to-read-further-data-types">8 How to read further data types</a></li>
@@ -85,9 +89,8 @@ To illustrate this example, we use a kaggle record of data from twitter.</p>
 <p>From time to time it also happens that files are made available to you as text files as the below picture shows.</p>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23s2.png" /></p>
 <p>Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn’t matter. We can read this file in two ways.</p>
-</div>
-<div id="with-a-for-loop" class="section level1">
-<h1>5.1 with a for loop</h1>
+<div id="with-a-for-loop" class="section level2">
+<h2>5.1 with a for loop</h2>
 <p>Here you have to know which column names are contained in the file.</p>
 <pre class="r"><code>f = open(&quot;some_TEXT_data_as_JSON.json&quot;, &quot;r&quot;)
 firstLine = 1
@@ -108,8 +111,8 @@ df.head()</code></pre>
 <p>This method is a good approach for smaller data sets.
 If the data set is too large, the processing time could increase dramatically.</p>
 </div>
-<div id="with-read_csv" class="section level1">
-<h1>5.2 with read_csv</h1>
+<div id="with-read_csv" class="section level2">
+<h2>5.2 with read_csv</h2>
 <p>Alternatively you can use the read_csv function.
 In this case, you have to note that you still give the other file format (here json).</p>
 <pre class="r"><code>df = pd.read_csv(&#39;some_TEXT_data_as_JSON.json&#39;, sep=&quot;:&quot;, header=None)
@@ -123,9 +126,8 @@ df.figures = df.figures.map(lambda x: x.split(&#39;}&#39;)[0])
 df.head()</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23p3.png" /></p>
 <p>Hereby I used the map function in combination with lambda function to bring the data in the correct shape. How map works and can be used exactly see in this publication <a href="https://michael-fuchs-python.netlify.com/2019/03/27/string-manipulation-an-intuition/">“publication (String Manipulation. An intuition.)”</a> of mine</p>
-</div>
-<div id="convert-epoch-time-to-datetime" class="section level1">
-<h1>5.2.1 Convert epoch time to DateTime</h1>
+<div id="convert-epoch-time-to-datetime" class="section level3">
+<h3>5.2.1 Convert epoch time to DateTime</h3>
 <p>As you may have noticed, the column timestamp_epoch contains an epoch notation, which is not necessarily readable for everyone. Therefore, it is worth to reshape them accordingly.</p>
 <pre class="r"><code>df[&#39;timestamp_epoch2&#39;] = df.timestamp_epoch.astype(float)
 df[&#39;new_timestamp_epoch&#39;] = df.timestamp_epoch2 / 1000
@@ -138,6 +140,8 @@ df.drop([&quot;timestamp_epoch2&quot;, &quot;new_timestamp_epoch&quot;, &quot;ne
 df.head()</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23p4.png" /></p>
 <p>Voilà !</p>
+</div>
+</div>
 </div>
 <div id="write-to-csv" class="section level1">
 <h1>6 Write to csv</h1>

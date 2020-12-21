@@ -110,7 +110,7 @@ From time to time it also happens that files are made available to you as text f
 Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn't matter. We can read this file in two ways.
 
 
-# 5.1 with a for loop
+## 5.1 with a for loop
 
 Here you have to know which column names are contained in the file.
 
@@ -140,7 +140,7 @@ If the data set is too large, the processing time could increase dramatically.
 
 
 
-# 5.2 with read_csv
+## 5.2 with read_csv
 
 Alternatively you can use the read_csv function.
 In this case, you have to note that you still give the other file format (here json).
@@ -165,7 +165,7 @@ Hereby I used the map function in combination with lambda function to bring the 
 
 
 
-# 5.2.1 Convert epoch time to DateTime
+### 5.2.1 Convert epoch time to DateTime
 
 
 As you may have noticed, the column timestamp_epoch contains an epoch notation, which is not necessarily readable for everyone. Therefore, it is worth to reshape them accordingly.
