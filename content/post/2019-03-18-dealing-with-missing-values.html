@@ -7,31 +7,37 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Checking for missing values</li>
-<li>2.1 Missing Value Function</li>
-<li>2.2 Visualization of missing values</li>
-<li>3 Deletion of missing values</li>
-<li>4 Replace missings with values</li>
-<li>4.1 Variant 1</li>
-<li>4.2 Variant 2</li>
-<li>5 Replace values with missings</li>
-<li>5.1 Variant 1</li>
-<li>5.2 Variant 2</li>
-<li>6 Further imputations</li>
-<li>6.1 with mean</li>
-<li>6.2 with ffill</li>
-<li>6.3 with backfill</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#checking-for-missing-values">2 Checking for missing values</a></li>
+<li><a href="#missing-value-function">2.1 Missing Value Function</a></li>
+<li><a href="#visualization-of-missing-values">2.2 Visualization of missing values</a></li>
+<li><a href="#deletion-of-missing-values">3 Deletion of missing values</a></li>
+<li><a href="#replace-missings-with-values">4 Replace missings with values</a></li>
+<li><a href="#variant-1">4.1 Variant 1</a></li>
+<li><a href="#variant-2">4.2 Variant 2</a></li>
+<li><a href="#replace-values-with-missings">5 Replace values with missings</a></li>
+<li><a href="#variant-1-1">5.1 Variant 1</a></li>
+<li><a href="#variant-2-1">5.2 Variant 2</a></li>
+<li><a href="#further-imputations">6 Further imputations</a></li>
+<li><a href="#with-mean">6.1 with mean</a></li>
+<li><a href="#with-ffill">6.2 with ffill</a></li>
+<li><a href="#with-backfill">6.3 with backfill</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.</p>
@@ -49,15 +55,9 @@ import missingno as msno</code></pre>
                    &#39;Alter&#39;: [32,22,62,np.NaN,18],
                    &#39;Gehalt&#39;: [np.NaN, np.NaN,4500,2500,3800]})
 df1</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p1.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p1.png" /></p>
 <pre class="r"><code>df1.isnull().sum()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p2.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p2.png" /></p>
 </div>
 <div id="missing-value-function" class="section level1">
 <h1>2.1 Missing Value Function</h1>
@@ -88,10 +88,7 @@ df1</code></pre>
         # Return the dataframe with missing information
         return mis_val_table_ren_columns</code></pre>
 <pre class="r"><code>missing_values_table(df1)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p20.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p20.png" /></p>
 </div>
 <div id="visualization-of-missing-values" class="section level1">
 <h1>2.2 Visualization of missing values</h1>
@@ -115,10 +112,7 @@ house[&#39;bedrooms&#39;] = house[&#39;bedrooms&#39;].replace(1, np.NaN)
 #have a look at the missing values generated
 #here we use the previously defined function fro chapter 2.1
 missing_values_table(house)</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4s1.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4s1.png" /></p>
 <p>Now we generate a plot in which we can see missing values per column:</p>
 <pre class="r"><code>len = len(house)
 mask = house.isnull()
@@ -126,32 +120,20 @@ mask = house.isnull()
 
 nullable_columns = house.columns[mask.any()].tolist()
 msno.matrix(house[nullable_columns].sample(len))</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4s2.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4s2.png" /></p>
 <p>White lines represent a missing value.</p>
 </div>
 <div id="deletion-of-missing-values" class="section level1">
 <h1>3 Deletion of missing values</h1>
 <pre class="r"><code>df_del = df1.copy()
 df_del</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p3.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p3.png" /></p>
 <p>All rows with minimum one NaN will be dropped.</p>
 <pre class="r"><code>df_del.dropna()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p4.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p4.png" /></p>
 <p>All rows from the defined columns with a NaN will be dropped.</p>
 <pre class="r"><code>df_del.dropna(subset=[&#39;Name&#39;, &#39;Alter&#39;])</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p5.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p5.png" /></p>
 </div>
 <div id="replace-missings-with-values" class="section level1">
 <h1>4 Replace missings with values</h1>
@@ -163,27 +145,18 @@ df_del</code></pre>
 
 df1_MbyW_Var1[&#39;Name&#39;] = df1_MbyW_Var1[&#39;Name&#39;].fillna(0)
 df1_MbyW_Var1</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p6.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p6.png" /></p>
 <p>Missing values from the complete dataset will be replaced.</p>
 <pre class="r"><code>df1_MbyW_Var1.fillna(0, inplace=True)
 df1_MbyW_Var1</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p7.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p7.png" /></p>
 </div>
 <div id="variant-2" class="section level1">
 <h1>4.2 Variant 2</h1>
 <pre class="r"><code>df1_MbyW_Var2 = df1.copy()
 df1_MbyW_Var2.loc[df1_MbyW_Var2[&#39;Gehalt&#39;].isnull(),&#39;Gehalt&#39;] = &quot;Unbekannter Wert&quot;
 df1_MbyW_Var2</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p8.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p8.png" /></p>
 </div>
 <div id="replace-values-with-missings" class="section level1">
 <h1>5 Replace values with missings</h1>
@@ -195,89 +168,56 @@ df1_MbyW_Var2</code></pre>
 
 df1_WbyM_Var1[&#39;Gehalt&#39;] = df1_WbyM_Var1[&#39;Gehalt&#39;].replace(0, np.NaN)
 df1_WbyM_Var1</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p9.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p9.png" /></p>
 <p>Missing values from the complete dataset will be replaced.</p>
 <pre class="r"><code>df1_WbyM_Var1 = df1_WbyM_Var1.replace(0, np.NaN)
 df1_WbyM_Var1</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p10.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p10.png" /></p>
 </div>
 <div id="variant-2-1" class="section level1">
 <h1>5.2 Variant 2</h1>
 <pre class="r"><code>df1_WbyM_Var2 = df1_MbyW_Var1.copy()
 df1_WbyM_Var2.loc[df1_WbyM_Var2[&#39;Alter&#39;] == 0,:&#39;Alter&#39;] = np.NaN
 df1_WbyM_Var2</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p11.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p11.png" /></p>
 </div>
 <div id="further-imputations" class="section level1">
 <h1>6 Further imputations</h1>
 <pre class="r"><code>df_basic = df1.copy()
 df_basic</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p12.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p12.png" /></p>
 </div>
 <div id="with-mean" class="section level1">
 <h1>6.1 with mean</h1>
 <p>Here all missing values will be replaced with the mean of the column “Alter”.</p>
 <pre class="r"><code>df_basic[&#39;Alter&#39;].mean()</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p13.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p13.png" /></p>
 <pre class="r"><code>df_Alter_mean = df_basic[&#39;Alter&#39;].fillna(df_basic[&#39;Alter&#39;].mean())
 df_Alter_mean</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p14.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p14.png" /></p>
 <pre class="r"><code>df_basic[&#39;Alter_mean&#39;] = df_Alter_mean
 df_basic</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p15.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p15.png" /></p>
 </div>
 <div id="with-ffill" class="section level1">
 <h1>6.2 with ffill</h1>
 <p><em>ffill</em> replace the missing values with the nearest preceding non-missing value.</p>
 <pre class="r"><code>df_Alter_ffill = df_basic[&#39;Alter&#39;].fillna(method=&#39;ffill&#39;)
 df_Alter_ffill</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p16.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p16.png" /></p>
 <pre class="r"><code>df_basic[&#39;Alter_ffill&#39;] = df_Alter_ffill
 df_basic</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p17.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p17.png" /></p>
 </div>
 <div id="with-backfill" class="section level1">
 <h1>6.3 with backfill</h1>
 <p><em>backfill</em> replace the missing values with the nearest succeeding non-missing value.</p>
 <pre class="r"><code>df_Alter_backfill = df_basic[&#39;Alter&#39;].fillna(method=&#39;backfill&#39;)
 df_Alter_backfill</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p18.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p18.png" /></p>
 <pre class="r"><code>df_basic[&#39;Alter_backfill&#39;] = df_Alter_backfill
 df_basic</code></pre>
-<div class="figure">
-<img src="/post/2019-03-18-dealing-with-missing-values_files/p4p19.png" />
-
-</div>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p19.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>

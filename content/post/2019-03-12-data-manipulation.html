@@ -7,39 +7,42 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Index</li>
-<li>2.1 Resetting index</li>
-<li>2.2 Resetting multiindex</li>
-<li>2.3 Setting index</li>
-<li>3 Modifying Columns</li>
-<li>3.1 Rename Columns</li>
-<li>3.1.1 add_prefix</li>
-<li>3.3 Add columns</li>
-<li>3.4 Drop and Delete Columns</li>
-<li>3.5 Insert Columns</li>
-<li>3.6 Rearrange Columns</li>
-<li>4 Modifying Rows</li>
-<li>4.1 Round each column</li>
-<li>4.2 Round columns differently within a df</li>
-<li>4.3 Add rows with the stack() function</li>
-<li>5 Replacing Values</li>
-<li>5.1 One by One</li>
-<li>5.2 Collective replacement</li>
-<li>5.3 Conditional replacement</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#index">2 Index</a></li>
+<li><a href="#resetting-index">2.1 Resetting index</a></li>
+<li><a href="#resetting-multiindex">2.2 Resetting multiindex</a></li>
+<li><a href="#setting-index">2.3 Setting index</a></li>
+<li><a href="#modifying-columns">3 Modifying Columns</a></li>
+<li><a href="#rename-columns">3.1 Rename Columns</a></li>
+<li><a href="#add_prefix">3.1.1 add_prefix</a></li>
+<li><a href="#add-columns">3.3 Add columns</a></li>
+<li><a href="#drop-and-delete-columns">3.4 Drop and Delete Columns</a></li>
+<li><a href="#insert-columns">3.5 Insert Columns</a></li>
+<li><a href="#rearrange-columns">3.6 Rearrange Columns</a></li>
+<li><a href="#modifying-rows">4 Modifying Rows</a></li>
+<li><a href="#round-each-column">4.1 Round each column</a></li>
+<li><a href="#round-columns-differently-within-a-df">4.2 Round columns differently within a df</a></li>
+<li><a href="#add-rows-with-the-stack-function">4.3 Add rows with the stack() function</a></li>
+<li><a href="#replacing-values">5 Replacing Values</a></li>
+<li><a href="#one-by-one">5.1 One by One</a></li>
+<li><a href="#collective-replacement">5.2 Collective replacement</a></li>
+<li><a href="#conditional-replacement">5.3 Conditional replacement</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Data manipulation is an elementary component in the data science field that requires the most time, among other things. It is therefore worthwhile to be fit in this discipline.</p>

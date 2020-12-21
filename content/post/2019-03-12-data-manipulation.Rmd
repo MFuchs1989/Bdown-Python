@@ -7,32 +7,11 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Index
-+ 2.1 Resetting index
-+ 2.2 Resetting multiindex
-+ 2.3 Setting index
-+ 3 Modifying Columns
-+ 3.1 Rename Columns
-+ 3.1.1 add_prefix
-+ 3.3 Add columns
-+ 3.4 Drop and Delete Columns
-+ 3.5 Insert Columns
-+ 3.6 Rearrange Columns
-+ 4 Modifying Rows
-+ 4.1 Round each column
-+ 4.2 Round columns differently within a df
-+ 4.3 Add rows with the stack() function
-+ 5 Replacing Values
-+ 5.1 One by One
-+ 5.2 Collective replacement
-+ 5.3 Conditional replacement
-+ 6 Conclusion
 
 
 

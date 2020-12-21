@@ -7,29 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-#Table of Content
 
-+ 1 Introduction
-+ 2 Checking for missing values
-+ 2.1 Missing Value Function
-+ 2.2 Visualization of missing values
-+ 3 Deletion of missing values
-+ 4 Replace missings with values
-+ 4.1 Variant 1
-+ 4.2 Variant 2
-+ 5 Replace values with missings
-+ 5.1 Variant 1
-+ 5.2 Variant 2
-+ 6 Further imputations
-+ 6.1 with mean
-+ 6.2 with ffill
-+ 6.3  with backfill
-+ 7 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.
 
@@ -46,7 +31,7 @@ import missingno as msno
 ```
 
 
-#2 Checking for missing values
+# 2 Checking for missing values
 
 ```{r, eval=F, echo=T}
 df1 = pd.DataFrame({'Name': ['Anton', np.NaN, 'Moni', 'Renate', 'Justus'],
@@ -66,7 +51,7 @@ df1.isnull().sum()
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
 
 
-#2.1 Missing Value Function
+# 2.1 Missing Value Function
 
 
 ```{r, eval=F, echo=T}
@@ -105,7 +90,7 @@ missing_values_table(df1)
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p20.png)
 
-#2.2 Visualization of missing values
+# 2.2 Visualization of missing values
 
 To demonstrate the following visualization, we load the data set mentioned under introduction and select some specific columns for this case. Furthermore we create some missing values for demonstration purposes.
 
@@ -150,7 +135,7 @@ msno.matrix(house[nullable_columns].sample(len))
 White lines represent a missing value.
 
 
-#3 Deletion of missing values
+# 3 Deletion of missing values
 
 ```{r, eval=F, echo=T}
 df_del = df1.copy()
@@ -175,9 +160,9 @@ df_del.dropna(subset=['Name', 'Alter'])
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p5.png)
 
 
-#4 Replace missings with values
+# 4 Replace missings with values
 
-#4.1 Variant 1
+# 4.1 Variant 1
 
 Missing values from only one column (here "Name") are replaced. 
 ```{r, eval=F, echo=T}
@@ -198,7 +183,7 @@ df1_MbyW_Var1
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p7.png)
 
-#4.2 Variant 2
+# 4.2 Variant 2
 
 ```{r, eval=F, echo=T}
 df1_MbyW_Var2 = df1.copy()
@@ -210,9 +195,9 @@ df1_MbyW_Var2
 
 
 
-#5 Replace values with missings
+# 5 Replace values with missings
 
-#5.1 Variant 1
+# 5.1 Variant 1
 
 Missing values from only one column (here "Gehalt") are replaced.
 ```{r, eval=F, echo=T}
@@ -235,7 +220,7 @@ df1_WbyM_Var1
 
 
 
-#5.2 Variant 2
+# 5.2 Variant 2
 
 ```{r, eval=F, echo=T}
 df1_WbyM_Var2 = df1_MbyW_Var1.copy()
@@ -246,7 +231,7 @@ df1_WbyM_Var2
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p11.png)
 
 
-#6 Further imputations
+# 6 Further imputations
 
 ```{r, eval=F, echo=T}
 df_basic = df1.copy()
@@ -255,7 +240,7 @@ df_basic
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
 
-#6.1 with mean
+# 6.1 with mean
 
 Here all missing values will be replaced with the mean of the column "Alter".
 
@@ -282,7 +267,7 @@ df_basic
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p15.png)
 
 
-#6.2 with ffill
+# 6.2 with ffill
 
 *ffill* replace the missing values with the nearest preceding non-missing value.
 
@@ -302,7 +287,7 @@ df_basic
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
 
 
-#6.3  with backfill
+# 6.3  with backfill
 
 *backfill* replace the missing values with the nearest succeeding non-missing value.
 
@@ -326,7 +311,7 @@ df_basic
 
 
 
-#7 Conclusion
+# 7 Conclusion
 
 Depending on the application, missing values can be omitted or replaced by different methods.
 

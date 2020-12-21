@@ -7,23 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-#Table of Content
 
-+ 1 Introduction
-+ 2 Separate
-+ 2.1 via map - function
-+ 2.2 via string function
-+ 3 Unite
-+ 3.1 two columns
-+ 3.2 three and more columns
-+ 4 add_prefix
-+ 5 add_suffix
-+ 6 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 It happens again and again that in the course of the planned analysis text variables are unfavorably filled and therefore have to be changed.
 Here are some useful build in methods for *string manipulation* from Python.
@@ -37,9 +28,9 @@ import pandas as pd
 
 
 
-#2 Separate
+# 2 Separate
 
-#2.1 via map - function
+# 2.1 via map - function
 
 Map property applies changes to every element of a column
 ```{r, eval=F, echo=T}
@@ -87,7 +78,7 @@ print (z)
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p5.png)
 
 
-#2.2 via string function
+# 2.2 via string function
 
 ```{r, eval=F, echo=T}
 show_str_split = string_manipulation.copy()
@@ -137,9 +128,9 @@ small_show_str_split
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p10.png)
 
 
-#3 Unite
+# 3 Unite
 
-#3.1 two columns
+# 3.1 two columns
 
 ```{r, eval=F, echo=T}
 df = pd.DataFrame({'Year': ['2014', '2015'], 'quarter': ['q1', 'q2']})
@@ -157,7 +148,7 @@ df
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p12.png)
 
 
-#3.2 three and more columns
+# 3.2 three and more columns
 
 
 ```{r, eval=F, echo=T}
@@ -175,7 +166,7 @@ df
 
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p14.png)
 
-#4 add_prefix
+# 4 add_prefix
 
 ```{r, eval=F, echo=T}
 show_prefix2 = small_show_str_split.copy()
@@ -192,7 +183,7 @@ show_prefix2
 
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p16.png)
 
-#5 add_suffix
+# 5 add_suffix
 
 
 ```{r, eval=F, echo=T}
@@ -209,7 +200,7 @@ show_suffix
 
 ![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p18.png)
 
-#6 Conclusion
+# 6 Conclusion
 
 This was a small insight into the subject of string manipulation.
 
