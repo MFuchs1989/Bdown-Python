@@ -9,23 +9,35 @@ tags:
   - R Markdown
 ---
 
+*A [Udacity](https://www.udacity.com/) Data Science Nanodegree Capstone Project to classify Dog-Breeds using a pre-trained CNN Model.*
+
+![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj1.jpg)
+
+
+# Introduction
+
+The purpose of this project is to use a convolutional neural network (CNN) to predict dog breeds. I created a pipeline that can be used in a web or mobile app to process real images taken by users. Based on a picture of a dog, the algorithm I created can make an assessment about the dog breed. If supplied an image of a human, the code will identify the resembling dog breed.
+
+
+
+
+If a dog is recognised in the image supplied, the algorithm returns the corresponding breed:
+
+
+![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj2.jpg)
+
+
+![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj3.jpg)
+
+
+If a human is recognised in the image provided, the algorithm returns the resembling dog breed:
+
+![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj4.jpg)
 
 
 ```{r, eval=F, echo=T}
 
 ```
-
-![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj1.jpg)
-
-
-
-
-
-
-
-
-
-
 
 
 
