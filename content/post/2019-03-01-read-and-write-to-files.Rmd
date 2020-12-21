@@ -15,23 +15,6 @@ output:
 ---
 
 
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Reading csv-files
-+ 4 Reading json files
-+ 5 Read text files
-+ 5.1 with a for loop
-+ 5.2 with read_csv
-+ 5.2.1 **Convert epoch** time to DateTime
-+ 6 **Write to csv**
-+ 7 **Write to excel**
-+ 8 How to read further data types
-+ 9 Conclusion
-
-
-
 
 # 1 Introduction
 
