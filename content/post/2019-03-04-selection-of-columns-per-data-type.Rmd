@@ -7,17 +7,16 @@ categories:
   - R
 tags:
   - R Markdown
+
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Selection of numeric variables
-+ 4 Selection of categorical variables
-+ 5 Conclusion
 
 
-
-#1 Introduction
+# 1 Introduction
 
 
 In some situations it is necessary to select all columns of a certain data type. For example if you want to convert all categorical variables into dummy variables in order to be able to calculate a regression.
@@ -26,7 +25,7 @@ In some situations it is necessary to select all columns of a certain data type.
 For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -51,7 +50,7 @@ bank.shape
 
 
 
-#3 Selection of numeric variables
+# 3 Selection of numeric variables
 
 Only numerical variables will be considered here: 
 
@@ -76,7 +75,7 @@ bank_numeric.dtypes
 ![](/post/2019-03-04-selection-of-columns-per-data-type_files/p26p4.png)
 
 
-#4 Selection of categorical variables
+# 4 Selection of categorical variables
 
 Only categorical variables will be considered here:
 
@@ -103,7 +102,7 @@ bank_categorical.dtypes
 ![](/post/2019-03-04-selection-of-columns-per-data-type_files/p26p6.png)
 
 
-#5 Conclusion
+# 5 Conclusion
 
 This publication showed how to selectively select numeric or categorical variables.
 

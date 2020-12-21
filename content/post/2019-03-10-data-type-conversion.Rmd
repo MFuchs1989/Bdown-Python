@@ -7,26 +7,15 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Overview of the exisitng data types
-+ 4 Type Conversion
-+ 4.1 Conversion of a single variable
-+ 4.1.1 float64 to float32
-+ 4.1.2 float to int
-+ 5 Conversion of multiple variables
-+ 6 Conversion of date and time variables
-+ 7 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 
 It will always happen that you have an incorrect or unsuitable data type and you have to change it. It is therefore worthwhile to familiarize yourself with the conversion methods that exist in python.
@@ -36,7 +25,7 @@ For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](http
 
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -53,7 +42,7 @@ cars = pd.read_csv("path/to/file/auto-mpg.csv")
 ```
 
 
-#3 Overview of the exisitng data types
+# 3 Overview of the exisitng data types
 
 
 **Numeric:**
@@ -136,7 +125,7 @@ type({1:"one", 2:"two", 3:"three"})
 ![](/post/2019-03-10-data-type-conversion_files/p25p7.png)
 
 
-#4 Type Conversion
+# 4 Type Conversion
 
 First of all let's have a look at the data types of our dataframe *cars*:
 
@@ -147,9 +136,9 @@ cars.dtypes
 
 ![](/post/2019-03-10-data-type-conversion_files/p25p8.png)
 
-#4.1 Conversion of a single variable
+# 4.1 Conversion of a single variable
 
-#4.1.1 float64 to float32
+# 4.1.1 float64 to float32
 
 
 Conversions can be done within the same typ (here from float 64 to 32):
@@ -169,7 +158,7 @@ cars['mpg'].dtypes
 ![](/post/2019-03-10-data-type-conversion_files/p25p10.png)
 
 
-#4.1.2 float to int
+# 4.1.2 float to int
 
 Conversions can also be made into any other data types:
 
@@ -189,7 +178,7 @@ cars['mpg'].head()
 
 
 
-#4.1.3 object to numeric (float and int)
+# 4.1.3 object to numeric (float and int)
 
 
 As you can see in the overview of the data types of the dataframe, the variable horsepower was loaded as an object. This should actually be an int. From this we now convert them into a numerical variable. astype () does not always work if, for example, there are stings under the objects. Here you can use the pandas function .to_numeric.
@@ -234,7 +223,7 @@ cars['horsepower'].head()
 
 ![](/post/2019-03-10-data-type-conversion_files/p25p16.png)
 
-#5 Conversion of multiple variables
+# 5 Conversion of multiple variables
 
 ```{r, eval=F, echo=T}
 cars[['cylinders', 'weight']].dtypes
@@ -250,7 +239,7 @@ cars[['cylinders', 'weight']].dtypes
 ![](/post/2019-03-10-data-type-conversion_files/p25p18.png)
 
 
-#6 Conversion of date and time variables
+# 6 Conversion of date and time variables
 
 
 
@@ -302,7 +291,7 @@ Here is a short list of the most common directives:
 You can find the full list of directives ["here"](https://strftime.org/).
 
 
-#7 Conclusion
+# 7 Conclusion
 
 In this post we saw the different types of data and how to convert them to any other.
 
