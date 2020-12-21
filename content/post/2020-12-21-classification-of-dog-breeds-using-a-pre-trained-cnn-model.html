@@ -78,4 +78,37 @@ Furthermore, it should be mentioned that I have used an epoch value of 5 to trai
 <p>One of the reasons for such a poor accuracy value may be the limited amount of data.
 Since only 6,680 training images are available, the expectations for a completely new neural network from scratch with this amount of data cannot be high.</p>
 <p>Transfer learning is an alternative solution to this problem. This involves using a pre-trained neural network that has been trained on a large amount of data. Such a network has already learned features that are useful for most computer vision problems, and using such features should allow us to achieve better accuracy than any method that would rely only on the available data.</p>
+<p>For this purpose, we will use the VGG-16 architecture and the Inception-V3 architecture below.</p>
+<p><strong>VGG-16</strong></p>
+<p>First, I used the bottleneck features from VGG-16 model and added just the global average pooling and dense layers at the last.
+The optimiser (‘rmsprop’) and the loss function (‘categorical_crossentropy’) remain the same. The model was trained over 20 epochs and achieved a test accuracy of 68%.</p>
+<p><strong>Inception-V3</strong></p>
+<p>Afterwards I used the bottleneck features from InceptionV3 model to train a further classifier.
+As with the VGG-16 model as well, I added the global average pooling and dense layers at the last.
+I also added a Dropout layer to reduce overfitting.</p>
+<p><strong>Evaluation of the Inception-V3 model</strong></p>
+<p>The training and validation accuracies as well as the training and validation loss for first 50 epochs is shown below.</p>
+<p><img src="/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj13.png" /></p>
+<p>On the basis of this graph you can see that the model is still overfitting.
+This is probably because we are still using a very small data set with 133 categories and only 6,680 training images.
+This architecture out performs the VGG-16 architecture with a test accuracy of 79.55%.</p>
+<p>Here are a few example output of the classifier:</p>
+<p><img src="/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj14.png" /></p>
+<p><img src="/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj15.png" /></p>
+<p><img src="/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj16.png" /></p>
+<p><img src="/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj17.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>I started with a scratch CNN model with an accuracy of 5% and trained two models with 68% (VGG-16) and 79.55% (Inception-V3) accuracy using transfer learning.</p>
+<p>My model performed as I expected, not perfect but good enough.</p>
+<p>Now I can continue to fine tune the model by changing the hyper parameters and increasing the training data set to further improve the accuracy. The use of data augmentation can also help to increase the accuracy even further.</p>
+</div>
+<div id="acknowledgements" class="section level1">
+<h1>Acknowledgements</h1>
+<p>I thank <a href="https://www.udacity.com/">Udacity</a> for providing this challenge and learning experience.</p>
+</div>
+<div id="github-reopository" class="section level1">
+<h1>GitHub Reopository</h1>
+<p>The code underlying this post is on my <a href="https://github.com/MFuchs1989/DSND-Dog-Breed-Classifier">GitHub profile</a> and can be accessed in full there.</p>
 </div>
