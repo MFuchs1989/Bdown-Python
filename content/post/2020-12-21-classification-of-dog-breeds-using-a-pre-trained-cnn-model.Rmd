@@ -1,0 +1,32 @@
+---
+title: Classification of Dog-Breeds using a pre-trained CNN model
+author: Michael Fuchs
+date: '2020-12-21'
+slug: classification-of-dog-breeds-using-a-pre-trained-cnn-model
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-12-21-classification-of-dog-breeds-using-a-pre-trained-cnn-model_files/CapProj1.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
