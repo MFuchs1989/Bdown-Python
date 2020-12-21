@@ -7,23 +7,11 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Group by
-+ 3.1 with size
-+ 3.2 with count
-+ 3.2.1 Count Non - Zero Observations
-+ 3.3 with sum
-+ 3.4 with nunique
-+ 3.5 with mean
-+ 3.6 with agg.
-+ 4 Convert the group_by output to a dataframe
-+ 5 Conclusion
 
 
 # 1 Introduction

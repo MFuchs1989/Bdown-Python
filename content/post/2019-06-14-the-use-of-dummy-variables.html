@@ -7,26 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Preparation of the dataframe</li>
-<li>4 How to create dummy variables</li>
-<li>5 Use dummy variables in a regression analysis</li>
-<li>6 Dummy variables with more than two characteristics</li>
-<li>7 How to deal with multiple categorical features in a dataset</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#preparation-of-the-dataframe">3 Preparation of the dataframe</a></li>
+<li><a href="#how-to-create-dummy-variables">4 How to create dummy variables</a></li>
+<li><a href="#use-dummy-variables-in-a-regression-analysis">5 Use dummy variables in a regression analysis</a></li>
+<li><a href="#dummy-variables-with-more-than-two-characteristics">6 Dummy variables with more than two characteristics</a></li>
+<li><a href="#how-to-deal-with-multiple-categorical-features-in-a-dataset">7 How to deal with multiple categorical features in a dataset</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>In a nutshell: a dummy variable is a numeric variable that represents categorical data. For example, if you want to calculate a linear regression, you need numerical predictors. However, it is very common that categorical variables also make a notable contribution to variance education. Below is shown how to create dummy variables and use them in a regression analysis.</p>
+<p>In a nutshell: a dummy variable is a numeric variable that represents categorical data.
+For example, if you want to calculate a linear regression, you need numerical predictors.
+However, it is very common that categorical variables also make a notable contribution to variance education. Below is shown how to create dummy variables and use them in a regression analysis.</p>
 <p>For this post the dataset <em>Gender discrimination</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1BNv0b0J1KSuSaBUqnXKvEfc1Ic92zqQ7" class="uri">https://drive.google.com/open?id=1BNv0b0J1KSuSaBUqnXKvEfc1Ic92zqQ7</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
@@ -46,38 +54,26 @@ show_dummy[&#39;Gender&#39;] = show_dummy[&#39;Gender&#39;].map(vals_to_replace_
 show_dummy[&#39;Rank&#39;] = show_dummy[&#39;Rank&#39;].map(vals_to_replace_rank)
 show_dummy.columns = [&#39;Gender&#39;, &#39;Years_of_Experiences&#39;, &#39;Job&#39;, &#39;Salary&#39;]
 show_dummy.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p1.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p1.png" /></p>
 </div>
 <div id="how-to-create-dummy-variables" class="section level1">
 <h1>4 How to create dummy variables</h1>
 <pre class="r"><code>dummy_sex = pd.get_dummies(show_dummy[&#39;Gender&#39;], prefix=&quot;sex&quot;)
 dummy_sex.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p2.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p2.png" /></p>
 <p>…and add them to the existing datarame.</p>
 <pre class="r"><code>column_name = show_dummy.columns.values.tolist()
 column_name.remove(&#39;Gender&#39;)
 show_dummy = show_dummy[column_name].join(dummy_sex)
 show_dummy.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p3.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p3.png" /></p>
 </div>
 <div id="use-dummy-variables-in-a-regression-analysis" class="section level1">
 <h1>5 Use dummy variables in a regression analysis</h1>
 <p>In the following it will be examined whether the number of professional years has an influence on the payment.</p>
 <pre class="r"><code>lin_reg = smf.ols(formula=&#39;Salary~Years_of_Experiences&#39;, data=show_dummy).fit()
 lin_reg.summary()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p4.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p4.png" /></p>
 <p>As we can see, we get a R<sup>2</sup> of 10,2%.</p>
 <pre class="r"><code>x = show_dummy[&#39;Years_of_Experiences&#39;]
 y = show_dummy[&#39;Salary&#39;]
@@ -87,22 +83,13 @@ plt.title(&#39;Scatter plot: Years_of_Experiences vs. Salary&#39;)
 plt.xlabel(&#39;Years_of_Experiences&#39;)
 plt.ylabel(&#39;Salary&#39;)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p5.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p5.png" /></p>
 <pre class="r"><code>np.corrcoef(x, y)</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p6.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p6.png" /></p>
 <p>Now let’s see if the newly created dummy variables (the gender) can improve the result.</p>
 <pre class="r"><code>lin_reg2 = smf.ols(formula=&#39;Salary~Years_of_Experiences+sex_Female+sex_Male&#39;, data=show_dummy).fit()
 lin_reg2.summary()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p7.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p7.png" /></p>
 <p>Yes it could. We get a new R<sup>2</sup> of 16,7%.</p>
 </div>
 <div id="dummy-variables-with-more-than-two-characteristics" class="section level1">
@@ -110,18 +97,12 @@ lin_reg2.summary()</code></pre>
 <p>Usually, dummy variables have only two characteristics. However, it can happen that they can have more than two. But this is not a problem. Look at the variable <em>Job</em>:</p>
 <pre class="r"><code>dummy_job = pd.get_dummies(show_dummy[&#39;Job&#39;], prefix=&quot;Job&quot;)
 dummy_job.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p8.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p8.png" /></p>
 <pre class="r"><code>column_name = show_dummy.columns.values.tolist()
 column_name.remove(&#39;Job&#39;)
 show_dummy = show_dummy[column_name].join(dummy_job)
 show_dummy.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p9.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12p9.png" /></p>
 </div>
 <div id="how-to-deal-with-multiple-categorical-features-in-a-dataset" class="section level1">
 <h1>7 How to deal with multiple categorical features in a dataset</h1>
@@ -134,11 +115,10 @@ show_dummy[&#39;Gender&#39;] = show_dummy[&#39;Gender&#39;].map(vals_to_replace_
 show_dummy[&#39;Rank&#39;] = show_dummy[&#39;Rank&#39;].map(vals_to_replace_rank)
 show_dummy.columns = [&#39;Gender&#39;, &#39;Years_of_Experiences&#39;, &#39;Job&#39;, &#39;Salary&#39;]
 show_dummy.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s1.png" />
-
-</div>
-<p>In the first step, we select all categorical variables. Then we create dummy variables for each categorical variable. In the end, we combine all dummy and non-categorical variables and exclude unnecessary columns from the final data set.</p>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s1.png" /></p>
+<p>In the first step, we select all categorical variables.
+Then we create dummy variables for each categorical variable.
+In the end, we combine all dummy and non-categorical variables and exclude unnecessary columns from the final data set.</p>
 <pre class="r"><code>#Just select the categorical variables
 cat_col = [&#39;object&#39;]
 cat_columns = list(show_dummy.select_dtypes(include=cat_col).columns)
@@ -157,10 +137,7 @@ to_keep=[i for i in data_vars if i not in cat_vars]
 #Create final dataframe
 show_dummy_final=show_dummy[to_keep]
 show_dummy_final.columns.values</code></pre>
-<div class="figure">
-<img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s2.png" />
-
-</div>
+<p><img src="/post/2019-06-14-the-use-of-dummy-variables_files/p12s2.png" /></p>
 <p>Voilà !</p>
 </div>
 <div id="conclusion" class="section level1">

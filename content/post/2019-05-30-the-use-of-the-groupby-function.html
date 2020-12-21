@@ -7,30 +7,37 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Group by</li>
-<li>3.1 with size</li>
-<li>3.2 with count</li>
-<li>3.2.1 Count Non - Zero Observations</li>
-<li>3.3 with sum</li>
-<li>3.4 with nunique</li>
-<li>3.5 with mean</li>
-<li>3.6 with agg.</li>
-<li>4 Convert the group_by output to a dataframe</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#group-by">3 Group by</a>
+<ul>
+<li><a href="#with-size">3.1 with size</a></li>
+<li><a href="#with-count">3.2 with count</a>
+<ul>
+<li><a href="#count-non---zero-observations">3.2.1 Count Non - Zero Observations</a></li>
+</ul></li>
+<li><a href="#with-sum">3.3 with sum</a></li>
+<li><a href="#with-nunique">3.4 with nunique</a></li>
+<li><a href="#with-mean">3.5 with mean</a></li>
+<li><a href="#with-agg.">3.6 with agg.</a></li>
+</ul></li>
+<li><a href="#convert-the-group_by-output-to-a-dataframe">4 Convert the group_by output to a dataframe</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Goupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.</p>

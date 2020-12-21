@@ -7,24 +7,11 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Encoder for predictor variables
-+ 3.1 One Hot Encoder
-+ 3.1.1 via scikit-learn
-+ 3.1.2 via pandas
-+ 3.2 Ordinal Encoder
-+ 4 Encoder for target variables
-+ 4.1 Label Binarizer
-+ 4.2 Label Encoding
-+ 5 Inverse Transformation
-+ 6 Export Encoder to use in another program
-+ 7 Conclusion
-
 
 
 # 1 Introduction
@@ -71,11 +58,11 @@ df
 
 # 3 Encoder for predictor variables
 
-# 3.1 One Hot Encoder
+## 3.1 One Hot Encoder
 
 I already wrote about the functioning and creation of dummy variables in my post ["The use of dummy variables"](https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/). In scikit-learn this function is known as One Hot Encoding.
 
-# 3.1.1 via scikit-learn
+### 3.1.1 via scikit-learn
 
 In a nutshell One Hot Encoder encode categorical features as a one-hot numeric array:
 
@@ -93,7 +80,7 @@ df_OH_final
 
 ![](/post/2019-06-16-types-of-encoder_files/p29p2.png)
 
-# 3.1.2 via pandas
+### 3.1.2 via pandas
 
 ```{r, eval=F, echo=T}
 df
@@ -118,7 +105,7 @@ How to use this function in data analysis is explained in detail in this ["post"
 
 
 
-# 3.2 Ordinal Encoder
+## 3.2 Ordinal Encoder
 
 In some cases, categorical variables follow a certain order (in our example here, this is the column 'Emotional_State'). 
 
@@ -193,7 +180,7 @@ df[['Emotional_State', 'Emotional_State_Ordinal']].sort_values(by='Emotional_Sta
 
 Before that, we looked at which encoding methods make sense for predictor variables. Now let's look at which ones make sense for target variables.
 
-# 4.1 Label Binarizer
+## 4.1 Label Binarizer
 
 Let's have a look at the original dataframe.
 
@@ -231,7 +218,7 @@ df
 ![](/post/2019-06-16-types-of-encoder_files/p29p13.png)
 
 
-# 4.2 Label Encoding
+## 4.2 Label Encoding
 
 Unfortunately the label binarizer is no longer sufficient to prepare the data for multiclass classification algorithms. Hereby we need Label Encoding. In the following example, the column 'Job' should be our target variable.
 
