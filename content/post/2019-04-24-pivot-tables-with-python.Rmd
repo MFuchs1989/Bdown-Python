@@ -7,22 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-#Table of Content
 
-+ 1 Introduction
-+ 2 Getting an overview of our data
-+ 3 Categorizing the data by Year and Region
-+ 4 Creating a multi-index pivot table
-+ 5 Manipulating the data using aggfunc
-+ 6 Applying a custom function to remove outlier
-+ 7 Categorizing using string manipulation
-+ 8 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 Many people like to work with pivot tables in Excel. This possibility also exists in Python.
 
@@ -42,7 +34,7 @@ happy = pd.read_csv("path/to/file/WorldHappinessReport.csv")
 ```
 
 
-#2 Getting an overview of our data
+# 2 Getting an overview of our data
 
 
 ```{r, eval=F, echo=T}
@@ -61,7 +53,7 @@ print("Are there missing values? {}".format(happy.isnull().any().any()))
 ![](/post/2019-04-24-pivot-tables-with-python_files/p8p2.png)
 
  
-#3 Categorizing the data by Year and Region
+# 3 Categorizing the data by Year and Region
 
 ```{r, eval=F, echo=T}
 pd.pivot_table(happy, index= 'Year', values= "Happiness Score")
@@ -76,7 +68,7 @@ pd.pivot_table(happy, index = 'Region', values="Happiness Score").head()
 
 ![](/post/2019-04-24-pivot-tables-with-python_files/p8p4.png)
 
-#4 Creating a multi-index pivot table
+# 4 Creating a multi-index pivot table
 
 ```{r, eval=F, echo=T}
 pd.pivot_table(happy, index = ['Region', 'Year'], values="Happiness Score").head(9)
@@ -92,7 +84,7 @@ pd.pivot_table(happy, index= 'Region', columns='Year', values="Happiness Score")
 ![](/post/2019-04-24-pivot-tables-with-python_files/p8p6.png)
 
 
-#5 Manipulating the data using aggfunc
+# 5 Manipulating the data using aggfunc
 
 ```{r, eval=F, echo=T}
 pd.pivot_table(happy, index= 'Region', values= "Happiness Score", aggfunc= [np.mean, np.median, np.min, np.max, np.std])
@@ -101,7 +93,7 @@ pd.pivot_table(happy, index= 'Region', values= "Happiness Score", aggfunc= [np.m
 ![](/post/2019-04-24-pivot-tables-with-python_files/p8p7.png)
 
 
-#6 Applying a custom function to remove outlier
+# 6 Applying a custom function to remove outlier
 
 Here we see how many countries exist in a region
 ```{r, eval=F, echo=T}
@@ -124,7 +116,7 @@ pd.pivot_table(happy, index = 'Region', values="Happiness Score", aggfunc= [np.m
 ![](/post/2019-04-24-pivot-tables-with-python_files/p8p9.png)
 
 
-#7 Categorizing using string manipulation
+# 7 Categorizing using string manipulation
 
 Here for Asia:
 ```{r, eval=F, echo=T}
@@ -157,7 +149,7 @@ table.query('Year == [2015, 2017] and Region == ["Sub-Saharan Africa", "Middle E
 
 
 
-#8 Conclusion
+# 8 Conclusion
 
 As you can see in Python you do not have to do without pivot tables if you like working with them. In my opinion, pivot tables are a great way to get a quick overview of the data and make comparisons between variables.
 

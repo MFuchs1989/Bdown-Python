@@ -7,27 +7,32 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Join the two dataframes along rows</li>
-<li>3 Merge two dataframes</li>
-<li>3.1 Merge with inner join</li>
-<li>3.2 Merge with outer join</li>
-<li>3.3 Merge with concat</li>
-<li>4 Merge multiple data frames</li>
-<li>4.1 Preparation</li>
-<li>4.2 Merge up to 3 data frames</li>
-<li>4.3 Merge more than 3 data frames</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#join-the-two-dataframes-along-rows">2 Join the two dataframes along rows</a></li>
+<li><a href="#merge-two-dataframes">3 Merge two dataframes</a></li>
+<li><a href="#merge-with-inner-join">3.1 Merge with inner join</a></li>
+<li><a href="#merge-with-outer-join">3.2 Merge with outer join</a></li>
+<li><a href="#merge-with-concat">3.3 Merge with concat</a></li>
+<li><a href="#merge-multiple-data-frames">4 Merge multiple data frames</a></li>
+<li><a href="#preparation">4.1 Preparation</a></li>
+<li><a href="#merge-up-to-3-data-frames">4.2 Merge up to 3 data frames</a></li>
+<li><a href="#merge-more-than-3-data-frames">4.3 Merge more than 3 data frames</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>One of the essential skills of a data scientist is to generate and bring together data from different sources.</p>

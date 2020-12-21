@@ -7,23 +7,29 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Getting an overview of our data</li>
-<li>3 Categorizing the data by Year and Region</li>
-<li>4 Creating a multi-index pivot table</li>
-<li>5 Manipulating the data using aggfunc</li>
-<li>6 Applying a custom function to remove outlier</li>
-<li>7 Categorizing using string manipulation</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#getting-an-overview-of-our-data">2 Getting an overview of our data</a></li>
+<li><a href="#categorizing-the-data-by-year-and-region">3 Categorizing the data by Year and Region</a></li>
+<li><a href="#creating-a-multi-index-pivot-table">4 Creating a multi-index pivot table</a></li>
+<li><a href="#manipulating-the-data-using-aggfunc">5 Manipulating the data using aggfunc</a></li>
+<li><a href="#applying-a-custom-function-to-remove-outlier">6 Applying a custom function to remove outlier</a></li>
+<li><a href="#categorizing-using-string-manipulation">7 Categorizing using string manipulation</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Many people like to work with pivot tables in Excel. This possibility also exists in Python.</p>
@@ -36,60 +42,36 @@ import numpy as np</code></pre>
 <div id="getting-an-overview-of-our-data" class="section level1">
 <h1>2 Getting an overview of our data</h1>
 <pre class="r"><code>happy.head(2)</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p1.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p1.png" /></p>
 <p>Getting an overview of our data and checking for missing values:</p>
 <pre class="r"><code>print(&quot;Our data has {0} rows and {1} columns&quot;.format(happy.shape[0], happy.shape[1]))
 print(&quot;Are there missing values? {}&quot;.format(happy.isnull().any().any()))</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p2.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p2.png" /></p>
 </div>
 <div id="categorizing-the-data-by-year-and-region" class="section level1">
 <h1>3 Categorizing the data by Year and Region</h1>
 <pre class="r"><code>pd.pivot_table(happy, index= &#39;Year&#39;, values= &quot;Happiness Score&quot;)</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p3.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p3.png" /></p>
 <pre class="r"><code>pd.pivot_table(happy, index = &#39;Region&#39;, values=&quot;Happiness Score&quot;).head()</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p4.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p4.png" /></p>
 </div>
 <div id="creating-a-multi-index-pivot-table" class="section level1">
 <h1>4 Creating a multi-index pivot table</h1>
 <pre class="r"><code>pd.pivot_table(happy, index = [&#39;Region&#39;, &#39;Year&#39;], values=&quot;Happiness Score&quot;).head(9)</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p5.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p5.png" /></p>
 <pre class="r"><code>pd.pivot_table(happy, index= &#39;Region&#39;, columns=&#39;Year&#39;, values=&quot;Happiness Score&quot;)</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p6.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p6.png" /></p>
 </div>
 <div id="manipulating-the-data-using-aggfunc" class="section level1">
 <h1>5 Manipulating the data using aggfunc</h1>
 <pre class="r"><code>pd.pivot_table(happy, index= &#39;Region&#39;, values= &quot;Happiness Score&quot;, aggfunc= [np.mean, np.median, np.min, np.max, np.std])</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p7.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p7.png" /></p>
 </div>
 <div id="applying-a-custom-function-to-remove-outlier" class="section level1">
 <h1>6 Applying a custom function to remove outlier</h1>
 <p>Here we see how many countries exist in a region</p>
 <pre class="r"><code>happy[[&#39;Region&#39;, &#39;Country&#39;]].groupby([&#39;Region&#39;]).nunique().drop(columns=[&#39;Region&#39;]).reset_index()</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p8.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p8.png" /></p>
 <p>Let’s create a function that only calculates the values that are between the 0.25th and 0.75th quantiles.</p>
 <pre class="r"><code>def remove_outliers(values):
     mid_quantiles = values.quantile([.25, .75])
@@ -97,34 +79,22 @@ print(&quot;Are there missing values? {}&quot;.format(happy.isnull().any().any()
 
 
 pd.pivot_table(happy, index = &#39;Region&#39;, values=&quot;Happiness Score&quot;, aggfunc= [np.mean, remove_outliers])</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p9.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p9.png" /></p>
 </div>
 <div id="categorizing-using-string-manipulation" class="section level1">
 <h1>7 Categorizing using string manipulation</h1>
 <p>Here for Asia:</p>
 <pre class="r"><code>table = pd.pivot_table(happy, index = &#39;Region&#39;, values=&quot;Happiness Score&quot;, aggfunc= [np.mean, remove_outliers])
 table[table.index.str.contains(&#39;Asia&#39;)]</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p10.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p10.png" /></p>
 <p>Here for Europe:</p>
 <pre class="r"><code>table[table.index.str.contains(&#39;Europe&#39;)]</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p11.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p11.png" /></p>
 <p>Now for certain years and regions:</p>
 <pre class="r"><code>table = pd.pivot_table(happy, index = [&#39;Region&#39;, &#39;Year&#39;], values=&#39;Happiness Score&#39;,aggfunc= [np.mean, remove_outliers])
 
 table.query(&#39;Year == [2015, 2017] and Region == [&quot;Sub-Saharan Africa&quot;, &quot;Middle East and Northern Africa&quot;]&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-04-24-pivot-tables-with-python_files/p8p12.png" />
-
-</div>
+<p><img src="/post/2019-04-24-pivot-tables-with-python_files/p8p12.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>8 Conclusion</h1>
