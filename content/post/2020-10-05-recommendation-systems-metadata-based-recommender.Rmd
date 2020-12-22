@@ -7,23 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries and the data
-+ 3 Data pre-processing
-+ 3.1 Clean id column of df
-+ 3.2 Join the dataframes
-+ 3.3 Wrangling crew, cast, keywords and genres
-+ 3.4 Sanitize data
-+ 3.5 Create a soup of desired metadata
-+ 3.6 Create vectors with CountVectorizer
-+ 3.7 Compute the pairwise similarity
-+ 4 Build the Metadata-based Recommender
-+ 5 Test the recommender
-+ 6 Conclusion
+ 
 
 
 
@@ -94,7 +83,7 @@ key_df.head()
 For the preparation of the data we have to take some steps.
 
 
-# 3.1 Clean id column of df
+## 3.1 Clean id column of df
 
 
 ```{r, eval=F, echo=T}
@@ -115,7 +104,7 @@ df = df[df['id'].notnull()]
 
 
 
-# 3.2 Join the dataframes
+## 3.2 Join the dataframes
 
 
 Here we get a final dataset with the columns cast, crew and keywords from the last loaded records.
@@ -139,7 +128,7 @@ df.head()
 
 
 
-# 3.3 Wrangling crew, cast, keywords and genres
+## 3.3 Wrangling crew, cast, keywords and genres
 
 In the following we will work on the columns crew, cast, keywords and genres so that they are usable for the recommender.
 
@@ -308,7 +297,7 @@ df[['title', 'cast', 'director', 'keywords', 'genres']].head()
 ![](/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p11.png)
 
 
-# 3.5 Create a soup of desired metadata
+## 3.5 Create a soup of desired metadata
 
 
 ```{r, eval=F, echo=T}
@@ -333,7 +322,7 @@ df.iloc[0]['soup']
 
 
 
-# 3.6 Create vectors with CountVectorizer
+## 3.6 Create vectors with CountVectorizer
 
 
 ```{r, eval=F, echo=T}
@@ -346,7 +335,7 @@ count_matrix = count.fit_transform(df['soup'])
 ```
 
 
-# 3.7 Compute the pairwise similarity
+## 3.7 Compute the pairwise similarity
 
 
 ```{r, eval=F, echo=T}
@@ -396,9 +385,6 @@ def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
 
 
 
-
-
-
 ```{r, eval=F, echo=T}
 content_recommender('Toy Story', cosine_sim, df, indices)
 ```
@@ -414,7 +400,7 @@ Now we have designed a recommender that takes into account any amount of additio
 
 
 
-# References
+**References**
 
 Alfarhood, M., & Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.
 

@@ -7,24 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries and the data
-+ 3 Product Analytics
-+ 3.1 Number of Orders over Time
-+ 3.2 Revenue over Time
-+ 3.3 Repeat Customers over Time
-+ 3.4 Repeat Customers Revenue over Time
-+ 3.5 Popular Items over Time
-+ 4 Product Recommendations
-+ 4.1 Collaborative Filtering
-+ 4.1.1 User-based Collaborative Filtering
-+ 4.1.2 Item-based Collaborative Filtering
-+ 5 Conclusion
 
 
 
@@ -82,7 +70,7 @@ df = df.loc[df['InvoiceDate'] < '2011-12-01']
 
 With marketing analytics / product analytics it is always worthwhile to observe metrics over time.
 
-# 3.1 Number of Orders over Time
+## 3.1 Number of Orders over Time
 
 ```{r, eval=F, echo=T}
 df_monthly_orders = df.set_index('InvoiceDate')['InvoiceNo'].resample('M').nunique()
@@ -114,7 +102,7 @@ plt.show()
 
 
 
-# 3.2 Revenue over Time
+## 3.2 Revenue over Time
 
 Let's create a new sales-column for revenue.
 
@@ -151,7 +139,7 @@ plt.show()
 ![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p4.png)
 
 
-# 3.3 Repeat Customers over Time
+## 3.3 Repeat Customers over Time
 
 
 ```{r, eval=F, echo=T}
@@ -311,7 +299,7 @@ plt.show()
 
 
 
-# 3.4 Repeat Customers Revenue over Time
+## 3.4 Repeat Customers Revenue over Time
 
 
 ```{r, eval=F, echo=T}
@@ -408,7 +396,7 @@ plt.show()
 ![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p13.png)
 
 
-# 3.5 Popular Items over Time
+## 3.5 Popular Items over Time
 
 
 ```{r, eval=F, echo=T}
@@ -542,7 +530,7 @@ customer_item_matrix
 ![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p21.png)
 
 
-# 4.1 Collaborative Filtering
+## 4.1 Collaborative Filtering
 
 Here we are going to explore two approches to building a product recommender:
 
@@ -563,7 +551,7 @@ In the second variant (item-based), the system looks to see which items customer
 ![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81s2.png)
 
 
-# 4.1.1 User-based Collaborative Filtering
+### 4.1.1 User-based Collaborative Filtering
 
 
 ```{r, eval=F, echo=T}
@@ -652,7 +640,7 @@ df_items_to_recommend_to_17396[df_items_to_recommend_to_17396['StockCode'] == 23
 ![](/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p26.png)
 
 
-# 4.1.2 Item-based Collaborative Filtering
+### 4.1.2 Item-based Collaborative Filtering
 
 ```{r, eval=F, echo=T}
 '''
@@ -715,7 +703,7 @@ In this post I dealt with the analysis of products.
 Furthermore I showed how to develop and apply product recommendations with collaborative filtering (user-based and item-based). 
 
 
-# References
+**References**
 
 
 Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.

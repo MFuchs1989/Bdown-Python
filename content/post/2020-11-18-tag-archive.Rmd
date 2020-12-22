@@ -11,7 +11,6 @@ output:
   blogdown::html_page:
     toc: true
     toc_depth: 5
-
 ---
 
 
@@ -56,7 +55,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 3 Analytics Fields
 
-# 3.1 Marketing Analytics
+## 3.1 Marketing Analytics
 
 + ["A/B Testing"](https://michael-fuchs-python.netlify.app/2020/09/29/marketing-a-b-testing/)
 + ["Customer Lifetime Value"](https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/)
@@ -64,7 +63,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Product Analytics and Recommendations"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
 + ["Conversion Rate Analytics"](https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/)
 
-# 3.2 Recommendation Systems
+## 3.2 Recommendation Systems
 
 + ["Metadata-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/05/recommendation-systems-metadata-based-recommender/)
 + ["Plot Description-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/)
@@ -74,19 +73,19 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 4 Data pre-processing
 
-# 4.1 for Classification
+## 4.1 for Classification
 
 + ["Feature selection methods for classification tasks"](https://michael-fuchs-python.netlify.app/2020/01/31/feature-selection-methods-for-classification-tasks/)
 + ["Dealing with imbalanced classes"](https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/)
 
 
-# 4.2 for Regression
+## 4.2 for Regression
 
 + ["Embedded methods"](https://michael-fuchs-python.netlify.app/2019/10/08/embedded-methods/)
 + ["Wrapper methods"](https://michael-fuchs-python.netlify.app/2019/09/27/wrapper-methods/)
 
 
-# 4.3 General
+## 4.3 General
 
 + ["Feature Scaling with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/)
 + ["Check for normal distribution "](https://michael-fuchs-python.netlify.app/2019/09/13/check-for-normal-distribution/)
@@ -102,7 +101,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 5 Machine Learning
 
-# 5.1 Regression Algorithms
+## 5.1 Regression Algorithms
 
 + ["Further Regression Algorithms"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
 + ["Non-linear regression analysis"](https://michael-fuchs-python.netlify.app/2019/07/14/non-linear-regression-analysis/)
@@ -110,7 +109,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Introduction to regression analysis and predictions "](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/)
 
 
-# 5.2 Classification Algorithms
+## 5.2 Classification Algorithms
 
 + ["Ensemble Modeling - Voting"](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
 + ["Stacking with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
@@ -128,7 +127,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Introduction to Logistic Regression"](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/)
 
 
-# 5.3 Cluster Algorithms
+## 5.3 Cluster Algorithms
 
 + ["Spectral Clustering"](https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/)
 + ["Mean Shift Clustering"](https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/)
@@ -141,7 +140,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
 
 
-# 5.4 Dimensionality Reduction Algorithms
+## 5.4 Dimensionality Reduction Algorithms
 
 + ["Manifold Learning"](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
 + ["Linear Discriminant Analysis (LDA)"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)

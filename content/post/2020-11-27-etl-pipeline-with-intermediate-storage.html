@@ -7,33 +7,42 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Setup</li>
-<li>3 ETL Pipeline with intermediate storage</li>
-<li>3.1 Extract</li>
-<li>3.2 Transform_1</li>
-<li>3.3 Transform_2</li>
-<li>3.4 Load</li>
-<li>4 Create etl_pipeline.py</li>
-<li>5 Test etl_pipeline.py</li>
-<li>5.1 from jupyter notebook</li>
-<li>5.1.1 the very first time</li>
-<li>5.1.2 when u changed sth. within preprocess_data</li>
-<li>5.1.3 when u continue with analytics</li>
-<li>5.2 from command line</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#setup">2 Setup</a></li>
+<li><a href="#etl-pipeline-with-intermediate-storage">3 ETL Pipeline with intermediate storage</a>
+<ul>
+<li><a href="#extract">3.1 Extract</a></li>
+<li><a href="#transform_1">3.2 Transform_1</a></li>
+<li><a href="#transform_2">3.3 Transform_2</a></li>
+<li><a href="#load">3.4 Load</a></li>
+</ul></li>
+<li><a href="#create-etl_pipeline.py">4 Create etl_pipeline.py</a></li>
+<li><a href="#test-etl_pipeline.py">5 Test etl_pipeline.py</a>
+<ul>
+<li><a href="#from-jupyter-notebook">5.1 from jupyter notebook</a>
+<ul>
+<li><a href="#the-very-first-time">5.1.1 the very first time</a></li>
+<li><a href="#when-u-changed-sth.-within-preprocess_data">5.1.2 when u changed sth. within preprocess_data</a></li>
+<li><a href="#when-u-continue-with-analytics">5.1.3 when u continue with analytics</a></li>
+</ul></li>
+<li><a href="#from-command-line">5.2 from command line</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>So far, we have already got to know several variants of ETL with which a large part of use cases can be covered.</p>
@@ -58,9 +67,8 @@ The used data sets are stored under data/input, the ETL is also in the data fold
 <div id="etl-pipeline-with-intermediate-storage" class="section level1">
 <h1>3 ETL Pipeline with intermediate storage</h1>
 <pre class="r"><code>import pandas as pd</code></pre>
-</div>
-<div id="extract" class="section level1">
-<h1>3.1 Extract</h1>
+<div id="extract" class="section level2">
+<h2>3.1 Extract</h2>
 <pre class="r"><code>countries = pd.read_csv(&#39;../data/input/Countries.csv&#39;)
 countries</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p2.png" /></p>
@@ -75,8 +83,8 @@ Then the ETL pipeline should access the modified files, process them accordingly
 <pre class="r"><code>countries_metadata.dtypes</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p4.png" /></p>
 </div>
-<div id="transform_1" class="section level1">
-<h1>3.2 Transform_1</h1>
+<div id="transform_1" class="section level2">
+<h2>3.2 Transform_1</h2>
 <pre class="r"><code>countries.Population = countries.Population.map(lambda x: x.split(&#39;:&#39;)[1])
 countries[&#39;Population&#39;] = countries[&#39;Population&#39;].astype(&#39;int64&#39;)
 countries</code></pre>
@@ -91,8 +99,8 @@ countries_metadata</code></pre>
 <pre class="r"><code>countries.to_csv(&#39;../data/input_modified/countries.csv&#39;)
 countries_metadata.to_csv(&#39;../data/input_modified/output/countries_metadata.csv&#39;)</code></pre>
 </div>
-<div id="transform_2" class="section level1">
-<h1>3.3 Transform_2</h1>
+<div id="transform_2" class="section level2">
+<h2>3.3 Transform_2</h2>
 <p>Then we continue with the pre-processing steps.</p>
 <pre class="r"><code>countries[&#39;Population&#39;] = countries[&#39;Population&#39;]/1000
 countries = countries.rename(columns={&#39;Population&#39;:&#39;Population_per_k&#39;})
@@ -103,10 +111,11 @@ countries_metadata = countries_metadata.rename(columns={&#39;Land_Area&#39;:&#39
 countries_metadata</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p9.png" /></p>
 </div>
-<div id="load" class="section level1">
-<h1>3.4 Load</h1>
+<div id="load" class="section level2">
+<h2>3.4 Load</h2>
 <pre class="r"><code>countries.to_csv(&#39;../data/output/countries.csv&#39;)
 countries_metadata.to_csv(&#39;../data/output/countries_metadata.csv&#39;)</code></pre>
+</div>
 </div>
 <div id="create-etl_pipeline.py" class="section level1">
 <h1>4 Create etl_pipeline.py</h1>
@@ -237,15 +246,13 @@ But I also put the file in my <a href="https://github.com/MFuchs1989/Bdown-Pytho
 <div id="test-etl_pipeline.py" class="section level1">
 <h1>5 Test etl_pipeline.py</h1>
 <p>Now we want to test our created ETL with intermediate storage.</p>
-</div>
-<div id="from-jupyter-notebook" class="section level1">
-<h1>5.1 from jupyter notebook</h1>
+<div id="from-jupyter-notebook" class="section level2">
+<h2>5.1 from jupyter notebook</h2>
 <p>First I want to test the ETL from a notebook. For this we create and start a <strong>new</strong> notebook in the notebooks-folder with the name ‘Test ETL Pipeline with intermediate storage.ipynb’.</p>
 <p>With this ETL we have the special feature that the (assumed) initial loading takes an extremely long time. Once this step has been taken there is no way around it.
 But with intermediate storage we can reduce the runtime of the ETL (step 5.1.2 and 5.1.3) considerably.</p>
-</div>
-<div id="the-very-first-time" class="section level1">
-<h1>5.1.1 the very first time</h1>
+<div id="the-very-first-time" class="section level3">
+<h3>5.1.1 the very first time</h3>
 <pre class="r"><code>import sys
 
 # Specifies the file path where the first .py file is located.
@@ -265,8 +272,8 @@ datapreprocessor.read_data_from_modified_input()</code></pre>
 <pre class="r"><code>countries_metadata</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p14.png" /></p>
 </div>
-<div id="when-u-changed-sth.-within-preprocess_data" class="section level1">
-<h1>5.1.2 when u changed sth. within preprocess_data</h1>
+<div id="when-u-changed-sth.-within-preprocess_data" class="section level3">
+<h3>5.1.2 when u changed sth. within preprocess_data</h3>
 <pre class="r"><code>import sys
 
 # Specifies the file path where the first .py file is located.
@@ -283,8 +290,8 @@ datapreprocessor.read_data_from_modified_input()</code></pre>
 <pre class="r"><code>countries_metadata</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p18.png" /></p>
 </div>
-<div id="when-u-continue-with-analytics" class="section level1">
-<h1>5.1.3 when u continue with analytics</h1>
+<div id="when-u-continue-with-analytics" class="section level3">
+<h3>5.1.3 when u continue with analytics</h3>
 <pre class="r"><code>import sys
 
 # Specifies the file path where the first .py file is located.
@@ -298,8 +305,9 @@ countries, countries_metadata = datapreprocessor.read_preprocessed_tables()</cod
 <pre class="r"><code>countries_metadata</code></pre>
 <p><img src="/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p21.png" /></p>
 </div>
-<div id="from-command-line" class="section level1">
-<h1>5.2 from command line</h1>
+</div>
+<div id="from-command-line" class="section level2">
+<h2>5.2 from command line</h2>
 <p>Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
 It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.</p>
 <p>Type only the following commands in your command prompt:</p>
@@ -307,6 +315,7 @@ It does not matter which command line this is exactly. You can use Anaconda Powe
 python etl_pipeline.py</code></pre>
 <p>As the main is currently written in the etl_pipeline.py, all steps (including the first loading step with a long runtime) are executed.
 If you don’t want or need this (as described in one of the steps above from within the jupyter notebook) you would have to adapt the main accordingly and comment out some commands.</p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

@@ -7,19 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries and the data
-+ 3 Data pre-processing
-+ 3.1 Extract the release year
-+ 3.2 Convert the genres features
-+ 4 Build the Knowledged-based Recommender
-+ 5 Conclusion
+ 
 
 
 # 1 Introduction
@@ -61,7 +55,7 @@ df.head()
 Here we have two tasks to complete. On the one hand we need the release date, which has to be extracted. Second, we have to format the column with the genres it contains so that it fits the recommender. 
 
 
-# 3.1 Extract the release year
+## 3.1 Extract the release year
 
 We want to extract year-values from the column relese_date.
 Therefore we have to convert this column, extract the year, convert the year-column (from float to int) and drop the release_date column. 
@@ -95,7 +89,7 @@ df.head()
 ![](/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p2.png)
 
 
-# 3.2 Convert the genres features
+## 3.2 Convert the genres features
 
 Have a look here on the column 'genres' of the second movie.
 
@@ -230,7 +224,7 @@ In this post I have shown how to prepare a data set (in this case one about movi
 In the following posts I will go deeper into the subject Recommendation Systems and show more complex methods. 
 
 
-# References
+**References**
 
 Alfarhood, M., & Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.
 

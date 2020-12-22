@@ -7,32 +7,40 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries</li>
-<li>3 Descriptive Analytics (Conversion Rate)</li>
-<li>4 Drivers behind Marketing Engagement</li>
-<li>4.1 Select Numerical Columns</li>
-<li>4.2 Select and Encode Categorical Columns</li>
-<li>4.3 Create final Dataframe</li>
-<li>4.4 Regression Analysis (Logit)</li>
-<li>5 Predicting the Likelihood of Marketing Engagement</li>
-<li>5.1 Fit the Model</li>
-<li>5.2 Feature Importance</li>
-<li>5.3 Model Evaluation</li>
-<li>6 Engagement to Conversion</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#descriptive-analytics-conversion-rate">3 Descriptive Analytics (Conversion Rate)</a></li>
+<li><a href="#drivers-behind-marketing-engagement">4 Drivers behind Marketing Engagement</a>
+<ul>
+<li><a href="#select-numerical-columns">4.1 Select Numerical Columns</a></li>
+<li><a href="#select-and-encode-categorical-columns">4.2 Select and Encode Categorical Columns</a></li>
+<li><a href="#create-final-dataframe">4.3 Create final Dataframe</a></li>
+<li><a href="#regression-analysis-logit">4.4 Regression Analysis (Logit)</a></li>
+</ul></li>
+<li><a href="#predicting-the-likelihood-of-marketing-engagement">5 Predicting the Likelihood of Marketing Engagement</a>
+<ul>
+<li><a href="#fit-the-model">5.1 Fit the Model</a></li>
+<li><a href="#feature-importance">5.2 Feature Importance</a></li>
+<li><a href="#model-evaluation">5.3 Model Evaluation</a></li>
+</ul></li>
+<li><a href="#engagement-to-conversion">6 Engagement to Conversion</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
+<li><a href="#references">References</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After having reported very detailed in numerous posts about the different machine learning areas I will now work on various analytics fields.</p>
@@ -210,17 +218,16 @@ plt.show()</code></pre>
 df[&#39;Engaged&#39;] = df[&#39;Response&#39;].apply(lambda x: 0 if x == &#39;No&#39; else 1)
 df.head().T</code></pre>
 <p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p14.png" /></p>
-</div>
-<div id="select-numerical-columns" class="section level1">
-<h1>4.1 Select Numerical Columns</h1>
+<div id="select-numerical-columns" class="section level2">
+<h2>4.1 Select Numerical Columns</h2>
 <pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
 numerical_columns = list(df.select_dtypes(include=num_col).columns)
 df_numeric = df[numerical_columns]
 df_numeric.dtypes</code></pre>
 <p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p15.png" /></p>
 </div>
-<div id="select-and-encode-categorical-columns" class="section level1">
-<h1>4.2 Select and Encode Categorical Columns</h1>
+<div id="select-and-encode-categorical-columns" class="section level2">
+<h2>4.2 Select and Encode Categorical Columns</h2>
 <pre class="r"><code>obj_col = [&#39;object&#39;]
 object_columns = list(df.select_dtypes(include=obj_col).columns)
 df_categorical = df[object_columns]
@@ -303,14 +310,14 @@ df_categorical[&#39;Gender_encoded&#39;] = Gender_encoded
 # Delete the original column to avoid duplication
 df_categorical = df_categorical.drop([&#39;Gender&#39;], axis=1)</code></pre>
 </div>
-<div id="create-final-dataframe" class="section level1">
-<h1>4.3 Create final Dataframe</h1>
+<div id="create-final-dataframe" class="section level2">
+<h2>4.3 Create final Dataframe</h2>
 <pre class="r"><code>df_final = pd.concat([df_numeric, df_categorical], axis=1)
 df_final.head()</code></pre>
 <p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p19.png" /></p>
 </div>
-<div id="regression-analysis-logit" class="section level1">
-<h1>4.4 Regression Analysis (Logit)</h1>
+<div id="regression-analysis-logit" class="section level2">
+<h2>4.4 Regression Analysis (Logit)</h2>
 <p>If we work with the sm library, we have to add a constant to the predictor(s).
 With the Statsmodels Formula library, this would not have been necessary manually,
 but the disadvantage of this variant is that we have to enumerate the predictors individually in the formula.</p>
@@ -326,6 +333,7 @@ logit_fit.summary()</code></pre>
 <p>2 variables are significant (Education_encoded and Total Claim Amount). Both with a positive relationship to the target variable Engaged.</p>
 <p>This means (in the case of the variable Education_encoded), the higher the education the more the customer will be receptive to marketing calls.</p>
 </div>
+</div>
 <div id="predicting-the-likelihood-of-marketing-engagement" class="section level1">
 <h1>5 Predicting the Likelihood of Marketing Engagement</h1>
 <p>Here we can again use the previously created data set (df_final).
@@ -339,14 +347,13 @@ df_final</code></pre>
 y = df_final[&#39;Engaged&#39;]
 
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
-</div>
-<div id="fit-the-model" class="section level1">
-<h1>5.1 Fit the Model</h1>
+<div id="fit-the-model" class="section level2">
+<h2>5.1 Fit the Model</h2>
 <pre class="r"><code>rf_model = RandomForestClassifier(n_estimators=200, max_depth=5)
 rf_model.fit(trainX, trainY)</code></pre>
 </div>
-<div id="feature-importance" class="section level1">
-<h1>5.2 Feature Importance</h1>
+<div id="feature-importance" class="section level2">
+<h2>5.2 Feature Importance</h2>
 <pre class="r"><code>feat_imps = pd.DataFrame({&#39;importance&#39;: rf_model.feature_importances_}, index=trainX.columns)
 feat_imps.sort_values(by=&#39;importance&#39;, ascending=False, inplace=True)
 feat_imps</code></pre>
@@ -357,8 +364,8 @@ plt.legend()
 plt.show()</code></pre>
 <p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p23.png" /></p>
 </div>
-<div id="model-evaluation" class="section level1">
-<h1>5.3 Model Evaluation</h1>
+<div id="model-evaluation" class="section level2">
+<h2>5.3 Model Evaluation</h2>
 <p><strong>Accuracy</strong></p>
 <pre class="r"><code>rf_preds_train = rf_model.predict(trainX)
 rf_preds_test = rf_model.predict(testX)
@@ -394,6 +401,7 @@ plt.legend(loc=&quot;lower right&quot;)
 
 plt.show()</code></pre>
 <p><img src="/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p26.png" /></p>
+</div>
 </div>
 <div id="engagement-to-conversion" class="section level1">
 <h1>6 Engagement to Conversion</h1>

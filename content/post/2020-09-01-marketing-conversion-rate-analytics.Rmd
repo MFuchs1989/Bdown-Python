@@ -7,24 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries
-+ 3 Descriptive Analytics (Conversion Rate)
-+ 4 Drivers behind Marketing Engagement
-+ 4.1 Select Numerical Columns
-+ 4.2 Select and Encode Categorical Columns
-+ 4.3 Create final Dataframe
-+ 4.4 Regression Analysis (Logit)
-+ 5 Predicting the Likelihood of Marketing Engagement
-+ 5.1 Fit the Model
-+ 5.2 Feature Importance
-+ 5.3 Model Evaluation
-+ 6 Engagement to Conversion
-+ 7 Conclusion
+ 
 
 
 
@@ -294,7 +282,7 @@ df.head().T
 ![](/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p14.png)
 
 
-# 4.1 Select Numerical Columns
+## 4.1 Select Numerical Columns
 
 ```{r, eval=F, echo=T}
 num_col = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -307,7 +295,7 @@ df_numeric.dtypes
 
 
 
-# 4.2 Select and Encode Categorical Columns
+## 4.2 Select and Encode Categorical Columns
 
 ```{r, eval=F, echo=T}
 obj_col = ['object']
@@ -421,7 +409,7 @@ df_categorical = df_categorical.drop(['Gender'], axis=1)
 ```
 
 
-# 4.3 Create final Dataframe
+## 4.3 Create final Dataframe
 
 
 ```{r, eval=F, echo=T}
@@ -433,7 +421,7 @@ df_final.head()
 
 
 
-# 4.4 Regression Analysis (Logit)
+## 4.4 Regression Analysis (Logit)
 
 If we work with the sm library, we have to add a constant to the predictor(s). 
 With the Statsmodels Formula library, this would not have been necessary manually, 
@@ -485,7 +473,7 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
 
-# 5.1 Fit the Model
+## 5.1 Fit the Model
 
 
 ```{r, eval=F, echo=T}
@@ -494,7 +482,7 @@ rf_model.fit(trainX, trainY)
 ```
 
 
-# 5.2 Feature Importance
+## 5.2 Feature Importance
 
 
 ```{r, eval=F, echo=T}
@@ -516,7 +504,7 @@ plt.show()
 ![](/post/2020-09-01-marketing-conversion-rate-analytics_files/p80p23.png)
 
 
-# 5.3 Model Evaluation
+## 5.3 Model Evaluation
 
 
 **Accuracy**

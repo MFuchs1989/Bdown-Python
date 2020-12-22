@@ -7,25 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Roadmap for ETL</li>
-<li>2.1 Simple Pipeline</li>
-<li>2.2 Pipeline with join</li>
-<li>2.3 Pipeline with join2</li>
-<li>2.4 Pipeline with intermediate storage</li>
-<li>3 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#roadmap-for-etl">2 Roadmap for ETL</a>
+<ul>
+<li><a href="#simple-pipeline">2.1 <span>“Simple Pipeline”</span></a></li>
+<li><a href="#pipeline-with-join">2.2 <span>“Pipeline with join”</span></a></li>
+<li><a href="#pipeline-with-join2">2.3 <span>“Pipeline with join2”</span></a></li>
+<li><a href="#pipeline-with-intermediate-storage">2.4 <span>“Pipeline with intermediate storage”</span></a></li>
+</ul></li>
+<li><a href="#conclusion">3 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In the last articles I have intensely dealt with the topic ETL.</p>
@@ -49,26 +54,26 @@ tags:
 <p>Furthermore I have designed the following variants of pipelines. Each can be developed further as desired.
 Here is the corresponding legend in advance:</p>
 <p><img src="/post/2020-11-28-roadmap-for-etl_files/Legend.png" /></p>
-</div>
-<div id="simple-pipeline" class="section level1">
-<h1>2.1 <a href="https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/">“Simple Pipeline”</a></h1>
+<div id="simple-pipeline" class="section level2">
+<h2>2.1 <a href="https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/">“Simple Pipeline”</a></h2>
 <p><img src="/post/2020-11-28-roadmap-for-etl_files/SimplePipeline.png" /></p>
 <p>You can get the corresponding python script here: <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Simple%20Pipeline">“GitHub-Michael_Fuchs_Simple Pipeline”</a></p>
 </div>
-<div id="pipeline-with-join" class="section level1">
-<h1>2.2 <a href="https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/">“Pipeline with join”</a></h1>
+<div id="pipeline-with-join" class="section level2">
+<h2>2.2 <a href="https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/">“Pipeline with join”</a></h2>
 <p><img src="/post/2020-11-28-roadmap-for-etl_files/PipelineJoin.png" /></p>
 <p>You can get the corresponding python script here: <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join">“GitHub-Michael_Fuchs_Pipeline with join”</a></p>
 </div>
-<div id="pipeline-with-join2" class="section level1">
-<h1>2.3 <a href="https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/">“Pipeline with join2”</a></h1>
+<div id="pipeline-with-join2" class="section level2">
+<h2>2.3 <a href="https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/">“Pipeline with join2”</a></h2>
 <p><img src="/post/2020-11-28-roadmap-for-etl_files/PipelineJoin2.png" /></p>
 <p>You can get the corresponding python script here: <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2">“GitHub-Michael_Fuchs_Pipeline with join2”</a></p>
 </div>
-<div id="pipeline-with-intermediate-storage" class="section level1">
-<h1>2.4 <a href="https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/">“Pipeline with intermediate storage”</a></h1>
+<div id="pipeline-with-intermediate-storage" class="section level2">
+<h2>2.4 <a href="https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/">“Pipeline with intermediate storage”</a></h2>
 <p><img src="/post/2020-11-28-roadmap-for-etl_files/PipelineIntermediateStorage.png" /></p>
 <p>You can get the corresponding python script here: <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20intermediate%20storage">“GitHub-Michael_Fuchs_Pipeline with intermediate storage”</a></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>3 Conclusion</h1>

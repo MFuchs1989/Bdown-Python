@@ -7,15 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-# Table of Content
-
-+ 1 Introduction
-+ 2 The Setup
-+ 3 Run the python scripts
-+ 4 Content of the python scripts
-+ 5 Conclusion
+ 
 
 
 # 1 Introduction

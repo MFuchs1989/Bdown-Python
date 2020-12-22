@@ -7,30 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries and the data
-+ 3 Data pre-processing
-+ 3.1 Negative Quantity
-+ 3.2 Missing Values within CustomerID
-+ 3.3 Handling incomplete data
-+ 3.4 Total Sales
-+ 3.5 Create final dataframe
-+ 4 Descriptive Analytics
-+ 4.1 Final Dataframe for Descriptive Analytics
-+ 4.2 Visualizations
-+ 5 Predicting 3-Month CLV
-+ 5.1 Final Dataframe for Prediction Models
-+ 5.2 Building Sample Set
-+ 5.3 Train Test Split
-+ 5.4 Linear Regression
-+ 5.5 Model Evaluation
-+ 6 Conclusion
+ 
 
 
 
@@ -93,7 +75,7 @@ df
 
 # 3 Data pre-processing
 
-# 3.1 Negative Quantity
+## 3.1 Negative Quantity
 
 
 ```{r, eval=F, echo=T}
@@ -112,7 +94,7 @@ As we can see from the output, this was not the case in this record.
 
 
 
-# 3.2 Missing Values within CustomerID
+## 3.2 Missing Values within CustomerID
 
 
 ```{r, eval=F, echo=T}
@@ -127,7 +109,7 @@ df.shape
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p3.png)
 
 
-# 3.3 Handling incomplete data
+## 3.3 Handling incomplete data
 
 
 ```{r, eval=F, echo=T}
@@ -150,7 +132,7 @@ df.shape
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p5.png)
 
 
-# 3.4 Total Sales
+## 3.4 Total Sales
 
 
 ```{r, eval=F, echo=T}
@@ -165,7 +147,7 @@ df.head()
 
 
 
-# 3.5 Create final dataframe
+## 3.5 Create final dataframe
 
 ```{r, eval=F, echo=T}
 '''
@@ -187,7 +169,7 @@ orders_df.head()
 
 # 4 Descriptive Analytics
 
-# 4.1 Final Dataframe for Descriptive Analytics
+## 4.1 Final Dataframe for Descriptive Analytics
 
 ```{r, eval=F, echo=T}
 '''
@@ -243,7 +225,7 @@ The second customer (12347) has made six purchases within December 7, 2010 and O
 
 
 
-# 4.2 Visualizations
+## 4.2 Visualizations
 
 For the visualization part we are only interested in the purchases that the repeat customers have made.
 
@@ -318,7 +300,7 @@ As we can see from this plot, the majority of repeat customers made purchases ev
 
 # 5 Predicting 3-Month CLV
 
-# 5.1 Final Dataframe for Prediction Models
+## 5.1 Final Dataframe for Prediction Models
 
 We use the final created dataset *orders_df* at this point (chapter Data pre-processing / Create final dataframe)
 
@@ -378,7 +360,7 @@ data_df.head(10)
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p16.png)
 
 
-# 5.2 Building Sample Set
+## 5.2 Building Sample Set
 
 Now we are ready to create a sample set with features and target variables. In this case, we are going to use the last 3 months as the target variable and the rest as the features. In other words, we are going to train a machie learning model that predicts the last 3 months'customer value with the rest of the data.
 
@@ -435,7 +417,7 @@ sample_set_df
 ![](/post/2020-09-22-marketing-customer-lifetime-value_files/p83p19.png)
 
 
-# 5.3 Train Test Split
+## 5.3 Train Test Split
 
 
 ```{r, eval=F, echo=T}
@@ -467,7 +449,7 @@ trainX, testX, trainY, testY  = train_test_split(
 ```
 
 
-# 5.4 Linear Regression
+## 5.4 Linear Regression
 
 ```{r, eval=F, echo=T}
 lm = LinearRegression()
@@ -490,7 +472,7 @@ For example, the previous 3 month period's average purchase amount, sales_avg_M_
 On the other hand, the second and third most recent 3 month period's average purchase amounts, sales_avg_M_3 and sales_avg_M_4, are negatively correlated with the next 3 month customer value. In other words, the more a customer made purchases 3 months to 9 months ago, the lower value he or she will bring in the next 3 months.
 
 
-# 5.5 Model Evaluation
+## 5.5 Model Evaluation
 
 
 ```{r, eval=F, echo=T}
@@ -523,7 +505,7 @@ On the other hand you can also use these 3 month customer value prediction outpu
 
 
 
-# References
+**References**
 
 
 Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.

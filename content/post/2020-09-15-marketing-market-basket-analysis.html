@@ -7,25 +7,28 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Market Basket Analysis</li>
-<li>3 Import the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>5 Executing the Apriori Algorithm</li>
-<li>6 Deriving Association Rules</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#market-basket-analysis">2 Market Basket Analysis</a></li>
+<li><a href="#import-the-libraries-and-the-data">3 Import the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a></li>
+<li><a href="#executing-the-apriori-algorithm">5 Executing the Apriori Algorithm</a></li>
+<li><a href="#deriving-association-rules">6 Deriving Association Rules</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Another exciting topic in marketing analytics is Market Basket Analysis. This is the topic of this publication.
@@ -248,9 +251,7 @@ plt.show()</code></pre>
 <p>With this kind of analysis from the field of mareting you can now determine which products are most often bought in combination with each other.
 With this knowledge it is possible to arrange the products efficiently in the store. In the best case, products that are often bought together are positioned in the opposite direction in the store so that customers are forced to walk past as many other products as possible.</p>
 <p>Furthermore, one can now consider targeted discount campaigns. If you discount a product that is often bought in combination with others, you increase the chance of buying these products in combination, whereby a small discount is granted on only one.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products–three novel chairs. Creativity Research Journal, 11(4), 333-346.</p>
 <p>Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.</p>
 <p>Provost, F., &amp; Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O’Reilly Media, Inc.".</p>

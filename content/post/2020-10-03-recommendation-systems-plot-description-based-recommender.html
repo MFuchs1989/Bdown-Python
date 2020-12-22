@@ -7,29 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries and the data</li>
-<li>3 Data pre-processing Part I</li>
-<li>4 Data pre-processing Part II</li>
-<li>4.1 Introduction of the CountVectorizer</li>
-<li>4.2 Introduction of the TF-IDFVectorizer</li>
-<li>4.3 Create TF-IDF vectors</li>
-<li>4.4 Compute the pairwise cosin similarity</li>
-<li>5 Build the Plot Description-based Recommender</li>
-<li>6 Test the recommender</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#data-pre-processing-part-i">3 Data pre-processing Part I</a></li>
+<li><a href="#data-pre-processing-part-ii">4 Data pre-processing Part II</a>
+<ul>
+<li><a href="#introduction-of-the-countvectorizer">4.1 Introduction of the CountVectorizer</a></li>
+<li><a href="#introduction-of-the-tf-idfvectorizer">4.2 Introduction of the TF-IDFVectorizer</a></li>
+<li><a href="#create-tf-idf-vectors">4.3 Create TF-IDF vectors</a></li>
+<li><a href="#compute-the-pairwise-cosin-similarity">4.4 Compute the pairwise cosin similarity</a></li>
+</ul></li>
+<li><a href="#build-the-plot-description-based-recommender">5 Build the Plot Description-based Recommender</a></li>
+<li><a href="#test-the-recommender">6 Test the recommender</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After having developed a simple <a href="https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/">“Knowledge-based Recommender”</a> we now come to another recommender: the Plot Description-based Recommender.</p>
@@ -65,9 +70,8 @@ df</code></pre>
 <p>The recommendation model I want to develop will be based on the pairwise similarity between bodies of text.
 But how do we numerically quantify the similarity between two bodies of text?
 The answer is Vectorizing.</p>
-</div>
-<div id="introduction-of-the-countvectorizer" class="section level1">
-<h1>4.1 Introduction of the CountVectorizer</h1>
+<div id="introduction-of-the-countvectorizer" class="section level2">
+<h2>4.1 Introduction of the CountVectorizer</h2>
 <p>The CountVectorizer is the simplest vectorizer and is best explained with the help of an example:</p>
 <pre class="r"><code>d = {&#39;Line&#39;: [1, 2, 3], &#39;Text&#39;: [&#39;The sun is a star&#39;, &#39;My love is like a red, red rose&#39;, &#39;Mary had a little lamb&#39;]}
 test = pd.DataFrame(data=d)
@@ -97,8 +101,8 @@ result_vectorizer</code></pre>
 <p>The overview can now be interpreted as follows:</p>
 <p>The first dimension will represent the number if times the word ‘lamb’ occurs, the second will represent the number of times the word ‘like’ occurs and so on.</p>
 </div>
-<div id="introduction-of-the-tf-idfvectorizer" class="section level1">
-<h1>4.2 Introduction of the TF-IDFVectorizer</h1>
+<div id="introduction-of-the-tf-idfvectorizer" class="section level2">
+<h2>4.2 Introduction of the TF-IDFVectorizer</h2>
 <p>Not all words in a document carry equal weight.
 If you want to consider the weighting you should use the TF-IDFVectorizer. The syntax of the TF-IDFVectorizer is almost identical:</p>
 <pre class="r"><code>#Import TfIdfVectorizer from the scikit-learn library
@@ -117,8 +121,8 @@ feature_names</code></pre>
 result_tfidf</code></pre>
 <p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p9.png" /></p>
 </div>
-<div id="create-tf-idf-vectors" class="section level1">
-<h1>4.3 Create TF-IDF vectors</h1>
+<div id="create-tf-idf-vectors" class="section level2">
+<h2>4.3 Create TF-IDF vectors</h2>
 <p>Let us return to our original data set after this short digression and apply here the TF-IDF to our movie dataset.</p>
 <pre class="r"><code>#Import TfIdfVectorizer from the scikit-learn library
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -136,8 +140,8 @@ tfidf_matrix = tfidf.fit_transform(df[&#39;overview&#39;])
 tfidf_matrix.shape</code></pre>
 <p><img src="/post/2020-10-03-recommendation-systems-plot-description-based-recommender_files/p92p10.png" /></p>
 </div>
-<div id="compute-the-pairwise-cosin-similarity" class="section level1">
-<h1>4.4 Compute the pairwise cosin similarity</h1>
+<div id="compute-the-pairwise-cosin-similarity" class="section level2">
+<h2>4.4 Compute the pairwise cosin similarity</h2>
 <pre class="r"><code># Import linear_kernel to compute the dot product
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -145,6 +149,7 @@ from sklearn.metrics.pairwise import linear_kernel
 cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)</code></pre>
 <p>The cosin score can take any value between -1 and 1. The higher the cosin score, the more similar the documents are to each other.
 Now it’s time to build the Plot Description-based Recommender.</p>
+</div>
 </div>
 <div id="build-the-plot-description-based-recommender" class="section level1">
 <h1>5 Build the Plot Description-based Recommender</h1>
@@ -185,9 +190,7 @@ content_recommender(&#39;Toy Story&#39;)</code></pre>
 <h1>7 Conclusion</h1>
 <p>In this post I talked about creating a Plot Description-based Recommender.
 Compared to the Knowledge-based Recommender this has the advantage that it suggests movies that the user may not know from their content but have a strong relation to each other according to our similarity matrix.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Alfarhood, M., &amp; Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.</p>
 <p>Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.</p>
 <p>Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.</p>

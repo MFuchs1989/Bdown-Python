@@ -7,18 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Roadmap for ETL
-+ 2.1 Simple Pipeline
-+ 2.2 Pipeline with join
-+ 2.3 Pipeline with join2
-+ 2.4 Pipeline with intermediate storage
-+ 3 Conclusion
+ 
 
 
 # 1 Introduction
@@ -51,28 +46,28 @@ Here is the corresponding legend in advance:
 ![](/post/2020-11-28-roadmap-for-etl_files/Legend.png)
 
 
-# 2.1 ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
+## 2.1 ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/SimplePipeline.png)
 
 
 You can get the corresponding python script here: ["GitHub-Michael_Fuchs_Simple Pipeline"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Simple%20Pipeline)
 
-# 2.2 ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
+## 2.2 ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineJoin.png)
 
 
 You can get the corresponding python script here: ["GitHub-Michael_Fuchs_Pipeline with join"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join)
 
-# 2.3 ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
+## 2.3 ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineJoin2.png)
 
 
 You can get the corresponding python script here: ["GitHub-Michael_Fuchs_Pipeline with join2"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2)
 
-# 2.4 ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
+## 2.4 ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
 
 ![](/post/2020-11-28-roadmap-for-etl_files/PipelineIntermediateStorage.png)
 

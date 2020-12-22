@@ -7,22 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Import the libraries and the data
-+ 3 Data pre-processing Part I
-+ 4 Data pre-processing Part II
-+ 4.1 Introduction of the CountVectorizer
-+ 4.2 Introduction of the TF-IDFVectorizer
-+ 4.3 Create TF-IDF vectors
-+ 4.4 Compute the pairwise cosin similarity
-+ 5 Build the Plot Description-based Recommender
-+ 6 Test the recommender
-+ 7 Conclusion
+ 
 
 
 
@@ -86,7 +77,7 @@ But how do we numerically quantify the similarity between two bodies of text?
 The answer is Vectorizing.
 
 
-# 4.1 Introduction of the CountVectorizer
+## 4.1 Introduction of the CountVectorizer
 
 The CountVectorizer is the simplest vectorizer and is best explained with the help of an example:
 
@@ -146,7 +137,7 @@ The first dimension will represent the number if times the word 'lamb' occurs, t
 
 
 
-# 4.2 Introduction of the TF-IDFVectorizer
+## 4.2 Introduction of the TF-IDFVectorizer
 
 Not all words in a document carry equal weight. 
 If you want to consider the weighting you should use the TF-IDFVectorizer. The syntax of the TF-IDFVectorizer is almost identical:
@@ -185,7 +176,7 @@ result_tfidf
 
 
 
-# 4.3 Create TF-IDF vectors
+## 4.3 Create TF-IDF vectors
 
 Let us return to our original data set after this short digression and apply here the TF-IDF to our movie dataset.
 
@@ -210,7 +201,7 @@ tfidf_matrix.shape
 
 
 
-# 4.4 Compute the pairwise cosin similarity
+## 4.4 Compute the pairwise cosin similarity
 
 
 ```{r, eval=F, echo=T}
@@ -281,7 +272,7 @@ Compared to the Knowledge-based Recommender this has the advantage that it sugge
 
 
 
-# References
+**References**
 
 Alfarhood, M., & Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.
 

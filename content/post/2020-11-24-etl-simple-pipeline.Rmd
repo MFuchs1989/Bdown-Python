@@ -7,24 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Setup
-+ 3 ETL Simple Pipeline
-+ 3.1 Extract
-+ 3.2 Transform
-+ 3.3 Load
-+ 4 Create etl_pipeline.py
-+ 5 Test etl_pipeline.py 
-+ 5.1 from jupyter notebook
-+ 5.2 from command line
-+ 6 Conclusion
-
-
-
+ 
 
 # 1 Introduction
 
@@ -68,7 +56,7 @@ As already announced in the introduction, I start my analysis including all ETL 
 import pandas as pd
 ```
 
-# 3.1 Extract
+## 3.1 Extract
 
 
 ```{r, eval=F, echo=T}
@@ -88,7 +76,7 @@ countries_metadata
 
 
 
-# 3.2 Transform
+## 3.2 Transform
 
 I will use only a small number of transformation steps for both datasets. These steps can be extended according to your needs and possibilities. 
 
@@ -110,7 +98,7 @@ countries_metadata
 
 ![](/post/2020-11-24-etl-simple-pipeline_files/p87p5.png)
 
-# 3.3 Load
+## 3.3 Load
 
 
 ```{r, eval=F, echo=T}
@@ -235,7 +223,7 @@ But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdow
 
 Now we want to test our created ETL.
 
-# 5.1 from jupyter notebook
+## 5.1 from jupyter notebook
 
 First I want to test the ETL from a notebook. For this we create and start a **new** notebook in the notebooks-folder with the name 'Test ETL Simple Pipeline.ipynb'.
 
@@ -287,7 +275,7 @@ countries_metadata
 
 
 
-# 5.2 from command line
+## 5.2 from command line
 
 Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
 It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.

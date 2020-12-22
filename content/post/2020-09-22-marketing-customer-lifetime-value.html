@@ -7,36 +7,45 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries and the data</li>
-<li>3 Data pre-processing</li>
-<li>3.1 Negative Quantity</li>
-<li>3.2 Missing Values within CustomerID</li>
-<li>3.3 Handling incomplete data</li>
-<li>3.4 Total Sales</li>
-<li>3.5 Create final dataframe</li>
-<li>4 Descriptive Analytics</li>
-<li>4.1 Final Dataframe for Descriptive Analytics</li>
-<li>4.2 Visualizations</li>
-<li>5 Predicting 3-Month CLV</li>
-<li>5.1 Final Dataframe for Prediction Models</li>
-<li>5.2 Building Sample Set</li>
-<li>5.3 Train Test Split</li>
-<li>5.4 Linear Regression</li>
-<li>5.5 Model Evaluation</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a>
+<ul>
+<li><a href="#negative-quantity">3.1 Negative Quantity</a></li>
+<li><a href="#missing-values-within-customerid">3.2 Missing Values within CustomerID</a></li>
+<li><a href="#handling-incomplete-data">3.3 Handling incomplete data</a></li>
+<li><a href="#total-sales">3.4 Total Sales</a></li>
+<li><a href="#create-final-dataframe">3.5 Create final dataframe</a></li>
+</ul></li>
+<li><a href="#descriptive-analytics">4 Descriptive Analytics</a>
+<ul>
+<li><a href="#final-dataframe-for-descriptive-analytics">4.1 Final Dataframe for Descriptive Analytics</a></li>
+<li><a href="#visualizations">4.2 Visualizations</a></li>
+</ul></li>
+<li><a href="#predicting-3-month-clv">5 Predicting 3-Month CLV</a>
+<ul>
+<li><a href="#final-dataframe-for-prediction-models">5.1 Final Dataframe for Prediction Models</a></li>
+<li><a href="#building-sample-set">5.2 Building Sample Set</a></li>
+<li><a href="#train-test-split">5.3 Train Test Split</a></li>
+<li><a href="#linear-regression">5.4 Linear Regression</a></li>
+<li><a href="#model-evaluation">5.5 Model Evaluation</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83s1.png" /></p>
@@ -77,9 +86,8 @@ df</code></pre>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
-</div>
-<div id="negative-quantity" class="section level1">
-<h1>3.1 Negative Quantity</h1>
+<div id="negative-quantity" class="section level2">
+<h2>3.1 Negative Quantity</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 Canceled orders could cause negative values in the data record.
 To be on the safe side, these are removed.
@@ -90,8 +98,8 @@ df.shape</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p2.png" /></p>
 <p>As we can see from the output, this was not the case in this record.</p>
 </div>
-<div id="missing-values-within-customerid" class="section level1">
-<h1>3.2 Missing Values within CustomerID</h1>
+<div id="missing-values-within-customerid" class="section level2">
+<h2>3.2 Missing Values within CustomerID</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 We need to drop observations with no CustomerID
 &#39;&#39;&#39;
@@ -100,8 +108,8 @@ df = df[pd.notnull(df[&#39;CustomerID&#39;])]
 df.shape</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p3.png" /></p>
 </div>
-<div id="handling-incomplete-data" class="section level1">
-<h1>3.3 Handling incomplete data</h1>
+<div id="handling-incomplete-data" class="section level2">
+<h2>3.3 Handling incomplete data</h2>
 <pre class="r"><code>print(&#39;Invoice Date Range: %s - %s&#39; % (df[&#39;InvoiceDate&#39;].min(), df[&#39;InvoiceDate&#39;].max()))</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p4.png" /></p>
 <pre class="r"><code>&#39;&#39;&#39;
@@ -112,8 +120,8 @@ df = df.loc[df[&#39;InvoiceDate&#39;] &lt; &#39;2011-12-01&#39;]
 df.shape</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p5.png" /></p>
 </div>
-<div id="total-sales" class="section level1">
-<h1>3.4 Total Sales</h1>
+<div id="total-sales" class="section level2">
+<h2>3.4 Total Sales</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 For further analysis we need another column Sales.
 &#39;&#39;&#39;
@@ -121,8 +129,8 @@ df[&#39;Sales&#39;] = df[&#39;Quantity&#39;] * df[&#39;UnitPrice&#39;]
 df.head()</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p6.png" /></p>
 </div>
-<div id="create-final-dataframe" class="section level1">
-<h1>3.5 Create final dataframe</h1>
+<div id="create-final-dataframe" class="section level2">
+<h2>3.5 Create final dataframe</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 Here we group the dataframe by CustimerID and InvoiceNo and 
 aggregate the Sales column as well as the InvoiceDate.
@@ -136,11 +144,11 @@ orders_df = df.groupby([&#39;CustomerID&#39;, &#39;InvoiceNo&#39;]).agg({
 orders_df.head()</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p7.png" /></p>
 </div>
+</div>
 <div id="descriptive-analytics" class="section level1">
 <h1>4 Descriptive Analytics</h1>
-</div>
-<div id="final-dataframe-for-descriptive-analytics" class="section level1">
-<h1>4.1 Final Dataframe for Descriptive Analytics</h1>
+<div id="final-dataframe-for-descriptive-analytics" class="section level2">
+<h2>4.1 Final Dataframe for Descriptive Analytics</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 For the preparation of the data for descriptive part we need the following functions:
 &#39;&#39;&#39;
@@ -178,8 +186,8 @@ summary_df.head()</code></pre>
 <p>This dataset gives us an idea of the purchases each customer has made. Let’s have a look at CustomerID 12346 (first row). This customer made only one purchase on January 18,2011.</p>
 <p>The second customer (12347) has made six purchases within December 7, 2010 and October 31, 2011. The timespan here is about 327 days. The average amount this customer spent on each order is 680. We also see from the record, that this customer made a purchase every 54.5 days.</p>
 </div>
-<div id="visualizations" class="section level1">
-<h1>4.2 Visualizations</h1>
+<div id="visualizations" class="section level2">
+<h2>4.2 Visualizations</h2>
 <p>For the visualization part we are only interested in the purchases that the repeat customers have made.</p>
 <pre class="r"><code>summary_df = summary_df.loc[summary_df[&#39;invoicedate_purchase_duration&#39;] &gt; 0]
 summary_df.shape</code></pre>
@@ -226,11 +234,11 @@ plt.show()</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p13.png" /></p>
 <p>As we can see from this plot, the majority of repeat customers made purchases every 20-50 days.</p>
 </div>
+</div>
 <div id="predicting-3-month-clv" class="section level1">
 <h1>5 Predicting 3-Month CLV</h1>
-</div>
-<div id="final-dataframe-for-prediction-models" class="section level1">
-<h1>5.1 Final Dataframe for Prediction Models</h1>
+<div id="final-dataframe-for-prediction-models" class="section level2">
+<h2>5.1 Final Dataframe for Prediction Models</h2>
 <p>We use the final created dataset <em>orders_df</em> at this point (chapter Data pre-processing / Create final dataframe)</p>
 <pre class="r"><code># Determine the frequency
 clv_freq = &#39;3M&#39;
@@ -271,8 +279,8 @@ data_df[&#39;M&#39;] = data_df[&#39;InvoiceDate&#39;].apply(lambda x: date_month
 data_df.head(10)</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p16.png" /></p>
 </div>
-<div id="building-sample-set" class="section level1">
-<h1>5.2 Building Sample Set</h1>
+<div id="building-sample-set" class="section level2">
+<h2>5.2 Building Sample Set</h2>
 <p>Now we are ready to create a sample set with features and target variables. In this case, we are going to use the last 3 months as the target variable and the rest as the features. In other words, we are going to train a machie learning model that predicts the last 3 months’customer value with the rest of the data.</p>
 <pre class="r"><code># Exclude M_1 because this will be our predictor variable.
 features_df = pd.pivot_table(
@@ -313,8 +321,8 @@ sample_set_df = sample_set_df.fillna(0)
 sample_set_df</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p19.png" /></p>
 </div>
-<div id="train-test-split" class="section level1">
-<h1>5.3 Train Test Split</h1>
+<div id="train-test-split" class="section level2">
+<h2>5.3 Train Test Split</h2>
 <pre class="r"><code>target_var = &#39;CLV_&#39;+clv_freq
 all_features = [x for x in sample_set_df.columns if x not in [&#39;CustomerID&#39;, target_var]]
 
@@ -336,8 +344,8 @@ trainX, testX, trainY, testY  = train_test_split(
     test_size=0.3
 )</code></pre>
 </div>
-<div id="linear-regression" class="section level1">
-<h1>5.4 Linear Regression</h1>
+<div id="linear-regression" class="section level2">
+<h2>5.4 Linear Regression</h2>
 <pre class="r"><code>lm = LinearRegression()
 lm.fit(trainX, trainY)</code></pre>
 <pre class="r"><code>coef = pd.DataFrame(list(zip(all_features, lm.coef_)))
@@ -349,14 +357,15 @@ coef</code></pre>
 <p>For example, the previous 3 month period’s average purchase amount, sales_avg_M_2 (line 1), has positive impacts on the next 3 month customer value. This means that the higher the previous 3 month period’s average purchase amount is, the higher the next 3 month purchase amount will be.</p>
 <p>On the other hand, the second and third most recent 3 month period’s average purchase amounts, sales_avg_M_3 and sales_avg_M_4, are negatively correlated with the next 3 month customer value. In other words, the more a customer made purchases 3 months to 9 months ago, the lower value he or she will bring in the next 3 months.</p>
 </div>
-<div id="model-evaluation" class="section level1">
-<h1>5.5 Model Evaluation</h1>
+<div id="model-evaluation" class="section level2">
+<h2>5.5 Model Evaluation</h2>
 <pre class="r"><code>y_pred = lm.predict(testX)
 
 print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))  
 print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
 <p><img src="/post/2020-09-22-marketing-customer-lifetime-value_files/p83p22.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
@@ -366,9 +375,7 @@ print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(tes
 <p>Finally, I will say a few words about the advantages of such an analysis for a company:</p>
 <p>Since you know the expected revenue or purchase amount from individual customers for the next 3 months, you can set a better informed budget for your marketing campaign. This should not be set too high but also not too low, so that the target customers are still reached but the ROI does not suffer.</p>
 <p>On the other hand you can also use these 3 month customer value prediction output values to specifically target these high-value customers for the next 3 months. This can help you to create marketing campaigns with a higher ROI, as those high-value customers, predicted by the machine learning model, are likely to bring in more revenue than the others.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products–three novel chairs. Creativity Research Journal, 11(4), 333-346.</p>
 <p>Do Ruibin, K., &amp; Vintilescu Borglöv, T. (2018). Predicting Customer Lifetime Value: Understanding its accuracy and drivers from a frequent flyer program perspective.</p>
 <p>Glady, N., Baesens, B., &amp; Croux, C. (2009). Modeling churn using customer lifetime value. European Journal of Operational Research, 197(1), 402-411.</p>

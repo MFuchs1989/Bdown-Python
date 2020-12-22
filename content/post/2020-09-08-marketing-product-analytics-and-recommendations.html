@@ -7,31 +7,40 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries and the data</li>
-<li>3 Product Analytics</li>
-<li>3.1 Number of Orders over Time</li>
-<li>3.2 Revenue over Time</li>
-<li>3.3 Repeat Customers over Time</li>
-<li>3.4 Repeat Customers Revenue over Time</li>
-<li>3.5 Popular Items over Time</li>
-<li>4 Product Recommendations</li>
-<li>4.1 Collaborative Filtering</li>
-<li>4.1.1 User-based Collaborative Filtering</li>
-<li>4.1.2 Item-based Collaborative Filtering</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#product-analytics">3 Product Analytics</a>
+<ul>
+<li><a href="#number-of-orders-over-time">3.1 Number of Orders over Time</a></li>
+<li><a href="#revenue-over-time">3.2 Revenue over Time</a></li>
+<li><a href="#repeat-customers-over-time">3.3 Repeat Customers over Time</a></li>
+<li><a href="#repeat-customers-revenue-over-time">3.4 Repeat Customers Revenue over Time</a></li>
+<li><a href="#popular-items-over-time">3.5 Popular Items over Time</a></li>
+</ul></li>
+<li><a href="#product-recommendations">4 Product Recommendations</a>
+<ul>
+<li><a href="#collaborative-filtering">4.1 Collaborative Filtering</a>
+<ul>
+<li><a href="#user-based-collaborative-filtering">4.1.1 User-based Collaborative Filtering</a></li>
+<li><a href="#item-based-collaborative-filtering">4.1.2 Item-based Collaborative Filtering</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>I entered the field of marketing analytics with the topic conversion rate analysis.
@@ -64,9 +73,8 @@ print(&#39;Earliest Date: &#39; + str(df[&#39;InvoiceDate&#39;].max()))</code></
 <div id="product-analytics" class="section level1">
 <h1>3 Product Analytics</h1>
 <p>With marketing analytics / product analytics it is always worthwhile to observe metrics over time.</p>
-</div>
-<div id="number-of-orders-over-time" class="section level1">
-<h1>3.1 Number of Orders over Time</h1>
+<div id="number-of-orders-over-time" class="section level2">
+<h2>3.1 Number of Orders over Time</h2>
 <pre class="r"><code>df_monthly_orders = df.set_index(&#39;InvoiceDate&#39;)[&#39;InvoiceNo&#39;].resample(&#39;M&#39;).nunique()</code></pre>
 <pre class="r"><code>ax = pd.DataFrame(df_monthly_orders.values).plot(
     grid=True,
@@ -89,8 +97,8 @@ plt.xticks(
 plt.show()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p3.png" /></p>
 </div>
-<div id="revenue-over-time" class="section level1">
-<h1>3.2 Revenue over Time</h1>
+<div id="revenue-over-time" class="section level2">
+<h2>3.2 Revenue over Time</h2>
 <p>Let’s create a new sales-column for revenue.</p>
 <pre class="r"><code>df[&#39;Sales&#39;] = df[&#39;Quantity&#39;] * df[&#39;UnitPrice&#39;]</code></pre>
 <pre class="r"><code>df_monthly_revenue = df.set_index(&#39;InvoiceDate&#39;)[&#39;Sales&#39;].resample(&#39;M&#39;).sum()</code></pre>
@@ -115,8 +123,8 @@ plt.xticks(
 plt.show()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p4.png" /></p>
 </div>
-<div id="repeat-customers-over-time" class="section level1">
-<h1>3.3 Repeat Customers over Time</h1>
+<div id="repeat-customers-over-time" class="section level2">
+<h2>3.3 Repeat Customers over Time</h2>
 <pre class="r"><code>df[&#39;InvoiceNo&#39;].head()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p5.png" /></p>
 <p>Due to the fact that we have multiple records for one purchase order (InvoiceNo), we have to aggregate data for each order, so that one record in the dataset represents one purchase order.</p>
@@ -239,8 +247,8 @@ plt.xticks(
 plt.show()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p10.png" /></p>
 </div>
-<div id="repeat-customers-revenue-over-time" class="section level1">
-<h1>3.4 Repeat Customers Revenue over Time</h1>
+<div id="repeat-customers-revenue-over-time" class="section level2">
+<h2>3.4 Repeat Customers Revenue over Time</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 Here we generate a record that shows the revenue of repeat customers by month.
 Furthermore, we enrich the data set with a separate column for the month and the year.
@@ -321,8 +329,8 @@ ax2.set_xticklabels([
 plt.show()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p13.png" /></p>
 </div>
-<div id="popular-items-over-time" class="section level1">
-<h1>3.5 Popular Items over Time</h1>
+<div id="popular-items-over-time" class="section level2">
+<h2>3.5 Popular Items over Time</h2>
 <pre class="r"><code>&#39;&#39;&#39;
 Here we create a dataset that is filtered to month = november and year = 2011.
 &#39;&#39;&#39;
@@ -383,6 +391,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p18.png" /></p>
 <p>It looks like the 5 identified top products from november 2011 are all christmas products, as they are not bought very much during the year, but only at the end of the year around christmas time.</p>
 </div>
+</div>
 <div id="product-recommendations" class="section level1">
 <h1>4 Product Recommendations</h1>
 <p>For the product recommendations section, we again use the ‘Online Retail’ record.
@@ -409,9 +418,8 @@ customer_item_matrix</code></pre>
 <pre class="r"><code>customer_item_matrix = customer_item_matrix.applymap(lambda x: 1 if x &gt; 0 else 0)
 customer_item_matrix</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p21.png" /></p>
-</div>
-<div id="collaborative-filtering" class="section level1">
-<h1>4.1 Collaborative Filtering</h1>
+<div id="collaborative-filtering" class="section level2">
+<h2>4.1 Collaborative Filtering</h2>
 <p>Here we are going to explore two approches to building a product recommender:</p>
 <ul>
 <li>user-based</li>
@@ -423,9 +431,8 @@ customer_item_matrix</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81s1.png" /></p>
 <p>In the second variant (item-based), the system looks to see which items customers like to buy together. If a customer buys products that have the same metrics, a similar product can be recommended to him.</p>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81s2.png" /></p>
-</div>
-<div id="user-based-collaborative-filtering" class="section level1">
-<h1>4.1.1 User-based Collaborative Filtering</h1>
+<div id="user-based-collaborative-filtering" class="section level3">
+<h3>4.1.1 User-based Collaborative Filtering</h3>
 <pre class="r"><code>&#39;&#39;&#39;
 User-to-User Similarity Matrix
 Tip at this point: Go and have a coffee in the meantime, because the execution of this command takes some time.
@@ -473,8 +480,8 @@ df_items_to_recommend_to_17396</code></pre>
 <pre class="r"><code>df_items_to_recommend_to_17396[df_items_to_recommend_to_17396[&#39;StockCode&#39;] == 23271]</code></pre>
 <p><img src="/post/2020-09-08-marketing-product-analytics-and-recommendations_files/p81p26.png" /></p>
 </div>
-<div id="item-based-collaborative-filtering" class="section level1">
-<h1>4.1.2 Item-based Collaborative Filtering</h1>
+<div id="item-based-collaborative-filtering" class="section level3">
+<h3>4.1.2 Item-based Collaborative Filtering</h3>
 <pre class="r"><code>&#39;&#39;&#39;
 Item-to-Item Similarity Matrix
 &#39;&#39;&#39;
@@ -507,13 +514,13 @@ df_items_similar_to_23166</code></pre>
 <p>In the first line we see the article that was just bought. Afterwards 9 more items are shown, which have a high similarity to the purchased item.</p>
 <p>In this case the client has bought MEDIUM CERAMIC TOP STORAGE JAR. Maybe he is also interested in buying the large variant (line 2)?</p>
 </div>
+</div>
+</div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
 <p>In this post I dealt with the analysis of products.
 Furthermore I showed how to develop and apply product recommendations with collaborative filtering (user-based and item-based).</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products–three novel chairs. Creativity Research Journal, 11(4), 333-346.</p>
 <p>Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.</p>
 <p>Provost, F., &amp; Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O’Reilly Media, Inc.".</p>

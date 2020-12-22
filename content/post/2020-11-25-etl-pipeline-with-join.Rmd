@@ -7,23 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Setup
-+ 3 ETL Pipeline with join
-+ 3.1 Extract
-+ 3.2 Transform
-+ 3.3 Load
-+ 4 Create etl_pipeline.py
-+ 5 Test etl_pipeline.py 
-+ 5.1 from jupyter notebook
-+ 5.2 from command line
-+ 6 Conclusion
-
+ 
 
 
 
@@ -62,7 +51,7 @@ Here I show again the single steps which I transfer into an ETL again.
 import pandas as pd
 ```
 
-# 3.1 Extract
+## 3.1 Extract
 
 
 ```{r, eval=F, echo=T}
@@ -81,7 +70,7 @@ countries_metadata
 ![](/post/2020-11-25-etl-pipeline-with-join_files/p88p3.png)
 
 
-# 3.2 Transform
+## 3.2 Transform
 
 
 ```{r, eval=F, echo=T}
@@ -112,7 +101,7 @@ new_df
 
 
 
-# 3.3 Load
+## 3.3 Load
 
 
 ```{r, eval=F, echo=T}
@@ -248,7 +237,7 @@ But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdow
 Now we want to test our created ETL.
 
 
-# 5.1 from jupyter notebook
+## 5.1 from jupyter notebook
 
 First I want to test the ETL from a notebook. For this we create and start a **new** notebook in the notebooks-folder with the name 'Test ETL Pipeline with join.ipynb'.
 
@@ -291,7 +280,7 @@ new_df
 
 
 
-# 5.2 from command line
+## 5.2 from command line
 
 Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
 It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.

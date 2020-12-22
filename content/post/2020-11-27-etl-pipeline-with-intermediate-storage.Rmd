@@ -7,28 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Setup
-+ 3 ETL Pipeline with intermediate storage
-+ 3.1 Extract
-+ 3.2 Transform_1
-+ 3.3 Transform_2
-+ 3.4 Load
-+ 4 Create etl_pipeline.py
-+ 5 Test etl_pipeline.py 
-+ 5.1 from jupyter notebook
-+ 5.1.1 the very first time
-+ 5.1.2 when u changed sth. within preprocess_data
-+ 5.1.3 when u continue with analytics
-+ 5.2 from command line
-+ 6 Conclusion
-
+ 
 
 
 # 1 Introduction
@@ -71,7 +56,7 @@ The used data sets are stored under data/input, the ETL is also in the data fold
 import pandas as pd
 ```
 
-# 3.1 Extract
+## 3.1 Extract
 
 
 ```{r, eval=F, echo=T}
@@ -102,7 +87,7 @@ countries_metadata.dtypes
 
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p4.png)
 
-# 3.2 Transform_1
+## 3.2 Transform_1
 
 ```{r, eval=F, echo=T}
 countries.Population = countries.Population.map(lambda x: x.split(':')[1])
@@ -137,7 +122,7 @@ countries_metadata.to_csv('../data/input_modified/output/countries_metadata.csv'
 ```
 
 
-# 3.3 Transform_2
+## 3.3 Transform_2
 
 Then we continue with the pre-processing steps.
 
@@ -159,7 +144,7 @@ countries_metadata
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p9.png)
 
 
-# 3.4 Load
+## 3.4 Load
 
 ```{r, eval=F, echo=T}
 countries.to_csv('../data/output/countries.csv')
@@ -313,14 +298,14 @@ But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdow
 
 Now we want to test our created ETL with intermediate storage.
 
-# 5.1 from jupyter notebook
+## 5.1 from jupyter notebook
 
 First I want to test the ETL from a notebook. For this we create and start a **new** notebook in the notebooks-folder with the name 'Test ETL Pipeline with intermediate storage.ipynb'.
 
 With this ETL we have the special feature that the (assumed) initial loading takes an extremely long time. Once this step has been taken there is no way around it. 
 But with intermediate storage we can reduce the runtime of the ETL (step 5.1.2 and 5.1.3) considerably.
 
-# 5.1.1 the very first time
+### 5.1.1 the very first time
 
 
 ```{r, eval=F, echo=T}
@@ -370,7 +355,7 @@ countries_metadata
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p14.png)
 
 
-# 5.1.2 when u changed sth. within preprocess_data
+### 5.1.2 when u changed sth. within preprocess_data
 
 
 ```{r, eval=F, echo=T}
@@ -415,7 +400,7 @@ countries_metadata
 ![](/post/2020-11-27-etl-pipeline-with-intermediate-storage_files/p90p18.png)
 
 
-# 5.1.3 when u continue with analytics
+### 5.1.3 when u continue with analytics
 
 
 ```{r, eval=F, echo=T}
@@ -450,7 +435,7 @@ countries_metadata
 
 
 
-# 5.2 from command line
+## 5.2 from command line
 
 Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
 It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.

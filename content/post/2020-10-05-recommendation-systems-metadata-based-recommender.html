@@ -7,31 +7,38 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries and the data</li>
-<li>3 Data pre-processing</li>
-<li>3.1 Clean id column of df</li>
-<li>3.2 Join the dataframes</li>
-<li>3.3 Wrangling crew, cast, keywords and genres</li>
-<li>3.4 Sanitize data</li>
-<li>3.5 Create a soup of desired metadata</li>
-<li>3.6 Create vectors with CountVectorizer</li>
-<li>3.7 Compute the pairwise similarity</li>
-<li>4 Build the Metadata-based Recommender</li>
-<li>5 Test the recommender</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a>
+<ul>
+<li><a href="#clean-id-column-of-df">3.1 Clean id column of df</a></li>
+<li><a href="#join-the-dataframes">3.2 Join the dataframes</a></li>
+<li><a href="#wrangling-crew-cast-keywords-and-genres">3.3 Wrangling crew, cast, keywords and genres</a></li>
+</ul></li>
+<li><a href="#sanitize-data">3.4 Sanitize data</a>
+<ul>
+<li><a href="#create-a-soup-of-desired-metadata">3.5 Create a soup of desired metadata</a></li>
+<li><a href="#create-vectors-with-countvectorizer">3.6 Create vectors with CountVectorizer</a></li>
+<li><a href="#compute-the-pairwise-similarity">3.7 Compute the pairwise similarity</a></li>
+</ul></li>
+<li><a href="#build-the-metadata-based-recommender">4 Build the Metadata-based Recommender</a></li>
+<li><a href="#test-the-recommender">5 Test the recommender</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Now that we have developed a <a href="https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/">“recommender”</a> based on the film descriptions, we will go a step further in this post and add more metadata.</p>
@@ -69,9 +76,8 @@ key_df.head()</code></pre>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
 <p>For the preparation of the data we have to take some steps.</p>
-</div>
-<div id="clean-id-column-of-df" class="section level1">
-<h1>3.1 Clean id column of df</h1>
+<div id="clean-id-column-of-df" class="section level2">
+<h2>3.1 Clean id column of df</h2>
 <pre class="r"><code># Function to convert all non-integer IDs to NaN
 def clean_ids(x):
     try:
@@ -86,8 +92,8 @@ df[&#39;id&#39;] = df[&#39;id&#39;].apply(clean_ids)
 #Filter all rows where ID is not null
 df = df[df[&#39;id&#39;].notnull()] </code></pre>
 </div>
-<div id="join-the-dataframes" class="section level1">
-<h1>3.2 Join the dataframes</h1>
+<div id="join-the-dataframes" class="section level2">
+<h2>3.2 Join the dataframes</h2>
 <p>Here we get a final dataset with the columns cast, crew and keywords from the last loaded records.</p>
 <pre class="r"><code># Convert IDs into integer
 df[&#39;id&#39;] = df[&#39;id&#39;].astype(&#39;int&#39;)
@@ -102,8 +108,8 @@ df = df.merge(key_df, on=&#39;id&#39;)
 df.head()</code></pre>
 <p><img src="/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p4.png" /></p>
 </div>
-<div id="wrangling-crew-cast-keywords-and-genres" class="section level1">
-<h1>3.3 Wrangling crew, cast, keywords and genres</h1>
+<div id="wrangling-crew-cast-keywords-and-genres" class="section level2">
+<h2>3.3 Wrangling crew, cast, keywords and genres</h2>
 <p>In the following we will work on the columns crew, cast, keywords and genres so that they are usable for the recommender.</p>
 <pre class="r"><code># Convert the stringified objects into the native python objects
 from ast import literal_eval
@@ -161,6 +167,7 @@ df[&#39;keywords&#39;] = df[&#39;keywords&#39;].apply(generate_list)</code></pre
 <pre class="r"><code>#Only consider a maximum of 3 genres
 df[&#39;genres&#39;] = df[&#39;genres&#39;].apply(lambda x: x[:3])</code></pre>
 </div>
+</div>
 <div id="sanitize-data" class="section level1">
 <h1>3.4 Sanitize data</h1>
 <p>Our current data set looks like this:</p>
@@ -185,9 +192,8 @@ for feature in [&#39;cast&#39;, &#39;director&#39;, &#39;genres&#39;, &#39;keywo
     df[feature] = df[feature].apply(sanitize)</code></pre>
 <pre class="r"><code>df[[&#39;title&#39;, &#39;cast&#39;, &#39;director&#39;, &#39;keywords&#39;, &#39;genres&#39;]].head()</code></pre>
 <p><img src="/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p11.png" /></p>
-</div>
-<div id="create-a-soup-of-desired-metadata" class="section level1">
-<h1>3.5 Create a soup of desired metadata</h1>
+<div id="create-a-soup-of-desired-metadata" class="section level2">
+<h2>3.5 Create a soup of desired metadata</h2>
 <pre class="r"><code>#Function that creates a soup out of the desired metadata
 def create_soup(x):
     return &#39; &#39;.join(x[&#39;keywords&#39;]) + &#39; &#39; + &#39; &#39;.join(x[&#39;cast&#39;]) + &#39; &#39; + x[&#39;director&#39;] + &#39; &#39; + &#39; &#39;.join(x[&#39;genres&#39;])</code></pre>
@@ -197,8 +203,8 @@ df[&#39;soup&#39;] = df.apply(create_soup, axis=1)</code></pre>
 df.iloc[0][&#39;soup&#39;]</code></pre>
 <p><img src="/post/2020-10-05-recommendation-systems-metadata-based-recommender_files/p93p12.png" /></p>
 </div>
-<div id="create-vectors-with-countvectorizer" class="section level1">
-<h1>3.6 Create vectors with CountVectorizer</h1>
+<div id="create-vectors-with-countvectorizer" class="section level2">
+<h2>3.6 Create vectors with CountVectorizer</h2>
 <pre class="r"><code># Import CountVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -206,13 +212,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 count = CountVectorizer(stop_words=&#39;english&#39;)
 count_matrix = count.fit_transform(df[&#39;soup&#39;])</code></pre>
 </div>
-<div id="compute-the-pairwise-similarity" class="section level1">
-<h1>3.7 Compute the pairwise similarity</h1>
+<div id="compute-the-pairwise-similarity" class="section level2">
+<h2>3.7 Compute the pairwise similarity</h2>
 <pre class="r"><code>#Import cosine_similarity function
 from sklearn.metrics.pairwise import cosine_similarity
 
 #Compute the cosine similarity score (equivalent to dot product for tf-idf vectors)
 cosine_sim = cosine_similarity(count_matrix, count_matrix)</code></pre>
+</div>
 </div>
 <div id="build-the-metadata-based-recommender" class="section level1">
 <h1>4 Build the Metadata-based Recommender</h1>
@@ -249,9 +256,7 @@ def content_recommender(title, cosine_sim=cosine_sim, df=df, indices=indices):
 <h1>6 Conclusion</h1>
 <p>Done.
 Now we have designed a recommender that takes into account any amount of additional data such as the participating actors or the director in charge.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Alfarhood, M., &amp; Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.</p>
 <p>Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.</p>
 <p>Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.</p>

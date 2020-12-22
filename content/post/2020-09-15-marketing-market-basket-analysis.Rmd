@@ -7,19 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Market Basket Analysis
-+ 3 Import the libraries and the data
-+ 4 Data pre-processing
-+ 5 Executing the Apriori Algorithm
-+ 6 Deriving Association Rules
-+ 7 Conclusion
+ 
 
 
 
@@ -377,7 +372,7 @@ Furthermore, one can now consider targeted discount campaigns. If you discount a
 
 
 
-# References
+**References**
 
 
 Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.

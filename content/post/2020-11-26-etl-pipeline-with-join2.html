@@ -7,29 +7,42 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Setup</li>
-<li>3 ETL Pipeline with join2</li>
-<li>3.1 Extract</li>
-<li>3.2 Transform</li>
-<li>3.3 Load</li>
-<li>4 Create etl_pipeline.py</li>
-<li>5 Test etl_pipeline.py</li>
-<li>5.1 from jupyter notebook</li>
-<li>5.2 from command line</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#setup">2 Setup</a></li>
+<li><a href="#etl-pipeline-with-join2">3 ETL Pipeline with join2</a>
+<ul>
+<li><a href="#extract">3.1 Extract</a></li>
+<li><a href="#transform">3.2 Transform</a>
+<ul>
+<li><a href="#joining">3.2.1 Joining</a></li>
+<li><a href="#pre-process-countries_metadata-for-joining">3.2.2 pre-process countries_metadata for joining</a></li>
+<li><a href="#cleaning">3.2.3 Cleaning</a></li>
+<li><a href="#add-further-calculations">3.2.4 Add further calculations</a></li>
+</ul></li>
+<li><a href="#load">3.3 Load</a></li>
+</ul></li>
+<li><a href="#create-etl_pipeline.py">4 Create etl_pipeline.py</a></li>
+<li><a href="#test-etl_pipeline.py">5 Test etl_pipeline.py</a>
+<ul>
+<li><a href="#from-jupyter-notebook">5.1 from jupyter notebook</a></li>
+<li><a href="#from-command-line">5.2 from command line</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Let us come to another variant of ETL. The <a href="https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/">“last time”</a> I prepared two data sets and then merged them.
@@ -49,9 +62,8 @@ Finally I want to save the final dataset.</p>
 <div id="etl-pipeline-with-join2" class="section level1">
 <h1>3 ETL Pipeline with join2</h1>
 <pre class="r"><code>import pandas as pd</code></pre>
-</div>
-<div id="extract" class="section level1">
-<h1>3.1 Extract</h1>
+<div id="extract" class="section level2">
+<h2>3.1 Extract</h2>
 <pre class="r"><code>countries = pd.read_csv(&#39;../data/input/Countries.csv&#39;)
 countries</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p2.png" /></p>
@@ -59,25 +71,32 @@ countries</code></pre>
 countries_metadata</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p3.png" /></p>
 </div>
-<div id="transform" class="section level1">
-<h1>3.2 Transform</h1>
-<p><strong>Joining</strong></p>
+<div id="transform" class="section level2">
+<h2>3.2 Transform</h2>
+<div id="joining" class="section level3">
+<h3>3.2.1 Joining</h3>
 <pre class="r"><code>df = pd.merge(countries, countries_metadata, left_on=&#39;Countries&#39;, right_on=&#39;country_names&#39;, how=&#39;left&#39;)
 df</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p4.png" /></p>
 <p>As we can see, the problem here is that we do not have a uniform name for the countries.</p>
-<p><strong>pre-process countries_metadata for joining</strong></p>
+</div>
+<div id="pre-process-countries_metadata-for-joining" class="section level3">
+<h3>3.2.2 pre-process countries_metadata for joining</h3>
 <pre class="r"><code>countries_metadata.country_names = countries_metadata.country_names.map(lambda x: x.split(&#39;.&#39;)[1])
 countries_metadata</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p5.png" /></p>
 <pre class="r"><code>df = pd.merge(countries, countries_metadata, left_on=&#39;Countries&#39;, right_on=&#39;country_names&#39;, how=&#39;left&#39;)
 df</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p6.png" /></p>
-<p><strong>Cleaning</strong></p>
+</div>
+<div id="cleaning" class="section level3">
+<h3>3.2.3 Cleaning</h3>
 <pre class="r"><code>df = df.drop([&#39;country_names&#39;], axis=1)
 df</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p7.png" /></p>
-<p><strong>Add further calculations</strong></p>
+</div>
+<div id="add-further-calculations" class="section level3">
+<h3>3.2.4 Add further calculations</h3>
 <pre class="r"><code>df[&#39;pop_density&#39;] = df[&#39;Population&#39;]/df[&#39;Land_Area&#39;]
 df.head()</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p8.png" /></p>
@@ -90,9 +109,11 @@ df.head()</code></pre>
 df</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p10.png" /></p>
 </div>
-<div id="load" class="section level1">
-<h1>3.3 Load</h1>
+</div>
+<div id="load" class="section level2">
+<h2>3.3 Load</h2>
 <pre class="r"><code>df.to_csv(&#39;../data/output/new_df.csv&#39;)</code></pre>
+</div>
 </div>
 <div id="create-etl_pipeline.py" class="section level1">
 <h1>4 Create etl_pipeline.py</h1>
@@ -206,9 +227,8 @@ But I also put the file in my <a href="https://github.com/MFuchs1989/Bdown-Pytho
 <div id="test-etl_pipeline.py" class="section level1">
 <h1>5 Test etl_pipeline.py</h1>
 <p>Now we want to test our created ETL.</p>
-</div>
-<div id="from-jupyter-notebook" class="section level1">
-<h1>5.1 from jupyter notebook</h1>
+<div id="from-jupyter-notebook" class="section level2">
+<h2>5.1 from jupyter notebook</h2>
 <p>First I want to test the ETL from a notebook. For this we create and start a <strong>new</strong> notebook in the notebooks-folder with the name ‘Test ETL Pipeline with join2.ipynb’.</p>
 <pre class="r"><code>import sys
 
@@ -225,13 +245,14 @@ datapreprocessor.read_data_from_raw_input()</code></pre>
 <pre class="r"><code>new_df</code></pre>
 <p><img src="/post/2020-11-26-etl-pipeline-with-join2_files/p89p14.png" /></p>
 </div>
-<div id="from-command-line" class="section level1">
-<h1>5.2 from command line</h1>
+<div id="from-command-line" class="section level2">
+<h2>5.2 from command line</h2>
 <p>Because we have defined a main in the .py file we are able to call and execute the ETL from the command line.
 It does not matter which command line this is exactly. You can use Anaconda Power Shell, Git Bash, the Windwos Comman Line or anything else.</p>
 <p>Type only the following commands in your command prompt:</p>
 <pre class="r"><code>cd &quot;path/to/your/data/folder&quot;
 python etl_pipeline.py</code></pre>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

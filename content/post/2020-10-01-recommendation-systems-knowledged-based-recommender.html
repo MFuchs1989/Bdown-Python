@@ -7,25 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries and the data</li>
-<li>3 Data pre-processing</li>
-<li>3.1 Extract the release year</li>
-<li>3.2 Convert the genres features</li>
-<li>4 Build the Knowledged-based Recommender</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a>
+<ul>
+<li><a href="#extract-the-release-year">3.1 Extract the release year</a></li>
+<li><a href="#convert-the-genres-features">3.2 Convert the genres features</a></li>
+</ul></li>
+<li><a href="#build-the-knowledged-based-recommender">4 Build the Knowledged-based Recommender</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After Marketing Analytics it is now time to dedicate yourself to a new field of Analytics.
@@ -51,9 +56,8 @@ df.head()</code></pre>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
 <p>Here we have two tasks to complete. On the one hand we need the release date, which has to be extracted. Second, we have to format the column with the genres it contains so that it fits the recommender.</p>
-</div>
-<div id="extract-the-release-year" class="section level1">
-<h1>3.1 Extract the release year</h1>
+<div id="extract-the-release-year" class="section level2">
+<h2>3.1 Extract the release year</h2>
 <p>We want to extract year-values from the column relese_date.
 Therefore we have to convert this column, extract the year, convert the year-column (from float to int) and drop the release_date column.</p>
 <pre class="r"><code>#Convert release_date into pandas datetime format
@@ -81,8 +85,8 @@ df = df.drop(&#39;release_date&#39;, axis=1)
 df.head()</code></pre>
 <p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p2.png" /></p>
 </div>
-<div id="convert-the-genres-features" class="section level1">
-<h1>3.2 Convert the genres features</h1>
+<div id="convert-the-genres-features" class="section level2">
+<h2>3.2 Convert the genres features</h2>
 <p>Have a look here on the column ‘genres’ of the second movie.</p>
 <pre class="r"><code>#Print genres of the second movie
 df.iloc[1][&#39;genres&#39;]</code></pre>
@@ -114,6 +118,7 @@ gen_df = df.drop(&#39;genres&#39;, axis=1).join(s)
 gen_df.head()</code></pre>
 <p><img src="/post/2020-10-01-recommendation-systems-knowledged-based-recommender_files/p85p5.png" /></p>
 <p>Now we are ready to build the Knoledged-based Recommender!</p>
+</div>
 </div>
 <div id="build-the-knowledged-based-recommender" class="section level1">
 <h1>4 Build the Knowledged-based Recommender</h1>
@@ -181,9 +186,7 @@ gen_df.head()</code></pre>
 <h1>5 Conclusion</h1>
 <p>In this post I have shown how to prepare a data set (in this case one about movies) to create a simple knowldeged based recommender.
 In the following posts I will go deeper into the subject Recommendation Systems and show more complex methods.</p>
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
+<p><strong>References</strong></p>
 <p>Alfarhood, M., &amp; Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.</p>
 <p>Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.</p>
 <p>Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.</p>
