@@ -7,23 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Importing the libraries and the data</li>
-<li>3 Data pre-processing</li>
-<li>4 Stacking with scikit learn</li>
-<li>4.1 Model 1 incl. GridSearch</li>
-<li>4.2 Model 2 incl. GridSearch</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#importing-the-libraries-and-the-data">2 Importing the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a></li>
+<li><a href="#stacking-with-scikit-learn">4 Stacking with scikit learn</a>
+<ul>
+<li><a href="#model-1-incl.-gridsearch">4.1 Model 1 incl. GridSearch</a></li>
+<li><a href="#model-2-incl.-gridsearch">4.2 Model 2 incl. GridSearch</a></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In my previous post I explained the <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“ensemble modeling method ‘Stacking’”</a>. As it is described there, it is entirely applicable. However, it can be made even easier with the machine learning library scikit learn. I will show you how to do this in the following article.</p>
@@ -96,9 +103,8 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 <div id="stacking-with-scikit-learn" class="section level1">
 <h1>4 Stacking with scikit learn</h1>
 <p>Since we have now prepared the data set accordingly, I will now show you how to use scikit-learn’s StackingClassifier.</p>
-</div>
-<div id="model-1-incl.-gridsearch" class="section level1">
-<h1>4.1 Model 1 incl. GridSearch</h1>
+<div id="model-1-incl.-gridsearch" class="section level2">
+<h2>4.1 Model 1 incl. GridSearch</h2>
 <p>The principle is the same as described in <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">“Stacking”</a>.
 As a base model, we use a linear support vector classifier and the KNN classifier. The final estimator will be a logistic regression.</p>
 <pre class="r"><code>estimators = [
@@ -150,8 +156,8 @@ clf_preds_test = grid.predict(testX)</code></pre>
 ))</code></pre>
 <p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p4.png" /></p>
 </div>
-<div id="model-2-incl.-gridsearch" class="section level1">
-<h1>4.2 Model 2 incl. GridSearch</h1>
+<div id="model-2-incl.-gridsearch" class="section level2">
+<h2>4.2 Model 2 incl. GridSearch</h2>
 <p>Let’s see if we can improve the forecast quality again with other base models.
 Here we’ll use KNN again, Random Forest and Gaussion Classifier:</p>
 <pre class="r"><code>estimators = [
@@ -191,6 +197,7 @@ clf_preds_test = grid.predict(testX)</code></pre>
 <p>Yeah !!</p>
 <pre class="r"><code>print(grid.best_params_) </code></pre>
 <p><img src="/post/2020-04-29-stacking-with-scikit-learn_files/p64p7.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>

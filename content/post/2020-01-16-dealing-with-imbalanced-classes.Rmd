@@ -7,29 +7,16 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+ 
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Data pre-processing
-+ 4 Logistic Regression
-+ 5 Resampling methods
-+ 5.1 Oversampling
-+ 5.2 Undersampling
-+ 6 ML Algorithms for imbalanced datasets
-+ 6.1 SMOTE (Synthetic Minority Over-sampling Technique)
-+ 6.2 NearMiss
-+ 7 Penalize Algorithms
-+ 8 Tree-Based Algorithms
-+ 9 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 The validation metric ‚Accuracy‘ is a surprisingly common problem in machine learning (specifically in classification), occurring in datasets with a disproportionate ratio of observations in each class. Standard accuracy no longer reliably measures performance, which makes model training much trickier. Possibilities for dealing with imbalanced datasets should be dealt with in this publication.
 
@@ -38,7 +25,7 @@ The validation metric ‚Accuracy‘ is a surprisingly common problem in machine
 For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -93,7 +80,7 @@ print(bank['final_subscribed'].value_counts())
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p1.png)
 
 
-#3 Data pre-processing
+# 3 Data pre-processing
 
 The use of this record requires some pre-processing steps (encoding of the target variable and one hot encoding of the categorial variables).
 
@@ -136,7 +123,7 @@ bank_final.shape
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p2.png)
 
 
-#4 Logistic Regression
+# 4 Logistic Regression
 
 Predicting whether a customer will finally subscribed is a classic binary classification problem.
 We can use logistic regression for this.
@@ -185,7 +172,7 @@ roc_auc_score(testY, prob_y_0)
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p5.png)
 
 
-#5 Resampling methods
+# 5 Resampling methods
 
 A widely adopted technique for dealing with highly unbalanced dataframes is called resampling. It consists of removing samples from the majority class (under-sampling) and/or adding more examples from the minority class (over-sampling). Despite the advantage of balancing classes, these techniques also have their weaknesses. You know there is no free lunch. 
 
@@ -193,7 +180,7 @@ The simplest implementation of over-sampling is to duplicate random records from
 I will show both methods below.
 
 
-#5.1 Oversampling
+## 5.1 Oversampling
 
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s2.png)
 
@@ -285,7 +272,7 @@ roc_auc_score(testY, prob_y_1)
 
 
 
-#5.2 Undersampling
+## 5.2 Undersampling
 
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s3.png)
 
@@ -357,12 +344,12 @@ roc_auc_score(testY, prob_y_2)
 
 
 
-#6 ML Algorithms for imbalanced datasets
+# 6 ML Algorithms for imbalanced datasets
 
 Following we'll discuss two of the common and simple ways to deal with the problem of unbalanced classes using machine learning algorithms.
 
 
-#6.1 SMOTE (Synthetic Minority Over-sampling Technique)
+## 6.1 SMOTE (Synthetic Minority Over-sampling Technique)
 
 SMOTE is an over-sampling method. What it does is, it creates synthetic (not duplicate) samples of the minority class. Hence making the minority class equal to the majority class. SMOTE does this by selecting similar records and altering that record one column at a time by a random amount within the difference to the neighbouring records.
 
@@ -425,7 +412,7 @@ roc_auc_score(testY, prob_y_3)
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p18.png)
 
 
-#6.2 NearMiss
+## 6.2 NearMiss
 
 NearMiss is an under-sampling technique. Instead of resampling the Minority class, using a distance, this will make the majority class equal to minority class.
 
@@ -485,7 +472,7 @@ roc_auc_score(testY, prob_y_4)
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p22.png)
 
 
-#7 Penalize Algorithms
+# 7 Penalize Algorithms
 
 The next possibility is to use penalized learning algorithms that increase the cost of classification mistakes on the minority class.
 A popular algorithm for this technique is Penalized-SVM:
@@ -528,7 +515,7 @@ roc_auc_score(testY, prob_y_SVM)
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p25.png)
 
 
-#8 Tree-Based Algorithms
+# 8 Tree-Based Algorithms
 
 The final possibility we'll consider is using tree-based algorithms. Decision trees often perform well on imbalanced datasets because their hierarchical structure allows them to learn signals from both classes.
 
@@ -568,7 +555,7 @@ roc_auc_score(testY, prob_y_RFC)
 ![](/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p28.png)
 
 
-#9 Conclusion
+# 9 Conclusion
 
 In this post I showed what effects imbalanced dataframes can have on the creation of machine learning models, which metrics can be used to measure actual performance and what can be done with imbalanced dataframes in order to be able to train machine learning models with them.
 

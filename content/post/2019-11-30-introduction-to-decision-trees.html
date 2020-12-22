@@ -7,26 +7,37 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on decision trees</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Decision Trees with scikit-learn</li>
-<li>5 Visualization of the decision tree</li>
-<li>5.1 via graphviz</li>
-<li>5.2 via scikit-learn</li>
-<li>6 Model evaluation</li>
-<li>7 Model improvement</li>
-<li>7.1 Hyperparameter optimization via Grid Search</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-decision-trees">2 Background information on decision trees</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#decision-trees-with-scikit-learn">4 Decision Trees with scikit-learn</a></li>
+<li><a href="#visualization-of-the-decision-tree">5 Visualization of the decision tree</a>
+<ul>
+<li><a href="#via-graphviz">5.1 via graphviz</a></li>
+<li><a href="#via-scikit-learn">5.2 via scikit-learn</a></li>
+</ul></li>
+<li><a href="#model-evaluation">6 Model evaluation</a></li>
+<li><a href="#model-improvement">7 Model improvement</a>
+<ul>
+<li><a href="#hyperparameter-optimization-via-grid-search">7.1 Hyperparameter optimization via Grid Search</a></li>
+<li><a href="#pruning">7.2 Pruning</a></li>
+</ul></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p1.png" /></p>
@@ -97,9 +108,8 @@ y_pred = clf.predict(testX)</code></pre>
 </div>
 <div id="visualization-of-the-decision-tree" class="section level1">
 <h1>5 Visualization of the decision tree</h1>
-</div>
-<div id="via-graphviz" class="section level1">
-<h1>5.1 via graphviz</h1>
+<div id="via-graphviz" class="section level2">
+<h2>5.1 via graphviz</h2>
 <p>I recommend export_graphviz for the visualization of decision trees.</p>
 <pre class="r"><code>class_names = y.unique().tolist()</code></pre>
 <pre class="r"><code>dot_data = export_graphviz(
@@ -119,8 +129,8 @@ plt.imshow(im)</code></pre>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.png" /></p>
 <p>Calling the generated .jpg may show an image with poor quality. I therefore recommend calling the .jpgs directly.</p>
 </div>
-<div id="via-scikit-learn" class="section level1">
-<h1>5.2 via scikit-learn</h1>
+<div id="via-scikit-learn" class="section level2">
+<h2>5.2 via scikit-learn</h2>
 <p>New in scikit-learn (version 0.21) is plot_tree and export_text.</p>
 <pre class="r"><code>features = x.columns.tolist()
 classes = y.unique().tolist()</code></pre>
@@ -131,6 +141,7 @@ plt.show()</code></pre>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.1.png" /></p>
 <pre class="r"><code>print(export_text(clf, feature_names=features, show_weights=True))</code></pre>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p2.2.png" /></p>
+</div>
 </div>
 <div id="model-evaluation" class="section level1">
 <h1>6 Model evaluation</h1>
@@ -147,9 +158,8 @@ print(&quot;Cross-Validation mean: {:.3f} (std: {:.3f})&quot;.format(scores.mean
 </div>
 <div id="model-improvement" class="section level1">
 <h1>7 Model improvement</h1>
-</div>
-<div id="hyperparameter-optimization-via-grid-search" class="section level1">
-<h1>7.1 Hyperparameter optimization via Grid Search</h1>
+<div id="hyperparameter-optimization-via-grid-search" class="section level2">
+<h2>7.1 Hyperparameter optimization via Grid Search</h2>
 <p>To get a more detailed impression of how grid search works have look <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV">“here”</a>.</p>
 <pre class="r"><code>param_grid = {&quot;criterion&quot;: [&quot;gini&quot;, &quot;entropy&quot;],
               &quot;min_samples_split&quot;: [2, 5, 10, 15, 20],
@@ -168,8 +178,8 @@ print(grid.best_score_)</code></pre>
 print(grid.best_params_)</code></pre>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p7.png" /></p>
 </div>
-<div id="pruning" class="section level1">
-<h1>7.2 Pruning</h1>
+<div id="pruning" class="section level2">
+<h2>7.2 Pruning</h2>
 <p>Another way to improve model performance is to prune a tree.</p>
 <p>The DecisionTreeClassifier provides parameters such as min_samples_leaf and max_depth to prevent a tree from overfiting. Cost complexity pruning provides another option to control the size of a tree. In DecisionTreeClassifier, this pruning technique is parameterized by the cost complexity parameter, ccp_alpha.</p>
 <pre class="r"><code>path = clf.cost_complexity_pruning_path(trainX, trainY)
@@ -223,6 +233,7 @@ ax.legend()
 plt.show()</code></pre>
 <p><img src="/post/2019-11-30-introduction-to-decision-trees_files/p30p10.png" /></p>
 <p>As the alpha increases, the tree becomes more pruned, creating a decision tree that may be more generalized. Here we can see that increasing ccp_alpha does not further increase accuracy</p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>8 Conclusion</h1>

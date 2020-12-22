@@ -7,29 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Backgroundinformation on Stacking
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 4.1 One-hot-encoding
-+ 4.2 LabelBinarizer
-+ 4.3 Train-Test-Split
-+ 4.4 Convert to a numpy array
-+ 5 Building a stacked model
-+ 5.1 Create a new training set 
-+ 5.2 Train base models 
-+ 5.3 Create a new test set
-+ 5.4 Fit base models on the complete training set
-+ 5.5 Train the stacked model
-+ 6 Comparison of the accuracy
-+ 7 Conclusion
-
+ 
 
 
 # 1 Introduction
@@ -91,7 +75,7 @@ bank['y'].value_counts().T
 
 # 4 Data pre-processing
 
-# 4.1 One-hot-encoding
+## 4.1 One-hot-encoding
 
 First of all we have to convert the categorical variables into numerical ones again.
 To see how this work exactly please have a look at this post: ["Types of Encoder"](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/)
@@ -140,7 +124,7 @@ But as we can see, we still have to convert the target variable. We do not do th
 
 
 
-# 4.2 LabelBinarizer
+## 4.2 LabelBinarizer
 
 
 ```{r, eval=F, echo=T}
@@ -168,7 +152,7 @@ Of course we can no longer take the 'old' target variable (here 'y') into accoun
 
 
 
-# 4.3 Train-Test-Split
+## 4.3 Train-Test-Split
 
 
 ```{r, eval=F, echo=T}
@@ -183,7 +167,7 @@ It is not a big deal.
 
 
 
-# 4.4 Convert to a numpy array
+## 4.4 Convert to a numpy array
 
 For the following steps, it is necessary to convert the generated objects into numpy arrays.
 
@@ -235,7 +219,7 @@ I explained the exact functioning of these algorithms in these posts:
 
 
 
-# 5.1 Create a new training set 
+## 5.1 Create a new training set 
 
 First of all we create a new training set with additional columns for predictions from base predictors.
 
@@ -262,7 +246,7 @@ Here we can see that two more columns have been added.
 
 
 
-# 5.2 Train base models 
+## 5.2 Train base models 
 
 Now we are going to train the base models using the k-fold strategy. 
 
@@ -288,7 +272,7 @@ for train_indices, test_indices in kf.split(trainX):
 
 
 
-# 5.3 Create a new test set
+## 5.3 Create a new test set
 
 As I did in chapter 5.1, I will add two placeholder columns for the base model predictions in the test dataset as well. 
 
@@ -303,7 +287,7 @@ print(testX_with_metapreds)
 ![](/post/2020-04-24-ensemble-modeling-stacking_files/p44p13.png)
 
 
-# 5.4 Fit base models on the complete training set
+## 5.4 Fit base models on the complete training set
 
 Next, I will train the two base predictors on the complete training set to get the meta prediction values for the test dataset. This is similar to what I did for each fold in chapter 5.2.
 
@@ -324,7 +308,7 @@ testX_with_metapreds[:, -1] = knn_pred
 
 
 
-# 5.5 Train the stacked model
+## 5.5 Train the stacked model
 
 The last step is to train the logistic regression model on all the columns of the training dataset plus the meta predictions rom the base estimators. 
 

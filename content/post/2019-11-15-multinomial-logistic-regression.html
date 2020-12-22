@@ -7,29 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Multinomial logistic regression with scikit-learn</li>
-<li>3.1 Fit the model</li>
-<li>3.2 Model validation</li>
-<li>3.3 Calculated probabilities</li>
-<li>4 Multinomial Logit with the statsmodel library</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#multinomial-logistic-regression-with-scikit-learn">3 Multinomial logistic regression with scikit-learn</a>
+<ul>
+<li><a href="#fit-the-model">3.1 Fit the model</a></li>
+<li><a href="#model-validation">3.2 Model validation</a></li>
+<li><a href="#calculated-probabilities">3.3 Calculated probabilities</a></li>
+</ul></li>
+<li><a href="#multinomial-logit-with-the-statsmodel-library">4 Multinomial Logit with the statsmodel library</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27s1.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27s1.png" /></p>
 <p>In my previous posts, I explained how <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a> works. Short wrap up: we used a logistic regression or a support vector machine to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes. And this is the content this publication is about.</p>
 <p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
 </div>
@@ -57,10 +62,7 @@ import statsmodels.api as sm
 pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 <pre class="r"><code>iris = pd.read_csv(&quot;path/to/file/Iris_Data.csv&quot;)</code></pre>
 <pre class="r"><code>iris.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p1.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p1.png" /></p>
 </div>
 <div id="multinomial-logistic-regression-with-scikit-learn" class="section level1">
 <h1>3 Multinomial logistic regression with scikit-learn</h1>
@@ -68,156 +70,102 @@ pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 <pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
 y = iris[&#39;species&#39;]
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
-</div>
-<div id="fit-the-model" class="section level1">
-<h1>3.1 Fit the model</h1>
+<div id="fit-the-model" class="section level2">
+<h2>3.1 Fit the model</h2>
 <p>Here comes the Multinomial Logistic Regression:</p>
 <pre class="r"><code>log_reg = LogisticRegression(solver=&#39;newton-cg&#39;, multi_class=&#39;multinomial&#39;)
 log_reg.fit(trainX, trainY)
 y_pred = log_reg.predict(testX)</code></pre>
 </div>
-<div id="model-validation" class="section level1">
-<h1>3.2 Model validation</h1>
+<div id="model-validation" class="section level2">
+<h2>3.2 Model validation</h2>
 <p>Let’s print the accuracy and error rate:</p>
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))
 print(&#39;Error rate: {:.2f}&#39;.format(1 - accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p2.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p2.png" /></p>
 <p>Let’s have a look at the scores from cross validation:</p>
 <pre class="r"><code>clf = LogisticRegression(solver=&#39;newton-cg&#39;, multi_class=&#39;multinomial&#39;)
 scores = cross_val_score(clf, trainX, trainY, cv=5)
 scores</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z1.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z1.png" /></p>
 <pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std() * 2))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z2.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z2.png" /></p>
 <p>Let’s have a look at the confusion matrix:</p>
 <pre class="r"><code>confusion_matrix = confusion_matrix(testY, y_pred)
 print(confusion_matrix)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z3.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z3.png" /></p>
 <p>If you have many variables, it makes sense to plot the confusion matrix:</p>
 <pre class="r"><code>plt.matshow(confusion_matrix, cmap=plt.cm.gray)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png" />
-
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png" /></p>
 </div>
-</div>
-<div id="calculated-probabilities" class="section level1">
-<h1>3.3 Calculated probabilities</h1>
+<div id="calculated-probabilities" class="section level2">
+<h2>3.3 Calculated probabilities</h2>
 <p>We also have the opportunity to get the probabilities of the predicted classes:</p>
 <pre class="r"><code>probability = log_reg.predict_proba(testX)
 probability</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p3.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p3.png" /></p>
 <p>Each column here represents a class. The class with the highest probability is the output of the predicted class. Here we can see that the length of the probability data is the same as the length of the test data.</p>
 <pre class="r"><code>print(probability.shape[0])
 print(testX.shape[0])</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p4.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p4.png" /></p>
 <p>Let’s bring the above shown output into shape and a readable format.</p>
 <pre class="r"><code>df = pd.DataFrame(log_reg.predict_proba(testX), columns=log_reg.classes_)
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p5.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p5.png" /></p>
 <p>Tip: with the .classes_ function we get the order of the classes that Python gave.</p>
 <p>The sum of the probabilities must always be 1. We can see here:</p>
 <pre class="r"><code>df[&#39;sum&#39;] = df.sum(axis=1)
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p6.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p6.png" /></p>
 <p>Now let’s add the predicted classes…</p>
 <pre class="r"><code>df[&#39;predicted_class&#39;] = y_pred
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p7.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p7.png" /></p>
 <p>.. and the actual classes:</p>
 <pre class="r"><code>df[&#39;actual_class&#39;] = testY.to_frame().reset_index().drop(columns=&#39;index&#39;)
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p8.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p8.png" /></p>
 <p>Now we can do a plausibility check whether the classes were predicted correctly. Unfortunately, the comparison of two object columns works very badly in my test attempts. Therefore I built a small word around in which I convert the predicted_classes and actual_classes using the label encoder from scikit-learn and then continue to work with numerical values.</p>
 <pre class="r"><code>le = preprocessing.LabelEncoder()
 
 df[&#39;label_pred&#39;] = le.fit_transform(df[&#39;predicted_class&#39;])
 df[&#39;label_actual&#39;] = le.fit_transform(df[&#39;actual_class&#39;])
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p9.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p9.png" /></p>
 <p>Here we see that the two variables (predicted_class &amp; actual_class) were coded the same and can therefore be continued properly.</p>
 <pre class="r"><code>targets = df[&#39;predicted_class&#39;]   
 integerEncoded = le.fit_transform(targets)
 integerMapping=dict(zip(targets,integerEncoded))
 integerMapping</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p10.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p10.png" /></p>
 <pre class="r"><code>targets = df[&#39;actual_class&#39;]   
 integerEncoded = le.fit_transform(targets)
 integerMapping=dict(zip(targets,integerEncoded))
 integerMapping</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p11.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p11.png" /></p>
 <p>Now it’s time for our plausibility check whether the classes were predicted correctly. If the result of subtraction is 0, it was a correct estimate of the model.</p>
 <pre class="r"><code>df[&#39;check&#39;] = df[&#39;label_actual&#39;] - df[&#39;label_pred&#39;]
 df.head(7)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p12.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p12.png" /></p>
 <p>For better orientation, we give the observations descriptive names and delete unnecessary columns.</p>
 <pre class="r"><code>df[&#39;correct_prediction?&#39;] = np.where(df[&#39;check&#39;] == 0, &#39;True&#39;, &#39;False&#39;)
 df = df.drop([&#39;label_pred&#39;, &#39;label_actual&#39;, &#39;check&#39;], axis=1)
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p13.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p13.png" /></p>
 <p>Now we can use the generated “values” to manually calculate the accuracy again.</p>
 <pre class="r"><code>true_predictions = df[(df[&quot;correct_prediction?&quot;] == &#39;True&#39;)].shape[0]
 false_predictions = df[(df[&quot;correct_prediction?&quot;] == &#39;False&#39;)].shape[0]
 total = df[&quot;correct_prediction?&quot;].shape[0]
 
 print(&#39;manual calculated Accuracy is:&#39;, (true_predictions / total * 100))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p14.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p14.png" /></p>
 <p>Let’s take finally a look at the probabilities of the mispredicted classes.</p>
 <pre class="r"><code>wrong_pred = df[(df[&quot;correct_prediction?&quot;] == &#39;False&#39;)]
 wrong_pred</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p15.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p15.png" /></p>
 <p>We see we were close to the right class both times.</p>
+</div>
 </div>
 <div id="multinomial-logit-with-the-statsmodel-library" class="section level1">
 <h1>4 Multinomial Logit with the statsmodel library</h1>
@@ -230,10 +178,7 @@ mnlogit_mod = sm.MNLogit(y, x)
 mnlogit_fit = mnlogit_mod.fit()
 
 print (mnlogit_fit.summary())</code></pre>
-<div class="figure">
-<img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p16.png" />
-
-</div>
+<p><img src="/post/2019-11-15-multinomial-logistic-regression_files/p27p16.png" /></p>
 <p>How to interpret the results exactly can be read <a href="https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.MNLogit.html">“here”</a>.</p>
 </div>
 <div id="conclusion" class="section level1">

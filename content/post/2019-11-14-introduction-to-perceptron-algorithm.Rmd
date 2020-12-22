@@ -7,22 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
+ 
 
-
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Background information on Perceptron Algorithm
-+ 3 Loading the libraries and the data
-+ 4 Perceptron - Model Fitting and Evaluation
-+ 5 Hyperparameter optimization via Grid Search
-+ 6 OvO/OvR with the Perceptron
-+ 7 Perceptron with SGD training
-+ 8 Conclusion
-
-#1 Introduction
+# 1 Introduction
 
 I already wrote about ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) and ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/). I also showed how to optimize these linear classifiers using ["SGD training"](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/) and how to use the ["OneVersusRest and OneVersusAll"](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/) Classifier to convert binary classifiers to multiple classifiers.
 Let's come to a further binary classifier: the Perceptron.
@@ -31,7 +23,7 @@ For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://
 
 
 
-#2 Background information on Perceptron Algorithm
+# 2 Background information on Perceptron Algorithm
 
 
 In machine learning, the perceptron is an algorithm for supervised learning of binary classifiers. It's a type of linear classifier, i.e. a classification algorithm that makes its predictions based on a linear predictor function combining a set of weights with the feature vector.
@@ -66,7 +58,7 @@ In machine learning, the perceptron is an algorithm for supervised learning of b
 
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -92,7 +84,7 @@ from sklearn.linear_model import SGDClassifier
 ```
 
 
-#4 Perceptron - Model Fitting and Evaluation
+# 4 Perceptron - Model Fitting and Evaluation
 
 
 For the use of the perceptron, we first take only two variables from the iris data set ('sepal_length' and 'sepal_width') and only two iris types ('Iris-setosa' and 'Iris-virginica').
@@ -154,7 +146,7 @@ Wow 95% accuracy with the perceptron as binary classifier.
 
 
 
-#5 Hyperparameter optimization via Grid Search
+# 5 Hyperparameter optimization via Grid Search
 
 Now we are trying to improve the model performance using grid search.
 
@@ -185,7 +177,7 @@ print(grid.best_params_)
 ![](/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p6.png)
 
 
-#6 OvO/OvR with the Perceptron
+# 6 OvO/OvR with the Perceptron
 
 To show OvR and OvO using Perceptron, the iris data set is loaded again. This time without restrictions or filters.
 
@@ -232,7 +224,7 @@ print('Accuracy of OvO Classifier: {:.2f}'.format(accuracy_score(testY, y_pred))
 As we can see, OvR doesn't work quite as well but OvO does.
 
 
-#7 Perceptron with SGD training
+# 7 Perceptron with SGD training
 
 Finally I show how to use the Perceptron with SGD training.
 For this we reload the iris data set as already done in chapter 4.
@@ -263,7 +255,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 
 
-#8 Conclusion
+# 8 Conclusion
 
 This post described how the Perceptron algorithm works and how it can be used in python. Furthermore, the model improvement via grid search was discussed as well as the use of OvR and OvO to convert the binary classifier into a multiple.
 

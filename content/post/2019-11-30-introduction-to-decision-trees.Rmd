@@ -7,22 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Background information on decision trees
-+ 3 Loading the libraries and the data
-+ 4 Decision Trees with scikit-learn
-+ 5 Visualization of the decision tree
-+ 5.1 via graphviz
-+ 5.2 via scikit-learn
-+ 6 Model evaluation
-+ 7 Model improvement
-+ 7.1 Hyperparameter optimization via Grid Search
-+ 8 Conclusion
+ 
 
 
 # 1 Introduction
@@ -120,7 +110,7 @@ Here we assigned the predictor variables and the target variable to an object, d
 
 # 5 Visualization of the decision tree
 
-# 5.1 via graphviz
+## 5.1 via graphviz
 
 I recommend export_graphviz for the visualization of decision trees.
 
@@ -158,7 +148,7 @@ Calling the generated .jpg may show an image with poor quality. I therefore reco
 
 
 
-# 5.2 via scikit-learn
+## 5.2 via scikit-learn
 
 New in scikit-learn (version 0.21) is plot_tree and export_text.
 
@@ -218,7 +208,7 @@ Ok, here we get a slightly better result of 96.7% accuracy.
 
 # 7 Model improvement
 
-# 7.1 Hyperparameter optimization via Grid Search
+## 7.1 Hyperparameter optimization via Grid Search
 
 To get a more detailed impression of how grid search works have look ["here"](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV).
 
@@ -254,7 +244,7 @@ print(grid.best_params_)
 ![](/post/2019-11-30-introduction-to-decision-trees_files/p30p7.png)
 
 
-# 7.2 Pruning
+## 7.2 Pruning
 
 Another way to improve model performance is to prune a tree.
 

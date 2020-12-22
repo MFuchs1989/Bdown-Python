@@ -7,35 +7,42 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Data pre-processing</li>
-<li>4 Logistic Regression</li>
-<li>5 Resampling methods</li>
-<li>5.1 Oversampling</li>
-<li>5.2 Undersampling</li>
-<li>6 ML Algorithms for imbalanced datasets</li>
-<li>6.1 SMOTE (Synthetic Minority Over-sampling Technique)</li>
-<li>6.2 NearMiss</li>
-<li>7 Penalize Algorithms</li>
-<li>8 Tree-Based Algorithms</li>
-<li>9 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a></li>
+<li><a href="#logistic-regression">4 Logistic Regression</a></li>
+<li><a href="#resampling-methods">5 Resampling methods</a>
+<ul>
+<li><a href="#oversampling">5.1 Oversampling</a></li>
+<li><a href="#undersampling">5.2 Undersampling</a></li>
+</ul></li>
+<li><a href="#ml-algorithms-for-imbalanced-datasets">6 ML Algorithms for imbalanced datasets</a>
+<ul>
+<li><a href="#smote-synthetic-minority-over-sampling-technique">6.1 SMOTE (Synthetic Minority Over-sampling Technique)</a></li>
+<li><a href="#nearmiss">6.2 NearMiss</a></li>
+</ul></li>
+<li><a href="#penalize-algorithms">7 Penalize Algorithms</a></li>
+<li><a href="#tree-based-algorithms">8 Tree-Based Algorithms</a></li>
+<li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>The validation metric ‚Accuracy‘ is a surprisingly common problem in machine learning (specifically in classification), occurring in datasets with a disproportionate ratio of observations in each class. Standard accuracy no longer reliably measures performance, which makes model training much trickier. Possibilities for dealing with imbalanced datasets should be dealt with in this publication.</p>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s1.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s1.png" /></p>
 <p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
@@ -74,10 +81,7 @@ bank = bank.rename(columns={&#39;y&#39;:&#39;final_subscribed&#39;})</code></pre
 <pre class="r"><code>sns.countplot(x=&#39;final_subscribed&#39;, data=bank, palette=&#39;hls&#39;)
 print(plt.show())
 print(bank[&#39;final_subscribed&#39;].value_counts())</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p1.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
@@ -105,14 +109,12 @@ to_keep=[i for i in data_vars if i not in cat_vars]
 bank_final=bank[to_keep]</code></pre>
 <p>The final data record we received now has 41,188 rows and 64 columns.</p>
 <pre class="r"><code>bank_final.shape</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p2.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p2.png" /></p>
 </div>
 <div id="logistic-regression" class="section level1">
 <h1>4 Logistic Regression</h1>
-<p>Predicting whether a customer will finally subscribed is a classic binary classification problem. We can use logistic regression for this.</p>
+<p>Predicting whether a customer will finally subscribed is a classic binary classification problem.
+We can use logistic regression for this.</p>
 <pre class="r"><code>x = bank_final.drop(&#39;final_subscribed&#39;, axis=1)
 y = bank_final[&#39;final_subscribed&#39;]
 
@@ -123,37 +125,27 @@ clf_0_LogReg.fit(trainX, trainY)
 y_pred = clf_0_LogReg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p3.png" />
-
-</div>
-<p>Accuracy of 0.91 not bad ! But what about recall? If you are not familiar with this metric look at this <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Post (Chapter 6.3.2 Further metrics)”</a>.</p>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p3.png" /></p>
+<p>Accuracy of 0.91 not bad !
+But what about recall? If you are not familiar with this metric look at this <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Post (Chapter 6.3.2 Further metrics)”</a>.</p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p4.png" />
-
-</div>
-<p>Mh ok … 0.38 is not the best value. Maybe this is because the target class is imbalanced?</p>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p4.png" /></p>
+<p>Mh ok … 0.38 is not the best value.
+Maybe this is because the target class is imbalanced?</p>
 <p>Let’s see how we can fix this problem and what the other models deliver for results. The RocAuc-Score is a good way to compare the models with one another.</p>
 <pre class="r"><code>prob_y_0 = clf_0_LogReg.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_0)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p5.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p5.png" /></p>
 </div>
 <div id="resampling-methods" class="section level1">
 <h1>5 Resampling methods</h1>
 <p>A widely adopted technique for dealing with highly unbalanced dataframes is called resampling. It consists of removing samples from the majority class (under-sampling) and/or adding more examples from the minority class (over-sampling). Despite the advantage of balancing classes, these techniques also have their weaknesses. You know there is no free lunch.</p>
-<p>The simplest implementation of over-sampling is to duplicate random records from the minority class, which can cause overfitting. In under-sampling, the simplest technique involves removing random records from the majority class, which can cause loss of information. I will show both methods below.</p>
-</div>
-<div id="oversampling" class="section level1">
-<h1>5.1 Oversampling</h1>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s2.png" />
-
-</div>
+<p>The simplest implementation of over-sampling is to duplicate random records from the minority class, which can cause overfitting. In under-sampling, the simplest technique involves removing random records from the majority class, which can cause loss of information.
+I will show both methods below.</p>
+<div id="oversampling" class="section level2">
+<h2>5.1 Oversampling</h2>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s2.png" /></p>
 <p>Oversampling or up-sampling is the process of randomly duplicating observations from the minority class in order to reinforce its signal.</p>
 <p>There are several heuristics for doing so, but the most common way is to simply resample with replacement:</p>
 <ul>
@@ -169,10 +161,7 @@ roc_auc_score(testY, prob_y_0)</code></pre>
 </ul>
 <p>First let’s take a quick look at the exact distribution of the target variable.</p>
 <pre class="r"><code>print(bank_final[&#39;final_subscribed&#39;].value_counts())</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p6.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p6.png" /></p>
 <pre class="r"><code># Separate majority and minority classes
 df_majority = bank_final[bank_final.final_subscribed==0]
 df_minority = bank_final[bank_final.final_subscribed==1]
@@ -187,10 +176,7 @@ df_minority_upsampled = resample(df_minority,
 df_upsampled = pd.concat([df_majority, df_minority_upsampled])</code></pre>
 <p>Below we see that our data set is now balanced.</p>
 <pre class="r"><code>print(df_upsampled[&#39;final_subscribed&#39;].value_counts())</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p7.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p7.png" /></p>
 <p>Let’s train the Logisitc Regression model again.</p>
 <pre class="r"><code>x = df_upsampled.drop(&#39;final_subscribed&#39;, axis=1)
 y = df_upsampled[&#39;final_subscribed&#39;]
@@ -202,31 +188,21 @@ clf_1_LogReg.fit(trainX, trainY)
 y_pred = clf_1_LogReg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p8.png" />
-
-</div>
-<p>We see that the accuracy has decreased. What about recall?</p>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p8.png" /></p>
+<p>We see that the accuracy has decreased.
+What about recall?</p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p9.png" />
-
-</div>
-<p>Looks better! For a later model comparison we calculate the RocAuc-Score.</p>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p9.png" /></p>
+<p>Looks better!
+For a later model comparison we calculate the RocAuc-Score.</p>
 <pre class="r"><code>prob_y_1 = clf_1_LogReg.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_1)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p10.png" />
-
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p10.png" /></p>
 </div>
-</div>
-<div id="undersampling" class="section level1">
-<h1>5.2 Undersampling</h1>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s3.png" />
-
-</div>
+<div id="undersampling" class="section level2">
+<h2>5.2 Undersampling</h2>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s3.png" /></p>
 <p>Undersampling or down-sampling involves randomly removing observations from the majority class to prevent its signal from dominating the learning algorithm. The most common heuristic for doing so is resampling without replacement.</p>
 <p>The process is quite similar to that of up-sampling. Here are the steps:</p>
 <ul>
@@ -253,10 +229,7 @@ df_majority_downsampled = resample(df_majority,
 df_downsampled = pd.concat([df_majority_downsampled, df_minority])</code></pre>
 <p>We see a balanced record again.</p>
 <pre class="r"><code>print(df_downsampled[&#39;final_subscribed&#39;].value_counts())</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p11.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p11.png" /></p>
 <p>Let’s train a further Logisitc Regression model and have a look at the metrics.</p>
 <pre class="r"><code>x = df_downsampled.drop(&#39;final_subscribed&#39;, axis=1)
 y = df_downsampled[&#39;final_subscribed&#39;]
@@ -268,29 +241,20 @@ clf_2_LogReg.fit(trainX, trainY)
 y_pred = clf_2_LogReg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p12.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p12.png" /></p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p13.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p13.png" /></p>
 <pre class="r"><code>prob_y_2 = clf_2_LogReg.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_2)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p14.png" />
-
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p14.png" /></p>
 </div>
 </div>
 <div id="ml-algorithms-for-imbalanced-datasets" class="section level1">
 <h1>6 ML Algorithms for imbalanced datasets</h1>
 <p>Following we’ll discuss two of the common and simple ways to deal with the problem of unbalanced classes using machine learning algorithms.</p>
-</div>
-<div id="smote-synthetic-minority-over-sampling-technique" class="section level1">
-<h1>6.1 SMOTE (Synthetic Minority Over-sampling Technique)</h1>
+<div id="smote-synthetic-minority-over-sampling-technique" class="section level2">
+<h2>6.1 SMOTE (Synthetic Minority Over-sampling Technique)</h2>
 <p>SMOTE is an over-sampling method. What it does is, it creates synthetic (not duplicate) samples of the minority class. Hence making the minority class equal to the majority class. SMOTE does this by selecting similar records and altering that record one column at a time by a random amount within the difference to the neighbouring records.</p>
 <pre class="r"><code>x = bank_final.drop(&#39;final_subscribed&#39;, axis=1)
 y = bank_final[&#39;final_subscribed&#39;]
@@ -309,35 +273,23 @@ print(&quot;Before OverSampling, counts of label &#39;0&#39;: {} \n&quot;.format
 
 print(&quot;After OverSampling, counts of label &#39;1&#39;:&quot;, trainY_smote[(trainY_smote[&quot;final_subscribed&quot;] == 1)].shape[0])
 print(&quot;After OverSampling, counts of label &#39;0&#39;:&quot;, trainY_smote[(trainY_smote[&quot;final_subscribed&quot;] == 0)].shape[0])</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p15.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p15.png" /></p>
 <pre class="r"><code>clf_3_LogReg = LogisticRegression()
 clf_3_LogReg.fit(trainX_smote, trainY_smote)
 
 y_pred = clf_3_LogReg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p16.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p16.png" /></p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p17.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p17.png" /></p>
 <pre class="r"><code>prob_y_3 = clf_3_LogReg.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_3)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p18.png" />
-
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p18.png" /></p>
 </div>
-</div>
-<div id="nearmiss" class="section level1">
-<h1>6.2 NearMiss</h1>
+<div id="nearmiss" class="section level2">
+<h2>6.2 NearMiss</h2>
 <p>NearMiss is an under-sampling technique. Instead of resampling the Minority class, using a distance, this will make the majority class equal to minority class.</p>
 <pre class="r"><code>x = bank_final.drop(&#39;final_subscribed&#39;, axis=1)
 y = bank_final[&#39;final_subscribed&#39;]
@@ -356,36 +308,26 @@ print(&quot;Before UnderSampling, counts of label &#39;0&#39;: {} \n&quot;.forma
 
 print(&quot;After UnderSampling, counts of label &#39;1&#39;:&quot;, trainY_NearMiss[(trainY_NearMiss[&quot;final_subscribed&quot;] == 1)].shape[0])
 print(&quot;After UnderSampling, counts of label &#39;0&#39;:&quot;, trainY_NearMiss[(trainY_NearMiss[&quot;final_subscribed&quot;] == 0)].shape[0])</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p19.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p19.png" /></p>
 <pre class="r"><code>clf_4_LogReg = LogisticRegression()
 clf_4_LogReg.fit(trainX_NearMiss, trainY_NearMiss)
 
 y_pred = clf_4_LogReg.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p20.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p20.png" /></p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p21.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p21.png" /></p>
 <pre class="r"><code>prob_y_4 = clf_4_LogReg.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_4)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p22.png" />
-
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p22.png" /></p>
 </div>
 </div>
 <div id="penalize-algorithms" class="section level1">
 <h1>7 Penalize Algorithms</h1>
-<p>The next possibility is to use penalized learning algorithms that increase the cost of classification mistakes on the minority class. A popular algorithm for this technique is Penalized-SVM:</p>
+<p>The next possibility is to use penalized learning algorithms that increase the cost of classification mistakes on the minority class.
+A popular algorithm for this technique is Penalized-SVM:</p>
 <pre class="r"><code>x = bank_final.drop(&#39;final_subscribed&#39;, axis=1)
 y = bank_final[&#39;final_subscribed&#39;]
 
@@ -399,22 +341,13 @@ clf_SVC.fit(trainX, trainY)
 y_pred = clf_SVC.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p23.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p23.png" /></p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p24.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p24.png" /></p>
 <pre class="r"><code>prob_y_SVM = clf_SVC.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_SVM)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p25.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p25.png" /></p>
 </div>
 <div id="tree-based-algorithms" class="section level1">
 <h1>8 Tree-Based Algorithms</h1>
@@ -430,29 +363,17 @@ clf_RFC.fit(trainX, trainY)
 y_pred = clf_RFC.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p26.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p26.png" /></p>
 <pre class="r"><code>recall_score(testY, y_pred)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p27.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p27.png" /></p>
 <pre class="r"><code>prob_y_RFC = clf_RFC.predict_proba(testX)[::,1]
 
 roc_auc_score(testY, prob_y_RFC)</code></pre>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p28.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37p28.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>9 Conclusion</h1>
 <p>In this post I showed what effects imbalanced dataframes can have on the creation of machine learning models, which metrics can be used to measure actual performance and what can be done with imbalanced dataframes in order to be able to train machine learning models with them.</p>
 <p>Here is an overview of the metrics of the models used in this publication:</p>
-<div class="figure">
-<img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s4.png" />
-
-</div>
+<p><img src="/post/2020-01-16-dealing-with-imbalanced-classes_files/p37s4.png" /></p>
 </div>

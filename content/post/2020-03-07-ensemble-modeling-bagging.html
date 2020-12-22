@@ -7,29 +7,39 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Backgroundinformation on Bagging</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>5 Decision Tree Classifier</li>
-<li>6 Bagging Classifier</li>
-<li>7 Random Forest Classifier</li>
-<li>7.1 Train the Random Forest Classifier</li>
-<li>7.2 Evaluate the Forest Classifier</li>
-<li>7.2.1 StratifiedKFold</li>
-<li>7.2.2 KFold</li>
-<li>7.3 Hyperparameter optimization via Randomized Search</li>
-<li>7.4 Determination of feature importance</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#backgroundinformation-on-bagging">2 Backgroundinformation on Bagging</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a></li>
+<li><a href="#decision-tree-classifier">5 Decision Tree Classifier</a></li>
+<li><a href="#bagging-classifier">6 Bagging Classifier</a></li>
+<li><a href="#random-forest-classifier">7 Random Forest Classifier</a>
+<ul>
+<li><a href="#train-the-random-forest-classifier">7.1 Train the Random Forest Classifier</a></li>
+<li><a href="#evaluate-the-forest-classifier">7.2 Evaluate the Forest Classifier</a>
+<ul>
+<li><a href="#stratifiedkfold">7.2.1 StratifiedKFold</a></li>
+<li><a href="#kfold">7.2.2 KFold</a></li>
+</ul></li>
+<li><a href="#hyperparameter-optimization-via-randomized-search">7.3 Hyperparameter optimization via Randomized Search</a></li>
+<li><a href="#determination-of-feature-importance">7.4 Determination of feature importance</a></li>
+</ul></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>So far we have dealt very intensively with the use of different classification algorithms. Now let’s come to some ensemble methods.
@@ -188,9 +198,8 @@ print(&#39;Bagging Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Ac
 <h1>7 Random Forest Classifier</h1>
 <p>Random Forest is probably one of the best-known algorithms worldwide and also builds on the bootstrapping method.
 Random Forest not only bootstrapping the data points in the overall training dataset, but also bootstrapping the features available for each tree to split on.</p>
-</div>
-<div id="train-the-random-forest-classifier" class="section level1">
-<h1>7.1 Train the Random Forest Classifier</h1>
+<div id="train-the-random-forest-classifier" class="section level2">
+<h2>7.1 Train the Random Forest Classifier</h2>
 <pre class="r"><code>rf_params = {
     &#39;n_estimators&#39;: 100,
     &#39;criterion&#39;: &#39;entropy&#39;,
@@ -211,11 +220,10 @@ print(&#39;Random Forest Classifier:\n&gt; Accuracy on training data = {:.4f}\n&
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42p8.png" /></p>
 <p>As we can see, we were able to increase the model predictive power again.</p>
 </div>
-<div id="evaluate-the-forest-classifier" class="section level1">
-<h1>7.2 Evaluate the Forest Classifier</h1>
-</div>
-<div id="stratifiedkfold" class="section level1">
-<h1>7.2.1 StratifiedKFold</h1>
+<div id="evaluate-the-forest-classifier" class="section level2">
+<h2>7.2 Evaluate the Forest Classifier</h2>
+<div id="stratifiedkfold" class="section level3">
+<h3>7.2.1 StratifiedKFold</h3>
 <p>The StratifiedKFold class in scikit-learn implements a combination of the cross-validation and sampling together in one class.</p>
 <pre class="r"><code>x = bank.drop(&#39;y&#39;, axis=1).values
 y = bank[&#39;y&#39;].values
@@ -243,8 +251,8 @@ scores</code></pre>
 This could possibly be because the target values are very unbalanced.
 Let’s try another metric.</p>
 </div>
-<div id="kfold" class="section level1">
-<h1>7.2.2 KFold</h1>
+<div id="kfold" class="section level3">
+<h3>7.2.2 KFold</h3>
 <pre class="r"><code>scores = cross_val_score(rf, trainX, trainY, cv=5)
 scores</code></pre>
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42p11.png" /></p>
@@ -252,8 +260,9 @@ scores</code></pre>
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42p12.png" /></p>
 <p>That looks more realistic.</p>
 </div>
-<div id="hyperparameter-optimization-via-randomized-search" class="section level1">
-<h1>7.3 Hyperparameter optimization via Randomized Search</h1>
+</div>
+<div id="hyperparameter-optimization-via-randomized-search" class="section level2">
+<h2>7.3 Hyperparameter optimization via Randomized Search</h2>
 <p>Let’s see how we can improve the model.
 We’ve usually done this with Grid Search so far. This time we use Randomized Search.
 This method is not so computationally intensive and therefore well suited for random forest.</p>
@@ -283,8 +292,8 @@ for i, row in results.head().iterrows():
     print(&quot;Model Hyperparameters: {}\n&quot;.format(row.params))</code></pre>
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42p16.png" /></p>
 </div>
-<div id="determination-of-feature-importance" class="section level1">
-<h1>7.4 Determination of feature importance</h1>
+<div id="determination-of-feature-importance" class="section level2">
+<h2>7.4 Determination of feature importance</h2>
 <pre class="r"><code>feat_imps = pd.DataFrame({&#39;importance&#39;: rf.feature_importances_}, index=bank.columns[:-1])
 feat_imps.sort_values(by=&#39;importance&#39;, ascending=False, inplace=True)</code></pre>
 <pre class="r"><code>feat_imps.plot(kind=&#39;bar&#39;, figsize=(10,7))
@@ -294,6 +303,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42p17.png" /></p>
 <p>As we can see, very few features matter. It would therefore be worthwhile to use feature selection.
 How you can do this see here: <a href="https://michael-fuchs-python.netlify.app/2020/01/31/feature-selection-methods-for-classification-tasks/">“Feature selection methods for classification tasks”</a></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>8 Conclusion</h1>

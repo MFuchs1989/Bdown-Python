@@ -7,33 +7,42 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on Naive Bayes Classifier</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>5 Naive Bayes in scikit-learn</li>
-<li>5.1 <strong>Binary Classification</strong></li>
-<li>5.1.1 Gaussian Naive Bayes</li>
-<li>5.1.2 Bernoulli Naive Bayes</li>
-<li>5.2 <strong>Multiple Classification</strong></li>
-<li>5.2.1 Gaussian Naive Bayes</li>
-<li>5.2.2 Multinomial Naive Bayes</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-naive-bayes-classifier">2 Background information on Naive Bayes Classifier</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a></li>
+<li><a href="#naive-bayes-in-scikit-learn">5 Naive Bayes in scikit-learn</a>
+<ul>
+<li><a href="#binary-classification">5.1 Binary Classification</a>
+<ul>
+<li><a href="#gaussian-naive-bayes">5.1.1 Gaussian Naive Bayes</a></li>
+<li><a href="#bernoulli-naive-bayes">5.1.2 Bernoulli Naive Bayes</a></li>
+</ul></li>
+<li><a href="#multiple-classification">5.2 Multiple Classification</a>
+<ul>
+<li><a href="#gaussian-naive-bayes-1">5.2.1 Gaussian Naive Bayes</a></li>
+<li><a href="#multinomial-naive-bayes">5.2.2 Multinomial Naive Bayes</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33s1.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33s1.png" /></p>
 <p>Now in the series of multiple classifiers we come to a very easy to use probability model: The Naive Bayes Classifier.</p>
 <p>Due to the fact that this algorithm has hardly any hyperparameters, it is recommended to always use the Naive Bayes Classifier first in the event of classification problems. If this does not give satisfactory results, however, more complex algorithms should be used.</p>
 <p>For this post the dataset <em>Wine Quality</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf" class="uri">https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf</a>.</p>
@@ -47,7 +56,8 @@ tags:
 <p><em>Gaussian Naive Bayes</em></p>
 <p>Perhaps the easiest naive Bayes classifier to understand is Gaussian naive Bayes Classifier. When the predictors take up a continuous value and are not discrete, we assume that these values are sampled from a gaussian distribution.</p>
 <p><em>Multinomial Naive Bayes</em></p>
-<p>The assumption about Gaussian just described is by no means the only simple assumption that could be used to specify the generative distribution for each label. Another very useful example is multinomial naive Bayes, where the features are assumed to be generated from a simple multinomial distribution. The multinomial distribution describes the probability of observing counts among a number of categories, and thus multinomial naive Bayes is most appropriate for features that represent counts or count rates. The idea is precisely the same as before, except that instead of modeling the data distribution with the best-fit Gaussian, we model the data distribuiton with a best-fit multinomial distribution.</p>
+<p>The assumption about Gaussian just described is by no means the only simple assumption that could be used to specify the generative distribution for each label. Another very useful example is multinomial naive Bayes, where the features are assumed to be generated from a simple multinomial distribution. The multinomial distribution describes the probability of observing counts among a number of categories, and thus multinomial naive Bayes is most appropriate for features that represent counts or count rates.
+The idea is precisely the same as before, except that instead of modeling the data distribution with the best-fit Gaussian, we model the data distribuiton with a best-fit multinomial distribution.</p>
 <p><em>Bernoulli Naive Bayes</em></p>
 <p>This is similar to the multinomial naive bayes but the predictors are boolean variables. The parameters that we use to predict the class variable take up only values Yes or No.</p>
 <p><strong>Pros and Cons of Naive Bayes</strong></p>
@@ -86,20 +96,15 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.naive_bayes import MultinomialNB</code></pre>
 <pre class="r"><code>wine = pd.read_csv(&quot;path/to/file/winequality.csv&quot;)
 wine.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p1.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4 Data pre-processing</h1>
 <p>Let’s have a glimpse at the variable ‘type’:</p>
 <pre class="r"><code>wine[&#39;type&#39;].value_counts().T</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p2.png" />
-
-</div>
-<p>The division between white wine and red wine is not quite equal in this data set. Let’s encode this variable for further processing.</p>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p2.png" /></p>
+<p>The division between white wine and red wine is not quite equal in this data set.
+Let’s encode this variable for further processing.</p>
 <pre class="r"><code>encoder = LabelBinarizer()
 encoded_type = encoder.fit_transform(wine.type.values.reshape(-1,1))
 
@@ -107,10 +112,7 @@ wine[&#39;encoded_type&#39;] = encoded_type
 wine[&#39;encoded_type&#39;] = wine[&#39;encoded_type&#39;].astype(&#39;int64&#39;)
 wine = wine.drop(&#39;type&#39;, axis=1)
 wine.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p3.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p3.png" /></p>
 <p>Now we check for missing values:</p>
 <pre class="r"><code>def missing_values_table(df):
         # Total missing values
@@ -140,18 +142,12 @@ wine.head()</code></pre>
         return mis_val_table_ren_columns
 
 missing_values_table(wine)</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p4.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p4.png" /></p>
 <p>As we can see, there are a couple of missing values. Let’s remove them.</p>
 <pre class="r"><code>wine = wine.dropna()</code></pre>
 <p>Let’s have a further glimpse at the variable ‘quality’:</p>
 <pre class="r"><code>wine[&#39;quality&#39;].value_counts().T</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p5.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p5.png" /></p>
 <p>7 of 9 categories are represented. To simplify these, they are now grouped into just 3 categories (1-4, 5-7 and 8-9).</p>
 <pre class="r"><code>def new_quality_ranking(df):
 
@@ -168,30 +164,22 @@ wine[&#39;new_quality_ranking&#39;] = wine.apply(new_quality_ranking, axis = 1)
 wine = wine.drop(&#39;quality&#39;, axis=1)
 wine = wine.dropna()
 wine.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p6.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p6.png" /></p>
 <p>Here is the new division.</p>
 <pre class="r"><code>wine[&#39;new_quality_ranking&#39;].value_counts().T</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p7.png" />
-
-</div>
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p7.png" /></p>
 </div>
 <div id="naive-bayes-in-scikit-learn" class="section level1">
 <h1>5 Naive Bayes in scikit-learn</h1>
 <p>The following shows how the naive bayes classifier types described above can be used.</p>
-</div>
-<div id="binary-classification" class="section level1">
-<h1>5.1 Binary Classification</h1>
+<div id="binary-classification" class="section level2">
+<h2>5.1 Binary Classification</h2>
 <p>For the binary classification, the wine type is our target variable.</p>
 <pre class="r"><code>x = wine.drop(&#39;encoded_type&#39;, axis=1)
 y = wine[&#39;encoded_type&#39;]
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
-</div>
-<div id="gaussian-naive-bayes" class="section level1">
-<h1>5.1.1 Gaussian Naive Bayes</h1>
+<div id="gaussian-naive-bayes" class="section level3">
+<h3>5.1.1 Gaussian Naive Bayes</h3>
 <pre class="r"><code>gnb = GaussianNB()
 
 gnb.fit(trainX, trainY)
@@ -199,13 +187,10 @@ gnb.fit(trainX, trainY)
 y_pred = gnb.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p8.png" />
-
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p8.png" /></p>
 </div>
-</div>
-<div id="bernoulli-naive-bayes" class="section level1">
-<h1>5.1.2 Bernoulli Naive Bayes</h1>
+<div id="bernoulli-naive-bayes" class="section level3">
+<h3>5.1.2 Bernoulli Naive Bayes</h3>
 <pre class="r"><code>bnb = BernoulliNB(binarize=0.0)
 
 bnb.fit(trainX, trainY)
@@ -213,20 +198,17 @@ bnb.fit(trainX, trainY)
 y_pred = bnb.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p9.png" />
-
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p9.png" /></p>
 </div>
 </div>
-<div id="multiple-classification" class="section level1">
-<h1>5.2 Multiple Classification</h1>
+<div id="multiple-classification" class="section level2">
+<h2>5.2 Multiple Classification</h2>
 <p>For the multiple classification, the quality ranking is our target variable.</p>
 <pre class="r"><code>x = wine.drop(&#39;new_quality_ranking&#39;, axis=1)
 y = wine[&#39;new_quality_ranking&#39;]
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
-</div>
-<div id="gaussian-naive-bayes-1" class="section level1">
-<h1>5.2.1 Gaussian Naive Bayes</h1>
+<div id="gaussian-naive-bayes-1" class="section level3">
+<h3>5.2.1 Gaussian Naive Bayes</h3>
 <pre class="r"><code>gnb = GaussianNB()
 
 gnb.fit(trainX, trainY)
@@ -234,13 +216,10 @@ gnb.fit(trainX, trainY)
 y_pred = gnb.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p10.png" />
-
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p10.png" /></p>
 </div>
-</div>
-<div id="multinomial-naive-bayes" class="section level1">
-<h1>5.2.2 Multinomial Naive Bayes</h1>
+<div id="multinomial-naive-bayes" class="section level3">
+<h3>5.2.2 Multinomial Naive Bayes</h3>
 <pre class="r"><code>mnb = MultinomialNB()
 
 mnb.fit(trainX, trainY)
@@ -248,14 +227,14 @@ mnb.fit(trainX, trainY)
 y_pred = mnb.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p11.png" />
-
+<p><img src="/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p11.png" /></p>
+</div>
 </div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
-<p>We showed in this post what Naive Bayes Classifiers are and how they can be used. Here are a few more Applications of Naive Bayes Algorithms:</p>
+<p>We showed in this post what Naive Bayes Classifiers are and how they can be used.
+Here are a few more Applications of Naive Bayes Algorithms:</p>
 <ul>
 <li>Real time Prediction: Naive Bayes is an eager learning classifier and it is sure fast. Thus, it could be used for making predictions in real time.</li>
 <li>Multi class Prediction: This algorithm is also well known for multi class prediction feature.</li>

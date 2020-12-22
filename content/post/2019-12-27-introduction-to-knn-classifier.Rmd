@@ -7,22 +7,16 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Background information on KNN
-+ 3 Loading the libraries and the data
-+ 4 KNN - Model Fitting and Evaluation
-+ 5 Determination of K and Model Improvement
-+ 6 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 K Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms.
 The KNN algorithm can be used for both classification (binary and multiple) and regression problems.
@@ -30,7 +24,7 @@ The KNN algorithm can be used for both classification (binary and multiple) and 
 For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
 
 
-#2 Background information on KNN
+# 2 Background information on KNN
 
 In general we can say KNN is a non-parametric and lazy learning algorithm.
 
@@ -83,7 +77,7 @@ I have shown the individual steps visually below:
 
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -112,7 +106,7 @@ iris
 
 ![](/post/2019-12-27-introduction-to-knn-classifier_files/p35p4.png)
 
-#4 KNN - Model Fitting and Evaluation
+# 4 KNN - Model Fitting and Evaluation
 
 As always, we split the data set into a training and a test part.
 
@@ -154,7 +148,7 @@ print(scores)
 As we can see, there is still room for improvement.
 
 
-#5 Determination of K and Model Improvement
+# 5 Determination of K and Model Improvement
 
 
 With the following for loop we have the respective accuracy rate output for different K's (here K:1-33).
@@ -233,7 +227,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 
 ![](/post/2019-12-27-introduction-to-knn-classifier_files/p35p11.png)
 
-#6 Conclusion
+# 6 Conclusion
 
 
 This publication explains what the K Nearest Neighbor Classifier is and how we can use it to solve classification problems. Furthermore, the determination of K was discussed.

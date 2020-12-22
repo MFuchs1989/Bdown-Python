@@ -7,23 +7,29 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Generating some test data</li>
-<li>4 Weaknesses of k-Means</li>
-<li>5 Gaussian Mixture Models</li>
-<li>6 Determine the optimal k for GMM</li>
-<li>7 GMM for density estimation</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#generating-some-test-data">3 Generating some test data</a></li>
+<li><a href="#weaknesses-of-k-means">4 Weaknesses of k-Means</a></li>
+<li><a href="#gaussian-mixture-models">5 Gaussian Mixture Models</a></li>
+<li><a href="#determine-the-optimal-k-for-gmm">6 Determine the optimal k for GMM</a></li>
+<li><a href="#gmm-for-density-estimation">7 GMM for density estimation</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Let’s come to a further unsupervised learning cluster algorithm: The Gaussian Mixture Models.

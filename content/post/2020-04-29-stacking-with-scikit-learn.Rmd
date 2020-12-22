@@ -7,22 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Importing the libraries and the data
-+ 3 Data pre-processing
-+ 4 Stacking with scikit learn
-+ 4.1 Model 1 incl. GridSearch
-+ 4.2 Model 2 incl. GridSearch
-+ 5 Conclusion
-
-
-
+ 
+ 
 # 1 Introduction
 
 In my previous post I explained the ["ensemble modeling method 'Stacking'"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/). As it is described there, it is entirely applicable. However, it can be made even easier with the machine learning library scikit learn. I will show you how to do this in the following article.
@@ -130,7 +121,7 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 Since we have now prepared the data set accordingly, I will now show you how to use scikit-learn's StackingClassifier.
 
 
-# 4.1 Model 1 incl. GridSearch
+## 4.1 Model 1 incl. GridSearch
 
 The principle is the same as described in ["Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/).
 As a base model, we use a linear support vector classifier and the KNN classifier. The final estimator will be a logistic regression.
@@ -234,7 +225,7 @@ print('Stacked Classifier with GridSearch:\n> Accuracy on training data = {:.4f}
 
 
 
-# 4.2 Model 2 incl. GridSearch
+## 4.2 Model 2 incl. GridSearch
 
 Let's see if we can improve the forecast quality again with other base models.
 Here we'll use KNN again, Random Forest and Gaussion Classifier:

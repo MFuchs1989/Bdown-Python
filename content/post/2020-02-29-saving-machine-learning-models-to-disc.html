@@ -7,23 +7,28 @@ categories:
   - R
 tags:
   - R Markdown
-
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Visualization of the data</li>
-<li>4 Model training</li>
-<li>5 Safe a model to disc</li>
-<li>6 Load a model from disc</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#visualization-of-the-data">3 Visualization of the data</a></li>
+<li><a href="#model-training">4 Model training</a></li>
+<li><a href="#safe-a-model-to-disc">5 Safe a model to disc</a></li>
+<li><a href="#load-a-model-from-disc">6 Load a model from disc</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance?

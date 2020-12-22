@@ -7,28 +7,15 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+ 
 
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Background information on Naive Bayes Classifier
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 5 Naive Bayes in scikit-learn
-+ 5.1 **Binary Classification**
-+ 5.1.1 Gaussian Naive Bayes
-+ 5.1.2 Bernoulli Naive Bayes
-+ 5.2 **Multiple Classification**
-+ 5.2.1 Gaussian Naive Bayes
-+ 5.2.2 Multinomial Naive Bayes
-+ 6 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33s1.png)
 
@@ -41,7 +28,7 @@ Due to the fact that this algorithm has hardly any hyperparameters, it is recomm
 For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf>.
 
 
-#2 Background information on Naive Bayes Classifier
+# 2 Background information on Naive Bayes Classifier
 
 **Naive Bayes classifiers**
 
@@ -88,7 +75,7 @@ This is similar to the multinomial naive bayes but the predictors are boolean va
 + Another limitation of Naive Bayes is the assumption of independent predictors. In real life, it is almost impossible that we get a set of predictors which are completely independent.
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -117,7 +104,7 @@ wine.head()
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p1.png)
 
 
-#4 Data pre-processing
+# 4 Data pre-processing
 
 Let's have a glimpse at the variable 'type':
 
@@ -227,11 +214,11 @@ wine['new_quality_ranking'].value_counts().T
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p7.png)
 
 
-#5 Naive Bayes in scikit-learn
+# 5 Naive Bayes in scikit-learn
 
 The following shows how the naive bayes classifier types described above can be used.
 
-#5.1 Binary Classification
+## 5.1 Binary Classification
 
 For the binary classification, the wine type is our target variable.
 
@@ -241,7 +228,7 @@ y = wine['encoded_type']
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
-#5.1.1 Gaussian Naive Bayes
+### 5.1.1 Gaussian Naive Bayes
 
 ```{r, eval=F, echo=T}
 gnb = GaussianNB()
@@ -255,7 +242,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p8.png)
 
-#5.1.2 Bernoulli Naive Bayes
+### 5.1.2 Bernoulli Naive Bayes
 
 ```{r, eval=F, echo=T}
 bnb = BernoulliNB(binarize=0.0)
@@ -269,7 +256,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p9.png)
 
-#5.2 Multiple Classification
+## 5.2 Multiple Classification
 
 For the multiple classification, the quality ranking is our target variable.
 
@@ -279,7 +266,7 @@ y = wine['new_quality_ranking']
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
-#5.2.1 Gaussian Naive Bayes
+### 5.2.1 Gaussian Naive Bayes
 
 ```{r, eval=F, echo=T}
 gnb = GaussianNB()
@@ -293,7 +280,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p10.png)
 
-#5.2.2 Multinomial Naive Bayes
+### 5.2.2 Multinomial Naive Bayes
 
 ```{r, eval=F, echo=T}
 mnb = MultinomialNB()
@@ -308,7 +295,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 ![](/post/2019-12-15-introduction-to-naive-bayes-classifier_files/p33p11.png)
 
 
-#6 Conclusion
+# 6 Conclusion
 
 We showed in this post what Naive Bayes Classifiers are and how they can be used.
 Here are a few more Applications of Naive Bayes Algorithms:

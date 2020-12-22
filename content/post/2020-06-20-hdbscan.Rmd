@@ -7,22 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Introducing HDBSCAN
-+ 4 Parameter Selection for HDBSCAN
-+ 5 HDBSCAN in action
-+ 5.1 Functionality of the HDBSCAN algorithm
-+ 5.2 Visualization options
-+ 5.3 Predictions with HDBSCAN
-+ 6 Conclustion
-
-
+ 
 # 1 Introduction
 
 In the series of unsupervised learning cluster algorithms, we have already got to know ["hierarchical clustering"](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/) and ["density-based clustering (DBSCAN)"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/). Now we come to an expansion of the DBSCAN algorithm in which the hierarchical approach is integrated.
@@ -260,7 +251,7 @@ plt.scatter(test_data.T[0], test_data.T[1], color='b', **plot_kwds)
 
 ![](/post/2020-06-20-hdbscan_files/p49p12.png)
 
-# 5.1 Functionality of the HDBSCAN algorithm
+## 5.1 Functionality of the HDBSCAN algorithm
 
 The functionality of the HDBSCAN algorithm can be described in the following steps:
 
@@ -280,7 +271,7 @@ clusterer.fit(test_data)
 
 ![](/post/2020-06-20-hdbscan_files/p49p13.png)
 
-# 5.2 Visualization options
+## 5.2 Visualization options
 
 For most of the above named steps, the hdbscan library offers its own visualization options.
 If you want to do this, don't forget to set the gen_min_span_tree parameter to True.
@@ -377,7 +368,7 @@ plt.scatter(df['Value_1'], df['Value_2'], c=labels, s=40, cmap='viridis')
 Now it is clearly shown.
 
 
-# 5.3 Predictions with HDBSCAN
+## 5.3 Predictions with HDBSCAN
 
 Similar to the visualization of the individual steps regarding the functioning of HDBSCAN, the prediction_data parameter must be set to True so that we can use the model to make predictions for new data.
 In the following I set this parameter accodingly and also fit the model on our test_data.

@@ -7,28 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Backgroundinformation on Bagging
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 5 Decision Tree Classifier
-+ 6 Bagging Classifier
-+ 7 Random Forest Classifier
-+ 7.1 Train the Random Forest Classifier
-+ 7.2 Evaluate the Forest Classifier
-+ 7.2.1 StratifiedKFold
-+ 7.2.2 KFold
-+ 7.3 Hyperparameter optimization via Randomized Search
-+ 7.4 Determination of feature importance
-+ 8 Conclusion
-
-
+ 
 
 # 1 Introduction
 
@@ -277,7 +262,7 @@ Random Forest is probably one of the best-known algorithms worldwide and also bu
 Random Forest not only bootstrapping the data points in the overall training dataset, but also bootstrapping the features available for each tree to split on. 
 
 
-# 7.1 Train the Random Forest Classifier
+## 7.1 Train the Random Forest Classifier
 
 
 ```{r, eval=F, echo=T}
@@ -312,10 +297,10 @@ As we can see, we were able to increase the model predictive power again.
 
 
 
-# 7.2 Evaluate the Forest Classifier
+## 7.2 Evaluate the Forest Classifier
 
 
-# 7.2.1 StratifiedKFold
+### 7.2.1 StratifiedKFold
 
 The StratifiedKFold class in scikit-learn implements a combination of the cross-validation and sampling together in one class.
 
@@ -358,7 +343,7 @@ Let's try another metric.
 
 
 
-# 7.2.2 KFold
+### 7.2.2 KFold
 
 ```{r, eval=F, echo=T}
 scores = cross_val_score(rf, trainX, trainY, cv=5)
@@ -379,7 +364,7 @@ That looks more realistic.
 
 
 
-# 7.3 Hyperparameter optimization via Randomized Search
+## 7.3 Hyperparameter optimization via Randomized Search
 
 Let's see how we can improve the model.
 We've usually done this with Grid Search so far. This time we use Randomized Search.
@@ -443,7 +428,7 @@ for i, row in results.head().iterrows():
 
 
 
-# 7.4 Determination of feature importance
+## 7.4 Determination of feature importance
 
 
 

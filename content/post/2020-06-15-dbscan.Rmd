@@ -7,19 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Introducing DBSCAN
-+ 4 DBSCAN with Scikit-Learn
-+ 4.1 Data preparation
-+ 4.2 DBSCAN
-+ 5 Conclusion
 
 
 # 1 Introduction
@@ -67,7 +61,7 @@ Clusters are dense regions in the data space, separated by regions of lower dens
 In the following I will show you an example of some of the strengths of DBSCAN clustering when k-means clustering doesn’t seem to handle the data shape well.
 
 
-# 4.1 Data preparation
+## 4.1 Data preparation
 
 For an illustrative example, I will create a data set artificially.
 
@@ -105,9 +99,9 @@ X_scaled = scaler.fit_transform(X)
 ```
 
 
-# 4.1 k-Means
+## 4.2 k-Means
 
-f you want to find out exactly how k-Means works have a look at this post of mine: ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
+If you want to find out exactly how k-Means works have a look at this post of mine: ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
  
 ```{r, eval=F, echo=T}
 # cluster the data into five clusters
@@ -138,7 +132,7 @@ print("ARI =", adjusted_rand_score(y, y_pred))
 ![](/post/2020-06-15-dbscan_files/p47p3.png)
 
 
-# 4.2 DBSCAN
+## 4.3 DBSCAN
 
 
 

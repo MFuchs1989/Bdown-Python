@@ -7,35 +7,39 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on Perceptron Algorithm</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Perceptron - Model Fitting and Evaluation</li>
-<li>5 Hyperparameter optimization via Grid Search</li>
-<li>6 OvO/OvR with the Perceptron</li>
-<li>7 Perceptron with SGD training</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-perceptron-algorithm">2 Background information on Perceptron Algorithm</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#perceptron---model-fitting-and-evaluation">4 Perceptron - Model Fitting and Evaluation</a></li>
+<li><a href="#hyperparameter-optimization-via-grid-search">5 Hyperparameter optimization via Grid Search</a></li>
+<li><a href="#ovoovr-with-the-perceptron">6 OvO/OvR with the Perceptron</a></li>
+<li><a href="#perceptron-with-sgd-training">7 Perceptron with SGD training</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>I already wrote about <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a>. I also showed how to optimize these linear classifiers using <a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">“SGD training”</a> and how to use the <a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">“OneVersusRest and OneVersusAll”</a> Classifier to convert binary classifiers to multiple classifiers. Let’s come to a further binary classifier: the Perceptron.</p>
+<p>I already wrote about <a href="https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/">“Support Vector Machines”</a>. I also showed how to optimize these linear classifiers using <a href="https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/">“SGD training”</a> and how to use the <a href="https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/">“OneVersusRest and OneVersusAll”</a> Classifier to convert binary classifiers to multiple classifiers.
+Let’s come to a further binary classifier: the Perceptron.</p>
 <p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
 </div>
 <div id="background-information-on-perceptron-algorithm" class="section level1">
 <h1>2 Background information on Perceptron Algorithm</h1>
 <p>In machine learning, the perceptron is an algorithm for supervised learning of binary classifiers. It’s a type of linear classifier, i.e. a classification algorithm that makes its predictions based on a linear predictor function combining a set of weights with the feature vector.</p>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38s1.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38s1.png" /></p>
 <p><strong>Components:</strong></p>
 <ul>
 <li><p>Input: All the feature becomes the input for a perceptron. We denote the input of a perceptron by [x1, x2, x3, ..,xn], here x represent the feature value and n represent the total number of features.</p></li>
@@ -97,16 +101,10 @@ print()
 print(&#39;------------------------------------------&#39;)
 print()
 print(iris.head())</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p1.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p1.png" /></p>
 <p>Let’s plot them:</p>
 <pre class="r"><code>ax = sns.scatterplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, hue=&quot;species&quot;, data=iris)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p2.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p2.png" /></p>
 <p>Now let’s split the data and train the model as well as evaluate it.</p>
 <pre class="r"><code>x = iris.drop(&#39;species&#39;, axis=1)
 y = iris[&#39;species&#39;]
@@ -114,17 +112,11 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 <pre class="r"><code>clf = Perceptron()
 
 clf.fit(trainX, trainY)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p3.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p3.png" /></p>
 <pre class="r"><code>y_pred = clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p4.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p4.png" /></p>
 <p>Wow 95% accuracy with the perceptron as binary classifier.</p>
 </div>
 <div id="hyperparameter-optimization-via-grid-search" class="section level1">
@@ -138,15 +130,9 @@ grid = GridSearchCV(clf, param_grid, cv=10, scoring=&#39;accuracy&#39;)
 
 grid.fit(trainX, trainY)</code></pre>
 <pre class="r"><code>print(grid.best_score_)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p5.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p5.png" /></p>
 <pre class="r"><code>print(grid.best_params_)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p6.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p6.png" /></p>
 </div>
 <div id="ovoovr-with-the-perceptron" class="section level1">
 <h1>6 OvO/OvR with the Perceptron</h1>
@@ -162,10 +148,7 @@ OvR_clf.fit(trainX, trainY)
 y_pred = OvR_clf.predict(testX)
 
 print(&#39;Accuracy of OvR Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p7.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p7.png" /></p>
 <p><strong>OvO</strong></p>
 <pre class="r"><code>OvO_clf = OneVsOneClassifier(Perceptron())
 OvO_clf.fit(trainX, trainY)
@@ -173,15 +156,13 @@ OvO_clf.fit(trainX, trainY)
 y_pred = OvO_clf.predict(testX)
 
 print(&#39;Accuracy of OvO Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p8.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p8.png" /></p>
 <p>As we can see, OvR doesn’t work quite as well but OvO does.</p>
 </div>
 <div id="perceptron-with-sgd-training" class="section level1">
 <h1>7 Perceptron with SGD training</h1>
-<p>Finally I show how to use the Perceptron with SGD training. For this we reload the iris data set as already done in chapter 4.</p>
+<p>Finally I show how to use the Perceptron with SGD training.
+For this we reload the iris data set as already done in chapter 4.</p>
 <pre class="r"><code>iris = pd.read_csv(&quot;Iris_Data.csv&quot;)
 iris = iris[[&#39;sepal_length&#39;, &#39;sepal_width&#39;, &#39;species&#39;]]
 iris = iris[(iris[&quot;species&quot;] != &#39;Iris-versicolor&#39;)]</code></pre>
@@ -194,10 +175,7 @@ clf.fit(trainX, trainY)
 y_pred = clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p9.png" />
-
-</div>
+<p><img src="/post/2019-11-14-introduction-to-perceptron-algorithm_files/p38p9.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>8 Conclusion</h1>

@@ -7,30 +7,37 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on OvO and OvR</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 OvO/OvR with Logistic Regression</li>
-<li>4.1 One-vs-Rest</li>
-<li>4.2 One-vs-One</li>
-<li>4.3 Grid Search</li>
-<li>5 OvO/OvR with SVM</li>
-<li>5.1 One-vs-Rest</li>
-<li>5.2 One-vs-One</li>
-<li>5.3 Grid Search</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-ovo-and-ovr">2 Background information on OvO and OvR</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#ovoovr-with-logistic-regression">4 OvO/OvR with Logistic Regression</a>
+<ul>
+<li><a href="#one-vs-rest">4.1 One-vs-Rest</a></li>
+<li><a href="#one-vs-one">4.2 One-vs-One</a></li>
+<li><a href="#grid-search">4.3 Grid Search</a></li>
+</ul></li>
+<li><a href="#ovoovr-with-svm">5 OvO/OvR with SVM</a>
+<ul>
+<li><a href="#one-vs-rest-1">5.1 One-vs-Rest</a></li>
+<li><a href="#one-vs-one-1">5.2 One-vs-One</a></li>
+<li><a href="#grid-search-1">5.3 Grid Search</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p1.png" /></p>
@@ -78,9 +85,8 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 <div id="ovoovr-with-logistic-regression" class="section level1">
 <h1>4 OvO/OvR with Logistic Regression</h1>
 <p>Using OvO / OvR is fairly simple. See the usual training procedure here with Logistic Regression:</p>
-</div>
-<div id="one-vs-rest" class="section level1">
-<h1>4.1 One-vs-Rest</h1>
+<div id="one-vs-rest" class="section level2">
+<h2>4.1 One-vs-Rest</h2>
 <pre class="r"><code>OvR_clf = OneVsRestClassifier(LogisticRegression())
 OvR_clf.fit(trainX, trainY)
 
@@ -89,8 +95,8 @@ y_pred = OvR_clf.predict(testX)
 print(&#39;Accuracy of OvR Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p3.png" /></p>
 </div>
-<div id="one-vs-one" class="section level1">
-<h1>4.2 One-vs-One</h1>
+<div id="one-vs-one" class="section level2">
+<h2>4.2 One-vs-One</h2>
 <pre class="r"><code>OvO_clf = OneVsOneClassifier(LogisticRegression())
 OvO_clf.fit(trainX, trainY)
 
@@ -99,8 +105,8 @@ y_pred = OvO_clf.predict(testX)
 print(&#39;Accuracy of OvO Classifier: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p4.png" /></p>
 </div>
-<div id="grid-search" class="section level1">
-<h1>4.3 Grid Search</h1>
+<div id="grid-search" class="section level2">
+<h2>4.3 Grid Search</h2>
 <p>We even can use grid search to determine optimal hyperparameter:</p>
 <p><strong>OvR</strong></p>
 <pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [100, 10, 1, 0.1, 0.01, 0.001, 0.0001]}]
@@ -136,12 +142,12 @@ grid.fit(trainX, trainY)</code></pre>
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p10.png" /></p>
 </div>
+</div>
 <div id="ovoovr-with-svm" class="section level1">
 <h1>5 OvO/OvR with SVM</h1>
 <p>The same procedure works with SVM as well.</p>
-</div>
-<div id="one-vs-rest-1" class="section level1">
-<h1>5.1 One-vs-Rest</h1>
+<div id="one-vs-rest-1" class="section level2">
+<h2>5.1 One-vs-Rest</h2>
 <pre class="r"><code>OvR_SVC_clf = OneVsRestClassifier(SVC())
 
 OvR_SVC_clf.fit(trainX, trainY)
@@ -151,8 +157,8 @@ y_pred = OvR_SVC_clf.predict(testX)
 print(&#39;Accuracy of OvR Classifier with SVC: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p11.png" /></p>
 </div>
-<div id="one-vs-one-1" class="section level1">
-<h1>5.2 One-vs-One</h1>
+<div id="one-vs-one-1" class="section level2">
+<h2>5.2 One-vs-One</h2>
 <pre class="r"><code>OvO_SVC_clf = OneVsOneClassifier(SVC())
 
 OvO_SVC_clf.fit(trainX, trainY)
@@ -162,8 +168,8 @@ y_pred = OvO_SVC_clf.predict(testX)
 print(&#39;Accuracy of OvO Classifier with SVC: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2019-11-13-ovo-and-ovr-classifier_files/p34p12.png" /></p>
 </div>
-<div id="grid-search-1" class="section level1">
-<h1>5.3 Grid Search</h1>
+<div id="grid-search-1" class="section level2">
+<h2>5.3 Grid Search</h2>
 <p>GridSearch also works with this method:</p>
 <p><strong>OvR</strong></p>
 <pre class="r"><code>tuned_parameters = [{&#39;estimator__C&#39;: [0.1, 1, 10, 100, 1000],
@@ -187,6 +193,7 @@ OvO_SVC_clf = OneVsOneClassifier(SVC())
 grid = GridSearchCV(OvO_SVC_clf, tuned_parameters, cv=3, scoring=&#39;accuracy&#39;)
 
 grid.fit(trainX, trainY)</code></pre>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

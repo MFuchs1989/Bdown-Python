@@ -7,24 +7,31 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on KNN</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 KNN - Model Fitting and Evaluation</li>
-<li>5 Determination of K and Model Improvement</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-knn">2 Background information on KNN</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#knn---model-fitting-and-evaluation">4 KNN - Model Fitting and Evaluation</a></li>
+<li><a href="#determination-of-k-and-model-improvement">5 Determination of K and Model Improvement</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>K Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms. The KNN algorithm can be used for both classification (binary and multiple) and regression problems.</p>
+<p>K Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms.
+The KNN algorithm can be used for both classification (binary and multiple) and regression problems.</p>
 <p>For this post the dataset <em>Iris</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS" class="uri">https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS</a>.</p>
 </div>
 <div id="background-information-on-knn" class="section level1">
@@ -43,18 +50,9 @@ tags:
 <li>Then it does the majority vote i.e the most common class/label among those K entries will be the class of the new data point.</li>
 </ol>
 <p>I have shown the individual steps visually below:</p>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p1.png" />
-
-</div>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p2.png" />
-
-</div>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p3.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p1.png" /></p>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p2.png" /></p>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p3.png" /></p>
 <p><strong>Pros:</strong></p>
 <ul>
 <li>The training phase of K-nearest neighbor classification is much faster compared to other classification algorithms.</li>
@@ -90,10 +88,7 @@ from sklearn.model_selection import GridSearchCV</code></pre>
 <pre class="r"><code>iris = pd.read_csv(&quot;path/to/file/Iris_Data.csv&quot;)
 
 iris</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p4.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p4.png" /></p>
 </div>
 <div id="knn---model-fitting-and-evaluation" class="section level1">
 <h1>4 KNN - Model Fitting and Evaluation</h1>
@@ -110,19 +105,14 @@ knn_clf.fit(trainX, trainY)
 y_pred = knn_clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p5.png" />
-
-</div>
-<p>Ok, accuracy rate of .90. Not so bad. Let’s evaluate our model with cross validation technique.</p>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p5.png" /></p>
+<p>Ok, accuracy rate of .90. Not so bad.
+Let’s evaluate our model with cross validation technique.</p>
 <pre class="r"><code>knn_clf = KNeighborsClassifier(n_neighbors=5)
 
 scores = cross_val_score(knn_clf, trainX, trainY, cv=10, scoring=&#39;accuracy&#39;)
 print(scores)</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p6.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p6.png" /></p>
 <p>As we can see, there is still room for improvement.</p>
 </div>
 <div id="determination-of-k-and-model-improvement" class="section level1">
@@ -142,10 +132,7 @@ for k in k_range:
 <pre class="r"><code>plt.plot(k_range, scores_list)
 plt.xlabel(&#39;Value of K for KNN&#39;)
 plt.ylabel(&#39;Testing Accuracy&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p7.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p7.png" /></p>
 <p>As we can see, K = 7 was probably set a little too low in the first model. It seems that we get the best accuracy value for K = 8. Let’s check this with Grid Search.</p>
 <pre class="r"><code>k_range = list(range(1,33))
 weight_options = [&quot;uniform&quot;, &quot;distance&quot;]
@@ -155,15 +142,9 @@ param_grid = dict(n_neighbors=k_range, weights=weight_options)
 
 grid = GridSearchCV(knn_clf, param_grid, cv=10, scoring=&#39;accuracy&#39;)
 grid.fit(trainX, trainY)</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p8.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p8.png" /></p>
 <pre class="r"><code>print(grid.best_params_)</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p9.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p9.png" /></p>
 <p>We were right with our assumption. Let’s set K to 8.</p>
 <pre class="r"><code>knn_clf = KNeighborsClassifier(n_neighbors=8, weights=&#39;distance&#39;)
 
@@ -172,18 +153,12 @@ knn_clf.fit(trainX, trainY)
 y_pred = knn_clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p10.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p10.png" /></p>
 <p>We can also use the trained grid model right away, as this saved the best values.</p>
 <pre class="r"><code>grid_predictions = grid.predict(testX) 
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
-<div class="figure">
-<img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p11.png" />
-
-</div>
+<p><img src="/post/2019-12-27-introduction-to-knn-classifier_files/p35p11.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

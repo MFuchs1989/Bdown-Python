@@ -7,21 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
+ 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Multinomial logistic regression with scikit-learn
-+ 3.1 Fit the model
-+ 3.2 Model validation
-+ 3.3 Calculated probabilities
-+ 4 Multinomial Logit with the statsmodel library
-+ 5 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 ![](/post/2019-11-15-multinomial-logistic-regression_files/p27s1.png)
 
@@ -33,7 +26,7 @@ For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://
 
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -73,7 +66,7 @@ iris.head()
 
 
 
-#3 Multinomial logistic regression with scikit-learn
+# 3 Multinomial logistic regression with scikit-learn
 
 First of all we assign the predictors and the criterion to each object and split the datensatz into a training and a test part.
 
@@ -85,7 +78,7 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
 ```
 
 
-#3.1 Fit the model
+## 3.1 Fit the model
 
 Here comes the Multinomial Logistic Regression: 
 
@@ -96,7 +89,7 @@ y_pred = log_reg.predict(testX)
 ```
 
 
-#3.2 Model validation
+## 3.2 Model validation
 
 
 Let's print the accuracy and error rate:
@@ -143,7 +136,7 @@ plt.show()
 ![](/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png)
 
 
-#3.3 Calculated probabilities
+## 3.3 Calculated probabilities
 
 
 We also have the opportunity to get the probabilities of the predicted classes:
@@ -288,7 +281,7 @@ We see we were close to the right class both times.
 
 
 
-#4 Multinomial Logit with the statsmodel library
+# 4 Multinomial Logit with the statsmodel library
 
 To get the p-values of the model created above we have to use the statsmodel library again.
 
@@ -311,7 +304,7 @@ print (mnlogit_fit.summary())
 How to interpret the results exactly can be read ["here"](https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.MNLogit.html).
 
 
-#5 Conclusion
+# 5 Conclusion
 
 This publication showed how the Multinomial Logistic Regression can be used to predict multiple classes. Furthermore, the use and interpretation of the probability information was discussed.
 

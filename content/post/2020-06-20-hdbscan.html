@@ -7,24 +7,32 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Introducing HDBSCAN</li>
-<li>4 Parameter Selection for HDBSCAN</li>
-<li>5 HDBSCAN in action</li>
-<li>5.1 Functionality of the HDBSCAN algorithm</li>
-<li>5.2 Visualization options</li>
-<li>5.3 Predictions with HDBSCAN</li>
-<li>6 Conclustion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#introducing-hdbscan">3 Introducing HDBSCAN</a></li>
+<li><a href="#parameter-selection-for-hdbscan">4 Parameter Selection for HDBSCAN</a></li>
+<li><a href="#hdbscan-in-action">5 HDBSCAN in action</a>
+<ul>
+<li><a href="#functionality-of-the-hdbscan-algorithm">5.1 Functionality of the HDBSCAN algorithm</a></li>
+<li><a href="#visualization-options">5.2 Visualization options</a></li>
+<li><a href="#predictions-with-hdbscan">5.3 Predictions with HDBSCAN</a></li>
+</ul></li>
+<li><a href="#conclustion">6 Conclustion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In the series of unsupervised learning cluster algorithms, we have already got to know <a href="https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/">“hierarchical clustering”</a> and <a href="https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/">“density-based clustering (DBSCAN)”</a>. Now we come to an expansion of the DBSCAN algorithm in which the hierarchical approach is integrated.
@@ -168,9 +176,8 @@ test_data = np.vstack([Xmoon, X])
 
 plt.scatter(test_data.T[0], test_data.T[1], color=&#39;b&#39;, **plot_kwds)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p12.png" /></p>
-</div>
-<div id="functionality-of-the-hdbscan-algorithm" class="section level1">
-<h1>5.1 Functionality of the HDBSCAN algorithm</h1>
+<div id="functionality-of-the-hdbscan-algorithm" class="section level2">
+<h2>5.1 Functionality of the HDBSCAN algorithm</h2>
 <p>The functionality of the HDBSCAN algorithm can be described in the following steps:</p>
 <ul>
 <li>Transform the space according to the density/sparsity</li>
@@ -184,8 +191,8 @@ plt.scatter(test_data.T[0], test_data.T[1], color=&#39;b&#39;, **plot_kwds)</cod
 clusterer.fit(test_data)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p13.png" /></p>
 </div>
-<div id="visualization-options" class="section level1">
-<h1>5.2 Visualization options</h1>
+<div id="visualization-options" class="section level2">
+<h2>5.2 Visualization options</h2>
 <p>For most of the above named steps, the hdbscan library offers its own visualization options.
 If you want to do this, don’t forget to set the gen_min_span_tree parameter to True.</p>
 <p><strong>Build the minimum spanning tree</strong></p>
@@ -227,8 +234,8 @@ df.head()</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p21.png" /></p>
 <p>Now it is clearly shown.</p>
 </div>
-<div id="predictions-with-hdbscan" class="section level1">
-<h1>5.3 Predictions with HDBSCAN</h1>
+<div id="predictions-with-hdbscan" class="section level2">
+<h2>5.3 Predictions with HDBSCAN</h2>
 <p>Similar to the visualization of the individual steps regarding the functioning of HDBSCAN, the prediction_data parameter must be set to True so that we can use the model to make predictions for new data.
 In the following I set this parameter accodingly and also fit the model on our test_data.</p>
 <pre class="r"><code>clusterer = hdbscan.HDBSCAN(min_cluster_size=5, prediction_data=True).fit(test_data)</code></pre>
@@ -276,6 +283,7 @@ plt.axvline(x=1.5, color=&#39;r&#39;, linestyle=&#39;--&#39;)
 plt.axhline(y=1.5, color=&#39;g&#39;, linestyle=&#39;--&#39;)
 plt.axvline(x=0, color=&#39;g&#39;, linestyle=&#39;--&#39;)</code></pre>
 <p><img src="/post/2020-06-20-hdbscan_files/p49p29.png" /></p>
+</div>
 </div>
 <div id="conclustion" class="section level1">
 <h1>6 Conclustion</h1>

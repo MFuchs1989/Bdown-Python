@@ -7,18 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Introducing k-Means
-+ 4 Preparation of the data record
-+ 5 Application of k-Means
-+ 6 Determine the optimal k for k-Means
-+ 7 Visualization
-+ 8 Conclusion
+ 
 
 
 # 1 Introduction

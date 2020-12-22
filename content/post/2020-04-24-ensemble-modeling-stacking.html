@@ -7,31 +7,41 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Backgroundinformation on Stacking</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>4.1 One-hot-encoding</li>
-<li>4.2 LabelBinarizer</li>
-<li>4.3 Train-Test-Split</li>
-<li>4.4 Convert to a numpy array</li>
-<li>5 Building a stacked model</li>
-<li>5.1 Create a new training set</li>
-<li>5.2 Train base models</li>
-<li>5.3 Create a new test set</li>
-<li>5.4 Fit base models on the complete training set</li>
-<li>5.5 Train the stacked model</li>
-<li>6 Comparison of the accuracy</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#backgroundinformation-on-stacking">2 Backgroundinformation on Stacking</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a>
+<ul>
+<li><a href="#one-hot-encoding">4.1 One-hot-encoding</a></li>
+<li><a href="#labelbinarizer">4.2 LabelBinarizer</a></li>
+<li><a href="#train-test-split">4.3 Train-Test-Split</a></li>
+<li><a href="#convert-to-a-numpy-array">4.4 Convert to a numpy array</a></li>
+</ul></li>
+<li><a href="#building-a-stacked-model">5 Building a stacked model</a>
+<ul>
+<li><a href="#create-a-new-training-set">5.1 Create a new training set</a></li>
+<li><a href="#train-base-models">5.2 Train base models</a></li>
+<li><a href="#create-a-new-test-set">5.3 Create a new test set</a></li>
+<li><a href="#fit-base-models-on-the-complete-training-set">5.4 Fit base models on the complete training set</a></li>
+<li><a href="#train-the-stacked-model">5.5 Train the stacked model</a></li>
+</ul></li>
+<li><a href="#comparison-of-the-accuracy">6 Comparison of the accuracy</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After <a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">“Bagging”</a> and <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">“Boosting”</a> we come to the last type of ensemble method: Stacking.</p>
@@ -70,9 +80,8 @@ bank.head()</code></pre>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4 Data pre-processing</h1>
-</div>
-<div id="one-hot-encoding" class="section level1">
-<h1>4.1 One-hot-encoding</h1>
+<div id="one-hot-encoding" class="section level2">
+<h2>4.1 One-hot-encoding</h2>
 <p>First of all we have to convert the categorical variables into numerical ones again.
 To see how this work exactly please have a look at this post: <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/">“Types of Encoder”</a></p>
 <pre class="r"><code>safe_y = bank[[&#39;y&#39;]]
@@ -104,8 +113,8 @@ bank</code></pre>
 <p>Now we have a data set that contains almost exclusively numerical variables.
 But as we can see, we still have to convert the target variable. We do not do this with one hot encoding but with the LabelBinarizer from scikit-learn.</p>
 </div>
-<div id="labelbinarizer" class="section level1">
-<h1>4.2 LabelBinarizer</h1>
+<div id="labelbinarizer" class="section level2">
+<h2>4.2 LabelBinarizer</h2>
 <pre class="r"><code>encoder = LabelBinarizer()
 
 encoded_y = encoder.fit_transform(bank.y.values.reshape(-1,1))
@@ -118,16 +127,16 @@ bank</code></pre>
 <p>Here we see that the values of the newly generated target variables (here ‘y_encoded’) are now 0 or 1.
 Of course we can no longer take the ‘old’ target variable (here ‘y’) into account in the further evaluation. We will throw them out in the next step, the train-test-split.</p>
 </div>
-<div id="train-test-split" class="section level1">
-<h1>4.3 Train-Test-Split</h1>
+<div id="train-test-split" class="section level2">
+<h2>4.3 Train-Test-Split</h2>
 <pre class="r"><code>x = bank.drop([&#39;y&#39;, &#39;y_encoded&#39;], axis=1)
 y = bank[&#39;y_encoded&#39;]
 
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
 <p>It is not a big deal.</p>
 </div>
-<div id="convert-to-a-numpy-array" class="section level1">
-<h1>4.4 Convert to a numpy array</h1>
+<div id="convert-to-a-numpy-array" class="section level2">
+<h2>4.4 Convert to a numpy array</h2>
 <p>For the following steps, it is necessary to convert the generated objects into numpy arrays.</p>
 <pre class="r"><code>trainX = trainX.to_numpy()
 trainX</code></pre>
@@ -142,6 +151,7 @@ trainY</code></pre>
 testY</code></pre>
 <p><img src="/post/2020-04-24-ensemble-modeling-stacking_files/p44p10.png" /></p>
 </div>
+</div>
 <div id="building-a-stacked-model" class="section level1">
 <h1>5 Building a stacked model</h1>
 <p>In the following I will use a support vector machine (scikit-learns’s LinearSVC) and k-nearest neighbors (scikit-learn’s KneighboorsClassifier) as the base predictors and the stacked model will be a logistic regression classifier.</p>
@@ -151,9 +161,8 @@ testY</code></pre>
 <li><a href="https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/">“KNN Classifier”</a></li>
 <li><a href="https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/">“Logistic Regression”</a></li>
 </ul>
-</div>
-<div id="create-a-new-training-set" class="section level1">
-<h1>5.1 Create a new training set</h1>
+<div id="create-a-new-training-set" class="section level2">
+<h2>5.1 Create a new training set</h2>
 <p>First of all we create a new training set with additional columns for predictions from base predictors.</p>
 <pre class="r"><code>trainX_with_metapreds = np.zeros((trainX.shape[0], trainX.shape[1]+2))
 trainX_with_metapreds[:, :-2] = trainX
@@ -165,8 +174,8 @@ print(trainX_with_metapreds.shape)</code></pre>
 <p><img src="/post/2020-04-24-ensemble-modeling-stacking_files/p44p12.png" /></p>
 <p>Here we can see that two more columns have been added.</p>
 </div>
-<div id="train-base-models" class="section level1">
-<h1>5.2 Train base models</h1>
+<div id="train-base-models" class="section level2">
+<h2>5.2 Train base models</h2>
 <p>Now we are going to train the base models using the k-fold strategy.</p>
 <pre class="r"><code>kf = KFold(n_splits=5, random_state=11)
 
@@ -185,8 +194,8 @@ for train_indices, test_indices in kf.split(trainX):
     trainX_with_metapreds[test_indices, -2] = svm_pred
     trainX_with_metapreds[test_indices, -1] = knn_pred</code></pre>
 </div>
-<div id="create-a-new-test-set" class="section level1">
-<h1>5.3 Create a new test set</h1>
+<div id="create-a-new-test-set" class="section level2">
+<h2>5.3 Create a new test set</h2>
 <p>As I did in chapter 5.1, I will add two placeholder columns for the base model predictions in the test dataset as well.</p>
 <pre class="r"><code>testX_with_metapreds = np.zeros((testX.shape[0], testX.shape[1]+2))
 testX_with_metapreds[:, :-2] = testX
@@ -194,8 +203,8 @@ testX_with_metapreds[:, -2:] = -1
 print(testX_with_metapreds)</code></pre>
 <p><img src="/post/2020-04-24-ensemble-modeling-stacking_files/p44p13.png" /></p>
 </div>
-<div id="fit-base-models-on-the-complete-training-set" class="section level1">
-<h1>5.4 Fit base models on the complete training set</h1>
+<div id="fit-base-models-on-the-complete-training-set" class="section level2">
+<h2>5.4 Fit base models on the complete training set</h2>
 <p>Next, I will train the two base predictors on the complete training set to get the meta prediction values for the test dataset. This is similar to what I did for each fold in chapter 5.2.</p>
 <pre class="r"><code>svm = LinearSVC(random_state=11, max_iter=1000)
 svm.fit(trainX, trainY)
@@ -209,8 +218,8 @@ knn_pred = knn.predict(testX)
 testX_with_metapreds[:, -2] = svm_pred
 testX_with_metapreds[:, -1] = knn_pred</code></pre>
 </div>
-<div id="train-the-stacked-model" class="section level1">
-<h1>5.5 Train the stacked model</h1>
+<div id="train-the-stacked-model" class="section level2">
+<h2>5.5 Train the stacked model</h2>
 <p>The last step is to train the logistic regression model on all the columns of the training dataset plus the meta predictions rom the base estimators.</p>
 <pre class="r"><code>lr = LogisticRegression(random_state=11)
 lr.fit(trainX_with_metapreds, trainY)
@@ -222,6 +231,7 @@ print(&#39;Stacked Classifier:\n&gt; Accuracy on training data = {:.4f}\n&gt; Ac
     accuracy_score(y_true=testY, y_pred=lr_preds_test)
 ))</code></pre>
 <p><img src="/post/2020-04-24-ensemble-modeling-stacking_files/p44p14.png" /></p>
+</div>
 </div>
 <div id="comparison-of-the-accuracy" class="section level1">
 <h1>6 Comparison of the accuracy</h1>
