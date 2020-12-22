@@ -7,20 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 LogReg
-+ 4 LogReg with PCA
-+ 4.1 PCA with 95% variance explanation
-+ 4.2 PCA with 80% variance explanation
-+ 4.3 Summary
-+ 5 Export PCA to use in another program
-+ 6 Conclusion
+ 
 
 
 # 1 Introduction
@@ -124,7 +117,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 
 # 4 LogReg with PCA
 
-# 4.1 PCA with 95% variance explanation
+## 4.1 PCA with 95% variance explanation
 
 Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.
 
@@ -186,7 +179,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 Now let's try 80% variance explanation.
 
 
-# 4.2 PCA with 80% variance explanation
+## 4.2 PCA with 80% variance explanation
 
 
 ```{r, eval=F, echo=T}
@@ -242,7 +235,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 ![](/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p10.png)
 
 
-# 4.3 Summary
+## 4.3 Summary
 
 
 As we can see in the overview below, not only has the training time has been reduced by PCA, but the prediction accuracy of the trained model has also increased.

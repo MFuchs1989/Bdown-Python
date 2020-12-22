@@ -7,24 +7,32 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 LogReg</li>
-<li>4 LogReg with PCA</li>
-<li>4.1 PCA with 95% variance explanation</li>
-<li>4.2 PCA with 80% variance explanation</li>
-<li>4.3 Summary</li>
-<li>5 Export PCA to use in another program</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-dataset">2 Loading the libraries and the dataset</a></li>
+<li><a href="#logreg">3 LogReg</a></li>
+<li><a href="#logreg-with-pca">4 LogReg with PCA</a>
+<ul>
+<li><a href="#pca-with-95-variance-explanation">4.1 PCA with 95% variance explanation</a></li>
+<li><a href="#pca-with-80-variance-explanation">4.2 PCA with 80% variance explanation</a></li>
+<li><a href="#summary">4.3 Summary</a></li>
+</ul></li>
+<li><a href="#export-pca-to-use-in-another-program">5 Export PCA to use in another program</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>As already announced in post about <a href="https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/">“PCA”</a>, we now come to the second main application of a PCA: Principal Component Analysis for speed up machine learning models.</p>
@@ -84,9 +92,8 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 </div>
 <div id="logreg-with-pca" class="section level1">
 <h1>4 LogReg with PCA</h1>
-</div>
-<div id="pca-with-95-variance-explanation" class="section level1">
-<h1>4.1 PCA with 95% variance explanation</h1>
+<div id="pca-with-95-variance-explanation" class="section level2">
+<h2>4.1 PCA with 95% variance explanation</h2>
 <p>Notice the code below has .95 for the number of components parameter. It means that scikit-learn choose the minimum number of principal components such that 95% of the variance is retained.</p>
 <pre class="r"><code>pca = PCA(.95)</code></pre>
 <pre class="r"><code># Fitting PCA on the training set only
@@ -114,8 +121,8 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p7.png" /></p>
 <p>Now let’s try 80% variance explanation.</p>
 </div>
-<div id="pca-with-80-variance-explanation" class="section level1">
-<h1>4.2 PCA with 80% variance explanation</h1>
+<div id="pca-with-80-variance-explanation" class="section level2">
+<h2>4.2 PCA with 80% variance explanation</h2>
 <pre class="r"><code>pca = PCA(.80)</code></pre>
 <pre class="r"><code># Fitting PCA on the training set only
 pca.fit(trainX_scaled)</code></pre>
@@ -140,10 +147,11 @@ print(&#39;Calculation time: &#39; + str(end - start) + &#39; seconds&#39;)</cod
 <pre class="r"><code>print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57p10.png" /></p>
 </div>
-<div id="summary" class="section level1">
-<h1>4.3 Summary</h1>
+<div id="summary" class="section level2">
+<h2>4.3 Summary</h2>
 <p>As we can see in the overview below, not only has the training time has been reduced by PCA, but the prediction accuracy of the trained model has also increased.</p>
 <p><img src="/post/2020-07-31-pca-for-speed-up-ml-models_files/p57s1.png" /></p>
+</div>
 </div>
 <div id="export-pca-to-use-in-another-program" class="section level1">
 <h1>5 Export PCA to use in another program</h1>

@@ -7,22 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Statistics and preprocessing</li>
-<li>4 PCA for visualization</li>
-<li>4.1 Interpreting Components</li>
-<li>4.2 Visualization of the components</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-dataset">2 Loading the libraries and the dataset</a></li>
+<li><a href="#statistics-and-preprocessing">3 Statistics and preprocessing</a></li>
+<li><a href="#pca-for-visualization">4 PCA for visualization</a>
+<ul>
+<li><a href="#interpreting-components">4.1 Interpreting Components</a></li>
+<li><a href="#visualization-of-the-components">4.2 Visualization of the components</a></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After I wrote extensively on the subject of <a href="https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/">“Principal Component Analysis”</a> in my last publication, we now come to one of the two main uses announced: PCA for visualizations.</p>
@@ -77,9 +85,8 @@ print(T.shape)</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p4.png" /></p>
 <pre class="r"><code>pca.explained_variance_ratio_</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p5.png" /></p>
-</div>
-<div id="interpreting-components" class="section level1">
-<h1>4.1 Interpreting Components</h1>
+<div id="interpreting-components" class="section level2">
+<h2>4.1 Interpreting Components</h2>
 <p>These are the two main components calculated:</p>
 <pre class="r"><code>components = pd.DataFrame(pca.components_, columns = df_scaled.columns, index=[1, 2])
 components</code></pre>
@@ -107,8 +114,8 @@ pc2</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p11.png" /></p>
 <p>For the second principle component, this will increase with an decrease in Speed and a increase in Defence. Pokemon with high values of the second principle component will have a high value for Defense but a low value for Speed.</p>
 </div>
-<div id="visualization-of-the-components" class="section level1">
-<h1>4.2 Visualization of the components</h1>
+<div id="visualization-of-the-components" class="section level2">
+<h2>4.2 Visualization of the components</h2>
 <pre class="r"><code>def get_important_features(transformed_features, components_, columns):
     &quot;&quot;&quot;
     This function will return the most &quot;important&quot; 
@@ -184,6 +191,7 @@ pc1_pokemon</code></pre>
 <pre class="r"><code>pc2_pokemon = pokemon.loc[T_df[T_df[&#39;color&#39;] == &#39;r&#39;].index]
 pc2_pokemon</code></pre>
 <p><img src="/post/2020-07-27-pca-for-visualization_files/p56p15.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>

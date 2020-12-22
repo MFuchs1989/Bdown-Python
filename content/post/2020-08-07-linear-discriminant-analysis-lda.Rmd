@@ -7,21 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and data
-+ 3 Descriptive statistics
-+ 4 Data pre-processing
-+ 5 LDA in general
-+ 6 PCA vs. LDA 
-+ 7 LDA as a classifier 
-+ 8 Conclusion
-
+ 
 
 
 # 1 Introduction

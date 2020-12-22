@@ -7,18 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Statistics and preprocessing
-+ 4 PCA for visualization
-+ 4.1 Interpreting Components
-+ 4.2 Visualization of the components
-+ 5 Conclusion
+ 
 
 
 
@@ -114,7 +109,7 @@ pca.explained_variance_ratio_
 ![](/post/2020-07-27-pca-for-visualization_files/p56p5.png)
 
 
-# 4.1 Interpreting Components
+## 4.1 Interpreting Components
 
 These are the two main components calculated:
 
@@ -184,7 +179,7 @@ For the second principle component, this will increase with an decrease in Speed
 
 
 
-# 4.2 Visualization of the components
+## 4.2 Visualization of the components
 
 ```{r, eval=F, echo=T}
 def get_important_features(transformed_features, components_, columns):

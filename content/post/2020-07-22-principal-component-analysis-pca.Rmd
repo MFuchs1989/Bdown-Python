@@ -7,21 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Introducing PCA
-+ 4 PCA in general
-+ 5 Randomized PCA
-+ 6 Incremental PCA
-+ 7 Kernel PCA
-+ 8 Tuning Hyperparameters
-+ 9 Conclusion
+ 
 
 
 # 1 Introduction

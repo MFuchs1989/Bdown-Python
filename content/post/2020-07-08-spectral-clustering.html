@@ -7,23 +7,29 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Introducing Spectral Clustering</li>
-<li>4 Generating some test data</li>
-<li>5 k-Means</li>
-<li>6 Spectral Clustering</li>
-<li>7 Digression: Feature-Engineering &amp; k-Means</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#introducing-spectral-clustering">3 Introducing Spectral Clustering</a></li>
+<li><a href="#generating-some-test-data">4 Generating some test data</a></li>
+<li><a href="#k-means">5 k-Means</a></li>
+<li><a href="#spectral-clustering">6 Spectral Clustering</a></li>
+<li><a href="#digression-feature-engineering-k-means">7 Digression: Feature-Engineering &amp; k-Means</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>My post series from the unsupervised machine learning area about cluster algorithms is slowly coming to an end.

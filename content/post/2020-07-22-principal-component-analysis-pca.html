@@ -7,25 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Introducing PCA</li>
-<li>4 PCA in general</li>
-<li>5 Randomized PCA</li>
-<li>6 Incremental PCA</li>
-<li>7 Kernel PCA</li>
-<li>8 Tuning Hyperparameters</li>
-<li>9 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#introducing-pca">3 Introducing PCA</a></li>
+<li><a href="#pca-in-general">4 PCA in general</a></li>
+<li><a href="#randomized-pca">5 Randomized PCA</a></li>
+<li><a href="#incremental-pca">6 Incremental PCA</a></li>
+<li><a href="#kernel-pca">7 Kernel PCA</a></li>
+<li><a href="#tuning-hyperparameters">8 Tuning Hyperparameters</a></li>
+<li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>After the various methods of cluster analysis <a href="https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/">“Cluster Analysis”</a> have been presented in various publications, we now come to the second category in the area of unsupervised machine learning: Dimensionality Reduction</p>

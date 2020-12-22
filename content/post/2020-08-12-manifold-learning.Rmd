@@ -7,23 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Manifold Learning Methods
-+ 3.1 Locally Linear Embedding
-+ 3.2 Modified Locally Linear Embedding
-+ 3.3 Isomap
-+ 3.4 Spectral Embedding
-+ 3.5 Multi-dimensional Scaling (MDS)
-+ 3.6 t-SNE
-+ 4 Comparison of the calculation time
-+ 5 Conclusion
+ 
 
 
 # 1 Introduction
@@ -95,7 +84,7 @@ plt.title("Manifold Learning with an S-Curve", fontsize=15)
 ![](/post/2020-08-12-manifold-learning_files/p59p1.png)
 
 
-# 3.1 Locally Linear Embedding
+## 3.1 Locally Linear Embedding
 
 Locally Linear Embedding (LLE) uses many local linear decompositions to preserve globally non-linear structures.
 
@@ -114,7 +103,7 @@ plt.title('Projected data with LLE', fontsize=18)
 ![](/post/2020-08-12-manifold-learning_files/p59p2.png)
 
 
-# 3.2 Modified Locally Linear Embedding
+## 3.2 Modified Locally Linear Embedding
 
 Modified LLE applies a regularization parameter to LLE.
 
@@ -134,7 +123,7 @@ plt.title('Projected data with modified LLE', fontsize=18)
 ![](/post/2020-08-12-manifold-learning_files/p59p3.png)
 
 
-# 3.3 Isomap
+## 3.3 Isomap
 
 Isomap seeks a lower dimensional embedding that maintains geometric distances between each instance.
 
@@ -154,7 +143,7 @@ plt.title('Projected data with Isomap', fontsize=18)
 ![](/post/2020-08-12-manifold-learning_files/p59p4.png)
 
 
-# 3.4 Spectral Embedding
+## 3.4 Spectral Embedding
 
 Spectral Embedding a discrete approximation of the low dimensional manifold using a graph representation.
 
@@ -173,7 +162,7 @@ plt.title('Projected data with Spectral Embedding', fontsize=18)
 ![](/post/2020-08-12-manifold-learning_files/p59p5.png)
 
 
-# 3.5 Multi-dimensional Scaling (MDS)
+## 3.5 Multi-dimensional Scaling (MDS)
 
 Multi-dimensional Scaling (MDS) uses similarity to plot points that are near to each other close in the embedding.
 
@@ -193,7 +182,7 @@ plt.title('Projected data with MDS', fontsize=18)
 ![](/post/2020-08-12-manifold-learning_files/p59p6.png)
 
 
-# 3.6 t-SNE
+## 3.6 t-SNE
 
 t-SNE converts the similarity of points into probabilities then uses those probabilities to create an embedding.
 

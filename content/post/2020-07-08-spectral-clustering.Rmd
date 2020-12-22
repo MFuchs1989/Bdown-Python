@@ -7,20 +7,11 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Introducing Spectral Clustering
-+ 4 Generating some test data
-+ 5 k-Means
-+ 6 Spectral Clustering
-+ 7 Digression: Feature-Engineering & k-Means
-+ 8 Conclusion
 
 
 # 1 Introduction

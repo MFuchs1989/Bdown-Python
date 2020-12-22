@@ -7,19 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Generating some test data
-+ 4 Bayesian Gaussian Mixture Models in action
-+ 5 Conclusion
-
-
+ 
 
 # 1 Introduction
 
