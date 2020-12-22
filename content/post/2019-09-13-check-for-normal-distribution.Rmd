@@ -7,27 +7,18 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Visual Normality Checks
-+ 3.1 Quantile-Quantile Plot
-+ 3.2 Histogram Plot
-+ 4 Statistical Normality Tests
-+ 4.1 Shapiro-Wilk Test
-+ 4.2 D’Agostino’s K^2^ Test
-+ 5 Conclusion
-
-
-#1 Introduction
+ 
+# 1 Introduction
 
 In my previous ["post"](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/) the question came up of how to check its data on normal distribution. There are several possibilities for this.
 
 
-#2 Loading the libraries
+# 2 Loading the libraries
 
 ```{r, eval=F, echo=T}
 import pandas as pd
@@ -43,7 +34,7 @@ from scipy.stats import normaltest
 ```
 
 
-#3 Visual Normality Checks
+# 3 Visual Normality Checks
 
 ```{r, eval=F, echo=T}
 np.random.seed(1)
@@ -59,7 +50,7 @@ df.head()
 
 ![](/post/2019-09-13-check-for-normal-distribution_files/p19p1.png)
 
-#3.1 Quantile-Quantile Plot
+## 3.1 Quantile-Quantile Plot
 
 A popular plot for checking the distribution of a data sample is the quantile-quantile plot, Q-Q plot, or QQ plot for short.A perfect match for the distribution will be shown by a line of dots on a 45-degree angle from the bottom left of the plot to the top right. Often a line is drawn on the plot to help make this expectation clear. Deviations by the dots from the line shows a deviation from the expected distribution.
 
@@ -74,7 +65,7 @@ pylab.show()
 
 
 
-#3.2 Histogram Plot
+## 3.2 Histogram Plot
 
 
 A simple and commonly used plot to quickly check the distribution of a sample of data is the histogram.
@@ -94,7 +85,7 @@ plt.show()
 
 
 
-#4 Statistical Normality Tests
+# 4 Statistical Normality Tests
 
 
 A normal distribution can also be examined with statistical tests. Pyhton's SciPy library contains two of the best known methods.
@@ -105,7 +96,7 @@ In the SciPy implementation of these tests, you can interpret the p value as fol
 + p > alpha: fail to reject H0, normal
 
 
-#4.1 Shapiro-Wilk Test
+## 4.1 Shapiro-Wilk Test
 
 The Shapiro-Wilk test evaluates a data sample and quantifies how likely it is that the data was drawn from a Gaussian distribution.
 
@@ -142,7 +133,7 @@ else:
 
 
 
-#4.2 D’Agostino’s K^2^ Test
+## 4.2 D’Agostino’s K² Test
 
 
 The D’Agostino’s K^2^ test calculates summary statistics from the data, namely kurtosis and skewness, to determine if the data distribution departs from the normal distribution,
@@ -180,7 +171,7 @@ else:
 
 
 
-#5 Conclusion
+# 5 Conclusion
 
 
 In this post several ways were presented to check normal distribution. You can do this using graphical representations or statistical tests. I would always recommend several methods to use for the determination.

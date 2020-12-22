@@ -7,21 +7,27 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Removing Constant features</li>
-<li>4 Removing Quasi-Constant features</li>
-<li>5 Removing Duplicate Features</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#removing-constant-features">3 Removing Constant features</a></li>
+<li><a href="#removing-quasi-constant-features">4 Removing Quasi-Constant features</a></li>
+<li><a href="#removing-duplicate-features">5 Removing Duplicate Features</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In addition to <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“removing highly correlated features”</a> as one of the data pre processing steps we also have to take care of constant and duplicate features. Constant features have a variance close to zero and duplicate features are too similar to other variables in the record. Therefore, when pre-processing data for regression analysis, its existence should be checked and, if so, excluded.</p>
@@ -35,10 +41,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import VarianceThreshold</code></pre>
 <pre class="r"><code>santandar_data = pd.read_csv(&quot;path/to/file/santandar.csv&quot;)</code></pre>
 <pre class="r"><code>santandar_data.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p1.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p1.png" /></p>
 </div>
 <div id="removing-constant-features" class="section level1">
 <h1>3 Removing Constant features</h1>
@@ -49,52 +52,33 @@ y = santandar_data[&#39;TARGET&#39;]
 trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2, random_state=45)</code></pre>
 <p>As already mentioned in the post <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“Dealing with highly correlated features”</a> it is important that, in order to avoid overfitting, <strong>feature selection should only be applied to the training set</strong>.</p>
 <pre class="r"><code>trainX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p2.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p2.png" /></p>
 <p>Next we will use VarianceThreshold function to remove constant features.</p>
 <pre class="r"><code>constant_filter = VarianceThreshold(threshold=0)</code></pre>
 <p>In the next step, we need to simply apply this filter to our training set as shown in the following:</p>
 <pre class="r"><code>constant_filter.fit(trainX)</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p3.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p3.png" /></p>
 <p>Now we want to get all the features that are not constant (features we want to keep):</p>
 <pre class="r"><code>len(trainX.columns[constant_filter.get_support()])</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p4.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p4.png" /></p>
 <p>Similarly, you can find the number of constant features with the help of the following code:</p>
 <pre class="r"><code>constant_columns = [column for column in trainX.columns
                     if column not in trainX.columns[constant_filter.get_support()]]
 
 print(len(constant_columns))</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p5.png" />
-
-</div>
-<p>As we can see, there are 35 variables with zero variance. We can also print their column name:</p>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p6.png" />
-
-</div>
-<p>In the last step these 35 variables have to be removed from the training and test part. We can do this as follows:</p>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p5.png" /></p>
+<p>As we can see, there are 35 variables with zero variance.
+We can also print their column name:</p>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p6.png" /></p>
+<p>In the last step these 35 variables have to be removed from the training and test part.
+We can do this as follows:</p>
 <pre class="r"><code>constant_columns_to_remove = [i.strip() for i in constant_columns]</code></pre>
 <pre class="r"><code>trainX = trainX.drop(constant_columns_to_remove, axis=1)
 trainX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p7.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p7.png" /></p>
 <pre class="r"><code>testX = testX.drop(constant_columns_to_remove, axis=1)
 testX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p8.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p8.png" /></p>
 </div>
 <div id="removing-quasi-constant-features" class="section level1">
 <h1>4 Removing Quasi-Constant features</h1>
@@ -102,95 +86,57 @@ testX.shape</code></pre>
 <p>Instead of passing again 0 as the value for the threshold parameter, we now will pass 0.01, which means that if the variance of the values in a column is less than 0.01, remove that column.</p>
 <pre class="r"><code>qconstant_filter = VarianceThreshold(threshold=0.01)</code></pre>
 <pre class="r"><code>qconstant_filter.fit(trainX)</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p9.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p9.png" /></p>
 <pre class="r"><code>len(trainX.columns[qconstant_filter.get_support()])</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p10.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p10.png" /></p>
 <pre class="r"><code>qconstant_columns = [column for column in trainX.columns
                     if column not in trainX.columns[qconstant_filter.get_support()]]
 
 print(len(qconstant_columns))</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p11.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p11.png" /></p>
 <p>63 columns were identified as quasi-Constant features. We can request these column names of this variables again with the following command:</p>
 <pre class="r"><code>for column in qconstant_columns:
     print(column)</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p12.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p12.png" /></p>
 <p>Afterwards they will be removed as well.</p>
 <pre class="r"><code>qconstant_columns_to_remove = [i.strip() for i in qconstant_columns]</code></pre>
 <pre class="r"><code>trainX = trainX.drop(qconstant_columns_to_remove, axis=1)
 trainX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p13.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p13.png" /></p>
 <pre class="r"><code>testX = testX.drop(qconstant_columns_to_remove, axis=1)
 testX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p14.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p14.png" /></p>
 </div>
 <div id="removing-duplicate-features" class="section level1">
 <h1>5 Removing Duplicate Features</h1>
-<p>As a final step we dedicate ourselves to the duplicate features. Hereby the procedure is a little different because we have no suitable function from the Scikit-learn library available.</p>
+<p>As a final step we dedicate ourselves to the duplicate features.
+Hereby the procedure is a little different because we have no suitable function from the Scikit-learn library available.</p>
 <pre class="r"><code>trainX_T = trainX.T
 trainX_T.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p15.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p15.png" /></p>
 <p>In the following way we will receive the number of duplicate features:</p>
 <pre class="r"><code>print(trainX_T.duplicated().sum())</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p16.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p16.png" /></p>
 <p>In the following way we will receive the number of features we will keep for further analysis:</p>
 <pre class="r"><code>unique_features = trainX_T.drop_duplicates(keep=&#39;first&#39;).T
 unique_features.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p17.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p17.png" /></p>
 <p>Now we define a list of duplicate features we have to remove:</p>
 <pre class="r"><code>duplicated_features = [dup_col for dup_col in testX.columns if dup_col not in unique_features.columns]
 duplicated_features</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p18.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p18.png" /></p>
 <p>… and remove them:</p>
 <pre class="r"><code>trainX = trainX.drop(duplicated_features, axis=1)
 trainX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p19.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p19.png" /></p>
 <pre class="r"><code>testX = testX.drop(duplicated_features, axis=1)
 testX.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p20.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p20.png" /></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
 <p>As we can see in the following overview, a dataset can be greatly reduced by identifying and excluding duplicate features or some with zero variance.</p>
-<div class="figure">
-<img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p21.png" />
-
-</div>
+<p><img src="/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p21.png" /></p>
 <p>There are several advantages of performing feature selection before training machine learning models:</p>
 <ul>
 <li>Models with less number of features have higher explainability</li>

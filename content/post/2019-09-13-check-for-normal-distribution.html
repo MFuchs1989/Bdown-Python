@@ -7,24 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Visual Normality Checks</li>
-<li>3.1 Quantile-Quantile Plot</li>
-<li>3.2 Histogram Plot</li>
-<li>4 Statistical Normality Tests</li>
-<li>4.1 Shapiro-Wilk Test</li>
-<li>4.2 D’Agostino’s K<sup>2</sup> Test</li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#visual-normality-checks">3 Visual Normality Checks</a>
+<ul>
+<li><a href="#quantile-quantile-plot">3.1 Quantile-Quantile Plot</a></li>
+<li><a href="#histogram-plot">3.2 Histogram Plot</a></li>
+</ul></li>
+<li><a href="#statistical-normality-tests">4 Statistical Normality Tests</a>
+<ul>
+<li><a href="#shapiro-wilk-test">4.1 Shapiro-Wilk Test</a></li>
+<li><a href="#dagostinos-k²-test">4.2 D’Agostino’s K² Test</a></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In my previous <a href="https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/">“post”</a> the question came up of how to check its data on normal distribution. There are several possibilities for this.</p>
@@ -53,23 +63,16 @@ df = pd.DataFrame({
 })
 
 df.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p1.png" />
-
-</div>
-</div>
-<div id="quantile-quantile-plot" class="section level1">
-<h1>3.1 Quantile-Quantile Plot</h1>
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p1.png" /></p>
+<div id="quantile-quantile-plot" class="section level2">
+<h2>3.1 Quantile-Quantile Plot</h2>
 <p>A popular plot for checking the distribution of a data sample is the quantile-quantile plot, Q-Q plot, or QQ plot for short.A perfect match for the distribution will be shown by a line of dots on a 45-degree angle from the bottom left of the plot to the top right. Often a line is drawn on the plot to help make this expectation clear. Deviations by the dots from the line shows a deviation from the expected distribution.</p>
 <pre class="r"><code>stats.probplot(df[&#39;Col_1&#39;], dist=&quot;norm&quot;, plot=pylab)
 pylab.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p2.png" />
-
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p2.png" /></p>
 </div>
-</div>
-<div id="histogram-plot" class="section level1">
-<h1>3.2 Histogram Plot</h1>
+<div id="histogram-plot" class="section level2">
+<h2>3.2 Histogram Plot</h2>
 <p>A simple and commonly used plot to quickly check the distribution of a sample of data is the histogram.</p>
 <pre class="r"><code>bins = np.linspace(-20, 20, 100)
 
@@ -78,9 +81,7 @@ plt.hist(df[&#39;Col_2&#39;], bins, alpha=0.5, label=&#39;Col_2&#39;)
 plt.hist(df[&#39;Col_3&#39;], bins, alpha=0.5, label=&#39;Col_3&#39;)
 plt.legend(loc=&#39;upper right&#39;)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p3.png" />
-
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p3.png" /></p>
 </div>
 </div>
 <div id="statistical-normality-tests" class="section level1">
@@ -91,53 +92,35 @@ plt.show()</code></pre>
 <li>p &lt;= alpha: reject H0, not normal</li>
 <li>p &gt; alpha: fail to reject H0, normal</li>
 </ul>
-</div>
-<div id="shapiro-wilk-test" class="section level1">
-<h1>4.1 Shapiro-Wilk Test</h1>
+<div id="shapiro-wilk-test" class="section level2">
+<h2>4.1 Shapiro-Wilk Test</h2>
 <p>The Shapiro-Wilk test evaluates a data sample and quantifies how likely it is that the data was drawn from a Gaussian distribution.</p>
 <pre class="r"><code>shapiro(df[&#39;Col_1&#39;])</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p4.png" />
-
-</div>
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p4.png" /></p>
 <pre class="r"><code>stat, p = shapiro(df[&#39;Col_1&#39;])</code></pre>
 <pre class="r"><code>print(&#39;Statistics=%.3f, p=%.3f&#39; % (stat, p))</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p5.png" />
-
-</div>
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p5.png" /></p>
 <pre class="r"><code>alpha = 0.05
 if p &gt; alpha:
  print(&#39;Sample looks Gaussian (fail to reject H0)&#39;)
 else:
  print(&#39;Sample does not look Gaussian (reject H0)&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p6.png" />
-
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p6.png" /></p>
 </div>
-</div>
-<div id="dagostinos-k2-test" class="section level1">
-<h1>4.2 D’Agostino’s K<sup>2</sup> Test</h1>
+<div id="dagostinos-k²-test" class="section level2">
+<h2>4.2 D’Agostino’s K² Test</h2>
 <p>The D’Agostino’s K<sup>2</sup> test calculates summary statistics from the data, namely kurtosis and skewness, to determine if the data distribution departs from the normal distribution,</p>
 <pre class="r"><code>normaltest(df[&#39;Col_1&#39;])</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p7.png" />
-
-</div>
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p7.png" /></p>
 <pre class="r"><code>stat, p = normaltest(df[&#39;Col_1&#39;])</code></pre>
 <pre class="r"><code>print(&#39;Statistics=%.3f, p=%.3f&#39; % (stat, p))</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p8.png" />
-
-</div>
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p8.png" /></p>
 <pre class="r"><code>alpha = 0.05
 if p &gt; alpha:
  print(&#39;Sample looks Gaussian (fail to reject H0)&#39;)
 else:
  print(&#39;Sample does not look Gaussian (reject H0)&#39;)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-13-check-for-normal-distribution_files/p19p9.png" />
-
+<p><img src="/post/2019-09-13-check-for-normal-distribution_files/p19p9.png" /></p>
 </div>
 </div>
 <div id="conclusion" class="section level1">

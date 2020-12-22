@@ -7,25 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
+ 
 
-
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Embedded methods
-+ 3.1 Ridge Regression
-+ 3.2 Lasso Regression
-+ 3.3 Elastic Net
-+ 4 Grid Search
-+ 4.1 Grid for Ridge
-+ 4.2 Grid for embedded methods
-+ 5 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 
 ![](/post/2019-10-08-embedded-methods_files/p21s1.png)
@@ -44,7 +33,7 @@ For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](http
 
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -102,7 +91,7 @@ trainX, testX, trainY, testY = train_test_split(scaled_features_x, y, test_size 
 ```
 
 
-#3 Embedded methods
+# 3 Embedded methods
 
 In short, ridge regression and lasso are regression techniques optimized for prediction, rather than inference. Normal regression gives you unbiased regression coefficients.
 Ridge and lasso regression allow you to regularize (shrink) coefficients. This means that the estimated coefficients are pushed towards 0, to make them work better on new data-sets. This allows you to use complex models and avoid over-fitting at the same time.
@@ -157,7 +146,7 @@ plt.show()
 
 
 
-#3.1 Ridge Regression
+## 3.1 Ridge Regression
 
 The ridge regression syntax (as well as those of lasso and elastic net) is analogous to linear regression. 
 Here are two short sentences about how ridge works:
@@ -222,7 +211,7 @@ plt.show()
 
 
 
-#3.2 Lasso Regression
+## 3.2 Lasso Regression
 
 Lasso Regression is generally used when we have more number of features, because it automatically does feature selection. 
 
@@ -282,7 +271,7 @@ plt.show()
 
 
 
-#3.3 Elastic Net
+## 3.3 Elastic Net
 
 Elastic Net is a combination of ridge regression and lasso regression.
 
@@ -343,12 +332,12 @@ plt.show()
 
 
 
-#4 Grid Search
+# 4 Grid Search
 
 Grid search is an approach to parameter tuning that will methodically build and evaluate a model for each combination of algorithm parameters specified in a grid.
 
 
-#4.1 Grid for Ridge
+## 4.1 Grid for Ridge
 
 The code below evaluates different alpha values for the Ridge Regression.
 
@@ -380,7 +369,7 @@ print(grid.best_params_)
 We see that the result from grid search is worse than that from the original model.Something like that can happen. It does not matter anyway.
 
 
-#4.2 Grid for embedded methods
+## 4.2 Grid for embedded methods
 
 We also can use Grid Search to compare all embedded methods with the different values for alpha:
 
@@ -419,7 +408,7 @@ print(grid.best_params_)
 
 
 
-#5 Conclusion
+# 5 Conclusion
 
 Within my latest post ["Wrapper methods"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/) 
 I described how they work and how they are differentiated from filter methods. But what's the difference between wrapper methods and embedded methods?

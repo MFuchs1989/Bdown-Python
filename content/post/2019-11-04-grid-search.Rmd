@@ -7,23 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-# Table of Content
-
-+ 1 Introduction
-+ 2 Background information on Grid Searach
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 5 LogReg
-+ 6 Grid Search
-+ 6.1 Grid Search with LogReg
-+ 6.2 Grid Search with other machine learning algorithms
-+ 6.3 Grid Search with more than one estimator
-+ 7 Speed up GridSearchCV using parallel processing
-+ 8 Conclusion
-
-
+ 
 # 1 Introduction
 
 Grid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. This is significant as the performance of the entire machine learning model is based on the hyper parameter values specified.
@@ -137,7 +127,7 @@ Recall and Precision are useful metrics when working with unbalanced datasets (i
 Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.
 
 
-# 6.1 Grid Search with LogReg
+## 6.1 Grid Search with LogReg
 
 ```{r, eval=F, echo=T}
 grid_values = {'penalty': ['l1', 'l2'],'C':[0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]}
@@ -167,7 +157,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 Unfortunately, we have not further improved the accuracy in this case.
 
 
-# 6.2 Grid Search with other machine learning algorithms
+## 6.2 Grid Search with other machine learning algorithms
 
 As already mentioned, grid search can be used with all possible machine learning algorithms.
 Below is a list of the well-known algorithms I used this method:
@@ -187,7 +177,7 @@ Below is a list of the well-known algorithms I used this method:
 + ["Lasso Regression"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 + ["Elastic Net"](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
 
-# 6.3 Grid Search with more than one estimator
+## 6.3 Grid Search with more than one estimator
 
 We can also use Grid Search with multiple estimator:
 

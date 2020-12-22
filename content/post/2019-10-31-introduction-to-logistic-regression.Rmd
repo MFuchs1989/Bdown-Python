@@ -7,35 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
+ 
 
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Descriptive statistics
-+ 3.1 Mean values of the features
-+ 3.2 Description of the target variable
-+ 3.3 Description of the predictor variables
-+ 4 Data pre-processing
-+ 4.1 Conversion of the target variable
-+ 4.2 Creation of dummy variables
-+ 4.3 Feature Selection
-+ 5 Logistic Regression with the statsmodel library
-+ 6 Logistic Regression with scikit-learn
-+ 6.1 Over-sampling using SMOTE
-+ 6.2 Model Fitting
-+ 6.3 Model evaluation
-+ 6.3.1 Confusion matrix
-+ 6.3.2 Further metrics
-+ 6.3.3 ROC / AUC
-+ 6.3.4 Cross Validation
-+ 7 Conclusion
-+ 8 Description of the dataframe
-
-
-#1 Introduction
+# 1 Introduction
 
 My previous posts were mostly about treating regression problems. Now we'll change from regression to classification. Let's start with the introduction of a binary classification algorithm: **Logistic Regression**
 
@@ -43,7 +22,7 @@ My previous posts were mostly about treating regression problems. Now we'll chan
 For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -99,10 +78,10 @@ A detailed description of the variables is given at the end of this publication.
 Our target variable is *final_subscribed* which means whether a customer has finally signed or not.
 
 
-#3 Descriptive statistics
+# 3 Descriptive statistics
 
 
-#3.1 Mean values of the features
+## 3.1 Mean values of the features
 
 
 ```{r, eval=F, echo=T}
@@ -129,7 +108,7 @@ df[(df["Score_diff"] >= float(threshold[0])) | (df["Score_diff"] <= float(thresh
 
 
 
-#3.2 Description of the target variable
+## 3.2 Description of the target variable
 
 ```{r, eval=F, echo=T}
 sns.countplot(x='final_subscribed', data=bank, palette='hls')
@@ -151,7 +130,7 @@ bank['final_subscribed'].value_counts(normalize=True) * 100
 
 
 
-#3.3 Description of the predictor variables
+## 3.3 Description of the predictor variables
 
 
 ```{r, eval=F, echo=T}
@@ -222,9 +201,9 @@ plt.ylabel('Frequency')
 On the more detailed examination of the remaining variables is omitted in this post.
 
 
-#4 Data pre-processing
+# 4 Data pre-processing
 
-#4.1 Conversion of the target variable
+## 4.1 Conversion of the target variable
 
 ```{r, eval=F, echo=T}
 vals_to_replace = {'no':'0', 'yes':'1'}
@@ -237,7 +216,7 @@ bank.head()
 Now we have 0 and 1 as int64 for our target variable
 
 
-#4.2 Creation of dummy variables
+## 4.2 Creation of dummy variables
 
 There are some categorical variables in the data set. 
 A logistic regression model only works with numeric variables, so we have to convert the non-numeric ones to dummy variables. If you want to learn more about one-hot-encoding / dummy variables, read this post from me: ["The use of dummy variables"](https://michael-fuchs-python.netlify.com/2019/06/14/the-use-of-dummy-variables/)
@@ -267,7 +246,7 @@ bank_final.columns.values
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p11.png)
 
 
-#4.3 Feature Selection
+## 4.3 Feature Selection
 
 Now we have created some new variables. However, not all are relevant for the planned classification.
 We use the Recursive Feature Elimination (RFE) algorithm to eliminate the redundant features.
@@ -311,7 +290,7 @@ new_test_x = testX[filtered_features]
 ```
 
 
-#5 Logistic Regression with the statsmodel library
+# 5 Logistic Regression with the statsmodel library
 
 With the regression model from the statsmodel library I would like to find out which of the remaining variables are significant.
 
@@ -349,9 +328,9 @@ new_test_x2 = new_test_x[filtered_features2]
 
 
 
-#6 Logistic Regression with scikit-learn
+# 6 Logistic Regression with scikit-learn
 
-#6.1 Over-sampling using SMOTE
+## 6.1 Over-sampling using SMOTE
 
 SMOTE is an over-sampling method and stands for Synthetic Minority Over-sampling Technique . 
 What it does is, it creates synthetic (not duplicate) samples of the minority class. 
@@ -416,7 +395,7 @@ print("Number of observations trainY_os dataset:", trainY_smote.shape[0])
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p16.png)
 
 
-#6.2 Model Fitting
+## 6.2 Model Fitting
 
 After all the selections of the features and creation of the synthetic samples, here again an overview of the train and test predictors as well as the train and test criterion.
 For a better overview, we assign the objects more descriptive / known names.
@@ -449,9 +428,9 @@ coef[['features', 'coef', 'odds_ratio']]
 
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p17.png)
 
-#6.3 Model evaluation
+## 6.3 Model evaluation
 
-#6.3.1 Confusion matrix
+### 6.3.1 Confusion matrix
 
 To evaluate classification models we usualy use a confusion matrix.
 This can be requested in python as follows: 
@@ -504,7 +483,7 @@ To explain this we look at the following graphic:
 + False Negative(FN)= are the cases in which we predicted no they don’t have subscibed and in reality, they do have subscription. This is also known as the Type 2 Error.
 
 
-#6.3.2 Further metrics
+### 6.3.2 Further metrics
 
 Based on the values from the confusion matrix, the following metrics can be calculated:
 
@@ -529,7 +508,7 @@ print('f1_score: {:.2f}'.format(f1_score(testY_final, y_pred)))
 + The F1 score can be interpreted as a weighted average of the precision and recall, where an F1 score reaches its best value at 1 and worst score at 0.
 
 
-#6.3.3 ROC / AUC
+### 6.3.3 ROC / AUC
 
 
 ```{r, eval=F, echo=T}
@@ -568,7 +547,7 @@ roc_auc_score(testY_final, y_pred_proba)
 AUC score 1 represents perfect classifier, and 0.5 represents a worthless classifier.
 
 
-#6.3.4 Cross Validation
+### 6.3.4 Cross Validation
 
 Another option for model evaluation is the use of Cross Validation (CV).
 
@@ -599,7 +578,7 @@ print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 
 
-#7 Conclusion
+# 7 Conclusion
 
 The logistic regression was the first classification algorithm that was dealt with in my posts. 
 Although this algorithm is not one of the most complex of its kind, it is often used because of its simplicity and delivers very satisfactory values.
@@ -607,7 +586,7 @@ Although this algorithm is not one of the most complex of its kind, it is often 
 
 
 
-#8 Description of the dataframe
+# 8 Description of the dataframe
 
 Predictors variables:
 

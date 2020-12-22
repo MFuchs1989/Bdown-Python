@@ -7,33 +7,40 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Linear Regression</li>
-<li>4 Decision Tree Regression</li>
-<li>5 Support Vector Machines Regression</li>
-<li>6 Stochastic Gradient Descent (SGD) Regression</li>
-<li>7 KNN Regression</li>
-<li>8 Ensemble Modeling</li>
-<li>8.1 Bagging Regressor</li>
-<li>8.2 Bagging Regressor with Decision Tree Reg as base_estimator</li>
-<li>8.3 Random Forest Regressor</li>
-<li>8.4 AdaBoost Regressor</li>
-<li>8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</li>
-<li>8.6 Gradient Boosting Regressor</li>
-<li>8.7 Stacking Regressor</li>
-<li>9 Overview Results</li>
-<li>10 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#linear-regression">3 Linear Regression</a></li>
+<li><a href="#decision-tree-regression">4 Decision Tree Regression</a></li>
+<li><a href="#support-vector-machines-regression">5 Support Vector Machines Regression</a></li>
+<li><a href="#stochastic-gradient-descent-sgd-regression">6 Stochastic Gradient Descent (SGD) Regression</a></li>
+<li><a href="#knn-regression">7 KNN Regression</a></li>
+<li><a href="#ensemble-modeling">8 Ensemble Modeling</a>
+<ul>
+<li><a href="#bagging-regressor">8.1 Bagging Regressor</a></li>
+<li><a href="#bagging-regressor-with-decision-tree-reg-as-base_estimator">8.2 Bagging Regressor with Decision Tree Reg as base_estimator</a></li>
+<li><a href="#random-forest-regressor">8.3 Random Forest Regressor</a></li>
+<li><a href="#adaboost-regressor">8.4 AdaBoost Regressor</a></li>
+<li><a href="#adaboost-regressor-with-decision-tree-reg-as-base_estimator">8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</a></li>
+<li><a href="#gradient-boosting-regressor">8.6 Gradient Boosting Regressor</a></li>
+<li><a href="#stacking-regressor">8.7 Stacking Regressor</a></li>
+</ul></li>
+<li><a href="#overview-results">9 Overview Results</a></li>
+<li><a href="#conclusion">10 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In previous publications I have covered regression models from the scikit-learn library and the statsmodel library.
@@ -231,9 +238,8 @@ r_grid_knn_reg = grid_knn_reg.score(trainX, trainY)</code></pre>
 <pre class="r"><code>def rmse_cv(model):
     rmse= np.sqrt(-cross_val_score(model, trainX, trainY, scoring=&quot;neg_mean_squared_error&quot;, cv = 5))
     return(rmse)</code></pre>
-</div>
-<div id="bagging-regressor" class="section level1">
-<h1>8.1 Bagging Regressor</h1>
+<div id="bagging-regressor" class="section level2">
+<h2>8.1 Bagging Regressor</h2>
 <pre class="r"><code>n_estimators = [170, 200, 250, 300]
 cv_rmse_br = [rmse_cv(BaggingRegressor(n_estimators = n_estimator)).mean() 
             for n_estimator in n_estimators]</code></pre>
@@ -255,8 +261,8 @@ y_pred = bagging_reg.predict(testX)</code></pre>
 <pre class="r"><code>mae_bagging_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_bagging_reg = bagging_reg.score(trainX, trainY)</code></pre>
 </div>
-<div id="bagging-regressor-with-decision-tree-reg-as-base_estimator" class="section level1">
-<h1>8.2 Bagging Regressor with Decision Tree Reg as base_estimator</h1>
+<div id="bagging-regressor-with-decision-tree-reg-as-base_estimator" class="section level2">
+<h2>8.2 Bagging Regressor with Decision Tree Reg as base_estimator</h2>
 <p>As the base estimator I’ll use a DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.</p>
 <pre class="r"><code>dt_reg_with_grid_params = DecisionTreeRegressor(criterion = &#39;mse&#39;, max_depth= 8, max_leaf_nodes= 100, min_samples_leaf= 20, min_samples_split= 10) </code></pre>
 <pre class="r"><code>n_estimators = 250
@@ -274,8 +280,8 @@ y_pred = bagging_reg_plus_dtr.predict(testX)</code></pre>
 <pre class="r"><code>mae_bagging_reg_plus_dtr = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_bagging_reg_plus_dtr = bagging_reg_plus_dtr.score(trainX, trainY)</code></pre>
 </div>
-<div id="random-forest-regressor" class="section level1">
-<h1>8.3 Random Forest Regressor</h1>
+<div id="random-forest-regressor" class="section level2">
+<h2>8.3 Random Forest Regressor</h2>
 <pre class="r"><code>n_estimators = 250
 
 rf_reg = RandomForestRegressor(n_estimators = n_estimators)
@@ -305,8 +311,8 @@ print(&#39;Mean Absolute Error:&#39;, round(metrics.mean_absolute_error(testY, y
 <pre class="r"><code>mae_rs_rf_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_rs_rf_reg = rs_rf_reg.score(trainX, trainY)</code></pre>
 </div>
-<div id="adaboost-regressor" class="section level1">
-<h1>8.4 AdaBoost Regressor</h1>
+<div id="adaboost-regressor" class="section level2">
+<h2>8.4 AdaBoost Regressor</h2>
 <pre class="r"><code>n_estimators = [170, 200, 250, 300]
 cv_rmse_ab_reg = [rmse_cv(AdaBoostRegressor(n_estimators = n_estimator)).mean() 
             for n_estimator in n_estimators]</code></pre>
@@ -328,8 +334,8 @@ y_pred = ab_reg.predict(testX)</code></pre>
 <pre class="r"><code>mae_ab_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_ab_reg = ab_reg.score(trainX, trainY)</code></pre>
 </div>
-<div id="adaboost-regressor-with-decision-tree-reg-as-base_estimator" class="section level1">
-<h1>8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</h1>
+<div id="adaboost-regressor-with-decision-tree-reg-as-base_estimator" class="section level2">
+<h2>8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator</h2>
 <p>I will use again the DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.</p>
 <pre class="r"><code>dt_reg_with_grid_params = DecisionTreeRegressor(criterion = &#39;mse&#39;, max_depth= 8, max_leaf_nodes= 100, min_samples_leaf= 20, min_samples_split= 10) </code></pre>
 <pre class="r"><code>n_estimators = 300
@@ -347,8 +353,8 @@ y_pred = ab_reg_plus_dtr.predict(testX)</code></pre>
 <pre class="r"><code>mae_ab_reg_plus_dtr = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_ab_reg_plus_dtr = ab_reg_plus_dtr.score(trainX, trainY)</code></pre>
 </div>
-<div id="gradient-boosting-regressor" class="section level1">
-<h1>8.6 Gradient Boosting Regressor</h1>
+<div id="gradient-boosting-regressor" class="section level2">
+<h2>8.6 Gradient Boosting Regressor</h2>
 <pre class="r"><code>n_estimators = [150, 170 , 200, 400, 500]
 cv_rmse_gb_reg = [rmse_cv(GradientBoostingRegressor(n_estimators = n_estimator)).mean() 
             for n_estimator in n_estimators]</code></pre>
@@ -370,8 +376,8 @@ y_pred = gb_reg.predict(testX)</code></pre>
 <pre class="r"><code>mae_gb_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_gb_reg = gb_reg.score(trainX, trainY)</code></pre>
 </div>
-<div id="stacking-regressor" class="section level1">
-<h1>8.7 Stacking Regressor</h1>
+<div id="stacking-regressor" class="section level2">
+<h2>8.7 Stacking Regressor</h2>
 <pre class="r"><code>ridge = Ridge()
 lasso = Lasso()</code></pre>
 <pre class="r"><code>estimators = [
@@ -397,6 +403,7 @@ print(&#39;Mean Absolute Error:&#39;, round(metrics.mean_absolute_error(testY, y
 <p><img src="/post/2019-07-24-further-regression-algorithms_files/p68p33.png" /></p>
 <pre class="r"><code>mae_grid_sr = round(metrics.mean_absolute_error(testY, y_pred), 2)
 r_grid_sr = grid_sr.score(trainX, trainY)</code></pre>
+</div>
 </div>
 <div id="overview-results" class="section level1">
 <h1>9 Overview Results</h1>

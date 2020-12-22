@@ -7,31 +7,11 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Linear Regression
-+ 4 Decision Tree Regression
-+ 5 Support Vector Machines Regression
-+ 6 Stochastic Gradient Descent (SGD) Regression
-+ 7 KNN Regression
-+ 8 Ensemble Modeling
-+ 8.1 Bagging Regressor
-+ 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
-+ 8.3 Random Forest Regressor
-+ 8.4 AdaBoost Regressor
-+ 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
-+ 8.6 Gradient Boosting Regressor
-+ 8.7 Stacking Regressor
-+ 9 Overview Results
-+ 10 Conclusion
-
-
 
 
 # 1 Introduction
@@ -408,7 +388,7 @@ def rmse_cv(model):
 ```
 
 
-# 8.1 Bagging Regressor
+## 8.1 Bagging Regressor
 
 
 ```{r, eval=F, echo=T}
@@ -459,7 +439,7 @@ r_bagging_reg = bagging_reg.score(trainX, trainY)
 ```
 
 
-# 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
+## 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
 
 As the base estimator I'll use a DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.
 
@@ -497,7 +477,7 @@ r_bagging_reg_plus_dtr = bagging_reg_plus_dtr.score(trainX, trainY)
 ```
 
 
-# 8.3 Random Forest Regressor
+## 8.3 Random Forest Regressor
 
 
 ```{r, eval=F, echo=T}
@@ -559,7 +539,7 @@ r_rs_rf_reg = rs_rf_reg.score(trainX, trainY)
 ```
 
 
-# 8.4 AdaBoost Regressor
+## 8.4 AdaBoost Regressor
 
 
 ```{r, eval=F, echo=T}
@@ -609,7 +589,7 @@ r_ab_reg = ab_reg.score(trainX, trainY)
 ```
 
 
-# 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
+## 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
 
 I will use again the DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.
 
@@ -648,7 +628,7 @@ r_ab_reg_plus_dtr = ab_reg_plus_dtr.score(trainX, trainY)
 ```
 
 
-# 8.6 Gradient Boosting Regressor
+## 8.6 Gradient Boosting Regressor
 
 
 ```{r, eval=F, echo=T}
@@ -697,7 +677,7 @@ r_gb_reg = gb_reg.score(trainX, trainY)
 ```
 
 
-# 8.7 Stacking Regressor
+## 8.7 Stacking Regressor
 
 ```{r, eval=F, echo=T}
 ridge = Ridge()

@@ -7,25 +7,15 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
+ 
 
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Background information on SGD Classifiers
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 5 SGDClassifier
-+ 5.1 Logistic Regression with SGD training
-+ 5.2 Linear SVM with SGD training
-+ 6 Model improvement
-+ 6.1 Performance comparison of the different linear models
-+ 6.2 GridSearch
-+ 7 Conclusion
-
-
-#1 Introduction
+# 1 Introduction
 
 The name Stochastic Gradient Descent - Classifier (SGD-Classifier) might mislead some user to think that SGD is a classifier. But that's not the case! SGD Classifier is a linear classifier (SVM, logistic regression, a.o.) optimized by the SGD.
 These are two different concepts. While SGD is a optimization method, Logistic Regression or linear Support Vector Machine is a machine learning algorithm/model. You can think of that a machine learning model defines a loss function, and the optimization method minimizes/maximizes it. 
@@ -34,7 +24,7 @@ These are two different concepts. While SGD is a optimization method, Logistic R
 For this post the dataset *Run or Walk* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1hGnJI7_p7Bo2Vbp_CY6Lq72bZQzu5nEK>.
 
 
-#2 Background information on SGD Classifiers
+# 2 Background information on SGD Classifiers
 
 
 **Gradient Descent**
@@ -67,7 +57,7 @@ The minimum of the cost function of Logistic Regression cannot be calculated dir
 
 Another reason to use SGD Classifier is that SVM or logistic regression will not work if you cannot keep the record in RAM. However, SGD Classifier continues to work.
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 ```{r, eval=F, echo=T}
 import numpy as np
@@ -99,7 +89,7 @@ run_walk.head()
 ![](/post/2019-11-11-introduction-to-sgd-classifier_files/p32p1.png)
 
 
-#4 Data pre-processing
+# 4 Data pre-processing
 
 In the first step we split up the data set for the model training. Columns 'date', 'time' and 'username' are not required for further analysis.
 
@@ -120,14 +110,14 @@ testX = scaler.transform(testX)
 ```
 
 
-#5 SGD-Classifier
+# 5 SGD-Classifier
 
 As already mentioned above SGD-Classifier is a Linear classifier with SGD training. Which linear classifier is used is determined with the hypter parameter loss.
 So, if I write *clf = SGDClassifier(loss='hinge')* it is an implementation of Linear SVM and if I write *clf = SGDClassifier(loss='log')* it is an implementation of Logisitic regression. 
 
 Let's see how both types work:
 
-#5.1 Logistic Regression with SGD training
+## 5.1 Logistic Regression with SGD training
 
 ```{r, eval=F, echo=T}
 clf = SGDClassifier(loss="log", penalty="l2")
@@ -164,7 +154,7 @@ plt.plot(n_iters, scores)
 ![](/post/2019-11-11-introduction-to-sgd-classifier_files/p32p4.png)
 
 
-#5.2 Linear SVM with SGD training
+## 5.2 Linear SVM with SGD training
 
 Now we do the same calculation for the linear model of the SVM.
 
@@ -227,9 +217,9 @@ print(f"Training time for linear SVM without SGD training: {stop - start}s")
 ![](/post/2019-11-11-introduction-to-sgd-classifier_files/p32p8.png)
 
 
-#6 Model improvement
+# 6 Model improvement
 
-#6.1 Performance comparison of the different linear models
+## 6.1 Performance comparison of the different linear models
 
 
 Let's take a look at the performance of the different linear classifiers
@@ -257,7 +247,7 @@ It becomes clear that 'hinge' (which stands for the use of a linear SVM) gives t
 
 
 
-#6.2 GridSearch
+## 6.2 GridSearch
 
 We use the popular GridSearch method to find the most suitable hyperparameters.
 
@@ -292,7 +282,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 Although the accuracy could not be increased further, we get the confirmation that hinge (aka linear SVM) with the parameters shown above is the best choice.
 
 
-#7 Conclusion
+# 7 Conclusion
 
 In this post we covered gradient decent in general and how it can be used to improve linear classifiers. It was worked out why there is SGD Classifier at all and what advantages they have over simple linear models. Furthermore the functionality of hypterparameter tuning was explained.
 

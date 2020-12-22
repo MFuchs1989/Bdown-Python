@@ -7,27 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on Grid Searach</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>5 LogReg</li>
-<li>6 Grid Search</li>
-<li>6.1 Grid Search with LogReg</li>
-<li>6.2 Grid Search with other machine learning algorithms</li>
-<li>6.3 Grid Search with more than one estimator</li>
-<li>7 Speed up GridSearchCV using parallel processing</li>
-<li>8 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-grid-searach">2 Background information on Grid Searach</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a></li>
+<li><a href="#logreg">5 LogReg</a></li>
+<li><a href="#grid-search">6 Grid Search</a>
+<ul>
+<li><a href="#grid-search-with-logreg">6.1 Grid Search with LogReg</a></li>
+<li><a href="#grid-search-with-other-machine-learning-algorithms">6.2 Grid Search with other machine learning algorithms</a></li>
+<li><a href="#grid-search-with-more-than-one-estimator">6.3 Grid Search with more than one estimator</a></li>
+</ul></li>
+<li><a href="#speed-up-gridsearchcv-using-parallel-processing">7 Speed up GridSearchCV using parallel processing</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Grid Search is the process of performing hyperparameter tuning in order to determine the optimal values for a given model. This is significant as the performance of the entire machine learning model is based on the hyper parameter values specified.</p>
@@ -99,9 +106,8 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></
 <p>Now let’s use Grid Search with the logistic regression model. I mostly use accuracy as scoring. However, other values such as recall or precision can also be very important. It is therefore worth reading a little deeper into this topic.</p>
 <p>Recall and Precision are useful metrics when working with unbalanced datasets (i.e., there are a lot of samples with label ‘0’, but much fewer samples with label ‘1’.
 Recall and Precision also lead into slightly more complicated scoring metrics like F1_score (and Fbeta_score), which are also very useful.</p>
-</div>
-<div id="grid-search-with-logreg" class="section level1">
-<h1>6.1 Grid Search with LogReg</h1>
+<div id="grid-search-with-logreg" class="section level2">
+<h2>6.1 Grid Search with LogReg</h2>
 <pre class="r"><code>grid_values = {&#39;penalty&#39;: [&#39;l1&#39;, &#39;l2&#39;],&#39;C&#39;:[0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]}
 
 clf = LogisticRegression()
@@ -119,8 +125,8 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions))
 <p><img src="/post/2019-11-04-grid-search_files/p36p6.png" /></p>
 <p>Unfortunately, we have not further improved the accuracy in this case.</p>
 </div>
-<div id="grid-search-with-other-machine-learning-algorithms" class="section level1">
-<h1>6.2 Grid Search with other machine learning algorithms</h1>
+<div id="grid-search-with-other-machine-learning-algorithms" class="section level2">
+<h2>6.2 Grid Search with other machine learning algorithms</h2>
 <p>As already mentioned, grid search can be used with all possible machine learning algorithms.
 Below is a list of the well-known algorithms I used this method:</p>
 <p><strong>Classifiacation:</strong></p>
@@ -138,8 +144,8 @@ Below is a list of the well-known algorithms I used this method:</p>
 <li><a href="https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/">“Elastic Net”</a></li>
 </ul>
 </div>
-<div id="grid-search-with-more-than-one-estimator" class="section level1">
-<h1>6.3 Grid Search with more than one estimator</h1>
+<div id="grid-search-with-more-than-one-estimator" class="section level2">
+<h2>6.3 Grid Search with more than one estimator</h2>
 <p>We can also use Grid Search with multiple estimator:</p>
 <pre class="r"><code># Just initialize the pipeline with any estimator you like 
 pipe = Pipeline(steps=[(&#39;estimator&#39;, LogisticRegression())])
@@ -177,6 +183,7 @@ print(grid.best_params_) </code></pre>
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
 <p><img src="/post/2019-11-04-grid-search_files/p36p8.png" /></p>
 <p>As we can see, the use of support vector machines gives the best results for this classification problem.</p>
+</div>
 </div>
 <div id="speed-up-gridsearchcv-using-parallel-processing" class="section level1">
 <h1>7 Speed up GridSearchCV using parallel processing</h1>

@@ -7,29 +7,34 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries</li>
-<li>3 Scaling methods</li>
-<li>3.1 Standard Scaler</li>
-<li>3.2 Min-Max Scaler</li>
-<li>3.3 Robust Scaler</li>
-<li>3.4 Comparison of the previously shown scaling methods</li>
-<li>4 Inverse Transformation</li>
-<li>5 Export Scaler to use in another program</li>
-<li>6 Feature Scaling in practice</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#scaling-methods">3 Scaling methods</a>
+<ul>
+<li><a href="#standard-scaler">3.1 Standard Scaler</a></li>
+<li><a href="#min-max-scaler">3.2 Min-Max Scaler</a></li>
+<li><a href="#robust-scaler">3.3 Robust Scaler</a></li>
+<li><a href="#comparison-of-the-previously-shown-scaling-methods">3.4 Comparison of the previously shown scaling methods</a></li>
+</ul></li>
+<li><a href="#inverse-transformation">4 Inverse Transformation</a></li>
+<li><a href="#export-scaler-to-use-in-another-program">5 Export Scaler to use in another program</a></li>
+<li><a href="#feature-scaling-in-practice">6 Feature Scaling in practice</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Feature scaling can be an important part for many machine learning algorithms. It’s a step of data pre-processing which is applied to independent variables or features of data. It basically helps to normalise the data within a particular range. Sometimes, it also helps in speeding up the calculations in an algorithm.</p>
@@ -70,9 +75,8 @@ pd.set_option(&#39;float_format&#39;, &#39;{:f}&#39;.format)</code></pre>
 <li>Min-Max Scaler</li>
 <li>Robust Scaler</li>
 </ul>
-</div>
-<div id="standard-scaler" class="section level1">
-<h1>3.1 Standard Scaler</h1>
+<div id="standard-scaler" class="section level2">
+<h2>3.1 Standard Scaler</h2>
 <p>The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1. If you want to know wheather your data is normal distributet have a look at this post: <a href="https://michael-fuchs-python.netlify.com/2019/09/13/check-for-normal-distribution/">“Check for normal distribution”</a></p>
 <p>The mean and standard deviation are calculated for the feature and then the feature is scaled based on:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e1.png" /></p>
@@ -109,8 +113,8 @@ sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p4.png" /></p>
 </div>
-<div id="min-max-scaler" class="section level1">
-<h1>3.2 Min-Max Scaler</h1>
+<div id="min-max-scaler" class="section level2">
+<h2>3.2 Min-Max Scaler</h2>
 <p>The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e2.png" /></p>
 <p>It essentially shrinks the range such that the range is now between 0 and 1. This scaler works better for cases in which the standard scaler might not work so well. If the distribution is not Gaussian or the standard deviation is very small, the Min-Max Scaler works better. However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler (shown below).</p>
@@ -148,8 +152,8 @@ sns.kdeplot(scaled_features[&#39;Col_3&#39;], ax=ax2)
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p7.png" /></p>
 </div>
-<div id="robust-scaler" class="section level1">
-<h1>3.3 Robust Scaler</h1>
+<div id="robust-scaler" class="section level2">
+<h2>3.3 Robust Scaler</h2>
 <p>The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:</p>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18e3.png" /></p>
 <p>Of course this means it is using the less of the data for scaling so it’s more suitable for when there are outliers in the data.</p>
@@ -185,8 +189,8 @@ sns.kdeplot(scaled_features[&#39;Col_2&#39;], ax=ax2)
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p10.png" /></p>
 </div>
-<div id="comparison-of-the-previously-shown-scaling-methods" class="section level1">
-<h1>3.4 Comparison of the previously shown scaling methods</h1>
+<div id="comparison-of-the-previously-shown-scaling-methods" class="section level2">
+<h2>3.4 Comparison of the previously shown scaling methods</h2>
 <pre class="r"><code>np.random.seed(32)
 
 df = pd.DataFrame({
@@ -238,6 +242,7 @@ sns.kdeplot(robust_scaler[&#39;Col_2&#39;], ax=ax4)
 
 plt.show()</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p12.png" /></p>
+</div>
 </div>
 <div id="inverse-transformation" class="section level1">
 <h1>4 Inverse Transformation</h1>

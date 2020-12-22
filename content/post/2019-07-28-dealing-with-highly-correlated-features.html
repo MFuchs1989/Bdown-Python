@@ -7,27 +7,36 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Preparation</li>
-<li>4 Correlations with the output variable</li>
-<li>5 Identification of highly correlated features</li>
-<li>6 Removing highly correlated features</li>
-<li>6.1 Selecting numerical variables</li>
-<li>6.2 Train / Test Split</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#preparation">3 Preparation</a></li>
+<li><a href="#correlations-with-the-output-variable">4 Correlations with the output variable</a></li>
+<li><a href="#identification-of-highly-correlated-features">5 Identification of highly correlated features</a></li>
+<li><a href="#removing-highly-correlated-features">6 Removing highly correlated features</a>
+<ul>
+<li><a href="#selecting-numerical-variables">6.1 Selecting numerical variables</a></li>
+<li><a href="#train-test-split">6.2 Train / Test Split</a></li>
+</ul></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>One of the points to remember about data pre-processing for regression analysis is multicollinearity. This post is about finding highly correlated predictors within a dataframe.</p>
+<p>One of the points to remember about data pre-processing for regression analysis is multicollinearity.
+This post is about finding highly correlated predictors within a dataframe.</p>
 <p>For this post the dataset <em>Auto-mpg</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs" class="uri">https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
@@ -54,18 +63,12 @@ cars[&#39;horsepower&#39;] = cars_horsepower_mean</code></pre>
 cor = cars.corr()
 sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
 plt.show()</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p1.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p1.png" /></p>
 <p>Definition of the predictors and the criterion:</p>
 <pre class="r"><code>predictors = cars.drop([&#39;mpg&#39;, &#39;car name&#39;], axis = 1) 
 criterion = cars[&quot;mpg&quot;]</code></pre>
 <pre class="r"><code>predictors.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p2.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p2.png" /></p>
 </div>
 <div id="correlations-with-the-output-variable" class="section level1">
 <h1>4 Correlations with the output variable</h1>
@@ -80,14 +83,12 @@ relevant_features = relevant_features.reset_index()
 relevant_features.columns = [&#39;Variables&#39;, &#39;Correlation&#39;]
 relevant_features = relevant_features.sort_values(by=&#39;Correlation&#39;, ascending=False)
 relevant_features</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p3.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p3.png" /></p>
 </div>
 <div id="identification-of-highly-correlated-features" class="section level1">
 <h1>5 Identification of highly correlated features</h1>
-<p>One model assumption of linear regression analysis is to avoid multicollinearity. This function is to find high correlations:</p>
+<p>One model assumption of linear regression analysis is to avoid multicollinearity.
+This function is to find high correlations:</p>
 <pre class="r"><code>threshold = 0.8
 
 def high_cor_function(df):
@@ -100,39 +101,27 @@ def high_cor_function(df):
     thresh = threshold 
     display(high_cor[high_cor&gt;thresh])</code></pre>
 <pre class="r"><code>high_cor_function(predictors)</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p4.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p4.png" /></p>
 </div>
 <div id="removing-highly-correlated-features" class="section level1">
 <h1>6 Removing highly correlated features</h1>
-</div>
-<div id="selecting-numerical-variables" class="section level1">
-<h1>6.1 Selecting numerical variables</h1>
+<div id="selecting-numerical-variables" class="section level2">
+<h2>6.1 Selecting numerical variables</h2>
 <pre class="r"><code>cars.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p5.png" />
-
-</div>
-<p>Here we see that the dataframe ‘cars’ originaly have 9 columns and 398 observations. With the following snippet we just select numerical variables:</p>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p5.png" /></p>
+<p>Here we see that the dataframe ‘cars’ originaly have 9 columns and 398 observations.
+With the following snippet we just select numerical variables:</p>
 <pre class="r"><code>num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
 numerical_columns = list(cars.select_dtypes(include=num_col).columns)
 cars_data = cars[numerical_columns]</code></pre>
 <pre class="r"><code>cars_data.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p6.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p6.png" /></p>
 <pre class="r"><code>cars_data.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p7.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p7.png" /></p>
 <p>As you can see, one column (Here ‘car name’) were dropped.</p>
 </div>
-<div id="train-test-split" class="section level1">
-<h1>6.2 Train / Test Split</h1>
+<div id="train-test-split" class="section level2">
+<h2>6.2 Train / Test Split</h2>
 <p><strong>It is important to mention here that, in order to avoid overfitting, feature selection should only be applied to the training set.</strong></p>
 <pre class="r"><code>x = cars_data.drop(&#39;mpg&#39;, axis=1)
 y = cars_data[&#39;mpg&#39;]
@@ -148,16 +137,10 @@ for i in range(len(correlation_matrix .columns)):
             correlated_features.add(colname)</code></pre>
 <p>Number of columns in the dataset, with correlation value of greater than 0.9 with at least 1 other column:</p>
 <pre class="r"><code>len(correlated_features)</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p8.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p8.png" /></p>
 <p>With the following code we receive the names of these features:</p>
 <pre class="r"><code>print(correlated_features)</code></pre>
-<div class="figure">
-<img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p9.png" />
-
-</div>
+<p><img src="/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p9.png" /></p>
 <p>Finally, the identified features are excluded:</p>
 <pre class="r"><code>trainX_clean = trainX.drop(labels=correlated_features, axis=1)
 testX_clean = testX.drop(labels=correlated_features, axis=1)
@@ -168,6 +151,7 @@ testX_clean = testX.drop(labels=correlated_features, axis=1)
 
 ## trainX.drop(labels=correlated_features, axis=1, inplace=True)
 ## testX.drop(labels=correlated_features, axis=1, inplace=True)</code></pre>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>

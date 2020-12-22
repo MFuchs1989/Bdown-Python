@@ -7,36 +7,45 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Wrap up: Filter methods</li>
-<li>4 Wrapper methods</li>
-<li>4.1 Data Preparation</li>
-<li>4.1.1 Check for missing values</li>
-<li>4.1.2 Removing highly correlated features</li>
-<li>4.2 Syntax for wrapper methods</li>
-<li>4.2.1 <strong>SelectKBest</strong></li>
-<li>4.2.2 <strong>Forward Feature Selection</strong></li>
-<li>4.2.3 <strong>Backward Elimination</strong></li>
-<li>4.2.4 <strong>Recursive Feature Elimination (RFE)</strong></li>
-<li>5 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#wrap-up-filter-methods">3 Wrap up: Filter methods</a></li>
+<li><a href="#wrapper-methods">4 Wrapper methods</a>
+<ul>
+<li><a href="#data-preparation">4.1 Data Preparation</a>
+<ul>
+<li><a href="#check-for-missing-values">4.1.1 Check for missing values</a></li>
+<li><a href="#removing-highly-correlated-features">4.1.2 Removing highly correlated features</a></li>
+</ul></li>
+<li><a href="#syntax-for-wrapper-methods">4.2 Syntax for wrapper methods</a>
+<ul>
+<li><a href="#selectkbest">4.2.1 SelectKBest</a></li>
+<li><a href="#forward-feature-selection">4.2.2 Forward Feature Selection</a></li>
+<li><a href="#backward-elimination">4.2.3 Backward Elimination</a></li>
+<li><a href="#recursive-feature-elimination-rfe">4.2.4 Recursive Feature Elimination (RFE)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Feature selection is pretty important in machine learning primarily because it serves as a fundamental technique to direct the use of variables to what’s most efficient and effective for a given machine learning system.</p>
 <p>There are three types of feature selection:</p>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20s1.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20s1.png" /></p>
 <p>In the following, we will discuss different wrapper methods. Before that, however, there is a short theoretical wrap-up to the filter methods. The embedded methods will be treated in a subsequent publication.</p>
 <p>For this post the dataset <em>Santandar Customer Satisfaction</em> (only the train-part) from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
 </div>
@@ -58,17 +67,11 @@ from sklearn.feature_selection import RFE
 from sklearn.linear_model import LinearRegression</code></pre>
 <pre class="r"><code>santandar_data = pd.read_csv(&quot;path/to/file/santandar.csv&quot;)</code></pre>
 <pre class="r"><code>santandar_data.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p1.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p1.png" /></p>
 </div>
 <div id="wrap-up-filter-methods" class="section level1">
 <h1>3 Wrap up: Filter methods</h1>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20s2.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20s2.png" /></p>
 <p>Image Source: <a href="https://www.analyticsvidhya.com/">“Analytics Vidhya”</a></p>
 <p>Filter methods relies on the general uniqueness of the data to be evaluated and pick feature subset, not including any mining algorithm. Filter method uses the exact assessment criterion which includes distance, information, consistency and dependency.</p>
 <p>The following filter methods should be considered when creating your regression model:</p>
@@ -80,10 +83,7 @@ from sklearn.linear_model import LinearRegression</code></pre>
 </div>
 <div id="wrapper-methods" class="section level1">
 <h1>4 Wrapper methods</h1>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20s3.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20s3.png" /></p>
 <p>Image Source: <a href="https://www.analyticsvidhya.com/">“Analytics Vidhya”</a></p>
 <p>For wrapper methods, the feature selection process is based on a specific machine learning algorithm that is to be applied to a particular record. It follows a greedy search approach by evaluating all possible combinations of features based on the evaluation criterion.</p>
 <p><strong>Difference between filter and wrapper methods</strong></p>
@@ -104,12 +104,10 @@ from sklearn.linear_model import LinearRegression</code></pre>
 <p>The procedure starts with the full set of features. At each step, it removes the worst attribute remaining in the set.</p>
 <p><em>Recursive Feature Elimination</em></p>
 <p>The procedure is almost the same as in the case of backward elimination. Almost … The advantage of RFE is that it works much faster.</p>
-</div>
-<div id="data-preparation" class="section level1">
-<h1>4.1 Data Preparation</h1>
-</div>
-<div id="check-for-missing-values" class="section level1">
-<h1>4.1.1 Check for missing values</h1>
+<div id="data-preparation" class="section level2">
+<h2>4.1 Data Preparation</h2>
+<div id="check-for-missing-values" class="section level3">
+<h3>4.1.1 Check for missing values</h3>
 <pre class="r"><code>def missing_values_table(df):
         # Total missing values
         mis_val = df.isnull().sum()
@@ -137,14 +135,11 @@ from sklearn.linear_model import LinearRegression</code></pre>
         # Return the dataframe with missing information
         return mis_val_table_ren_columns</code></pre>
 <pre class="r"><code>missing_values_table(santandar_data)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p2.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p2.png" /></p>
 <p>As we can see there are no missing values.</p>
 </div>
-<div id="removing-highly-correlated-features" class="section level1">
-<h1>4.1.2 Removing highly correlated features</h1>
+<div id="removing-highly-correlated-features" class="section level3">
+<h3>4.1.2 Removing highly correlated features</h3>
 <pre class="r"><code># Only numerical variables are considered here
 num_col = [&#39;int16&#39;, &#39;int32&#39;, &#39;int64&#39;, &#39;float16&#39;, &#39;float32&#39;, &#39;float64&#39;]
 numerical_columns = list(santandar_data.select_dtypes(include=num_col).columns)
@@ -172,38 +167,32 @@ trainX_clean = trainX.drop(labels=correlated_features, axis=1)
 testX_clean = testX.drop(labels=correlated_features, axis=1)
 
 trainX_clean.shape, testX_clean.shape</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p3.png" />
-
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p3.png" /></p>
+<p>Originally, the record had 371 columns.
+After the exclusion of highly correlated variables we come up to 203 columns.</p>
 </div>
-<p>Originally, the record had 371 columns. After the exclusion of highly correlated variables we come up to 203 columns.</p>
 </div>
-<div id="syntax-for-wrapper-methods" class="section level1">
-<h1>4.2 Syntax for wrapper methods</h1>
-</div>
-<div id="selectkbest" class="section level1">
-<h1>4.2.1 SelectKBest</h1>
-<p>As already mentioned several times, the most wrapper methods are computationally expensive. Therefore, it is worthwhile to use SelectKBest to select the k best features.</p>
+<div id="syntax-for-wrapper-methods" class="section level2">
+<h2>4.2 Syntax for wrapper methods</h2>
+<div id="selectkbest" class="section level3">
+<h3>4.2.1 SelectKBest</h3>
+<p>As already mentioned several times, the most wrapper methods are computationally expensive.
+Therefore, it is worthwhile to use SelectKBest to select the k best features.</p>
 <pre class="r"><code>selector = SelectKBest(score_func=f_regression, k=20)
 
 selector.fit(trainX_clean, trainY)
 
 vector_names = list(trainX_clean.columns[selector.get_support(indices=True)])
 print(vector_names)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p4.png" />
-
-</div>
-<p>The k determines how many best features should be output. Then the output features are assigned to a new test and train X.</p>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p4.png" /></p>
+<p>The k determines how many best features should be output.
+Then the output features are assigned to a new test and train X.</p>
 <pre class="r"><code>trainX_best = trainX_clean[vector_names]
 testX_best = testX_clean[vector_names]
 
 print(trainX_best.shape)
 print(testX_best.shape)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p5.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p5.png" /></p>
 <p>To simplify matters, the twenty selected columns are limited to 10.000 lines.</p>
 <pre class="r"><code>trainX_reduced = trainX_best.iloc[0:10000,]
 testX_reduced = testX_best.iloc[0:10000,]
@@ -214,13 +203,10 @@ print(trainX_reduced.shape)
 print(testX_reduced.shape)
 print(trainY_reduced.shape)
 print(testY_reduced.shape)</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p6.png" />
-
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p6.png" /></p>
 </div>
-</div>
-<div id="forward-feature-selection" class="section level1">
-<h1>4.2.2 Forward Feature Selection</h1>
+<div id="forward-feature-selection" class="section level3">
+<h3>4.2.2 Forward Feature Selection</h3>
 <pre class="r"><code>feature_selector = SequentialFeatureSelector(RandomForestRegressor(n_jobs=-1),
            k_features=5,
            forward=True,
@@ -232,16 +218,13 @@ print(testY_reduced.shape)</code></pre>
 <p>The following 5 features were selected by the algorithm:</p>
 <pre class="r"><code>filtered_features= trainX_reduced.columns[list(features.k_feature_idx_)]
 filtered_features</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p7.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p7.png" /></p>
 <p>Then these selected features can be assigned to a new X again.</p>
 <pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
 New_test_x = testX_reduced[filtered_features]</code></pre>
 </div>
-<div id="backward-elimination" class="section level1">
-<h1>4.2.3 Backward Elimination</h1>
+<div id="backward-elimination" class="section level3">
+<h3>4.2.3 Backward Elimination</h3>
 <p>The backward elimination functions almost identically from the syntax. the only difference is that the parameter forward is set to false.</p>
 <pre class="r"><code>feature_selector = SequentialFeatureSelector(RandomForestRegressor(n_jobs=-1),
            k_features=5,
@@ -252,15 +235,12 @@ New_test_x = testX_reduced[filtered_features]</code></pre>
 <pre class="r"><code>features = feature_selector.fit(np.array(trainX_reduced), trainY_reduced)</code></pre>
 <pre class="r"><code>filtered_features= trainX_reduced.columns[list(features.k_feature_idx_)]
 filtered_features</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p8.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p8.png" /></p>
 <pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
 New_test_x = testX_reduced[filtered_features]</code></pre>
 </div>
-<div id="recursive-feature-elimination-rfe" class="section level1">
-<h1>4.2.4 Recursive Feature Elimination (RFE)</h1>
+<div id="recursive-feature-elimination-rfe" class="section level3">
+<h3>4.2.4 Recursive Feature Elimination (RFE)</h3>
 <p>The syntax for RFE is now a little different but not particularly complicated. The parameter determining the number of features to extract is here n_features_to_select.</p>
 <pre class="r"><code>lr = LinearRegression()
 
@@ -268,16 +248,12 @@ rfe = RFE(lr, n_features_to_select=5)
 rfe.fit(trainX_reduced,trainY_reduced)</code></pre>
 <p>With the following two codes we get a statement about which given feature seems to be the best one for the final model:</p>
 <pre class="r"><code>rfe.support_</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p9.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p9.png" /></p>
 <pre class="r"><code> rfe.ranking_</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p10.png" />
-
-</div>
-<p>For better interpretability, you can simply print the following overview. RFE_support indicates if a feature has been selected (true) or not (false). The ranking is self-explanatory.</p>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p10.png" /></p>
+<p>For better interpretability, you can simply print the following overview.
+RFE_support indicates if a feature has been selected (true) or not (false).
+The ranking is self-explanatory.</p>
 <p>If a feature was identified as most suitable, it has an RFE_support ‘true’ and RFE_ranking ‘1’</p>
 <pre class="r"><code>Columns = trainX_reduced.columns
 RFE_support = rfe.support_
@@ -285,20 +261,16 @@ RFE_ranking = rfe.ranking_
 
 dataset = pd.DataFrame({&#39;Columns&#39;: Columns, &#39;RFE_support&#39;: RFE_support, &#39;RFE_ranking&#39;: RFE_ranking}, columns=[&#39;Columns&#39;, &#39;RFE_support&#39;, &#39;RFE_ranking&#39;])
 dataset</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p11.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p11.png" /></p>
 <p>With the following syntax the final features can be output and assigned to a new x.</p>
 <pre class="r"><code>df = dataset[(dataset[&quot;RFE_support&quot;] == True) &amp; (dataset[&quot;RFE_ranking&quot;] == 1)]
 filtered_features = df[&#39;Columns&#39;]
 filtered_features</code></pre>
-<div class="figure">
-<img src="/post/2019-09-27-wrapper-methods_files/p20p12.png" />
-
-</div>
+<p><img src="/post/2019-09-27-wrapper-methods_files/p20p12.png" /></p>
 <pre class="r"><code>New_train_x = trainX_reduced[filtered_features]
 New_test_x = testX_reduced[filtered_features]</code></pre>
+</div>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>

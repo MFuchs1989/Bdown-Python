@@ -7,40 +7,49 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Background information on SGD Classifiers</li>
-<li>3 Loading the libraries and the data</li>
-<li>4 Data pre-processing</li>
-<li>5 SGDClassifier</li>
-<li>5.1 Logistic Regression with SGD training</li>
-<li>5.2 Linear SVM with SGD training</li>
-<li>6 Model improvement</li>
-<li>6.1 Performance comparison of the different linear models</li>
-<li>6.2 GridSearch</li>
-<li>7 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#background-information-on-sgd-classifiers">2 Background information on SGD Classifiers</a></li>
+<li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a></li>
+<li><a href="#sgd-classifier">5 SGD-Classifier</a>
+<ul>
+<li><a href="#logistic-regression-with-sgd-training">5.1 Logistic Regression with SGD training</a></li>
+<li><a href="#linear-svm-with-sgd-training">5.2 Linear SVM with SGD training</a></li>
+</ul></li>
+<li><a href="#model-improvement">6 Model improvement</a>
+<ul>
+<li><a href="#performance-comparison-of-the-different-linear-models">6.1 Performance comparison of the different linear models</a></li>
+<li><a href="#gridsearch">6.2 GridSearch</a></li>
+</ul></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>The name Stochastic Gradient Descent - Classifier (SGD-Classifier) might mislead some user to think that SGD is a classifier. But that’s not the case! SGD Classifier is a linear classifier (SVM, logistic regression, a.o.) optimized by the SGD. These are two different concepts. While SGD is a optimization method, Logistic Regression or linear Support Vector Machine is a machine learning algorithm/model. You can think of that a machine learning model defines a loss function, and the optimization method minimizes/maximizes it.</p>
+<p>The name Stochastic Gradient Descent - Classifier (SGD-Classifier) might mislead some user to think that SGD is a classifier. But that’s not the case! SGD Classifier is a linear classifier (SVM, logistic regression, a.o.) optimized by the SGD.
+These are two different concepts. While SGD is a optimization method, Logistic Regression or linear Support Vector Machine is a machine learning algorithm/model. You can think of that a machine learning model defines a loss function, and the optimization method minimizes/maximizes it.</p>
 <p>For this post the dataset <em>Run or Walk</em> from the statistic platform <a href="https://www.kaggle.com/c/santander-customer-satisfaction/data">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1hGnJI7_p7Bo2Vbp_CY6Lq72bZQzu5nEK" class="uri">https://drive.google.com/open?id=1hGnJI7_p7Bo2Vbp_CY6Lq72bZQzu5nEK</a>.</p>
 </div>
 <div id="background-information-on-sgd-classifiers" class="section level1">
 <h1>2 Background information on SGD Classifiers</h1>
 <p><strong>Gradient Descent</strong></p>
 <p>First of all let’s talk about Gradient descent in general.</p>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32s1.png" />
-
-</div>
-<p>In a nutshell gradient descent is used to minimize a cost function. Gradient descent is one of the most popular algorithms to perform optimization and by far the most common way to optimize neural networks. But we can also use these kinds of algorithms to optimize our linear classifier such as Logistic Regression and linear Support Vecotor Machines.</p>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32s1.png" /></p>
+<p>In a nutshell gradient descent is used to minimize a cost function.
+Gradient descent is one of the most popular algorithms to perform optimization and by far the most common way to optimize neural networks. But we can also use these kinds of algorithms to optimize our linear classifier such as Logistic Regression and linear Support Vecotor Machines.</p>
 <p>There are three well known types of gradient decent:</p>
 <ol style="list-style-type: decimal">
 <li>Batch gradient descent</li>
@@ -74,10 +83,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV</code></pre>
 <pre class="r"><code>run_walk = pd.read_csv(&quot;path/to/file/run_or_walk.csv&quot;)</code></pre>
 <pre class="r"><code>run_walk.head()</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p1.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>4 Data pre-processing</h1>
@@ -94,25 +100,20 @@ testX = scaler.transform(testX)</code></pre>
 </div>
 <div id="sgd-classifier" class="section level1">
 <h1>5 SGD-Classifier</h1>
-<p>As already mentioned above SGD-Classifier is a Linear classifier with SGD training. Which linear classifier is used is determined with the hypter parameter loss. So, if I write <em>clf = SGDClassifier(loss=‘hinge’)</em> it is an implementation of Linear SVM and if I write <em>clf = SGDClassifier(loss=‘log’)</em> it is an implementation of Logisitic regression.</p>
+<p>As already mentioned above SGD-Classifier is a Linear classifier with SGD training. Which linear classifier is used is determined with the hypter parameter loss.
+So, if I write <em>clf = SGDClassifier(loss=‘hinge’)</em> it is an implementation of Linear SVM and if I write <em>clf = SGDClassifier(loss=‘log’)</em> it is an implementation of Logisitic regression.</p>
 <p>Let’s see how both types work:</p>
-</div>
-<div id="logistic-regression-with-sgd-training" class="section level1">
-<h1>5.1 Logistic Regression with SGD training</h1>
+<div id="logistic-regression-with-sgd-training" class="section level2">
+<h2>5.1 Logistic Regression with SGD training</h2>
 <pre class="r"><code>clf = SGDClassifier(loss=&quot;log&quot;, penalty=&quot;l2&quot;)
 clf.fit(trainX, trainY)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p2.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p2.png" /></p>
 <pre class="r"><code>y_pred = clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p3.png" />
-
-</div>
-<p>By default the maximum number of passes over the training data (aka epochs) is set to 1,000. Let’s see what influence this parameter has on our score (accuracy):</p>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p3.png" /></p>
+<p>By default the maximum number of passes over the training data (aka epochs) is set to 1,000.
+Let’s see what influence this parameter has on our score (accuracy):</p>
 <pre class="r"><code>n_iters = [5, 10, 20, 50, 100, 1000]
 scores = []
 for n_iter in n_iters:
@@ -124,27 +125,18 @@ plt.title(&quot;Effect of n_iter&quot;)
 plt.xlabel(&quot;n_iter&quot;)
 plt.ylabel(&quot;score&quot;)
 plt.plot(n_iters, scores) </code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p4.png" />
-
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p4.png" /></p>
 </div>
-</div>
-<div id="linear-svm-with-sgd-training" class="section level1">
-<h1>5.2 Linear SVM with SGD training</h1>
+<div id="linear-svm-with-sgd-training" class="section level2">
+<h2>5.2 Linear SVM with SGD training</h2>
 <p>Now we do the same calculation for the linear model of the SVM.</p>
 <pre class="r"><code>clf = SGDClassifier(loss=&quot;hinge&quot;, penalty=&quot;l2&quot;)
 clf.fit(trainX, trainY)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p5.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p5.png" /></p>
 <pre class="r"><code>y_pred = clf.predict(testX)
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p6.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p6.png" /></p>
 <p>The accuracy is a little bit less.</p>
 <p>Let’s take another look at the influence of the number of iterations:</p>
 <pre class="r"><code>n_iters = [5, 10, 20, 50, 100, 1000]
@@ -158,10 +150,7 @@ plt.title(&quot;Effect of n_iter&quot;)
 plt.xlabel(&quot;n_iter&quot;)
 plt.ylabel(&quot;score&quot;)
 plt.plot(n_iters, scores)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p7.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p7.png" /></p>
 <p>If you look at the training time, it becomes clear how much faster the SGD classifier works compared to the linear SVM:</p>
 <pre class="r"><code>start = time.time()
 clf = SGDClassifier(loss=&quot;hinge&quot;, penalty=&quot;l2&quot;)
@@ -174,16 +163,13 @@ clf = SVC(kernel=&#39;linear&#39;)
 clf.fit(trainX, trainY)
 stop = time.time()
 print(f&quot;Training time for linear SVM without SGD training: {stop - start}s&quot;)</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p8.png" />
-
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p8.png" /></p>
 </div>
 </div>
 <div id="model-improvement" class="section level1">
 <h1>6 Model improvement</h1>
-</div>
-<div id="performance-comparison-of-the-different-linear-models" class="section level1">
-<h1>6.1 Performance comparison of the different linear models</h1>
+<div id="performance-comparison-of-the-different-linear-models" class="section level2">
+<h2>6.1 Performance comparison of the different linear models</h2>
 <p>Let’s take a look at the performance of the different linear classifiers</p>
 <pre class="r"><code>losses = [&quot;hinge&quot;, &quot;log&quot;, &quot;modified_huber&quot;, &quot;perceptron&quot;, &quot;squared_hinge&quot;]
 scores = []
@@ -198,14 +184,11 @@ plt.ylabel(&quot;score&quot;)
 x = np.arange(len(losses))
 plt.xticks(x, losses)
 plt.plot(x, scores) </code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p9.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p9.png" /></p>
 <p>It becomes clear that ‘hinge’ (which stands for the use of a linear SVM) gives the best score and the use of the perceptron gives the worst value.</p>
 </div>
-<div id="gridsearch" class="section level1">
-<h1>6.2 GridSearch</h1>
+<div id="gridsearch" class="section level2">
+<h2>6.2 GridSearch</h2>
 <p>We use the popular GridSearch method to find the most suitable hyperparameters.</p>
 <pre class="r"><code>params = {
     &quot;loss&quot; : [&quot;hinge&quot;, &quot;log&quot;, &quot;squared_hinge&quot;, &quot;modified_huber&quot;, &quot;perceptron&quot;],
@@ -220,18 +203,13 @@ grid = GridSearchCV(clf, param_grid=params, cv=10)
 grid.fit(trainX, trainY)
 
 print(grid.best_params_) </code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p10.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p10.png" /></p>
 <pre class="r"><code>grid_predictions = grid.predict(testX) 
 
 print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
-<div class="figure">
-<img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p11.png" />
-
-</div>
+<p><img src="/post/2019-11-11-introduction-to-sgd-classifier_files/p32p11.png" /></p>
 <p>Although the accuracy could not be increased further, we get the confirmation that hinge (aka linear SVM) with the parameters shown above is the best choice.</p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>7 Conclusion</h1>

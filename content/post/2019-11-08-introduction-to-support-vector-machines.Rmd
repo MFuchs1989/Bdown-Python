@@ -7,27 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Background information on Support Vector Machines
-+ 3 Loading the libraries and the data
-+ 4 Data pre-processing
-+ 5 SVM with scikit-learn
-+ 5.1 Model Fitting
-+ 5.2 Model evaluation
-+ 6 Kernel SVM with Scikit-Learn
-+ 6.1 Polynomial Kernel
-+ 6.2 Gaussian Kernel
-+ 6.3 Sigmoid Kernel
-+ 7 Hyperparameter optimization via Grid Search
-+ 8 Conclusion
-
-
-#1 Introduction
+ 
+# 1 Introduction
 
 In addition to ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/), there is another very well-known algorithm for binary classifications: the Support Vector Machine (SVM).
 
@@ -35,7 +21,7 @@ In addition to ["Logistic Regression"](https://michael-fuchs-python.netlify.com/
 For this post the dataset *Breast Cancer Wisconsin (Diagnostic)* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU>.
 
 
-#2 Background information on Support Vector Machines
+# 2 Background information on Support Vector Machines
 
 
 **What is Support Vector Machine?**
@@ -104,7 +90,7 @@ There are several pos and cons for the use of Support Vector Machines:
 
 
 
-#3 Loading the libraries and the data
+# 3 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -141,7 +127,7 @@ cancer.head()
 
 The data set used contains 31 columns which contain information about tumors in the tissue. The column 'diagnosis' describes whether these tumors are benign (B) or malignant (M). Let's try to create a classification model.
 
-#4 Data pre-processing
+# 4 Data pre-processing
 
 The target variable is then converted into numerical values.
 
@@ -154,9 +140,9 @@ cancer.head()
 
 ![](/post/2019-11-08-introduction-to-support-vector-machines_files/p31p5.png)
 
-#5 SVM with scikit-learn
+# 5 SVM with scikit-learn
 
-#5.1 Model Fitting
+## 5.1 Model Fitting
 
 In the case of a simple Support Vector Machine we simply set this parameter as "linear" since simple SVMs can only classify linearly separable data. We will see non-linear kernels in chapter 6.
 
@@ -182,7 +168,7 @@ y_pred = clf.predict(testX)
 ```
 
 
-#5.2 Model evaluation
+## 5.2 Model evaluation
 
 
 For the model evaluation we start again with the confusion matrix
@@ -225,9 +211,9 @@ print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 Using cross validation, we achieved an accuracy rate of 0.96. Previously it was only 0.90. Before we get into hyper-parameter optimization, let's see if using a different kernel can improve the accuracy of the classification.
 
 
-#6 Kernel SVM with Scikit-Learn
+# 6 Kernel SVM with Scikit-Learn
 
-#6.1 Polynomial Kernel
+## 6.1 Polynomial Kernel
 
 In the case of polynomial kernel, you also have to pass a value for the degree parameter of the SVM class. This basically is the degree of the polynomial. Take a look at how we can use a polynomial kernel to implement kernel SVM. Finally, the accuracy rate is calculated again.
 
@@ -244,7 +230,7 @@ At 0.88 we are slightly worse than with the linear kernel.
 
 
 
-#6.2 Gaussian Kernel
+## 6.2 Gaussian Kernel
 
 
 If the gaussian kernel is to be used, "rbf" must be entered as kernel:
@@ -264,7 +250,7 @@ Here the accuracy rate is slightly higher but still lower than of the linear ker
 
 
 
-#6.3 Sigmoid Kernel
+## 6.3 Sigmoid Kernel
 
 
 If the sigmoid kernel is to be used, "sigmoid" must be entered as kernel:
@@ -282,7 +268,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 The accuracy rate is very bad.
 
 
-#7 Hyperparameter optimization via Grid Search
+# 7 Hyperparameter optimization via Grid Search
 
 Since the use of the linear kernel has yielded the best results so far, an attempt is made to optimize the hypter parameters in this kernel.
 
@@ -376,7 +362,7 @@ Although we could not further increase the accuracy with the large grid search p
 It should be noted that this is very computationally intensive.
 
 
-#8 Conclusion
+# 8 Conclusion
 
 This post showed how to use Support Vector Machines with different kernels and how to measure their performance. Furthermore, the improvement of the models was discussed.
 

@@ -7,22 +7,12 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
-
-
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Boxplots - Method
-+ 4 Z-score method
-+ 5 IQR method
-+ 5.1 Detect outlier for column 'age'
-+ 5.2 Detect outlier for column 'salary'
-+ 5.3 Remove outlier from dataframe
-+ 6 Conclusion
-
-
+ 
 # 1 Introduction
 
 Next to ["higly correlated"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) and ["constant"](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/) features outlier detection is also a central element of data pre-processing.
@@ -234,7 +224,7 @@ df.shape
 
 
  
-# 5.1 Detect outlier for column 'age'
+## 5.1 Detect outlier for column 'age'
 
 ```{r, eval=F, echo=T}
 column_to_be_examined = df['age']
@@ -280,7 +270,7 @@ outlier_col_age
 
 
 
-# 5.2 Detect outlier for column 'salary'
+## 5.2 Detect outlier for column 'salary'
 
 
 
@@ -300,7 +290,7 @@ outlier_col_salary
 
 
 
-# 5.3 Remove outlier from dataframe
+## 5.3 Remove outlier from dataframe
 
 
 

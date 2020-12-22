@@ -7,23 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Preparation
-+ 4 Correlations with the output variable
-+ 5 Identification of highly correlated features
-+ 6 Removing highly correlated features
-+ 6.1 Selecting numerical variables
-+ 6.2 Train / Test Split
-+ 7 Conclusion
-
-
-#1 Introduction
+ 
+# 1 Introduction
 
 One of the points to remember about data pre-processing for regression analysis is multicollinearity.
 This post is about finding highly correlated predictors within a dataframe.
@@ -32,7 +23,7 @@ This post is about finding highly correlated predictors within a dataframe.
 For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 
@@ -52,7 +43,7 @@ cars = pd.read_csv("path/to/file/auto-mpg.csv")
 ```
 
 
-#3 Preparation
+# 3 Preparation
 
 
 ```{r, eval=F, echo=T}
@@ -95,7 +86,7 @@ predictors.head()
 
 
 
-#4 Correlations with the output variable
+# 4 Correlations with the output variable
 
 To get an idea which Variables maybe import for our model:
 
@@ -115,7 +106,7 @@ relevant_features
 ![](/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p3.png)
 
 
-#5 Identification of highly correlated features
+# 5 Identification of highly correlated features
 
 One model assumption of linear regression analysis is to avoid multicollinearity.
 This function is to find high correlations:
@@ -142,9 +133,9 @@ high_cor_function(predictors)
 ![](/post/2019-07-28-dealing-with-highly-correlated-features_files/p15p4.png)
 
 
-#6 Removing highly correlated features
+# 6 Removing highly correlated features
 
-#6.1 Selecting numerical variables
+## 6.1 Selecting numerical variables
 
 
 ```{r, eval=F, echo=T}
@@ -181,7 +172,7 @@ cars_data.shape
 As you can see, one column (Here 'car name') were dropped.
 
 
-#6.2 Train / Test Split
+## 6.2 Train / Test Split
 
 **It is important to mention here that, in order to avoid overfitting, feature selection should only be applied to the training set.**
 
@@ -250,7 +241,7 @@ testX_clean = testX.drop(labels=correlated_features, axis=1)
 
 
 
-#7 Conclusion
+# 7 Conclusion
 
 This post has shown, how to identify highly correlated variables and exclude them for further use.
 

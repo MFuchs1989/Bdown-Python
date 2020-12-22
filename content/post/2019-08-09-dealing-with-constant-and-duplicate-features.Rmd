@@ -7,19 +7,14 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Removing Constant features
-+ 4 Removing Quasi-Constant features
-+ 5 Removing Duplicate Features
-+ 6 Conclusion
-
-
-#1 Introduction
+ 
+# 1 Introduction
 
 In addition to ["removing highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) as one of the data pre processing steps we also have to take care of constant and duplicate features. Constant features have a variance close to zero and duplicate features are too similar to other variables in the record. Therefore, when pre-processing data for regression analysis, its existence should be checked and, if so, excluded.
 
@@ -27,7 +22,7 @@ In addition to ["removing highly correlated features"](https://michael-fuchs-pyt
 For this post the dataset *Santandar Customer Satisfaction* (only the train-part) from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 
@@ -51,7 +46,7 @@ santandar_data.shape
 ![](/post/2019-08-09-dealing-with-constant-and-duplicate-features_files/p16p1.png)
 
 
-#3 Removing Constant features
+# 3 Removing Constant features
 
 Constant features provide no information that can help for further analysis. Therefore we have to remove them from the dataframe. We can find the constant features using the 'VarianceThreshold' function of Python's Scikit Learn Library. 
 
@@ -150,7 +145,7 @@ testX.shape
 
 
 
-#4 Removing Quasi-Constant features
+# 4 Removing Quasi-Constant features
 
 
 Quasi-constant features are the features that are almost constant. Where we have chosen a variance threshold of 0 at constant features, we can now adjust this arbitrarily. The procedure is almost the same as the previous one. It is recommended to examine the quasi-Constant features in the already reduced training and test data set.
@@ -228,7 +223,7 @@ testX.shape
 
 
 
-#5 Removing Duplicate Features
+# 5 Removing Duplicate Features
 
 As a final step we dedicate ourselves to the duplicate features.
 Hereby the procedure is a little different because we have no suitable function from the Scikit-learn library available.
@@ -295,7 +290,7 @@ testX.shape
 
 
 
-#6 Conclusion
+# 6 Conclusion
 
 As we can see in the following overview, a dataset can be greatly reduced by identifying and excluding duplicate features or some with zero variance. 
 

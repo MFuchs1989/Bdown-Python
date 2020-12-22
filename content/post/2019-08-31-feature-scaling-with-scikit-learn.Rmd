@@ -7,23 +7,13 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-# Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries
-+ 3 Scaling methods
-+ 3.1 Standard Scaler
-+ 3.2 Min-Max Scaler
-+ 3.3 Robust Scaler
-+ 3.4 Comparison of the previously shown scaling methods
-+ 4 Inverse Transformation
-+ 5 Export Scaler to use in another program
-+ 6 Feature Scaling in practice
-+ 7 Conclusion
-
-
+ 
 # 1 Introduction
 
 
@@ -71,7 +61,7 @@ In the following, three of the most important scaling methods are presented:
 + Robust Scaler
 
 
-# 3.1 Standard Scaler
+## 3.1 Standard Scaler
 
 The Standard Scaler assumes the data is normally distributed within each feature and will scale them such that the distribution is now centred around 0, with a standard deviation of 1. If you want to know wheather your data is normal distributet have a look at this post: ["Check for normal distribution"](https://michael-fuchs-python.netlify.com/2019/09/13/check-for-normal-distribution/)
 
@@ -139,7 +129,7 @@ plt.show()
 
 
 
-# 3.2 Min-Max Scaler
+## 3.2 Min-Max Scaler
 
 The Min-Max Scaler is the probably the most famous scaling algorithm, and follows the following formula for each feature:
 
@@ -203,10 +193,7 @@ plt.show()
 
 
 
-
-
-
-# 3.3 Robust Scaler
+## 3.3 Robust Scaler
 
 The RobustScaler uses a similar method to the Min-Max Scaler, but it instead uses the interquartile range, rathar than the Min-Max, so that it is robust to outliers. Therefore it follows the formula:
     
@@ -265,7 +252,7 @@ plt.show()
 
 
 
-# 3.4 Comparison of the previously shown scaling methods
+## 3.4 Comparison of the previously shown scaling methods
 
 ```{r, eval=F, echo=T}
 np.random.seed(32)

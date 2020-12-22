@@ -7,27 +7,32 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Loading the libraries and the data</li>
-<li>3 Boxplots - Method</li>
-<li>4 Z-score method</li>
-<li>5 IQR method</li>
-<li>5.1 Detect outlier for column ‘age’</li>
-<li>5.2 Detect outlier for column ‘salary’</li>
-<li>5.3 Remove outlier from dataframe</li>
-<li>6 Conclusion</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#boxplots---method">3 Boxplots - Method</a></li>
+<li><a href="#z-score-method">4 Z-score method</a></li>
+<li><a href="#iqr-method">5 IQR method</a>
+<ul>
+<li><a href="#detect-outlier-for-column-age">5.1 Detect outlier for column ‘age’</a></li>
+<li><a href="#detect-outlier-for-column-salary">5.2 Detect outlier for column ‘salary’</a></li>
+<li><a href="#remove-outlier-from-dataframe">5.3 Remove outlier from dataframe</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Next to <a href="https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/">“higly correlated”</a> and <a href="https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/">“constant”</a> features outlier detection is also a central element of data pre-processing.</p>
@@ -130,9 +135,8 @@ df</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p12.png" /></p>
 <pre class="r"><code>df.shape</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p13.png" /></p>
-</div>
-<div id="detect-outlier-for-column-age" class="section level1">
-<h1>5.1 Detect outlier for column ‘age’</h1>
+<div id="detect-outlier-for-column-age" class="section level2">
+<h2>5.1 Detect outlier for column ‘age’</h2>
 <pre class="r"><code>column_to_be_examined = df[&#39;age&#39;]</code></pre>
 <pre class="r"><code>sorted_list = sorted(column_to_be_examined)</code></pre>
 <pre class="r"><code>q1, q3= np.percentile(sorted_list,[25,75])
@@ -153,8 +157,8 @@ print(upper_bound)</code></pre>
 outlier_col_age</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p17.png" /></p>
 </div>
-<div id="detect-outlier-for-column-salary" class="section level1">
-<h1>5.2 Detect outlier for column ‘salary’</h1>
+<div id="detect-outlier-for-column-salary" class="section level2">
+<h2>5.2 Detect outlier for column ‘salary’</h2>
 <pre class="r"><code>column_to_be_examined = df[&#39;salary&#39;]
 sorted_list = sorted(column_to_be_examined)
 q1, q3= np.percentile(sorted_list,[25,75])
@@ -165,8 +169,8 @@ outlier_col_salary = df[(column_to_be_examined &lt; lower_bound) | (column_to_be
 outlier_col_salary</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p18.png" /></p>
 </div>
-<div id="remove-outlier-from-dataframe" class="section level1">
-<h1>5.3 Remove outlier from dataframe</h1>
+<div id="remove-outlier-from-dataframe" class="section level2">
+<h2>5.3 Remove outlier from dataframe</h2>
 <pre class="r"><code>outlier_col_age = outlier_col_age.reset_index()
 outlier_list_final_col_age = outlier_col_age[&#39;index&#39;].tolist()
 outlier_list_final_col_age</code></pre>
@@ -186,6 +190,7 @@ df_without_outliers</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p22.png" /></p>
 <pre class="r"><code>df_without_outliers.shape</code></pre>
 <p><img src="/post/2019-08-20-dealing-with-outliers_files/p17p23.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>

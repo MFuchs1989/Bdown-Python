@@ -7,19 +7,16 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 The statsmodel.formula.api
-+ 4 The statsmodel.api
-+ 5 Conclusion
 
 
 
-#1 Introduction
+# 1 Introduction
 
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28s1.png)
 
@@ -34,7 +31,7 @@ For this post the dataset *House Sales in King County, USA* from the statistic p
 
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -65,7 +62,7 @@ mult_reg.head()
 
 
 
-#3 The statsmodel.formula.api
+# 3 The statsmodel.formula.api
 
 
 As we know from the post ["Introduction to regression analysis and predictions (chapter 3.2, model3)"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), the predictors in the statsmodel formula api must be enumerated individually.
@@ -97,7 +94,7 @@ print('R2: ', SMF_model.rsquared)
 But what is the difference between the statsmodel.formula.api and the statsmodel.api ??
 
 
-#4 The statsmodel.api
+# 4 The statsmodel.api
 
 
 The main difference between smf and sm is that the predictors no longer have to be enumerated individually. They can be assigned to an object as in the scikit-learn library. This can be extremely helpful, especially with large data sets that have many variables.
@@ -165,7 +162,7 @@ print('R2: ', SM_model_2.rsquared)
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p8.png)
 
 
-#5 Conclusion
+# 5 Conclusion
 
 
 The main difference between the statsmodel.formula.api (smf) and the statsmodel.api (sm) was discussed in this post.

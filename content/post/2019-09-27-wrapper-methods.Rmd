@@ -7,29 +7,16 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
+ 
+ 
 
-
-#Table of Content
-
-+ 1 Introduction
-+ 2 Loading the libraries and the data
-+ 3 Wrap up: Filter methods
-+ 4 Wrapper methods
-+ 4.1 Data Preparation
-+ 4.1.1 Check for missing values
-+ 4.1.2 Removing highly correlated features
-+ 4.2 Syntax for wrapper methods
-+ 4.2.1 **SelectKBest**
-+ 4.2.2 **Forward Feature Selection**
-+ 4.2.3 **Backward Elimination**
-+ 4.2.4 **Recursive Feature Elimination (RFE)**
-+ 5 Conclusion
-
-
-
-#1 Introduction
+# 1 Introduction
 
 Feature selection is pretty important in machine learning primarily because it serves as a fundamental technique to direct the use of variables to what's most efficient and effective for a given machine learning system.
 
@@ -44,7 +31,7 @@ In the following, we will discuss different wrapper methods. Before that, howeve
 For this post the dataset *Santandar Customer Satisfaction* (only the train-part) from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
 
 
-#2 Loading the libraries and the data
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
@@ -76,7 +63,7 @@ santandar_data.shape
 ![](/post/2019-09-27-wrapper-methods_files/p20p1.png)
 
 
-#3 Wrap up: Filter methods
+# 3 Wrap up: Filter methods
 
 ![](/post/2019-09-27-wrapper-methods_files/p20s2.png)
 
@@ -94,7 +81,7 @@ The following filter methods should be considered when creating your regression 
 
 
 
-#4 Wrapper methods
+# 4 Wrapper methods
 
 
 ![](/post/2019-09-27-wrapper-methods_files/p20s3.png)
@@ -147,9 +134,9 @@ The procedure is almost the same as in the case of backward elimination. Almost 
 
 
 
-#4.1 Data Preparation
+## 4.1 Data Preparation
 
-#4.1.1 Check for missing values
+### 4.1.1 Check for missing values
 
 
 ```{r, eval=F, echo=T}
@@ -193,7 +180,7 @@ As we can see there are no missing values.
 
 
 
-#4.1.2 Removing highly correlated features
+### 4.1.2 Removing highly correlated features
 
 ```{r, eval=F, echo=T}
 # Only numerical variables are considered here
@@ -232,9 +219,9 @@ Originally, the record had 371 columns.
 After the exclusion of highly correlated variables we come up to 203 columns.
 
 
-#4.2 Syntax for wrapper methods
+## 4.2 Syntax for wrapper methods
 
-#4.2.1 SelectKBest
+### 4.2.1 SelectKBest
 
 As already mentioned several times, the most wrapper methods are computationally expensive.
 Therefore, it is worthwhile to use SelectKBest to select the k best features.
@@ -288,7 +275,7 @@ print(testY_reduced.shape)
 ![](/post/2019-09-27-wrapper-methods_files/p20p6.png)
 
 
-#4.2.2 Forward Feature Selection
+### 4.2.2 Forward Feature Selection
 
 
 ```{r, eval=F, echo=T}
@@ -329,7 +316,7 @@ New_test_x = testX_reduced[filtered_features]
 
 
 
-#4.2.3 Backward Elimination
+### 4.2.3 Backward Elimination
 
 The backward elimination functions almost identically from the syntax. the only difference is that the parameter forward is set to false.
 
@@ -360,7 +347,7 @@ New_test_x = testX_reduced[filtered_features]
 ```
 
 
-#4.2.4 Recursive Feature Elimination (RFE)
+### 4.2.4 Recursive Feature Elimination (RFE)
 
 The syntax for RFE is now a little different but not particularly complicated. The parameter determining the number of features to extract is here n_features_to_select.
 
@@ -428,7 +415,7 @@ New_test_x = testX_reduced[filtered_features]
 
 
 
-#5 Conclusion
+# 5 Conclusion
 
 
 This post discussed the differences between filter methods and wrapper methods. Furthermore, four wrapper methods were shown how they can be used to determine the best features out of a record.
