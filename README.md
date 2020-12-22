@@ -23,9 +23,10 @@ Afterwards I dealt intensively with the fields of Machine Learning:
 ![ML](static/images/readme_ML.png)
 
 
+In my posts about the use of the discussed machine learning algorithms within the different analysis fields I showed real life case studies and how to solve real problems or build solutions with modern algorithms. 
+In doing so, I strongly followed the CRISP-DM model.
 
-
-
+![CRISP-DM](static/images/readme_crisp_dm.png)
 
 
 
