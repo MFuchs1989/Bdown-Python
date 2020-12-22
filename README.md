@@ -29,10 +29,9 @@ In doing so, I strongly followed the CRISP-DM model.
 ![CRISP-DM](static/images/readme_crisp_dm.png)
 
 
+Enjoy reading !
 
-![test](https://media.giphy.com/media/JsgiYyXRSe1fxvEYN4/giphy.gif)
-
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+![GIF](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 
 
 
