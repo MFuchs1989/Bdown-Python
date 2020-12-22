@@ -30,16 +30,14 @@ As mentioned in my previous ["post"](https://michael-fuchs-python.netlify.com/20
 import numpy as np
 import pandas as pd
 
-#for chapter 3.1.1
+
 from sklearn.preprocessing import OneHotEncoder
-#for chapter 3.2
 from sklearn.preprocessing import OrdinalEncoder
-#for chapter 4.1
+from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.preprocessing import LabelBinarizer
-#for chapter 4.2
 from sklearn.preprocessing import LabelEncoder
 
-#for chapter 5
+
 import pickle as pk
 ```
 
@@ -175,6 +173,46 @@ df[['Emotional_State', 'Emotional_State_Ordinal']].sort_values(by='Emotional_Sta
 
 ![](/post/2019-06-16-types-of-encoder_files/p29p10.png)
 
+
+## 3.3 MultiLabelBinarizer
+
+MultiLabelBinarizer basically works something like One Hot Encoding.
+The difference is that for a given column, a row can contain not only one value but several. 
+Have a look at this example:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({"genre": [["action", "drama","fantasy"], ["fantasy","action", "animation"], ["drama", "action"], ["sci-fi", "action"]],
+                  "title": ["Twilight", "Alice in Wonderland", "Tenet", "Star Wars"]})
+df
+```
+
+![](/post/2019-06-16-types-of-encoder_files/p29p34.png)
+
+Here we have assigned multiple genres for each film listed. Makes sense.
+To create a matrix with one column for each genre listed we need MultiLabelBinarizer.
+
+```{r, eval=F, echo=T}
+mlb = MultiLabelBinarizer()
+
+res = pd.DataFrame(mlb.fit_transform(df['genre']),
+                   columns=mlb.classes_,
+                   index=df['genre'].index)
+res
+```
+
+![](/post/2019-06-16-types-of-encoder_files/p29p35.png)
+
+Now all we have to do is delete the old column from the original data set and merge the two data sets (df and res).
+
+```{r, eval=F, echo=T}
+df = df.drop('genre', axis=1)
+df = pd.concat([df, res], axis=1, sort=False)
+df
+```
+
+![](/post/2019-06-16-types-of-encoder_files/p29p36.png)
+
+That's it.
 
 # 4 Encoder for target variables
 

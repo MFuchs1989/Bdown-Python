@@ -29,6 +29,7 @@ output:
 <li><a href="#via-pandas">3.1.2 via pandas</a></li>
 </ul></li>
 <li><a href="#ordinal-encoder">3.2 Ordinal Encoder</a></li>
+<li><a href="#multilabelbinarizer">3.3 MultiLabelBinarizer</a></li>
 </ul></li>
 <li><a href="#encoder-for-target-variables">4 Encoder for target variables</a>
 <ul>
@@ -51,16 +52,14 @@ output:
 <pre class="r"><code>import numpy as np
 import pandas as pd
 
-#for chapter 3.1.1
+
 from sklearn.preprocessing import OneHotEncoder
-#for chapter 3.2
 from sklearn.preprocessing import OrdinalEncoder
-#for chapter 4.1
+from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.preprocessing import LabelBinarizer
-#for chapter 4.2
 from sklearn.preprocessing import LabelEncoder
 
-#for chapter 5
+
 import pickle as pk</code></pre>
 <pre class="r"><code>df = pd.DataFrame({&#39;Job&#39;: [&#39;Doctor&#39;, &#39;Farmer&#39;, &#39;Electrician&#39;, &#39;Teacher&#39;, &#39;Pilot&#39;],
                    &#39;Emotional_State&#39;: [&#39;good&#39;, &#39;bad&#39;, &#39;neutral&#39;, &#39;very_good&#39;, &#39;excellent&#39;],
@@ -134,6 +133,31 @@ df</code></pre>
 <p>Now we have a sensible order:</p>
 <pre class="r"><code>df[[&#39;Emotional_State&#39;, &#39;Emotional_State_Ordinal&#39;]].sort_values(by=&#39;Emotional_State_Ordinal&#39;, ascending=False)</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p10.png" /></p>
+</div>
+<div id="multilabelbinarizer" class="section level2">
+<h2>3.3 MultiLabelBinarizer</h2>
+<p>MultiLabelBinarizer basically works something like One Hot Encoding.
+The difference is that for a given column, a row can contain not only one value but several.
+Have a look at this example:</p>
+<pre class="r"><code>df = pd.DataFrame({&quot;genre&quot;: [[&quot;action&quot;, &quot;drama&quot;,&quot;fantasy&quot;], [&quot;fantasy&quot;,&quot;action&quot;, &quot;animation&quot;], [&quot;drama&quot;, &quot;action&quot;], [&quot;sci-fi&quot;, &quot;action&quot;]],
+                  &quot;title&quot;: [&quot;Twilight&quot;, &quot;Alice in Wonderland&quot;, &quot;Tenet&quot;, &quot;Star Wars&quot;]})
+df</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p34.png" /></p>
+<p>Here we have assigned multiple genres for each film listed. Makes sense.
+To create a matrix with one column for each genre listed we need MultiLabelBinarizer.</p>
+<pre class="r"><code>mlb = MultiLabelBinarizer()
+
+res = pd.DataFrame(mlb.fit_transform(df[&#39;genre&#39;]),
+                   columns=mlb.classes_,
+                   index=df[&#39;genre&#39;].index)
+res</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p35.png" /></p>
+<p>Now all we have to do is delete the old column from the original data set and merge the two data sets (df and res).</p>
+<pre class="r"><code>df = df.drop(&#39;genre&#39;, axis=1)
+df = pd.concat([df, res], axis=1, sort=False)
+df</code></pre>
+<p><img src="/post/2019-06-16-types-of-encoder_files/p29p36.png" /></p>
+<p>That’s it.</p>
 </div>
 </div>
 <div id="encoder-for-target-variables" class="section level1">
