@@ -1,5 +1,7 @@
 # Bdown-Python
 
+![python](static/images/Python.jpg)
+
 This is a blog post using Python.
 URL: https://michael-fuchs-python.netlify.com/
 
