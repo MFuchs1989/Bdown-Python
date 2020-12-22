@@ -1,8 +1,8 @@
 ---
-title: Case Study: Predicting House Prices and EDA
+title: Predicting House Prices and EDA
 author: Michael Fuchs
 date: '2020-12-22'
-slug: case-study-predicting-house-prices-and-eda
+slug: predicting-house-prices-and-eda
 categories:
   - R
 tags:
