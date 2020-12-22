@@ -1,7 +1,7 @@
 ---
 title: Predicting House Prices and EDA
 author: Michael Fuchs
-date: '2020-11-10'
+date: '2020-12-23'
 slug: predicting-house-prices-and-eda
 categories:
   - R
