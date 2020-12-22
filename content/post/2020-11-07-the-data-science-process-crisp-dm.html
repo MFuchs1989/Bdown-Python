@@ -1,72 +1,97 @@
 ---
 title: The Data Science Process (CRISP-DM)
 author: Michael Fuchs
-date: '2020-11-07'
+date: '2020-08-21'
 slug: the-data-science-process-crisp-dm
 categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
-
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
+<div id="TOC">
 <ul>
-<li>1 Introduction</li>
-<li>2 Import the libraries</li>
-<li>3 Import the data</li>
-<li>4 Answering Research Questions - Descriptive Statistics</li>
-<li>4.1 Data pre-processing</li>
-<li>4.1.1 Check for Outliers</li>
-<li>4.1.2 Check for Missing Values</li>
-<li>4.1.3 Handling Categorical Variables</li>
-<li>4.2 Research Question 1</li>
-<li>4.3 Research Question 2</li>
-<li>4.4 Research Question 3</li>
-<li>5 Development of a Machine Learning Model End to End Process</li>
-<li>5.1 Data pre-processing</li>
-<li>5.1.1 Train Test Split</li>
-<li>5.1.2 Removal of Outlier</li>
-<li>5.1.3 Missing Values</li>
-<li>5.1.4 Categorical Variables</li>
-<li>5.1.5 Scaling</li>
-<li>5.2 Filter Methods</li>
-<li>5.2.1 Dealing with Highly Correlated Features</li>
-<li>5.2.2 Dealing with Constant Features</li>
-<li>5.2.3 Dealing with Duplicate Features</li>
-<li>5.3 ML-Model Development</li>
-<li>5.3.1 Training</li>
-<li>5.3.2 Testing</li>
-<li>5.3.2.1 Missing Values</li>
-<li>5.3.2.2 Categorical Variables</li>
-<li>5.3.2.3 Scaling</li>
-<li>5.3.2.4 Test the ML-Model</li>
-<li>5.4 Feature Selection</li>
-<li>5.4.1 Recursive Feature Elimination</li>
-<li>5.4.2 Training</li>
-<li>5.4.2.1 Column Selection according RFE</li>
-<li>5.4.2.2 New Scaling</li>
-<li>5.4.2.3 Fit the new ML-Model</li>
-<li>5.4.3 Testing</li>
-<li>5.4.3.1 Column Selection according RFE</li>
-<li>5.4.3.2 New Scaling</li>
-<li>5.4.3.3 Test the new ML-Model</li>
-<li>5.5 Out-Of-The-Box-Data</li>
-<li>5.5.1 Missing Values</li>
-<li>5.5.2 Cat Var</li>
-<li>5.5.3 Column Selection according RFE</li>
-<li>5.5.4 Scaling</li>
-<li>5.5.5 Prediction of new Values</li>
-<li>6 Conclusion</li>
-<li>7 Data Science Best Practice Guidlines for ML-Model Development</li>
-<li>8 Limitations</li>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#import-the-data">3 Import the data</a></li>
+<li><a href="#answering-research-questions---descriptive-statistics">4 Answering Research Questions - Descriptive Statistics</a>
+<ul>
+<li><a href="#data-pre-processing">4.1 Data pre-processing</a>
+<ul>
+<li><a href="#check-for-outliers">4.1.1 Check for Outliers</a></li>
+<li><a href="#check-for-missing-values">4.1.2 Check for Missing Values</a></li>
+<li><a href="#handling-categorical-variables">4.1.3 Handling Categorical Variables</a></li>
+</ul></li>
+<li><a href="#research-question-1">4.2 Research Question 1</a></li>
+<li><a href="#research-question-2">4.3 Research Question 2</a></li>
+<li><a href="#research-question-3">4.4 Research Question 3</a></li>
+</ul></li>
+<li><a href="#development-of-a-machine-learning-model-end-to-end-process">5 Development of a Machine Learning Model End to End Process</a>
+<ul>
+<li><a href="#data-pre-processing-1">5.1 Data pre-processing</a>
+<ul>
+<li><a href="#train-test-split">5.1.1 Train Test Split</a></li>
+<li><a href="#removal-of-outlier">5.1.2 Removal of Outlier</a></li>
+<li><a href="#missing-values">5.1.3 Missing Values</a></li>
+<li><a href="#categorical-variables">5.1.4 Categorical Variables</a></li>
+<li><a href="#scaling">5.1.5 Scaling</a></li>
+</ul></li>
+<li><a href="#filter-methods">5.2 Filter Methods</a>
+<ul>
+<li><a href="#dealing-with-highly-correlated-features">5.2.1 Dealing with Highly Correlated Features</a></li>
+<li><a href="#dealing-with-constant-features">5.2.2 Dealing with Constant Features</a></li>
+<li><a href="#dealing-with-duplicate-features">5.2.3 Dealing with Duplicate Features</a></li>
+</ul></li>
+<li><a href="#ml-model-development">5.3 ML-Model Development</a>
+<ul>
+<li><a href="#training">5.3.1 Training</a></li>
+<li><a href="#testing">5.3.2 Testing</a>
+<ul>
+<li><a href="#missing-values-1">5.3.2.1 Missing Values</a></li>
+<li><a href="#categorical-variables-1">5.3.2.2 Categorical Variables</a></li>
+<li><a href="#scaling-1">5.3.2.3 Scaling</a></li>
+<li><a href="#test-the-ml-model">5.3.2.4 Test the ML-Model</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#feature-selection">5.4 Feature Selection</a>
+<ul>
+<li><a href="#recursive-feature-elimination">5.4.1 Recursive Feature Elimination</a></li>
+<li><a href="#training-1">5.4.2 Training</a>
+<ul>
+<li><a href="#column-selection-according-rfe">5.4.2.1 Column Selection according RFE</a></li>
+<li><a href="#new-scaling">5.4.2.2 New Scaling</a></li>
+<li><a href="#fit-the-new-ml-model">5.4.2.3 Fit the new ML-Model</a></li>
+</ul></li>
+<li><a href="#testing-1">5.4.3 Testing</a>
+<ul>
+<li><a href="#column-selection-according-rfe-1">5.4.3.1 Column Selection according RFE</a></li>
+<li><a href="#new-scaling-1">5.4.3.2 New Scaling</a></li>
+<li><a href="#test-the-new-ml-model">5.4.3.3 Test the new ML-Model</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#out-of-the-box-data">5.5 Out-Of-The-Box-Data</a>
+<ul>
+<li><a href="#missing-values-2">5.5.1 Missing Values</a></li>
+<li><a href="#cat-var">5.5.2 Cat Var</a></li>
+<li><a href="#column-selection-according-rfe-2">5.5.3 Column Selection according RFE</a></li>
+<li><a href="#scaling-2">5.5.4 Scaling</a></li>
+<li><a href="#prediction-of-new-values">5.5.5 Prediction of new Values</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
+<li><a href="#data-science-best-practice-guidlines-for-ml-model-development">7 Data Science Best Practice Guidlines for ML-Model Development</a></li>
+<li><a href="#limitations">8 Limitations</a></li>
 </ul>
 </div>
+
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79s1.png" /></p>
@@ -151,12 +176,10 @@ house_prices.head()</code></pre>
 I have listed this approach at the end of this publication (chapter 7).
 It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.
 You can also download these instructions here: <a href="https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf">“DS Best Practice Guidlines for ML Model Development”</a>.</p>
-</div>
-<div id="data-pre-processing" class="section level1">
-<h1>4.1 Data pre-processing</h1>
-</div>
-<div id="check-for-outliers" class="section level1">
-<h1>4.1.1 Check for Outliers</h1>
+<div id="data-pre-processing" class="section level2">
+<h2>4.1 Data pre-processing</h2>
+<div id="check-for-outliers" class="section level3">
+<h3>4.1.1 Check for Outliers</h3>
 <p>First we will check the data frame for some outliers.
 This step is necessary first, because otherwise replacing missing values would be negatively affected.
 Categorical variables are not considered by this step.</p>
@@ -237,8 +260,8 @@ sns.boxplot(x=&#39;price&#39;, data=house_prices)</code></pre>
 sns.boxplot(x=&#39;price&#39;, data=df_without_outliers)</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p11.png" /></p>
 </div>
-<div id="check-for-missing-values" class="section level1">
-<h1>4.1.2 Check for Missing Values</h1>
+<div id="check-for-missing-values" class="section level3">
+<h3>4.1.2 Check for Missing Values</h3>
 <p>Now we are going to check for missing values.</p>
 <pre class="r"><code>def missing_values_table(df):
         # Total missing values
@@ -288,8 +311,8 @@ df_without_outliers[&#39;grade&#39;] = df_without_outliers[&#39;grade&#39;].fill
 <p>According to our best practice approach we will assign a new name to the data set.</p>
 <pre class="r"><code>df_without_MV = df_without_outliers</code></pre>
 </div>
-<div id="handling-categorical-variables" class="section level1">
-<h1>4.1.3 Handling Categorical Variables</h1>
+<div id="handling-categorical-variables" class="section level3">
+<h3>4.1.3 Handling Categorical Variables</h3>
 <p>Now we are going to handle the categorical variables.</p>
 <pre class="r"><code>obj_col = [&#39;object&#39;]
 object_columns = list(df_without_MV.select_dtypes(include=obj_col).columns)
@@ -406,8 +429,9 @@ It is also recommended to save the clean data set at this point.</p>
 
 final_df_house_prices.to_csv(&#39;dataframes/final_df_house_prices.csv&#39;, index=False)</code></pre>
 </div>
-<div id="research-question-1" class="section level1">
-<h1>4.2 Research Question 1</h1>
+</div>
+<div id="research-question-1" class="section level2">
+<h2>4.2 Research Question 1</h2>
 <p>The first research question is:</p>
 <p>Is there a difference in the characteristics of the properties, if they are located on a waterfront?</p>
 <pre class="r"><code>print(&#39;Absolute distribution: &#39;)
@@ -427,8 +451,8 @@ print(pd.DataFrame({&#39;Percentage&#39;: final_df_house_prices.groupby((&#39;wa
 <p>On the other hand, the difference in the average plot size is not so great.</p>
 <p>If one regards the year of construction of the real estates then one can state that the houses at a waterfront are average 18 years older.</p>
 </div>
-<div id="research-question-2" class="section level1">
-<h1>4.3 Research Question 2</h1>
+<div id="research-question-2" class="section level2">
+<h2>4.3 Research Question 2</h2>
 <p>The second research question is:</p>
 <p>What clusters are there in terms of real estate?</p>
 <pre class="r"><code># Here we drop the column old_index because we do not want to cluster these features
@@ -480,8 +504,8 @@ plt.show()</code></pre>
 We can see in the graphic above that the target buyer groups of the houses can be clearly defined.
 In this case, targeted customer segmentation and personalized recommendations from a marketing point of view would now be an option.</p>
 </div>
-<div id="research-question-3" class="section level1">
-<h1>4.4 Research Question 3</h1>
+<div id="research-question-3" class="section level2">
+<h2>4.4 Research Question 3</h2>
 <p>The third research question is:</p>
 <p>Does the number of square meters have a significant influence on the price of the property?</p>
 <p>To answer the research question we filter the data set for the variable price and sqft_living.</p>
@@ -505,6 +529,7 @@ model1.summary()</code></pre>
 <p>As we can see from the p value, it is highly significant.
 It can therefore be assumed that the number of square meters is a significant predictor of the price of a property.</p>
 </div>
+</div>
 <div id="development-of-a-machine-learning-model-end-to-end-process" class="section level1">
 <h1>5 Development of a Machine Learning Model End to End Process</h1>
 <p>Now that the descriptive part has been completed and the research questions posed at the beginning have been answered, we now come to the second main part of this publication.</p>
@@ -514,17 +539,15 @@ It can therefore be assumed that the number of square meters is a significant pr
 are applied to the training part only! Anything else would negatively affect the later performance of the algorithm. Outliers are the only exceptions to this rule. Here it always depends on the respective data set and its size.</p>
 <p>Often I have found that this rule is not followed. This has been one of the motivations for me to describe a complete end-to-end process for the development of machine learning models in this post.</p>
 <p>The further procedure follows the Best Practice approach for ML Model Development. I have listed this approach at the end of this publication (chapter 7). You can also download these instructions here: <a href="https://github.com/MFuchs1989/DSND-Data-Science-Blog-Post/blob/master/DS%20Best%20Practice%20Guidlines%20for%20ML%20Model%20Development.pdf">“DS Best Practice Guidlines for ML Model Development”</a>. It allows you to track the naming convention used and to see when which models, data sets or stored metrics are saved.</p>
-</div>
-<div id="data-pre-processing-1" class="section level1">
-<h1>5.1 Data pre-processing</h1>
+<div id="data-pre-processing-1" class="section level2">
+<h2>5.1 Data pre-processing</h2>
 <p>Due to the fact that we have to approach the pre-processing steps a bit differently to create an ML algorithm,
 we reload the original data set.</p>
 <pre class="r"><code>house_prices = pd.read_csv(&quot;house_prices_dataframe.csv&quot;)
 house_prices.head()</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p29.png" /></p>
-</div>
-<div id="train-test-split" class="section level1">
-<h1>5.1.1 Train Test Split</h1>
+<div id="train-test-split" class="section level3">
+<h3>5.1.1 Train Test Split</h3>
 <p>Here we are going to split the data into a training part (80%) and a test part (20%).</p>
 <pre class="r"><code>x = house_prices.drop([&#39;price&#39;], axis=1)
 y = house_prices[&#39;price&#39;]
@@ -537,8 +560,8 @@ testX = testX.reset_index().drop([&#39;index&#39;], axis=1)
 trainY = trainY.reset_index().drop([&#39;index&#39;], axis=1)
 testY = testY.reset_index().drop([&#39;index&#39;], axis=1)</code></pre>
 </div>
-<div id="removal-of-outlier" class="section level1">
-<h1>5.1.2 Removal of Outlier</h1>
+<div id="removal-of-outlier" class="section level3">
+<h3>5.1.2 Removal of Outlier</h3>
 <pre class="r"><code># Define the outlier-detect function
 def outliers_z_score(df):
     threshold = 3
@@ -600,8 +623,8 @@ print(&#39;---------------------------------------------------------------------
 print(&#39;Length of unique outlier list: &#39; + str(len(outlier_list_final_unique)))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p31.png" /></p>
 </div>
-<div id="missing-values" class="section level1">
-<h1>5.1.3 Missing Values</h1>
+<div id="missing-values" class="section level3">
+<h3>5.1.3 Missing Values</h3>
 <pre class="r"><code>def missing_values_table(df):
         # Total missing values
         mis_val = df.isnull().sum()
@@ -664,8 +687,8 @@ print(&#39;Mean of column sqft_lot: &#39; + str(mean_sqft_lot))</code></pre>
 <p>To comply with the best practice approach, we assign a new name (trainX_wo_MV) to the data set (trainX_wo_outlier).</p>
 <pre class="r"><code>trainX_wo_MV = trainX_wo_outlier</code></pre>
 </div>
-<div id="categorical-variables" class="section level1">
-<h1>5.1.4 Categorical Variables</h1>
+<div id="categorical-variables" class="section level3">
+<h3>5.1.4 Categorical Variables</h3>
 <pre class="r"><code>obj_col = [&#39;object&#39;]
 object_columns = list(trainX_wo_MV.select_dtypes(include=obj_col).columns)
 trainX_categorical = trainX_wo_MV[object_columns]
@@ -782,8 +805,8 @@ print()</code></pre>
 
 trainX_encoded.to_csv(&#39;dataframes/trainX_encoded.csv&#39;, index=False)</code></pre>
 </div>
-<div id="scaling" class="section level1">
-<h1>5.1.5 Scaling</h1>
+<div id="scaling" class="section level3">
+<h3>5.1.5 Scaling</h3>
 <p>Another important pre-processing step is the scaling of the data. We will apply the standard scaler to the
 trainX_wo_outlier data set and save the fitted scaler for later transformations.</p>
 <pre class="r"><code>col_names = trainX_encoded.columns
@@ -798,11 +821,11 @@ trainX_scaled.head()</code></pre>
 <p>As announced also this scaler is stored for later predictions.</p>
 <pre class="r"><code>pk.dump(scaler, open(&#39;scaler/StandardScaler.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
-<div id="filter-methods" class="section level1">
-<h1>5.2 Filter Methods</h1>
 </div>
-<div id="dealing-with-highly-correlated-features" class="section level1">
-<h1>5.2.1 Dealing with Highly Correlated Features</h1>
+<div id="filter-methods" class="section level2">
+<h2>5.2 Filter Methods</h2>
+<div id="dealing-with-highly-correlated-features" class="section level3">
+<h3>5.2.1 Dealing with Highly Correlated Features</h3>
 <p>Now that all variables are numeric it is easy to create a correlation plot. This gives a first insight into which variables seem to correlate highly.</p>
 <pre class="r"><code>plt.figure(figsize=(8,6))
 cor = trainX_scaled.corr()
@@ -825,8 +848,8 @@ for i in range(len(correlation_matrix .columns)):
 len(correlated_features)</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p39.png" /></p>
 </div>
-<div id="dealing-with-constant-features" class="section level1">
-<h1>5.2.2 Dealing with Constant Features</h1>
+<div id="dealing-with-constant-features" class="section level3">
+<h3>5.2.2 Dealing with Constant Features</h3>
 <p>It is as important as the highly correlated variables to check whether constant features or quasi constant features exist.
 Also this is not the case here. No further variables must be excluded.</p>
 <pre class="r"><code>constant_filter = VarianceThreshold(threshold=0)
@@ -852,8 +875,8 @@ print(&#39;Number of constant features: &#39; + str(len(constant_columns)))
 print(&#39;Number of constant features: &#39; + str(len(qconstant_columns)))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p40.png" /></p>
 </div>
-<div id="dealing-with-duplicate-features" class="section level1">
-<h1>5.2.3 Dealing with Duplicate Features</h1>
+<div id="dealing-with-duplicate-features" class="section level3">
+<h3>5.2.3 Dealing with Duplicate Features</h3>
 <p>Finally we check if duplicated features exist.
 This is also not the case.</p>
 <pre class="r"><code>trainX_scaled_T = trainX_scaled.T
@@ -867,11 +890,11 @@ trainY_final = trainY_wo_outlier</code></pre>
 <pre class="r"><code>trainX_final.to_csv(&#39;dataframes/trainX_final.csv&#39;, index=False)
 trainY_final.to_csv(&#39;dataframes/trainY_final.csv&#39;, index=False)</code></pre>
 </div>
-<div id="ml-model-development" class="section level1">
-<h1>5.3 ML-Model Development</h1>
 </div>
-<div id="training" class="section level1">
-<h1>5.3.1 Training</h1>
+<div id="ml-model-development" class="section level2">
+<h2>5.3 ML-Model Development</h2>
+<div id="training" class="section level3">
+<h3>5.3.1 Training</h3>
 <p>Subsequently, the regression model is created, trained and its R² value is calculated.</p>
 <p>It is also stored for test purposes and validation.</p>
 <pre class="r"><code>lm = LinearRegression()
@@ -882,15 +905,14 @@ print(&#39;R² Score of fitted lm-model: &#39; + str(lm.score(trainX_final, trai
 pk.dump(lm, open(&#39;model/lm_model.pkl&#39;, &#39;wb&#39;))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p42.png" /></p>
 </div>
-<div id="testing" class="section level1">
-<h1>5.3.2 Testing</h1>
+<div id="testing" class="section level3">
+<h3>5.3.2 Testing</h3>
 <p>You can consider the test data set as a completely independent new data set on which to make predictions. This means that we have to do all pre-processing steps (coding, scaling, removing columns etc.) again.</p>
 <p>This is a step that is a bit more complex and is avoided by many developers by first pre-processing
 the data and then doing a train-test split, but it is the closest to the truth.</p>
 <p>Now we will also need most of the previously saved files (saved mean values, scalers etc.).</p>
-</div>
-<div id="missing-values-1" class="section level1">
-<h1>5.3.2.1 Missing Values</h1>
+<div id="missing-values-1" class="section level4">
+<h4>5.3.2.1 Missing Values</h4>
 <p>We know from the previous analysis that we excluded the column yr_renovated because of the high number of missing values.</p>
 <p>We also know that the column grade also contains missing values and we should fill it with the stored mean_grade.</p>
 <p>We will do this in the following.</p>
@@ -905,8 +927,8 @@ testX[&#39;grade&#39;] = testX[&#39;grade&#39;].fillna(mean_grade_reload)
 # Rename testX according best practice guideline
 testX_wo_MV = testX</code></pre>
 </div>
-<div id="categorical-variables-1" class="section level1">
-<h1>5.3.2.2 Categorical Variables</h1>
+<div id="categorical-variables-1" class="section level4">
+<h4>5.3.2.2 Categorical Variables</h4>
 <p>We also know from the past which variables are categorical and how they must be coded accordingly.
 This time we only use the saved encoders and the saved dictionaries.</p>
 <p>Watch out!</p>
@@ -950,8 +972,8 @@ testX_encoded = testX_wo_MV
 
 testX_encoded.to_csv(&#39;dataframes/testX_encoded.csv&#39;, index=False)</code></pre>
 </div>
-<div id="scaling-1" class="section level1">
-<h1>5.3.2.3 Scaling</h1>
+<div id="scaling-1" class="section level4">
+<h4>5.3.2.3 Scaling</h4>
 <p>Like the coding, the testX data must be scaled using the same metrics calculated from the training data.</p>
 <pre class="r"><code># Load the necessary scaler
 scaler_reload = pk.load(open(&quot;scaler/StandardScaler.pkl&quot;,&#39;rb&#39;))
@@ -970,8 +992,8 @@ testY_final = testY
 testX_final.to_csv(&#39;dataframes/testX_final.csv&#39;, index=False)
 testY_final.to_csv(&#39;dataframes/testY_final.csv&#39;, index=False)</code></pre>
 </div>
-<div id="test-the-ml-model" class="section level1">
-<h1>5.3.2.4 Test the ML-Model</h1>
+<div id="test-the-ml-model" class="section level4">
+<h4>5.3.2.4 Test the ML-Model</h4>
 <p>Now it is time to test the saved lm model. For this we reload it and predicted the house prices.
 In the following an evaluation will take place.</p>
 <pre class="r"><code># Reload the model
@@ -996,12 +1018,13 @@ print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY_final, y_p
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY_final, y_pred)))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p43.png" /></p>
 </div>
-<div id="feature-selection" class="section level1">
-<h1>5.4 Feature Selection</h1>
-<p>Now that we have successfully developed a ml model, we try to improve it again by selecting only the most important features (via RFE).</p>
 </div>
-<div id="recursive-feature-elimination" class="section level1">
-<h1>5.4.1 Recursive Feature Elimination</h1>
+</div>
+<div id="feature-selection" class="section level2">
+<h2>5.4 Feature Selection</h2>
+<p>Now that we have successfully developed a ml model, we try to improve it again by selecting only the most important features (via RFE).</p>
+<div id="recursive-feature-elimination" class="section level3">
+<h3>5.4.1 Recursive Feature Elimination</h3>
 <pre class="r"><code>lr = LinearRegression()
 
 rfe = RFE(lr, n_features_to_select=10)
@@ -1019,8 +1042,8 @@ filtered_features</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p45.png" /></p>
 <pre class="r"><code>pk.dump(filtered_features, open(&#39;feature_selection_RFE/filtered_features_RFE.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
-<div id="training-1" class="section level1">
-<h1>5.4.2 Training</h1>
+<div id="training-1" class="section level3">
+<h3>5.4.2 Training</h3>
 <p>Due to the fact that we will now consider a new number of variables, we have to reapply and save the scaler. If we don’t do that, we will have problems later on to transform the data back to make it readable.</p>
 <p>The scaler remembers the number of columns and the order of the columns. For example, you can not scale 5 columns and only try to transform 4 back. If you take this into account in the preparation, you often save yourself additional work later.</p>
 <p>For this step we reload the anticipatory stored data set trainX_encoded, apply the filter from
@@ -1028,16 +1051,15 @@ feature selection RFE (filtered_features_RFE) to it and rescale it (and of cours
 <pre class="r"><code>trainX_encoded_reload = pd.read_csv(&quot;dataframes/trainX_encoded.csv&quot;)
 trainX_encoded_reload.head()</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p46.png" /></p>
-</div>
-<div id="column-selection-according-rfe" class="section level1">
-<h1>5.4.2.1 Column Selection according RFE</h1>
+<div id="column-selection-according-rfe" class="section level4">
+<h4>5.4.2.1 Column Selection according RFE</h4>
 <p>As announced shortly before, we load the filter from RFE and apply it.</p>
 <pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
 
 trainX_FS = trainX_encoded_reload[filtered_features_RFE_reload]</code></pre>
 </div>
-<div id="new-scaling" class="section level1">
-<h1>5.4.2.2 New Scaling</h1>
+<div id="new-scaling" class="section level4">
+<h4>5.4.2.2 New Scaling</h4>
 <pre class="r"><code>col_names = trainX_FS.columns
 features = trainX_FS[col_names]
 
@@ -1056,8 +1078,8 @@ trainY_final2 = trainY_final
 trainX_final2.to_csv(&#39;dataframes/trainX_final2.csv&#39;, index=False)
 trainY_final2.to_csv(&#39;dataframes/trainY_final2.csv&#39;, index=False)</code></pre>
 </div>
-<div id="fit-the-new-ml-model" class="section level1">
-<h1>5.4.2.3 Fit the new ML-Model</h1>
+<div id="fit-the-new-ml-model" class="section level4">
+<h4>5.4.2.3 Fit the new ML-Model</h4>
 <p>Here a new training starts due to the data situation after feature selection.</p>
 <pre class="r"><code>lm2 = LinearRegression()
 lm2.fit(trainX_final2, trainY_final2)
@@ -1067,22 +1089,22 @@ print(&#39;R² Score of fitted lm2-model: &#39; + str(lm2.score(trainX_final2, t
 pk.dump(lm2, open(&#39;model/lm2_model.pkl&#39;, &#39;wb&#39;))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p47.png" /></p>
 </div>
-<div id="testing-1" class="section level1">
-<h1>5.4.3 Testing</h1>
+</div>
+<div id="testing-1" class="section level3">
+<h3>5.4.3 Testing</h3>
 <p>As in the training part after RFE we have to select the column via the RFE filter and rescale it.</p>
 <pre class="r"><code>testX_encoded_reload = pd.read_csv(&quot;dataframes/testX_encoded.csv&quot;)
 testX_encoded_reload.head()</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p48.png" /></p>
-</div>
-<div id="column-selection-according-rfe-1" class="section level1">
-<h1>5.4.3.1 Column Selection according RFE</h1>
+<div id="column-selection-according-rfe-1" class="section level4">
+<h4>5.4.3.1 Column Selection according RFE</h4>
 <p>As announced shortly before, we load the filter from RFE and apply it.</p>
 <pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
 
 testX_FS = testX_encoded_reload[filtered_features_RFE_reload]</code></pre>
 </div>
-<div id="new-scaling-1" class="section level1">
-<h1>5.4.3.2 New Scaling</h1>
+<div id="new-scaling-1" class="section level4">
+<h4>5.4.3.2 New Scaling</h4>
 <p>Like the coding, the testX data must be scaled using the same metrics calculated from the training data.</p>
 <pre class="r"><code># Load the necessary scaler
 scaler2_reload = pk.load(open(&quot;scaler/StandardScaler2.pkl&quot;,&#39;rb&#39;))
@@ -1100,8 +1122,8 @@ testY_final2 = testY_final
 testX_final2.to_csv(&#39;dataframes/testX_final.csv&#39;, index=False)
 testY_final2.to_csv(&#39;dataframes/testY_final.csv&#39;, index=False)</code></pre>
 </div>
-<div id="test-the-new-ml-model" class="section level1">
-<h1>5.4.3.3 Test the new ML-Model</h1>
+<div id="test-the-new-ml-model" class="section level4">
+<h4>5.4.3.3 Test the new ML-Model</h4>
 <p>Now we will test the newly created lm model (based on feature selection).</p>
 <pre class="r"><code># Reload the model
 lm2_reload = pk.load(open(&quot;model/lm2_model.pkl&quot;,&#39;rb&#39;))
@@ -1130,8 +1152,10 @@ print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(tes
 <p>Furthermore you can use hyperparameter tuning (with grid-search) to improve the performance.</p>
 <p>As we have seen, the data preprocessing has taken the most time. Now comes the best part, the magic with different machnie learning models.</p>
 </div>
-<div id="out-of-the-box-data" class="section level1">
-<h1>5.5 Out-Of-The-Box-Data</h1>
+</div>
+</div>
+<div id="out-of-the-box-data" class="section level2">
+<h2>5.5 Out-Of-The-Box-Data</h2>
 <p>So far we have prepared the data accordingly, developed a machine learning model and improved it using feature selection.
 Now we can test it again with completely new data.</p>
 <p>This is, for example, the description of the property I am currently living in.
@@ -1152,9 +1176,8 @@ I am curious to see what value is predicted for my property.</p>
                    &#39;property_typ&#39;: [&#39;apartment&#39;]})
 my_property</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p50.png" /></p>
-</div>
-<div id="missing-values-2" class="section level1">
-<h1>5.5.1 Missing Values</h1>
+<div id="missing-values-2" class="section level3">
+<h3>5.5.1 Missing Values</h3>
 <p>First I replace all missing values again. This time the columned condition is filled with NaN and will be replaced by me.</p>
 <pre class="r"><code># Deletion of the column yr_renovated because too many missing values.
 my_property = my_property.drop([&#39;yr_renovated&#39;], axis=1)
@@ -1165,8 +1188,8 @@ my_property[&#39;condition&#39;] = my_property[&#39;condition&#39;].fillna(mean_
 
 my_property_wo_MV = my_property</code></pre>
 </div>
-<div id="cat-var" class="section level1">
-<h1>5.5.2 Cat Var</h1>
+<div id="cat-var" class="section level3">
+<h3>5.5.2 Cat Var</h3>
 <p>As known, the coding of the categorical variables is also carried out.</p>
 <pre class="r"><code># Load the necessary encoder/dic
 encoder_waterfront_reload = pk.load(open(&quot;encoder/encoder_waterfront.pkl&quot;,&#39;rb&#39;))
@@ -1203,8 +1226,8 @@ my_property_wo_MV = my_property_wo_MV.drop([&#39;property_typ&#39;], axis=1)
 
 my_property_encoded = my_property_wo_MV</code></pre>
 </div>
-<div id="column-selection-according-rfe-2" class="section level1">
-<h1>5.5.3 Column Selection according RFE</h1>
+<div id="column-selection-according-rfe-2" class="section level3">
+<h3>5.5.3 Column Selection according RFE</h3>
 <p>Next we are going to do the column selection according RFE</p>
 <pre class="r"><code>filtered_features_RFE_reload = pk.load(open(&quot;feature_selection_RFE/filtered_features_RFE.pkl&quot;,&#39;rb&#39;))
 
@@ -1213,8 +1236,8 @@ my_property_encoded = my_property_encoded[filtered_features_RFE_reload]
 
 my_property_FS = my_property_encoded</code></pre>
 </div>
-<div id="scaling-2" class="section level1">
-<h1>5.5.4 Scaling</h1>
+<div id="scaling-2" class="section level3">
+<h3>5.5.4 Scaling</h3>
 <p>Last but not least feature scaling.</p>
 <pre class="r"><code># Load the necessary scaler
 scaler2_reload = pk.load(open(&quot;scaler/StandardScaler2.pkl&quot;,&#39;rb&#39;))
@@ -1227,8 +1250,8 @@ features = scaler2_reload.transform(features.values)
 
 my_property_FS_scaled = pd.DataFrame(features, columns = col_names)</code></pre>
 </div>
-<div id="prediction-of-new-values" class="section level1">
-<h1>5.5.5 Prediction of new Values</h1>
+<div id="prediction-of-new-values" class="section level3">
+<h3>5.5.5 Prediction of new Values</h3>
 <p>Now I will use the final created model to predict the price for my property.</p>
 <pre class="r"><code># Reload the model
 lm2_reload = pk.load(open(&quot;model/lm2_model.pkl&quot;,&#39;rb&#39;))
@@ -1238,6 +1261,8 @@ y_pred = lm2_reload.predict(my_property_FS_scaled)
 
 print(&#39;The predicted price for my property is: &#39; + str(y_pred))</code></pre>
 <p><img src="/post/2020-11-07-the-data-science-process-crisp-dm/p79p51.png" /></p>
+</div>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>6 Conclusion</h1>
