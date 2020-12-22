@@ -1,0 +1,187 @@
+---
+title: Time Series Analysis - Working with Dates and Times
+author: Michael Fuchs
+date: '2020-10-19'
+slug: time-series-analysis-working-with-dates-and-times
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5  
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a>
+<ul>
+<li><a href="#stationary-data">1.1 Stationary Data</a></li>
+<li><a href="#differencing">1.2 Differencing</a></li>
+<li><a href="#working-with-dates-and-times">1.3 Working with Dates and Times</a></li>
+</ul></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#convert-timestamp-to-datetime">3 Convert timestamp to DateTime</a></li>
+<li><a href="#extract-year-month-and-day">4 Extract Year, Month and Day</a></li>
+<li><a href="#extract-weekday-and-week">5 Extract Weekday and Week</a></li>
+<li><a href="#calculate-quarter">6 Calculate Quarter</a></li>
+<li><a href="#generate-yearquarter">7 Generate YearQuarter</a></li>
+<li><a href="#filter-for-timedate">8 Filter for TimeDate</a></li>
+<li><a href="#conclusion">9 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94s1.png" /></p>
+<p>Let’s continue our journey through the different Analytics fields. Let’s now move on to the topic of Time Series Analysis.
+Most of the time we deal with cross-sectional data. Here, the data is collected at a specific point in time. On the other hand, time series data is a collection of observations obtained through repeated measurements over time.
+If we were to draw the points in a diagram then one of your axes would always be time.</p>
+<p>A given time series is thought to consist of four systematic components:</p>
+<ul>
+<li>Trend, which describe the movement along the term.</li>
+<li>Seasonality, which is the repeating short-term cycle in the series.</li>
+<li>Cyclic Variations, which reflects repeated but non-periodic fluctuations.</li>
+<li>Noise, which are random variation in the series.</li>
+</ul>
+<p>We can check these, with a decomposition plot like this one shown below:</p>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94s2.png" /></p>
+<p>But why is this information about Time Series Components so important to us?
+This information influences our choice of algorithms and the pre-processing steps necessary to develop a good predictive model.</p>
+<div id="stationary-data" class="section level2">
+<h2>1.1 Stationary Data</h2>
+<p>Statioary Data means, that the statistical properties of the particular process do not vary with time.
+It is mandatory to convert your data into a stationery format to train most time-series forecasting models.
+When time-series data is nonstationary, it means it has trends and seasonality patterns that should be removed.</p>
+</div>
+<div id="differencing" class="section level2">
+<h2>1.2 Differencing</h2>
+<p>Differencing is the process of transforming the time series to stabilize the mean.<br />
+In addition, there are two other differencing methods:</p>
+<ul>
+<li>Trend Differencing (First- and Second-Order Differencing)</li>
+<li>Seasonal Differencing (First- and Second-Order Differencing for Seasonal Data)</li>
+</ul>
+</div>
+<div id="working-with-dates-and-times" class="section level2">
+<h2>1.3 Working with Dates and Times</h2>
+<p>We will come to the development of predictive models and all the steps involved.
+In this post we will first look at how to handle time series data in general.</p>
+</div>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import datetime</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;timestamp_df.csv&#39;, usecols=[&#39;timestamp&#39;])
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p1.png" /></p>
+</div>
+<div id="convert-timestamp-to-datetime" class="section level1">
+<h1>3 Convert timestamp to DateTime</h1>
+<pre class="r"><code># Convert timestamp to DateTime
+df[&#39;timestamp_epoch2&#39;] = df.timestamp.astype(float)
+df[&#39;new_timestamp_epoch&#39;] = df.timestamp_epoch2 / 1000
+df[&#39;new_timestamp_epoch_round&#39;] = df.new_timestamp_epoch.round()
+df[&#39;new_timestamp_epoch_round&#39;] = df.new_timestamp_epoch_round.astype(int)
+df[&#39;final&#39;] = df.new_timestamp_epoch_round.map(lambda x: datetime.datetime.utcfromtimestamp(x).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;))
+df[&#39;DateTime&#39;] = pd.to_datetime(df[&#39;final&#39;])
+df.drop([&quot;timestamp_epoch2&quot;, &quot;new_timestamp_epoch&quot;, &quot;new_timestamp_epoch_round&quot;, &quot;final&quot;], axis = 1, inplace = True) 
+
+
+# Print new df
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p2.png" /></p>
+</div>
+<div id="extract-year-month-and-day" class="section level1">
+<h1>4 Extract Year, Month and Day</h1>
+<pre class="r"><code>df[&#39;Year&#39;] = df.DateTime.dt.year
+df[&#39;Month&#39;] = df.DateTime.dt.month
+df[&#39;Day&#39;] = df.DateTime.dt.day
+
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p3.png" /></p>
+</div>
+<div id="extract-weekday-and-week" class="section level1">
+<h1>5 Extract Weekday and Week</h1>
+<pre class="r"><code>df[&#39;Weekday&#39;] = df.DateTime.dt.day_name()
+df[&#39;Week&#39;] = df.DateTime.dt.isocalendar().week
+
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p4.png" /></p>
+</div>
+<div id="calculate-quarter" class="section level1">
+<h1>6 Calculate Quarter</h1>
+<p>For calculating the quarter I defined the following function:</p>
+<pre class="r"><code>def get_quarter(df):
+
+    if (df[&#39;Month&#39;] &lt;= 3):
+        return &#39;Q1&#39;
+    
+    elif (df[&#39;Month&#39;] &lt;= 6) and (df[&#39;Month&#39;] &gt; 3):
+        return &#39;Q2&#39;
+              
+    elif (df[&#39;Month&#39;] &lt;= 9) and (df[&#39;Month&#39;] &gt; 6):
+        return &#39;Q3&#39;
+
+    elif (df[&#39;Month&#39;] &lt;= 12) and (df[&#39;Month&#39;] &gt; 9):
+        return &#39;Q4&#39;</code></pre>
+<p>Let’s apply the defined function:</p>
+<pre class="r"><code>df[&#39;Quarter&#39;] = df.apply(get_quarter, axis = 1)
+
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p5.png" /></p>
+</div>
+<div id="generate-yearquarter" class="section level1">
+<h1>7 Generate YearQuarter</h1>
+<p>Especially for visualizations I always quite like to have the YearQuarter indication.
+Unfortunately, we cannot access the year with the str.-function as usual. The output would look like this:</p>
+<pre class="r"><code>str(df[&#39;Year&#39;])</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p6.png" /></p>
+<p>Let’s have a look at the column types:</p>
+<pre class="r"><code>df.dtypes</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p7.png" /></p>
+<p>Year is here output as int64, but as we can see there is a string containing the information for all years.
+But we can pull the year as an object directly from DateTime.</p>
+<pre class="r"><code>df[&#39;DateTime&#39;].apply(lambda x: x.strftime(&#39;%Y&#39;))</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p8.png" /></p>
+<p>Since this solution works, we now do this to generate another column.</p>
+<pre class="r"><code>df[&#39;YearQuarter&#39;] = df[&#39;DateTime&#39;].apply(lambda x: x.strftime(&#39;%Y&#39;)) + df[&#39;Quarter&#39;]
+
+df</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p9.png" /></p>
+<p>A final check:</p>
+<pre class="r"><code>df.dtypes</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p10.png" /></p>
+<p>Perfect.</p>
+<p>This also works with any other elements from DateTime.
+For example month or day. Here also the order can be chosen arbitrarily.
+Here for example: Day, month and year</p>
+<pre class="r"><code>df[&#39;DateTime&#39;].apply(lambda x: x.strftime(&#39;%d%m%Y&#39;))</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p11.png" /></p>
+</div>
+<div id="filter-for-timedate" class="section level1">
+<h1>8 Filter for TimeDate</h1>
+<pre class="r"><code>df[&#39;DateTime&#39;]</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p12.png" /></p>
+<pre class="r"><code>print(&#39;Oldest Date: &#39; + str(df[&#39;DateTime&#39;].min()))
+print(&#39;Earliest Date: &#39; + str(df[&#39;DateTime&#39;].max()))</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p13.png" /></p>
+<p>Filter by dates greater than or equal to 01.01.2001:</p>
+<pre class="r"><code>filter1 = df.loc[df[&#39;DateTime&#39;] &gt;= &#39;2001-01-01&#39;]
+filter1</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p14.png" /></p>
+<p>Filter by dates greater than or equal to 01.01.2001 18h00:</p>
+<pre class="r"><code>filter2 = df.loc[df[&#39;DateTime&#39;] &gt;= &#39;2001-01-01 18&#39;]
+filter2</code></pre>
+<p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p15.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>9 Conclusion</h1>
+<p>This was a smart introduction to how to handle Time Series data and how to extract more information from a Timestamp. Furthermore I went into what stationary data is and what differentiating means.</p>
+</div>
