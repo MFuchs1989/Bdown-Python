@@ -35,7 +35,7 @@ In doing so, I strongly followed the CRISP-DM model.
 </p>
 
 
-                                                      Enjoy reading !
+                                                    Enjoy reading !
 
 
 <p align="center">
