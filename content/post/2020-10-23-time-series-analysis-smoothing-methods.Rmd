@@ -19,36 +19,110 @@ output:
 
 # 1 Introduction
 
+Now that I have given an [introduction to the topic of time series analysis](https://michael-fuchs-python.netlify.app/2020/10/19/time-series-analysis-working-with-dates-and-times/), we come to the first models with which we can make predictions for time series: Smooting Methods
 
+The smoothing technique is a family of time-series forecasting algorithms, which utilizes the weighted averages of a previous observation to predict or forecast a new value.
+This technique is more efficient when time-series data is moving slowly over time. It harmonizes errors, trends and seasonal components into computing smoothing parameters.
 
-For this post the dataset *movies_metadata* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender).
+In the following, we will look at three different smoothing methods:
 
++ Simple Exponential Smoothing
++ Double Exponential Smoothing
++ Triple Exponential Smoothing
 
-
-
-
-
-
-
-
-
-
-
+For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
 
 
 
+# 2 Import libraries and data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+from sklearn import metrics
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from sklearn.model_selection import ParameterGrid
+
+from statsmodels.tsa.api import SimpleExpSmoothing
+from statsmodels.tsa.api import Holt
+from statsmodels.tsa.api import ExponentialSmoothing
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('FB.csv')
+df.head()
+```
+
+![](/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p1.png)
+
+
+Let's generate a training part and a test part (the last 30 values).
+We will focus our analysis on the 'Close' column. This column contains the last close of the Facebook share at the end of the respective day.
+
+
+```{r, eval=F, echo=T}
+X = df['Close']
+
+testX = X.iloc[-30:]
+trainX = X.iloc[:-30]
+```
+
+
+# 3 Definition of required functions
+
+For the evaluation of the following models I create a function to calculate the mean absolute percentage error and another function that outputs this metric and others for evaluation.
+
+
+```{r, eval=F, echo=T}
+def mean_absolute_percentage_error(y_true, y_pred):
+    '''
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    '''    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+```
+
+
+```{r, eval=F, echo=T}
+def timeseries_evaluation_metrics_func(y_true, y_pred):
+    '''
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    '''    
+    print('Evaluation metric results: ')
+    print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
+    print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
+    print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
+    print(f'MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}')
+    print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
+```
 
 
 
 
 
-
-
-
-
-
-
-dfas
 
 
 
@@ -57,7 +131,7 @@ dfas
 
 ```
 
-![](/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p1.png)
+![](/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p.png)
 
 
 
