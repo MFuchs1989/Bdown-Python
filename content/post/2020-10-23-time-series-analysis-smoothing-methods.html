@@ -22,7 +22,28 @@ output:
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-libraries-and-data">2 Import libraries and data</a></li>
 <li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
-<li><a href="#xx-conclusion">XX Conclusion</a></li>
+<li><a href="#simple-exponential-smoothing">4 Simple Exponential Smoothing</a>
+<ul>
+<li><a href="#searching-for-best-parameters-for-ses">4.1 Searching for best parameters for SES</a></li>
+<li><a href="#fit-ses">4.2 Fit SES</a></li>
+<li><a href="#fit-ses-with-optimizedtrue">4.3 Fit SES with optimized=True</a></li>
+<li><a href="#plotting-the-results-for-ses">4.4 Plotting the results for SES</a></li>
+</ul></li>
+<li><a href="#double-exponential-smoothing">5 Double Exponential Smoothing</a>
+<ul>
+<li><a href="#searching-for-best-parameters-for-des">5.1 Searching for best parameters for DES</a></li>
+<li><a href="#fit-des">5.2 Fit DES</a></li>
+<li><a href="#fit-des-with-optimizedtrue">5.3 Fit DES with optimized=True</a></li>
+<li><a href="#plotting-the-results-for-des">5.4 Plotting the results for DES</a></li>
+</ul></li>
+<li><a href="#triple-exponential-smoothing">6 Triple Exponential Smoothing</a>
+<ul>
+<li><a href="#searching-for-best-parameters-for-des-1">6.1 Searching for best parameters for DES</a></li>
+<li><a href="#fit-tes">6.2 Fit TES</a></li>
+<li><a href="#fit-tes-with-optimizedtrue">6.3 Fit TES with optimized=True</a></li>
+<li><a href="#plotting-the-results-for-tes">6.4 Plotting the results for TES</a></li>
+</ul></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -101,9 +122,334 @@ trainX = X.iloc[:-30]</code></pre>
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
     print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
-<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p.png" /></p>
 </div>
-<div id="xx-conclusion" class="section level1">
-<h1>XX Conclusion</h1>
+<div id="simple-exponential-smoothing" class="section level1">
+<h1>4 Simple Exponential Smoothing</h1>
+<p>Simple Exponential Smoothing is one of the minimal models of the exponential smoothing algorithms. This method can be used to predict series that do not have trends or seasonality.</p>
+<p>Assume that a time series has the following:</p>
+<ul>
+<li>Level</li>
+<li>No trends</li>
+<li>No seasonality</li>
+<li>Noise</li>
+</ul>
+<div id="searching-for-best-parameters-for-ses" class="section level2">
+<h2>4.1 Searching for best parameters for SES</h2>
+<p>In the Simple Exponential Smoothing function we have the following parameter that we can set:</p>
+<ul>
+<li>smooting_level(float, optional)</li>
+</ul>
+<p>To find out which value fits best for this we perform a for-loop.</p>
+<pre class="r"><code>resu = []
+temp_df = pd.DataFrame()
+for i in [0 , 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90,1]:
+    print(f&#39;Fitting for smoothing level= {i}&#39;)
+    fit_v = SimpleExpSmoothing(np.asarray(trainX)).fit(i)
+    fcst_pred_v= fit_v.forecast(len(testX))   
+    timeseries_evaluation_metrics_func(testX, fcst_pred_v)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p2.png" /></p>
+<p>…</p>
+<p>The output is very long and poorly comparable.
+So we use a for-loop to output the RMSE value for each provided smoothing parameter and store the results in a table.</p>
+<pre class="r"><code>resu = []
+temp_df = pd.DataFrame()
+for i in [0 , 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90,1]:
+    fit_v = SimpleExpSmoothing(np.asarray(trainX)).fit(i)
+    fcst_pred_v= fit_v.forecast(len(testX))   
+    rmse = np.sqrt(metrics.mean_squared_error(testX, fcst_pred_v))
+    df3 = {&#39;smoothing parameter&#39;:i, &#39;RMSE&#39;: rmse}
+    temp_df = temp_df.append(df3, ignore_index=True)</code></pre>
+<pre class="r"><code>temp_df.sort_values(by=[&#39;RMSE&#39;])</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p3.png" /></p>
+<p>Now we can see for which smoothing parameter we get the lowest RMSE. Here: 1</p>
+</div>
+<div id="fit-ses" class="section level2">
+<h2>4.2 Fit SES</h2>
+<p>Let’s use this value to fit our first model.</p>
+<pre class="r"><code>SES = SimpleExpSmoothing(np.asarray(trainX))
+fit_SES = SES.fit(smoothing_level = 1, optimized=False)
+
+fcst_gs_pred = fit_SES.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_gs_pred)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p4.png" /></p>
+</div>
+<div id="fit-ses-with-optimizedtrue" class="section level2">
+<h2>4.3 Fit SES with optimized=True</h2>
+<p>The Smoothing models also include an integrated search function for the best parameters. Let’s see if the parameters found by the algorithm itself give better results than those from our custom grid search.</p>
+<pre class="r"><code>SES = SimpleExpSmoothing(np.asarray(trainX))
+fit_SES_auto = SES.fit(optimized= True, use_brute = True)
+
+fcst_auto_pred = fit_SES_auto.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_auto_pred)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p5.png" /></p>
+<p>As we can see, the model with the grid serach parameters performs slightly better than the model with the self-calculated best values.</p>
+<p>Here is an overview of which values the fit_SES_auto model has calculated:</p>
+<pre class="r"><code>fit_SES_auto.summary()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p6.png" /></p>
+</div>
+<div id="plotting-the-results-for-ses" class="section level2">
+<h2>4.4 Plotting the results for SES</h2>
+<p>In order to display the results of the two calculated models nicely, we need to set the index of the predicted values equal to that of the test set.</p>
+<pre class="r"><code>df_fcst_gs_pred = pd.DataFrame(fcst_gs_pred, columns=[&#39;Close_grid_Search&#39;])
+df_fcst_gs_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_fcst_gs_pred = df_fcst_gs_pred.set_index(&quot;new_index&quot;)</code></pre>
+<pre class="r"><code>df_fcst_auto_pred = pd.DataFrame(fcst_auto_pred, columns=[&#39;Close_auto_search&#39;])
+df_fcst_auto_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_fcst_auto_pred = df_fcst_auto_pred.set_index(&quot;new_index&quot;)</code></pre>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [16,9]
+plt.plot(trainX, label=&#39;Train&#39;)
+plt.plot(testX, label=&#39;Test&#39;)
+plt.plot(df_fcst_gs_pred, label=&#39;Simple Exponential Smoothing using custom grid search&#39;)
+plt.plot(df_fcst_auto_pred, label=&#39;Simple Exponential Smoothing using optimized=True&#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p7.png" /></p>
+<p>Unfortunately, in this visualization you cannot see the green and red lines that represent the predicted values for simple exponential smoothing (with grid search and optimized=True), because the two lines lie exactly on top of each other.</p>
+<p>As we can see simple exponential smoothing does not perform very well on this data. This is because the data includes trends and seasonality.</p>
+<p>Let’s see if it works better with other smoothing methods.</p>
+</div>
+</div>
+<div id="double-exponential-smoothing" class="section level1">
+<h1>5 Double Exponential Smoothing</h1>
+<p>Let’s come to the second smooting technique: the Double Exponential Smoothing Algorithm</p>
+<p>The Double Exponential Smoothing Algorithm is a more reliable method for handling data that consumes trends without seasonality.</p>
+<p>Assume that a time series has the following:</p>
+<ul>
+<li>Level</li>
+<li>Trends</li>
+<li>No seasonality</li>
+<li>Noise</li>
+</ul>
+<div id="searching-for-best-parameters-for-des" class="section level2">
+<h2>5.1 Searching for best parameters for DES</h2>
+<p>In the Double Exponential Smoothing function we have the following parameter that we can set:</p>
+<ul>
+<li>damped(bool, optional)</li>
+<li>smooting_level(float, optional)</li>
+<li>smoothing_slope(float, optional)</li>
+<li>damping_slope(float, optional)</li>
+</ul>
+<p>To find out which value fits best for this we perform a customer grid search.</p>
+<pre class="r"><code>param_grid_DES = {&#39;smoothing_level&#39;: [0.10, 0.20,.30,.40,.50,.60,.70,.80,.90], 
+                  &#39;smoothing_slope&#39;:[0.10, 0.20,.30,.40,.50,.60,.70,.80,.90],
+                  &#39;damping_slope&#39;: [0.10, 0.20,.30,.40,.50,.60,.70,.80,.90],
+                  &#39;damped&#39;: [True, False]}
+pg_DES = list(ParameterGrid(param_grid_DES))</code></pre>
+<pre class="r"><code>pg_DES</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p8.png" /></p>
+<p>Similar to the Simple Exponential Smoothing method, we calculate the RMSE and R² for all possible parameter combinations defined within our param_grid.</p>
+<pre class="r"><code>df_results_DES = pd.DataFrame(columns=[&#39;smoothing_level&#39;, &#39;smoothing_slope&#39;, &#39;damping_slope&#39;, &#39;damped&#39;, &#39;RMSE&#39;,&#39;R²&#39;])
+
+for a,b in enumerate(pg_DES):
+    smoothing_level = b.get(&#39;smoothing_level&#39;)
+    smoothing_slope = b.get(&#39;smoothing_slope&#39;)
+    damping_slope = b.get(&#39;damping_slope&#39;)
+    damped = b.get(&#39;damped&#39;)
+    
+    fit_Holt = Holt(trainX, damped=damped).fit(smoothing_level=smoothing_level, smoothing_slope=smoothing_slope, damping_slope=damping_slope, optimized=False)
+    fcst_gs_pred_Holt = fit_Holt.forecast(len(testX))
+    
+    df_pred = pd.DataFrame(fcst_gs_pred_Holt, columns=[&#39;Forecasted_result&#39;])
+    RMSE = np.sqrt(metrics.mean_squared_error(testX, df_pred.Forecasted_result))
+    r2 = metrics.r2_score(testX, df_pred.Forecasted_result)
+
+    df_results_DES = df_results_DES.append({&#39;smoothing_level&#39;:smoothing_level, &#39;smoothing_slope&#39;:smoothing_slope, &#39;damping_slope&#39;:damping_slope, &#39;damped&#39;:damped, &#39;RMSE&#39;:RMSE, &#39;R²&#39;:r2}, ignore_index=True)</code></pre>
+<pre class="r"><code>df_results_DES.sort_values(by=[&#39;RMSE&#39;,&#39;R²&#39;]).head(10)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p9.png" /></p>
+<p>As we can see, for damped=False, smoothing_level=0.9 and smoothing_slope=0.6 we get the best RMSE and R² values. The parameter damping_slope can vary between 0.1 and 0.9, but does not influence the result. We therefore take the values from line 806.</p>
+<p>Since such a GridSearch search can take a long time, it is recommended to save the created data set at this point.</p>
+<pre class="r"><code>df_results_DES.to_csv(&#39;df_results_DES.csv&#39;)</code></pre>
+</div>
+<div id="fit-des" class="section level2">
+<h2>5.2 Fit DES</h2>
+<p>Let’s look at the first line of the created table with the values of our grid search. The first line tells us the best combination we can use.</p>
+<pre class="r"><code>best_values_DES = df_results_DES.sort_values(by=[&#39;RMSE&#39;,&#39;R²&#39;]).head(1)
+best_values_DES</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p10.png" /></p>
+<p>Therefore, we extract the values and insert them into our function.</p>
+<pre class="r"><code>smoothing_level_value_DES = best_values_DES[&#39;smoothing_level&#39;].iloc[0]
+smoothing_slope_value_DES = best_values_DES[&#39;smoothing_slope&#39;].iloc[0]
+damping_slope_value_DES = best_values_DES[&#39;damping_slope&#39;].iloc[0]
+damped_setting_DES = best_values_DES[&#39;damped&#39;].iloc[0]
+
+print(&quot;smoothing_level_value_DES: &quot;, smoothing_level_value_DES)
+print(&quot;smoothing_slope_value_DES: &quot;, smoothing_slope_value_DES)
+print(&quot;damping_slope_value_DES: &quot;, damping_slope_value_DES)
+print(&quot;damped_setting_DES: &quot;, damped_setting_DES)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p11.png" /></p>
+<pre class="r"><code>DES = Holt(trainX,damped=damped_setting_DES)
+fit_Holt = DES.fit(smoothing_level=smoothing_level_value_DES, smoothing_slope=smoothing_slope_value_DES, 
+                   damping_slope=damping_slope_value_DES ,optimized=False)
+
+fcst_gs_pred_Holt = fit_Holt.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_gs_pred_Holt)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p12.png" /></p>
+</div>
+<div id="fit-des-with-optimizedtrue" class="section level2">
+<h2>5.3 Fit DES with optimized=True</h2>
+<p>As before, let’s also output the values for an automatic search of parameters.</p>
+<pre class="r"><code>DES = Holt(trainX)
+fit_Holt_auto = DES.fit(optimized= True, use_brute = True)
+
+fcst_auto_pred_Holt = fit_Holt_auto.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_auto_pred_Holt)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p13.png" /></p>
+<p>Comparing this output with the output of the first model (with grid search), we see a prime example of how the optimized=True setting can be helpful, but a more comprehensive examination of the hyperparameters with grid search can yield much better results.</p>
+<pre class="r"><code>fit_Holt_auto.summary()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p14.png" /></p>
+</div>
+<div id="plotting-the-results-for-des" class="section level2">
+<h2>5.4 Plotting the results for DES</h2>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [16,9]
+plt.plot(trainX, label=&#39;Train&#39;)
+plt.plot(testX, label=&#39;Test&#39;)
+plt.plot(fcst_gs_pred_Holt, label=&#39;Double Exponential Smoothing with custom grid search&#39;)
+plt.plot(fcst_auto_pred_Holt, label=&#39;Double Exponential Smoothing using optimized=True&#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p15.png" /></p>
+<p>From the result, we can see that Double Exponential Smoothing works far better on this data set than Simple Exponential Smoothing.</p>
+<p>Let’s see what values Triple Exponential Smoothing gives us.</p>
+</div>
+</div>
+<div id="triple-exponential-smoothing" class="section level1">
+<h1>6 Triple Exponential Smoothing</h1>
+<p>The Triple Exponential Smoothing Algorithm can be applied when the data consumes trends and seasonality over time.</p>
+<p>Assume that a time series has the following:</p>
+<ul>
+<li>Level</li>
+<li>Trends</li>
+<li>Seasonality</li>
+<li>Noise</li>
+</ul>
+<div id="searching-for-best-parameters-for-des-1" class="section level2">
+<h2>6.1 Searching for best parameters for DES</h2>
+<p>In the Double Exponential Smoothing function we have the following parameter that we can set:</p>
+<ul>
+<li>trend({‘add’, ‘mul’, ‘additive’, ‘multiplicative’, None}, optional)</li>
+<li>seasonal({‘add’, ‘mul’, ‘additive’, ‘multiplicative’, None}, optional)</li>
+<li>seasonal_periods(int, optional)</li>
+<li>smooting_level(float, optional)</li>
+<li>smoothing_slope(float, optional)</li>
+<li>damping_slope(float, optional)</li>
+<li>damped(bool, optional)</li>
+<li>use_boxcox({True, False, ‘log’, float}, optional)</li>
+<li>remove_bias(bool, optional)</li>
+<li>use_basinhopping(bool, optional)</li>
+</ul>
+<p>To find out which value fits best for this we perform a customer grid search again.
+The procedure is known and follows the same principles as for the Double Exponential Smoothing.</p>
+<pre class="r"><code>param_grid_TES = {&#39;trend&#39;: [&#39;add&#39;, &#39;mul&#39;], &#39;seasonal&#39; :[&#39;add&#39;, &#39;mul&#39;],
+                  &#39;seasonal_periods&#39;:[3,6,12], 
+                  &#39;smoothing_level&#39;: [.20, .40, .60, .80],  # extended search grid: [.10,.20,.30,.40,.50,.60,.70,.80,.90]
+                  &#39;smoothing_slope&#39;:[.20, .40, .60, .80],   # extended search grid: [.10,.20,.30,.40,.50,.60,.70,.80,.90]
+                  &#39;damping_slope&#39;: [.20, .40, .60, .80],    # extended search grid: [.10,.20,.30,.40,.50,.60,.70,.80,.90]
+                  &#39;damped&#39; : [True, False], &#39;use_boxcox&#39;:[True, False],
+                  &#39;remove_bias&#39;:[True, False],&#39;use_basinhopping&#39;:[True, False]}
+pg_TES = list(ParameterGrid(param_grid_TES))</code></pre>
+<pre class="r"><code>df_results_TES = pd.DataFrame(columns=[&#39;trend&#39;,&#39;seasonal_periods&#39;,&#39;smoothing_level&#39;, &#39;smoothing_slope&#39;,
+                                        &#39;damping_slope&#39;,&#39;damped&#39;,&#39;use_boxcox&#39;,&#39;remove_bias&#39;,
+                                        &#39;use_basinhopping&#39;,&#39;RMSE&#39;,&#39;R²&#39;])
+
+for a,b in enumerate(pg_TES):
+    trend = b.get(&#39;trend&#39;)
+    smoothing_level = b.get(&#39;smoothing_level&#39;)
+    seasonal_periods = b.get(&#39;seasonal_periods&#39;)
+    smoothing_level = b.get(&#39;smoothing_level&#39;)
+    smoothing_slope = b.get(&#39;smoothing_slope&#39;)
+    damping_slope = b.get(&#39;damping_slope&#39;)
+    damped = b.get(&#39;damped&#39;)
+    use_boxcox = b.get(&#39;use_boxcox&#39;)
+    remove_bias = b.get(&#39;remove_bias&#39;)
+    use_basinhopping = b.get(&#39;use_basinhopping&#39;)
+
+    fit_ES = ExponentialSmoothing(trainX, trend=trend, damped=damped, seasonal_periods=seasonal_periods).fit(smoothing_level=smoothing_level, 
+                                  smoothing_slope=smoothing_slope, damping_slope=damping_slope, use_boxcox=use_boxcox, optimized=False)
+    fcst_gs_pred_ES = fit_ES.forecast(len(testX))
+
+    df_pred = pd.DataFrame(fcst_gs_pred_ES, columns=[&#39;Forecasted_result&#39;])
+    RMSE = np.sqrt(metrics.mean_squared_error(testX, df_pred.Forecasted_result))
+    r2 = metrics.r2_score(testX, df_pred.Forecasted_result)
+
+    df_results_TES = df_results_TES.append({&#39;trend&#39;:trend, &#39;seasonal_periods&#39;:seasonal_periods, &#39;smoothing_level&#39;:smoothing_level, 
+                                            &#39;smoothing_slope&#39;:smoothing_slope, &#39;damping_slope&#39;:damping_slope,&#39;damped&#39;:damped,
+                                            &#39;use_boxcox&#39;:use_boxcox, &#39;remove_bias&#39;:remove_bias, &#39;use_basinhopping&#39;:use_basinhopping, &#39;RMSE&#39;:RMSE,&#39;R²&#39;:r2}, 
+                                            ignore_index=True)</code></pre>
+<pre class="r"><code>df_results_TES.sort_values(by=[&#39;RMSE&#39;,&#39;R²&#39;]).head(10)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p16.png" /></p>
+<p>Again, we save the results dataset.</p>
+<pre class="r"><code>df_results_TES.to_csv(&#39;df_results_TES.csv&#39;)</code></pre>
+</div>
+<div id="fit-tes" class="section level2">
+<h2>6.2 Fit TES</h2>
+<pre class="r"><code>best_values_TES = df_results_TES.sort_values(by=[&#39;RMSE&#39;,&#39;R²&#39;]).head(1)
+best_values_TES</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p17.png" /></p>
+<pre class="r"><code>best_values_TES.info()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p18.png" /></p>
+<pre class="r"><code>trend_setting_TES = best_values_TES[&#39;trend&#39;].iloc[0]
+damped_setting_TES = best_values_TES[&#39;damped&#39;].iloc[0]
+seasonal_periods_values_TES = best_values_TES[&#39;seasonal_periods&#39;].iloc[0]
+smoothing_level_values_TES = best_values_TES[&#39;smoothing_level&#39;].iloc[0]
+smoothing_slope_values_TES = best_values_TES[&#39;smoothing_slope&#39;].iloc[0]
+damping_slope_values_TES = best_values_TES[&#39;damping_slope&#39;].iloc[0]
+use_boxcox_setting_TES = best_values_TES[&#39;use_boxcox&#39;].iloc[0]
+remove_bias_setting_TES = best_values_TES[&#39;remove_bias&#39;].iloc[0]     
+use_basinhopping_setting_TES = best_values_TES[&#39;use_basinhopping&#39;].iloc[0]
+
+print(&quot;trend_setting_TES: &quot;, trend_setting_TES)
+print(&quot;damped_setting_TES: &quot;, damped_setting_TES)
+print(&quot;seasonal_periods_values_TES: &quot;, seasonal_periods_values_TES)
+print(&quot;smoothing_level_values_TES: &quot;, smoothing_level_values_TES)
+print(&quot;smoothing_slope_values_TES: &quot;, smoothing_slope_values_TES)
+print(&quot;damping_slope_values_TES: &quot;, damping_slope_values_TES)
+print(&quot;use_boxcox_setting_TES: &quot;, use_boxcox_setting_TES)
+print(&quot;remove_bias_setting_TES: &quot;, remove_bias_setting_TES)
+print(&quot;use_basinhopping_setting_TES: &quot;, use_basinhopping_setting_TES)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p19.png" /></p>
+<pre class="r"><code>TES = ExponentialSmoothing(trainX, trend=trend_setting_TES, damped=damped_setting_TES, 
+                           seasonal_periods=seasonal_periods_values_TES)
+fit_ES = TES.fit(smoothing_level=smoothing_level_values_TES, smoothing_slope=smoothing_slope_values_TES, 
+                 damping_slope=damping_slope_values_TES, use_boxcox=use_boxcox_setting_TES, 
+                 remove_bias=remove_bias_setting_TES, optimized=False)
+
+fcst_gs_pred_ES = fit_ES.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_gs_pred_ES)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p20.png" /></p>
+</div>
+<div id="fit-tes-with-optimizedtrue" class="section level2">
+<h2>6.3 Fit TES with optimized=True</h2>
+<pre class="r"><code>TES = ExponentialSmoothing(trainX)
+fit_ES_auto = TES.fit(optimized= True, use_brute = True)
+
+fcst_auto_pred_ES = fit_ES_auto.forecast(len(testX))
+timeseries_evaluation_metrics_func(testX, fcst_auto_pred_ES)</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p21.png" /></p>
+<p>Once again, the model with the values from grid search delivers the better results.</p>
+<pre class="r"><code>fit_ES_auto.summary()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p22.png" /></p>
+</div>
+<div id="plotting-the-results-for-tes" class="section level2">
+<h2>6.4 Plotting the results for TES</h2>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [16,9]
+plt.plot(trainX, label=&#39;Train&#39;)
+plt.plot(testX, label=&#39;Test&#39;)
+plt.plot(fcst_gs_pred_ES, label=&#39;Triple Exponential Smoothing with custom grid search&#39;)
+plt.plot(fcst_auto_pred_ES, label=&#39;Triple Exponential Smoothing using optimized=True&#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-10-23-time-series-analysis-smoothing-methods_files/p95p23.png" /></p>
+<p>This model also scores well. But overall, the Double Exponential Smoothing model performs best.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post I presented the first algorithms with which you can make time series predictions.</p>
 <p><strong>References</strong></p>
+<p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
+<p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>
+<p>McKinney, W., Perktold, J., &amp; Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.</p>
+<p>Pal, A., &amp; Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.</p>
+<p>Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., &amp; Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.</p>
+<p>Vishwas, B. V., &amp; Patel, A. Hands-on Time Series Analysis with Python.</p>
 </div>
