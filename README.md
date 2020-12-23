@@ -35,10 +35,6 @@ In doing so, I strongly followed the CRISP-DM model.
 </p>
 
 
-Enjoy reading !
-
-![GIF](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
-
 <p align="center">
   <img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif?raw=true" alt="readme crisp dm"/>
 </p>
