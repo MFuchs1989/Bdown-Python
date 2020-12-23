@@ -70,6 +70,11 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Knowledged-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
 
 
+## 3.3 Time Series Analysis
+
++ ["Smoothing Methods"](https://michael-fuchs-python.netlify.app/2020/10/23/time-series-analysis-smoothing-methods/) 
++ ["Working with Dates and Times"](https://michael-fuchs-python.netlify.app/2020/10/19/time-series-analysis-working-with-dates-and-times/)
+
 
 # 4 Data pre-processing
 
