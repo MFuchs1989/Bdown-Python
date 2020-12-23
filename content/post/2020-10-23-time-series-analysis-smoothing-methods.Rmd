@@ -442,7 +442,7 @@ Assume that a time series has the following:
 + Noise
 
 
-## 6.1 Searching for best parameters for DES
+## 6.1 Searching for best parameters for TES
 
 
 In the Double Exponential Smoothing function we have the following parameter that we can set:
