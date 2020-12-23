@@ -1,6 +1,8 @@
 # Bdown-Python
 
-![python](static/images/Python.jpg)
+<p align="center">
+  <img src="https://github.com/MFuchs1989/Bdown-Python/blob/master/static/images/Python.jpg?raw=true" alt="python"/>
+</p>
 
 This is a blog post using Python.
 
@@ -20,8 +22,6 @@ I started with a simple introduction to pyhton:
 
 Afterwards I dealt intensively with the fields of Machine Learning:
 
-![ML](static/images/readme_ML.png)
-
 <p align="center">
   <img src="https://github.com/MFuchs1989/Bdown-Python/blob/master/static/images/readme_ML.png?raw=true" alt="readme ml"/>
 </p>
@@ -31,14 +31,13 @@ In my posts about the use of the discussed machine learning algorithms within th
 In doing so, I strongly followed the CRISP-DM model.
 
 <p align="center">
-  <img src="https://github.com/MFuchs1989/Bdown-Python/blob/master/static/images/readme_crisp_dm.png?raw=true" alt="Sublime's custom image"/>
+  <img src="https://github.com/MFuchs1989/Bdown-Python/blob/master/static/images/readme_crisp_dm.png?raw=true" alt="readme crisp dm"/>
 </p>
 
 
 Enjoy reading !
 
 ![GIF](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
-
 
 
 
