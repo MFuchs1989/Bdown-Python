@@ -1,0 +1,424 @@
+---
+title: Time Series Analysis - Regression Extension Techniques for Forecasting Univariate
+  Variables
+author: Michael Fuchs
+date: '2020-10-27'
+slug: time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+Now that we are familiar with smoothing methods for predicting time series, we come to so-called regression extension techniques.
+
+In the following I will present the following algorithms:
+
++ ARIMA
++ SARIMA
++ SARIMAX
+
+For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+
+
+
+# 2 Theoretical Background
+
+Before we jump in with Regression Extension Techniques for Forecasting Univariate Variables, it is worthwhile to understand some theoretical terminology and what it means for the algorithms that follow.
+
+
+**Autoregressive Models**
+
+An autoregression model (AR) predicts future behavior based on its past data. 
+The autoregressive model is a lagged dependent variable, which contains an autoregressive term, which perhaps corrects on the grounds of habit resolve. AR is part of a time series Y(t), whihc contains a value that depends on some linear grouping of the previous value, which defined maximum lags. 
+
+
+**Autocorrelation and Partial Autocorrelation Functions**
+
+An autocorrelation function (ACF) is a method to determine the linear relationship between time t and t-1. After checking the ACF helps in determining if differencing is required or not. 
+If we are using the autoregressive model AR, then we have to determine the only correlation between Y(t) and Y(t-1) and check for a direct influence between the random variables that lie in the time series, which requires differencing and transforming the time series. After transforming the time series, we calculate the correlation, which is known as a partial autocorrelation function (PACF). 
+
+
+**Moving Average**
+
+A moving average (MA) is a method to get all the trends in a time series. It is utilized for long-term forecasting trends. Basically, a moving average forecasts future points by using an average of several past data points. 
+The MA part of a time-series Y(t), which is an observed value in terms of a random error and some linear grouping of previous arbitrary error terms, up to a described maximum lag. 
+
+
+**The Integration (I)**
+
+Time-series data is often nonstationary and to make them stationary, the series needs to be differentiated. This process is known as the integration part (I), and the order of differencing is signified as d. Differencing eradicates signals with time, which contains trends and seasonality, so this series contains noise and an irregular component, which will be modeled only. 
+
+
+**Autoregressive Integrated Moving Average**
+
+Autoregressive Integrated Moving Average - also called ARIMA(p,d,q) is a forecasting equation that can make time series stationary with the help of differencing and log techniques when required. 
+
++ p is the number of autoregressive terms
++ d is the number of nonseasonal differences needed for stationarity
++ q is the number of lagged forecast errors in the prediction equation
+
+
+ARIMA is a method among several used for forecasting univariate variables and has three components: the autoregression part (AR), the integration part (I) and the moving average part (MA).
+
++ AR(p) is where p equals the order of autocorrelation
++ I(d) is where d is the order of integration (differencing), which indicates linear trend or polynomial trend
++ MA(q) is where q equals the order of moving averages
+
+ARIMA is made up of two models: AR and MA
+
+
+
+# 3 Import the libraries and data
+
+```{r, eval=F, echo=T}
+import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+from statsmodels.tsa.stattools import adfuller
+from sklearn import metrics
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from pmdarima import auto_arima
+from pmdarima.model_selection import train_test_split
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('FB.csv')
+df.head()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p1.png)
+
+Let's have a closer look at the target column 'Close':
+
+```{r, eval=F, echo=T}
+df["Close"].plot(figsize=(15, 6))
+plt.xlabel("Date")
+plt.ylabel("Close")
+plt.title("Closing price of Facebook stocks from 2014 to 2019")
+plt.show()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p2.png)
+
+
+```{r, eval=F, echo=T}
+plt.figure(1, figsize=(15,6))
+plt.subplot(211)
+df["Close"].hist()
+plt.subplot(212)
+df["Close"].plot(kind='kde')
+plt.show()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p3.png)
+
+
+# 4 Definition of required functions
+
+```{r, eval=F, echo=T}
+def mean_absolute_percentage_error(y_true, y_pred):
+    '''
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    '''    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+```
+
+
+```{r, eval=F, echo=T}
+def timeseries_evaluation_metrics_func(y_true, y_pred):
+    '''
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    '''    
+    print('Evaluation metric results: ')
+    print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
+    print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
+    print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
+    print(f'MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}')
+    print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
+```
+
+
+```{r, eval=F, echo=T}
+def Augmented_Dickey_Fuller_Test_func(series , column_name):
+    '''
+    Calculates statistical values whether the available data are stationary or not 
+    
+    Args:
+        series (float64): Values of the column for which stationarity is to be checked, numpy array of floats 
+        column_name (str): Name of the column for which stationarity is to be checked
+    
+    Returns:
+        p-value that indicates whether the data are stationary or not
+    ''' 
+    print (f'Results of Dickey-Fuller Test for column: {column_name}')
+    dftest = adfuller(series, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-value','No Lags Used','Number of Observations Used'])
+    for key,value in dftest[4].items():
+       dfoutput['Critical Value (%s)'%key] = value
+    print (dfoutput)
+    if dftest[1] <= 0.05:
+        print("Conclusion:====>")
+        print("Reject the null hypothesis")
+        print("Data is stationary")
+    else:
+        print("Conclusion:====>")
+        print("Fail to reject the null hypothesis")
+        print("Data is non-stationary")
+```
+
+
+# 5 Check for stationarity
+
+```{r, eval=F, echo=T}
+Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p4.png)
+
+
+# 6 ARIMA in Action
+
+```{r, eval=F, echo=T}
+X = df['Close']
+
+trainX, testX = train_test_split(X, test_size=30)
+```
+
+The pmdarima modul will help us identify p,d and q without the hassle of looking at the plot.
+For a simple ARIMA model we have to use seasonal=False.
+
+```{r, eval=F, echo=T}
+stepwise_model = auto_arima(trainX,start_p=1, start_q=1,
+                            max_p=7, max_q=7, seasonal = False,
+                            d=None, trace=True,error_action='ignore',
+                            suppress_warnings=True, stepwise=True)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p5.png)
+
+
+Now we are going to forecast both results and the confidence for the next 30 days.
+
+```{r, eval=F, echo=T}
+forecast, conf_int = stepwise_model.predict(n_periods=len(testX), return_conf_int=True)
+
+forecast = pd.DataFrame(forecast,columns=['close_pred'])
+```
+
+
+Here we store the values of the confidence within a dataframe.
+
+
+```{r, eval=F, echo=T}
+df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
+df_conf["new_index"] = range(len(trainX), len(X))
+df_conf = df_conf.set_index("new_index")
+
+df_conf.head()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p6.png)
+
+
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p7.png)
+
+To visualize the results nicely we need to assign the appropriate index to the predicted values.
+
+```{r, eval=F, echo=T}
+forecast["new_index"] = range(len(trainX), len(X))
+forecast = forecast.set_index("new_index")
+```
+
+
+```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast, label='Predicted ')
+plt.plot(df_conf['Upper_bound'], label='Confidence Interval Upper bound ')
+plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
+plt.legend(loc='best')
+plt.show()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p8.png)
+
+We are also able to visualize a diagnostic plot:
+
+```{r, eval=F, echo=T}
+stepwise_model.plot_diagnostics()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p9.png)
+
+
+# 7 Seasonal ARIMA (SARIMA)
+
+Seasonal ARIMA (SARIMA) is a technique of ARIMA, where the seasonal component can be handled in univariate time-series data. It adjoins three new parameters to lay down AR(P), I(D) and MA(Q) for the seasonality component of a time series. SARIMA allows for the occurrence of seasonality in a series.
+
+The seasonal ARIMA model combines both sonseasonal and seasonal components in a multiplicative model. The notation can be defined as follows:
+
+ARIMA(p,d,q)X(P,D,Q)m
+
+where m is the number of observations per year.
+
+The three trend elements which needs to be configured are still known from the ARIMA model.
+(p,d,q) is a nonseasonal component as shown here:
+
++ p: Trend autoregressive order
++ d: Trend differencing order
++ q: Trend moving average order
+
+(P,D,Q) is a nonseasonal compoment as shown here:
+
++ P: Seasonal autoregressive order
++ D: Seasonal differencing order
++ Q: Seasonal moving average order
++ m: Timestamp for single-season order
+
+
+Now we are going to configure and run seasonal ARIMA for the parameters given in the for loop and check the optimal number of periods in each seasonal suitable for our dataset.
+
+```{r, eval=F, echo=T}
+for m in  [1, 4, 7, 12, 52]:
+    print("="*100)
+    print(f' Fitting SARIMA for Seasonal value m = {str(m)}')
+    stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
+                                max_p=7, max_q=7, seasonal=True, start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=m,
+                                d=None, D=None, trace=True, error_action='ignore', suppress_warnings=True, stepwise=True)
+
+    print(f'Model summary for  m = {str(m)}')
+    print("-"*100)
+    stepwise_model.summary()
+
+    forecast ,conf_int= stepwise_model.predict(n_periods=len(testX),return_conf_int=True)
+    df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
+    df_conf["new_index"] = range(len(trainX), len(X))
+    df_conf = df_conf.set_index("new_index")
+    forecast = pd.DataFrame(forecast, columns=['close_pred'])
+    forecast["new_index"] = range(len(trainX), len(X))
+    forecast = forecast.set_index("new_index")
+
+    timeseries_evaluation_metrics_func(testX, forecast)
+
+    plt.rcParams["figure.figsize"] = [15, 7]
+    plt.plot(trainX, label='Train ')
+    plt.plot(testX, label='Test ')
+    plt.plot(forecast, label=f'Predicted with m={str(m)} ')
+    plt.plot(df_conf['Upper_bound'], label='Confidence Interval Upper bound ')
+    plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
+    plt.legend(loc='best')
+    plt.show()
+    print("-"*100)
+    print(f' Diagnostic plot for Seasonal value m = {str(m)}')
+    
+    display(stepwise_model.plot_diagnostics());
+    
+    print("-"*100)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p10.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p.png)
+
+
+
+# XY Conclusion
+
+In this post I presented the first algorithms with which you can make time series predictions.
+
+
+
+**References**
+
+Christ, M., Braun, N., Neuffer, J., & Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.
+
+Faouzi, J., & Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.
+
+McKinney, W., Perktold, J., & Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.
+
+Pal, A., & Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.
+
+Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., & Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.
+
+Vishwas, B. V., & Patel, A. Hands-on Time Series Analysis with Python.
+
+
+
+
+
+
+
+
+
+
+
+
