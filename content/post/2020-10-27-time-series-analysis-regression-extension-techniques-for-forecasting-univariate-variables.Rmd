@@ -358,6 +358,165 @@ for m in  [1, 4, 7, 12, 52]:
 
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p10.png)
 
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p11.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p12.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p13.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p14.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p15.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p16.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p18.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p19.png)
+
+# 7.1 Get the final model
+
+With the for-loop we have now found out for which value m we get the best results. This was the case for m=7. Now we execute auto_arima again with m=7 to have the best values stored in the stepwise_model and to be able to apply this model.
+
+```{r, eval=F, echo=T}
+stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
+                            max_p=7, max_q=7, seasonal=True, start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=7,
+                            d=None, D=None, trace=True, error_action='ignore', suppress_warnings=True, stepwise=True)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p20.png)
+
+
+```{r, eval=F, echo=T}
+forecast, conf_int = stepwise_model.predict(n_periods=len(testX), return_conf_int=True)
+forecast = pd.DataFrame(forecast,columns=['close_pred'])
+```
+
+
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p21.png)
+
+```{r, eval=F, echo=T}
+df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
+df_conf["new_index"] = range(len(trainX), len(X))
+df_conf = df_conf.set_index("new_index")
+```
+
+```{r, eval=F, echo=T}
+forecast["new_index"] = range(len(trainX), len(X))
+forecast = forecast.set_index("new_index")
+```
+
+```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast, label='Predicted ')
+plt.plot(df_conf['Upper_bound'], label='Confidence Interval Upper bound ')
+plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
+plt.legend(loc='best')
+plt.show()
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p22.png)
+
+
+# 8 SARIMAX
+
+The SARIMAX model is a SARIMA model with external influencing variables, called SARIMAX(p,d,q)X(P,D,Q)m(X), where X is the vector of exogenous variables.
+
+We know from the column 'Close' that it is non-stationary. But what about the other columns?
+
+```{r, eval=F, echo=T}
+for name, column in df[['Close' ,'Open' ,'High','Low']].iteritems():
+    Augmented_Dickey_Fuller_Test_func(df[name],name)
+    print('\n')
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p23.png)
+
+In the following, modeling will be done only for the column 'Close'. The column 'Open' will be used as exogenous variables.
+
+```{r, eval=F, echo=T}
+X = df[['Close']]
+
+actualtrain, actualtest = train_test_split(X, test_size=30)
+```
+
+```{r, eval=F, echo=T}
+exoX = df[['Open']]
+
+exotrain, exotest = train_test_split(exoX, test_size=30)
+```
+
+Let's configure and run seasonal ARIMA with an exogenous variable.
+
+```{r, eval=F, echo=T}
+for m in [1, 4, 7, 12, 52]:
+    print("="*100)
+    print(f' Fitting SARIMAX for Seasonal value m = {str(m)}')
+    stepwise_model = auto_arima(actualtrain,exogenous=exotrain ,start_p=1, start_q=1,
+    max_p=7, max_q=7, seasonal=True,start_P=1,start_Q=1,max_P=7,max_D=7,max_Q=7,m=m,
+    d=None,D=None, trace=True,error_action='ignore',suppress_warnings=True, stepwise=True)
+
+
+    print(f'Model summary for  m = {str(m)}')
+    print("-"*100)
+    stepwise_model.summary()
+
+    forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),exogenous =exotest,return_conf_int=True)
+    df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
+    df_conf["new_index"] = range(len(actualtrain), len(X))
+    df_conf = df_conf.set_index("new_index")
+    forecast = pd.DataFrame(forecast, columns=['close_pred'])
+    forecast["new_index"] = range(len(actualtrain), len(X))
+    forecast = forecast.set_index("new_index")
+
+    timeseries_evaluation_metrics_func(actualtest, forecast)
+
+    plt.rcParams["figure.figsize"] = [15, 7]
+    plt.plot(actualtrain, label='Train')
+    plt.plot(actualtest, label='Test')
+    plt.plot(forecast, label=f'Predicted with m={str(m)} ')
+    plt.plot(df_conf['Upper_bound'], label='Confidence Interval Upper bound ')
+    plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
+    plt.legend(loc='best')
+    plt.show()
+    print("-"*100)
+    print(f' Diagnostic plot for Seasonal value m = {str(m)}')
+    
+    display(stepwise_model.plot_diagnostics());
+    print("-"*100)
+```
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p24.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p25.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p26.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p27.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p28.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p29.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p30.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p31.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png)
+
+![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png)
+
+
+Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.
+
 
 
 
