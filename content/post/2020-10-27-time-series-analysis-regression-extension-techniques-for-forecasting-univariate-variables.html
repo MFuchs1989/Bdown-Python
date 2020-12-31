@@ -239,8 +239,10 @@ plt.show()</code></pre>
     print(&quot;=&quot;*100)
     print(f&#39; Fitting SARIMA for Seasonal value m = {str(m)}&#39;)
     stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
-                                max_p=7, max_q=7, seasonal=True, start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=m,
-                                d=None, D=None, trace=True, error_action=&#39;ignore&#39;, suppress_warnings=True, stepwise=True)
+                                max_p=7, max_q=7, seasonal=True, start_P=1, 
+                                start_Q=1, max_P=7, max_D=7, max_Q=7, m=m,
+                                d=None, D=None, trace=True, error_action=&#39;ignore&#39;, 
+                                suppress_warnings=True, stepwise=True)
 
     print(f&#39;Model summary for  m = {str(m)}&#39;)
     print(&quot;-&quot;*100)
