@@ -469,7 +469,8 @@ for m in [1, 4, 7, 12, 52]:
     print("-"*100)
     stepwise_model.summary()
 
-    forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),exogenous =exotest,return_conf_int=True)
+    forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),
+                                               exogenous=exotest,return_conf_int=True)
     df_conf = pd.DataFrame(conf_int,columns= ['Upper_bound','Lower_bound'])
     df_conf["new_index"] = range(len(actualtrain), len(X))
     df_conf = df_conf.set_index("new_index")
@@ -517,36 +518,6 @@ for m in [1, 4, 7, 12, 52]:
 
 Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p.png)
 
 
 

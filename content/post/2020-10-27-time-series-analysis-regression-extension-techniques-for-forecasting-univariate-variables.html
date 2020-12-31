@@ -334,7 +334,8 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
     print(&quot;-&quot;*100)
     stepwise_model.summary()
 
-    forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),exogenous =exotest,return_conf_int=True)
+    forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),
+                                               exogenous=exotest,return_conf_int=True)
     df_conf = pd.DataFrame(conf_int,columns= [&#39;Upper_bound&#39;,&#39;Lower_bound&#39;])
     df_conf[&quot;new_index&quot;] = range(len(actualtrain), len(X))
     df_conf = df_conf.set_index(&quot;new_index&quot;)
@@ -368,7 +369,6 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png" /></p>
 <p>Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.</p>
-<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p.png" /></p>
 </div>
 <div id="xy-conclusion" class="section level1">
 <h1>XY Conclusion</h1>
