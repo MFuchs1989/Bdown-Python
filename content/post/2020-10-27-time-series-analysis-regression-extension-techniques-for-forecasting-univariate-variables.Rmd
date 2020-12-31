@@ -523,11 +523,18 @@ Due to the fact that the performance is the same for each m value, the stored va
 
 
 
-# XY Conclusion
+# 9 Conclusion
 
-In this post I presented the first algorithms with which you can make time series predictions.
+In this post, I started with a theoretical overview of the most important issues surrounding time series prediction algorithms. 
 
+Furthermore, I presented the following algorithms:
 
++ ARIMA
++ SARIMA
++ SARIMAX
+
+These were used to predict values for univariate variables. 
+In my following post I will present algorithms that allow the prediction of bivariate variables. 
 
 **References**
 

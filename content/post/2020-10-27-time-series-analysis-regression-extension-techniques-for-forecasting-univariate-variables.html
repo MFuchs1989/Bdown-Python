@@ -29,7 +29,7 @@ output:
 <li><a href="#seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a></li>
 <li><a href="#get-the-final-model">7.1 Get the final model</a></li>
 <li><a href="#sarimax">8 SARIMAX</a></li>
-<li><a href="#xy-conclusion">XY Conclusion</a></li>
+<li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
 </div>
 
@@ -372,9 +372,17 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png" /></p>
 <p>Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.</p>
 </div>
-<div id="xy-conclusion" class="section level1">
-<h1>XY Conclusion</h1>
-<p>In this post I presented the first algorithms with which you can make time series predictions.</p>
+<div id="conclusion" class="section level1">
+<h1>9 Conclusion</h1>
+<p>In this post, I started with a theoretical overview of the most important issues surrounding time series prediction algorithms.</p>
+<p>Furthermore, I presented the following algorithms:</p>
+<ul>
+<li>ARIMA</li>
+<li>SARIMA</li>
+<li>SARIMAX</li>
+</ul>
+<p>These were used to predict values for univariate variables.
+In my following post I will present algorithms that allow the prediction of bivariate variables.</p>
 <p><strong>References</strong></p>
 <p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
 <p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>
