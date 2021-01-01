@@ -26,8 +26,10 @@ output:
 <li><a href="#definition-of-required-functions">4 Definition of required functions</a></li>
 <li><a href="#check-for-stationarity">5 Check for stationarity</a></li>
 <li><a href="#arima-in-action">6 ARIMA in Action</a></li>
-<li><a href="#seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a></li>
+<li><a href="#seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a>
+<ul>
 <li><a href="#get-the-final-model">7.1 Get the final model</a></li>
+</ul></li>
 <li><a href="#sarimax">8 SARIMAX</a></li>
 <li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
@@ -276,9 +278,8 @@ plt.show()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p15.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p16.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png" /></p>
-</div>
-<div id="get-the-final-model" class="section level1">
-<h1>7.1 Get the final model</h1>
+<div id="get-the-final-model" class="section level2">
+<h2>7.1 Get the final model</h2>
 <p>With the for-loop we have now found out for which value m we get the best results. This was the case for m=7. Now we execute auto_arima again with m=7 to have the best values stored in the stepwise_model and to be able to apply this model.</p>
 <pre class="r"><code>stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
                             max_p=7, max_q=7, seasonal=True, start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=7,
@@ -302,6 +303,7 @@ plt.plot(df_conf[&#39;Lower_bound&#39;], label=&#39;Confidence Interval Lower bo
 plt.legend(loc=&#39;best&#39;)
 plt.show()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p22.png" /></p>
+</div>
 </div>
 <div id="sarimax" class="section level1">
 <h1>8 SARIMAX</h1>

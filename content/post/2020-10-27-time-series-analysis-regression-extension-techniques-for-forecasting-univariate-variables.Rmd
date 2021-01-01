@@ -371,7 +371,7 @@ for m in  [1, 4, 7, 12, 52]:
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png)
 
 
-# 7.1 Get the final model
+## 7.1 Get the final model
 
 With the for-loop we have now found out for which value m we get the best results. This was the case for m=7. Now we execute auto_arima again with m=7 to have the best values stored in the stepwise_model and to be able to apply this model.
 
