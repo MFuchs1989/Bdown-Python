@@ -72,6 +72,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 ## 3.3 Time Series Analysis
 
++ ["Regression Extension Techniques for Forecasting Univariate Variables"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)
 + ["Smoothing Methods"](https://michael-fuchs-python.netlify.app/2020/10/23/time-series-analysis-smoothing-methods/) 
 + ["Working with Dates and Times"](https://michael-fuchs-python.netlify.app/2020/10/19/time-series-analysis-working-with-dates-and-times/)
 
