@@ -266,10 +266,6 @@ plt.show()</code></pre>
     plt.plot(df_conf[&#39;Lower_bound&#39;], label=&#39;Confidence Interval Lower bound &#39;)
     plt.legend(loc=&#39;best&#39;)
     plt.show()
-    print(&quot;-&quot;*100)
-    print(f&#39; Diagnostic plot for Seasonal value m = {str(m)}&#39;)
-    
-    display(stepwise_model.plot_diagnostics());
     
     print(&quot;-&quot;*100)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p10.png" /></p>
@@ -280,8 +276,6 @@ plt.show()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p15.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p16.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png" /></p>
-<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p18.png" /></p>
-<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p19.png" /></p>
 </div>
 <div id="get-the-final-model" class="section level1">
 <h1>7.1 Get the final model</h1>
@@ -355,10 +349,7 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
     plt.plot(df_conf[&#39;Lower_bound&#39;], label=&#39;Confidence Interval Lower bound &#39;)
     plt.legend(loc=&#39;best&#39;)
     plt.show()
-    print(&quot;-&quot;*100)
-    print(f&#39; Diagnostic plot for Seasonal value m = {str(m)}&#39;)
-    
-    display(stepwise_model.plot_diagnostics());
+
     print(&quot;-&quot;*100)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p24.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p25.png" /></p>
@@ -369,7 +360,6 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p30.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p31.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png" /></p>
-<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png" /></p>
 <p>Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.</p>
 </div>
 <div id="conclusion" class="section level1">

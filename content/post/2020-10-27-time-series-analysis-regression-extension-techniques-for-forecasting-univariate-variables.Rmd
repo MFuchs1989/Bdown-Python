@@ -350,10 +350,6 @@ for m in  [1, 4, 7, 12, 52]:
     plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
     plt.legend(loc='best')
     plt.show()
-    print("-"*100)
-    print(f' Diagnostic plot for Seasonal value m = {str(m)}')
-    
-    display(stepwise_model.plot_diagnostics());
     
     print("-"*100)
 ```
@@ -374,9 +370,6 @@ for m in  [1, 4, 7, 12, 52]:
 
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png)
 
-![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p18.png)
-
-![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p19.png)
 
 # 7.1 Get the final model
 
@@ -490,10 +483,7 @@ for m in [1, 4, 7, 12, 52]:
     plt.plot(df_conf['Lower_bound'], label='Confidence Interval Lower bound ')
     plt.legend(loc='best')
     plt.show()
-    print("-"*100)
-    print(f' Diagnostic plot for Seasonal value m = {str(m)}')
-    
-    display(stepwise_model.plot_diagnostics());
+
     print("-"*100)
 ```
 
@@ -515,7 +505,6 @@ for m in [1, 4, 7, 12, 52]:
 
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png)
 
-![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png)
 
 
 Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.
