@@ -30,7 +30,10 @@ output:
 <ul>
 <li><a href="#get-the-final-model">7.1 Get the final model</a></li>
 </ul></li>
-<li><a href="#sarimax">8 SARIMAX</a></li>
+<li><a href="#sarimax">8 SARIMAX</a>
+<ul>
+<li><a href="#get-the-final-model-1">8.1 Get the final model</a></li>
+</ul></li>
 <li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
 </div>
@@ -237,7 +240,10 @@ plt.show()</code></pre>
 <li>m: Timestamp for single-season order</li>
 </ul>
 <p>Now we are going to configure and run seasonal ARIMA for the parameters given in the for loop and check the optimal number of periods in each seasonal suitable for our dataset.</p>
-<pre class="r"><code>for m in  [1, 4, 7, 12, 52]:
+<pre class="r"><code>df_results_SARIMA = pd.DataFrame()
+
+
+for m in  [1, 4, 7, 12, 52]:
     print(&quot;=&quot;*100)
     print(f&#39; Fitting SARIMA for Seasonal value m = {str(m)}&#39;)
     stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
@@ -259,7 +265,14 @@ plt.show()</code></pre>
     forecast = forecast.set_index(&quot;new_index&quot;)
 
     timeseries_evaluation_metrics_func(testX, forecast)
+    
+    
+    # Storage of m value for each model in a separate table 
+    rmse = np.sqrt(metrics.mean_squared_error(testX, forecast))    
+    df1 = {&#39;m&#39;:m, &#39;RMSE&#39;: rmse}
+    df_results_SARIMA = df_results_SARIMA.append(df1, ignore_index=True)
 
+    
     plt.rcParams[&quot;figure.figsize&quot;] = [15, 7]
     plt.plot(trainX, label=&#39;Train &#39;)
     plt.plot(testX, label=&#39;Test &#39;)
@@ -280,10 +293,20 @@ plt.show()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png" /></p>
 <div id="get-the-final-model" class="section level2">
 <h2>7.1 Get the final model</h2>
+<pre class="r"><code>df_results_SARIMA.sort_values(by=[&#39;RMSE&#39;])</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96z1.png" /></p>
+<pre class="r"><code>best_values_SARIMA = df_results_SARIMA.sort_values(by=[&#39;RMSE&#39;]).head(1)
+best_values_SARIMA</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96z2.png" /></p>
+<pre class="r"><code>m_value_SARIMA = best_values_SARIMA[&#39;m&#39;].iloc[0]
+
+print(&quot;m_value_SARIMA: &quot;, m_value_SARIMA)</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96z3.png" /></p>
 <p>With the for-loop we have now found out for which value m we get the best results. This was the case for m=7. Now we execute auto_arima again with m=7 to have the best values stored in the stepwise_model and to be able to apply this model.</p>
-<pre class="r"><code>stepwise_model = auto_arima(trainX, start_p=1, start_q=1,
-                            max_p=7, max_q=7, seasonal=True, start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=7,
-                            d=None, D=None, trace=True, error_action=&#39;ignore&#39;, suppress_warnings=True, stepwise=True)</code></pre>
+<pre class="r"><code>stepwise_model = auto_arima(trainX, start_p=1, start_q=1, max_p=7, max_q=7, seasonal=True, 
+                            start_P=1, start_Q=1, max_P=7, max_D=7, max_Q=7, m=int(m_value_SARIMA),
+                            d=None, D=None, trace=True, error_action=&#39;ignore&#39;, 
+                            suppress_warnings=True, stepwise=True)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p20.png" /></p>
 <pre class="r"><code>forecast, conf_int = stepwise_model.predict(n_periods=len(testX), return_conf_int=True)
 forecast = pd.DataFrame(forecast,columns=[&#39;close_pred&#39;])</code></pre>
@@ -321,7 +344,9 @@ actualtrain, actualtest = train_test_split(X, test_size=30)</code></pre>
 
 exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 <p>Let’s configure and run seasonal ARIMA with an exogenous variable.</p>
-<pre class="r"><code>for m in [1, 4, 7, 12, 52]:
+<pre class="r"><code>df_results_SARIMAX = pd.DataFrame()
+
+for m in [1, 4, 7, 12, 52]:
     print(&quot;=&quot;*100)
     print(f&#39; Fitting SARIMAX for Seasonal value m = {str(m)}&#39;)
     stepwise_model = auto_arima(actualtrain,exogenous=exotrain ,start_p=1, start_q=1,
@@ -343,6 +368,12 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 
     timeseries_evaluation_metrics_func(actualtest, forecast)
 
+    # Storage of m value for each model in a separate table 
+    rmse = np.sqrt(metrics.mean_squared_error(testX, forecast))    
+    df1 = {&#39;m&#39;:m, &#39;RMSE&#39;: rmse}
+    df_results_SARIMAX = df_results_SARIMAX.append(df1, ignore_index=True)
+    
+    
     plt.rcParams[&quot;figure.figsize&quot;] = [15, 7]
     plt.plot(actualtrain, label=&#39;Train&#39;)
     plt.plot(actualtest, label=&#39;Test&#39;)
@@ -362,7 +393,45 @@ exotrain, exotest = train_test_split(exoX, test_size=30)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p30.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p31.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png" /></p>
-<p>Due to the fact that the performance is the same for each m value, the stored values of the last stepwise_model can also be used at this point. A separate creation of this model and its evaluation will be omitted here. The steps are exactly the same as in SARIMA-Get the final model.</p>
+<div id="get-the-final-model-1" class="section level2">
+<h2>8.1 Get the final model</h2>
+<p>Again, we have the RMSE values stored in a separate table.</p>
+<pre class="r"><code>df_results_SARIMAX.sort_values(by=[&#39;RMSE&#39;])</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png" /></p>
+<p>Let’s have a look at the first row (which shows the best RMSE value).</p>
+<pre class="r"><code>best_values_SARIMAX = df_results_SARIMAX.sort_values(by=[&#39;RMSE&#39;]).head(1)
+best_values_SARIMAX</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p34.png" /></p>
+<p>Now we are going to extract the m value for our final model.</p>
+<pre class="r"><code>m_value_SARIMAX = best_values_SARIMAX[&#39;m&#39;].iloc[0]
+
+print(&quot;m_value_SARIMAX: &quot;, m_value_SARIMAX)</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p35.png" /></p>
+<pre class="r"><code>stepwise_model = auto_arima(actualtrain,exogenous=exotrain ,start_p=1, start_q=1,
+    max_p=7, max_q=7, seasonal=True,start_P=1,start_Q=1,max_P=7,max_D=7,max_Q=7,m=int(m_value_SARIMAX),
+    d=None,D=None, trace=True,error_action=&#39;ignore&#39;,suppress_warnings=True, stepwise=True)</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p36.png" /></p>
+<pre class="r"><code>forecast,conf_int = stepwise_model.predict(n_periods=len(actualtest),
+                                            exogenous=exotest,return_conf_int=True)
+    
+forecast = pd.DataFrame(forecast, columns=[&#39;close_pred&#39;])</code></pre>
+<pre class="r"><code>timeseries_evaluation_metrics_func(testX, forecast)</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p37.png" /></p>
+<pre class="r"><code>df_conf = pd.DataFrame(conf_int,columns= [&#39;Upper_bound&#39;,&#39;Lower_bound&#39;])
+df_conf[&quot;new_index&quot;] = range(len(actualtrain), len(X))
+df_conf = df_conf.set_index(&quot;new_index&quot;)</code></pre>
+<pre class="r"><code>forecast[&quot;new_index&quot;] = range(len(actualtrain), len(X))
+forecast = forecast.set_index(&quot;new_index&quot;)</code></pre>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [15, 7]
+plt.plot(actualtrain, label=&#39;Train&#39;)
+plt.plot(actualtest, label=&#39;Test&#39;)
+plt.plot(forecast, label=f&#39;Predicted&#39;)
+plt.plot(df_conf[&#39;Upper_bound&#39;], label=&#39;Confidence Interval Upper bound &#39;)
+plt.plot(df_conf[&#39;Lower_bound&#39;], label=&#39;Confidence Interval Lower bound &#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p38.png" /></p>
+</div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>9 Conclusion</h1>
