@@ -21,20 +21,164 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#eda">3 EDA</a></li>
+<li><a href="#definition-of-required-functions">4 Definition of required functions</a></li>
 <li><a href="#xy-conclusion">XY Conclusion</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>Now that we are familiar with smoothing methods for predicting time series, we come to so-called regression extension techniques.</p>
-<p>In the following I will present the following algorithms:</p>
-<ul>
-<li>ARIMA</li>
-<li>SARIMA</li>
-<li>SARIMAX</li>
-</ul>
+<p>In my last post (<a href="https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/">“Regression Extension Techniques for Forecasting Univariate Variables”</a>) I showed how to make time series predictions of single variables. Now we come to the exciting topic of how to do this for multiple variables at the same time.</p>
 <p>For this post the dataset <em>FB</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+# Libraries to define the required functions
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
+
+from pmdarima.model_selection import train_test_split
+from sklearn import metrics
+from sklearn.model_selection import ParameterGrid
+
+from statsmodels.tsa.api import VAR
+from statsmodels.tsa.statespace.varmax import VARMAX
+from pmdarima import auto_arima
+
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;FB.csv&#39;)
+df.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p1.png" /></p>
+</div>
+<div id="eda" class="section level1">
+<h1>3 EDA</h1>
+<pre class="r"><code>for feature in df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]]:
+    df[str(feature)].plot(figsize=(15, 6))
+    plt.xlabel(&quot;Date&quot;)
+    plt.ylabel(feature)
+    plt.title(f&quot;{str(feature)} price of Facebook stocks before stationary&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p2.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png" /></p>
+<pre class="r"><code>for feature in df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]]:
+    plt.figure(1, figsize=(15,6))
+    plt.subplot(211)
+    plt.title(f&quot;{str(feature)} Histogram before stationary&quot;)
+    df[str(feature)].hist()
+    plt.subplot(212)
+    df[str(feature)].plot(kind=&#39;kde&#39;)
+    plt.title(f&quot;{str(feature)} Kernal Density Estimator before stationary&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p4.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p5.png" /></p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>4 Definition of required functions</h1>
+<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    &#39;&#39;&#39;    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100</code></pre>
+<pre class="r"><code>def timeseries_evaluation_metrics_func(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    &#39;&#39;&#39;    
+    #print(&#39;Evaluation metric results: &#39;)
+    print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
+    print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
+<pre class="r"><code>def Augmented_Dickey_Fuller_Test_func(series , column_name):
+    &#39;&#39;&#39;
+    Calculates statistical values whether the available data are stationary or not 
+    
+    Args:
+        series (float64): Values of the column for which stationarity is to be checked, numpy array of floats 
+        column_name (str): Name of the column for which stationarity is to be checked
+    
+    Returns:
+        p-value that indicates whether the data are stationary or not
+    &#39;&#39;&#39; 
+    print (f&#39;Results of Dickey-Fuller Test for column: {column_name}&#39;)
+    dftest = adfuller(series, autolag=&#39;AIC&#39;)
+    dfoutput = pd.Series(dftest[0:4], index=[&#39;Test Statistic&#39;,&#39;p-value&#39;,&#39;No Lags Used&#39;,&#39;Number of Observations Used&#39;])
+    for key,value in dftest[4].items():
+       dfoutput[&#39;Critical Value (%s)&#39;%key] = value
+    print (dfoutput)
+    if dftest[1] &lt;= 0.05:
+        print(&quot;Conclusion:====&gt;&quot;)
+        print(&quot;Reject the null hypothesis&quot;)
+        print(&quot;Data is stationary&quot;)
+    else:
+        print(&quot;Conclusion:====&gt;&quot;)
+        print(&quot;Fail to reject the null hypothesis&quot;)
+        print(&quot;Data is non-stationary&quot;)</code></pre>
+<pre class="r"><code>def cointegration_test(df): 
+    &#39;&#39;&#39;
+    Test if there is a long-run relationship between features
+    
+    Args:
+        dataframe (float64): Values of the columns to be checked, numpy array of floats 
+    
+    Returns:
+        True or False whether a variable has a long-run relationship between other features
+    &#39;&#39;&#39; 
+    res = coint_johansen(df,-1,5)
+    d = {&#39;0.90&#39;:0, &#39;0.95&#39;:1, &#39;0.99&#39;:2}
+    traces = res.lr1
+    cvts = res.cvt[:, d[str(1-0.05)]]
+    def adjust(val, length= 6): 
+        return str(val).ljust(length)
+    print(&#39;Column Name   &gt;  Test Stat &gt; C(95%)    =&gt;   Signif  \n&#39;, &#39;--&#39;*20)
+    for col, trace, cvt in zip(df.columns, traces, cvts):
+        print(adjust(col), &#39;&gt; &#39;, adjust(round(trace,2), 9), &quot;&gt;&quot;, adjust(cvt, 8), &#39; =&gt;  &#39; , trace &gt; cvt)</code></pre>
+<pre class="r"><code>def inverse_diff(actual_df, pred_df):
+    &#39;&#39;&#39;
+    Transforms the differentiated values back
+    
+    Args:
+        actual dataframe (float64): Values of the columns, numpy array of floats 
+        predicted dataframe (float64): Values of the columns, numpy array of floats 
+    
+    Returns:
+        Dataframe with the predicted values
+    &#39;&#39;&#39;
+    df_res = pred_df.copy()
+    columns = actual_df.columns
+    for col in columns: 
+        df_res[str(col)+&#39;_1st_inv_diff&#39;] = actual_df[col].iloc[-1] + df_res[str(col)].cumsum()
+    return df_res</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p.png" /></p>
 </div>
 <div id="xy-conclusion" class="section level1">
