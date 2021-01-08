@@ -1,0 +1,95 @@
+---
+title: Time Series Analysis - Regression Extension Techniques for Forecasting Multivariate
+  Variables
+author: Michael Fuchs
+date: '2020-10-29'
+slug: time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+
+# 1 Introduction
+
+Now that we are familiar with smoothing methods for predicting time series, we come to so-called regression extension techniques.
+
+In the following I will present the following algorithms:
+
++ ARIMA
++ SARIMA
++ SARIMAX
+
+For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p.png)
+
+
+
+
+
+
+
+
+
+# XY Conclusion
+
+ 
+
+**References**
+
+Christ, M., Braun, N., Neuffer, J., & Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.
+
+Faouzi, J., & Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.
+
+McKinney, W., Perktold, J., & Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.
+
+Pal, A., & Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.
+
+Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., & Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.
+
+Vishwas, B. V., & Patel, A. Hands-on Time Series Analysis with Python.
+
+
+
+
+

@@ -638,7 +638,7 @@ Furthermore, I presented the following algorithms:
 + SARIMAX
 
 These were used to predict values for univariate variables. 
-In my following post I will present algorithms that allow the prediction of bivariate variables. 
+In my following post I will present algorithms that allow the prediction of multiple variables. 
 
 **References**
 
