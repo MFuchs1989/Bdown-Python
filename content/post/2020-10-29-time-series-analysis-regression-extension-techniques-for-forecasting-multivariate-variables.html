@@ -24,7 +24,39 @@ output:
 <li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
 <li><a href="#eda">3 EDA</a></li>
 <li><a href="#definition-of-required-functions">4 Definition of required functions</a></li>
-<li><a href="#xy-conclusion">XY Conclusion</a></li>
+<li><a href="#stationarity">5 Stationarity</a>
+<ul>
+<li><a href="#check-for-stationary">5.1 Check for stationary</a></li>
+<li><a href="#train-test-split">5.2 Train Test Split</a></li>
+<li><a href="#make-data-stationary">5.3 Make data stationary</a></li>
+<li><a href="#check-again-for-stationary">5.4 Check again for stationary</a></li>
+</ul></li>
+<li><a href="#cointegration-test">6 Cointegration Test</a></li>
+<li><a href="#regression-extension-techniques-for-forecasting-multivariate-variables">7 Regression Extension Techniques for Forecasting Multivariate Variables</a>
+<ul>
+<li><a href="#vector-autoregression-var">7.1 Vector Autoregression (VAR)</a>
+<ul>
+<li><a href="#get-best-ar-terms">7.1.1 Get best AR Terms</a></li>
+<li><a href="#fit-var">7.1.2 Fit VAR</a></li>
+<li><a href="#inverse-transformation">7.1.3 Inverse Transformation</a></li>
+<li><a href="#evaluation-of-var">7.1.4 Evaluation of VAR</a></li>
+</ul></li>
+<li><a href="#varma">7.2 VARMA</a>
+<ul>
+<li><a href="#get-best-p-q-and-tr-terms">7.2.1 Get best p, q and tr Terms</a></li>
+<li><a href="#fit-varma">7.2.2 Fit VARMA</a></li>
+<li><a href="#inverse-transformation-1">7.2.3 Inverse Transformation</a></li>
+<li><a href="#evaluation-of-varma">7.2.4 Evaluation of VARMA</a></li>
+</ul></li>
+<li><a href="#varma-with-auto-arima">7.3 VARMA with Auto Arima</a>
+<ul>
+<li><a href="#get-best-p-and-q">7.3.1 Get best p and q</a></li>
+<li><a href="#fit-varma_2">7.3.2 Fit VARMA_2</a></li>
+<li><a href="#inverse-transformation-2">7.3.3 Inverse Transformation</a></li>
+<li><a href="#evaluation-of-varma_2">7.3.4 Evaluation of VARMA_2</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
@@ -179,10 +211,283 @@ df.head()</code></pre>
     for col in columns: 
         df_res[str(col)+&#39;_1st_inv_diff&#39;] = actual_df[col].iloc[-1] + df_res[str(col)].cumsum()
     return df_res</code></pre>
-<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p.png" /></p>
 </div>
-<div id="xy-conclusion" class="section level1">
-<h1>XY Conclusion</h1>
+<div id="stationarity" class="section level1">
+<h1>5 Stationarity</h1>
+<div id="check-for-stationary" class="section level2">
+<h2>5.1 Check for stationary</h2>
+<pre class="r"><code>for name, column in df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]].iteritems():
+    Augmented_Dickey_Fuller_Test_func(df[name],name)
+    print(&#39;\n&#39;)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p6.png" /></p>
+</div>
+<div id="train-test-split" class="section level2">
+<h2>5.2 Train Test Split</h2>
+<pre class="r"><code>X = df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]]
+
+trainX, testX = train_test_split(X, test_size=30)</code></pre>
+</div>
+<div id="make-data-stationary" class="section level2">
+<h2>5.3 Make data stationary</h2>
+<pre class="r"><code>train_diff = trainX.diff()
+train_diff.dropna(inplace = True)</code></pre>
+<pre class="r"><code>for name, column in train_diff.iteritems():
+    Augmented_Dickey_Fuller_Test_func(train_diff[name],name)
+    print(&#39;\n&#39;)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p7.png" /></p>
+</div>
+<div id="check-again-for-stationary" class="section level2">
+<h2>5.4 Check again for stationary</h2>
+<pre class="r"><code>for feature in train_diff:
+    train_diff[str(feature)].plot(figsize=(15, 6))
+    plt.xlabel(&quot;Date&quot;)
+    plt.ylabel(feature)
+    plt.title(f&quot;{str(feature)} price of Facebook stocks before stationary&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p8.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p9.png" /></p>
+<pre class="r"><code>for feature in train_diff:
+    plt.figure(1, figsize=(15,6))
+    plt.subplot(211)
+    plt.title(f&quot;{str(feature)} Histogram after stationary&quot;)
+    train_diff[str(feature)].hist()
+    plt.subplot(212)
+    train_diff[str(feature)].plot(kind=&#39;kde&#39;)
+    plt.title(f&quot;{str(feature)} Kernal Density Estimator after stationary&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p10.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p11.png" /></p>
+</div>
+</div>
+<div id="cointegration-test" class="section level1">
+<h1>6 Cointegration Test</h1>
+<p>A cointegration test is the co-movement among underlying variables over the long run. This long-run estimation feature distinguishes it from correlation. Two or more variables are cointegrated if ond only if they share common trends.</p>
+<p>In comparison: The Correlation is simply a measure of the degree of mutual association between two or more variables.</p>
+<pre class="r"><code>cointegration_test(train_diff)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p12.png" /></p>
+<p>As we can see from the output, there is the presence of a long-run relationship between features.</p>
+</div>
+<div id="regression-extension-techniques-for-forecasting-multivariate-variables" class="section level1">
+<h1>7 Regression Extension Techniques for Forecasting Multivariate Variables</h1>
+<div id="vector-autoregression-var" class="section level2">
+<h2>7.1 Vector Autoregression (VAR)</h2>
+<p>Vector Autoregression (VAR) is a stochastic process model utilized to seize the linear relation among the multiple variables of time-series data. VAR is a bidirectional model, while others are undirectional. In a undirectionla model, a predictor influences the target variable, but not vice versa. In a bidirectional model, variables influence each other.</p>
+<div id="get-best-ar-terms" class="section level3">
+<h3>7.1.1 Get best AR Terms</h3>
+<p>First of all we fit the VAR model wth AR terms between 1 to 9 and choose the best AR component.</p>
+<pre class="r"><code>resu = []
+df_results_VAR = pd.DataFrame()
+
+for i in [1,2,3,4,5,6,7,8,9]:
+    fit_v = VAR(train_diff).fit(i)
+    aic = fit_v.aic
+    bic = fit_v.bic
+    df1 = {&#39;AR_Term&#39;:i, &#39;AIC&#39;: aic, &#39;BIC&#39;: bic}
+    df_results_VAR = df_results_VAR.append(df1, ignore_index=True)
+    clist = [&#39;AR_Term&#39;,&#39;AIC&#39;,&#39;BIC&#39;]
+    df_results_VAR = df_results_VAR[clist] </code></pre>
+<pre class="r"><code>df_results_VAR.sort_values(by=[&#39;AIC&#39;, &#39;BIC&#39;], ascending=True)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p13.png" /></p>
+<pre class="r"><code>best_values_VAR = df_results_VAR.sort_values(by=[&#39;AIC&#39;, &#39;BIC&#39;]).head(1)
+best_values_VAR</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p14.png" /></p>
+<pre class="r"><code>AR_Term_value_VAR = best_values_VAR[&#39;AR_Term&#39;].iloc[0]
+
+print(&quot;AR_Term_value_VAR: &quot;, AR_Term_value_VAR)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p15.png" /></p>
+<p>Autoregressive AR(9) appears to be providing the least AIC.</p>
+</div>
+<div id="fit-var" class="section level3">
+<h3>7.1.2 Fit VAR</h3>
+<pre class="r"><code>model = VAR(train_diff)
+
+results = model.fit(int(AR_Term_value_VAR))
+display(results.summary())
+z = results.forecast(y=train_diff.values, steps=len(testX))
+df_pred = pd.DataFrame(z, columns=train_diff.columns)</code></pre>
+<pre class="r"><code>df_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_pred = df_pred.set_index(&quot;new_index&quot;)</code></pre>
+<pre class="r"><code>df_pred.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p16.png" /></p>
+</div>
+<div id="inverse-transformation" class="section level3">
+<h3>7.1.3 Inverse Transformation</h3>
+<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]],df_pred)
+res.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p17.png" /></p>
+</div>
+<div id="evaluation-of-var" class="section level3">
+<h3>7.1.4 Evaluation of VAR</h3>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]:
+    print(f&#39;Evaluation metric for {i}&#39;)
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+&#39;_1st_inv_diff&#39;])</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p18.png" /></p>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]:
+    
+    plt.rcParams[&quot;figure.figsize&quot;] = [10,7]
+    plt.plot(trainX[str(i)], label=&#39;Train &#39;+str(i))
+    plt.plot(testX[str(i)], label=&#39;Test &#39;+str(i))
+    plt.plot(res[str(i)+&#39;_1st_inv_diff&#39;], label=&#39;Predicted &#39;+str(i))
+    plt.legend(loc=&#39;best&#39;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p19.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p20.png" /></p>
+</div>
+</div>
+<div id="varma" class="section level2">
+<h2>7.2 VARMA</h2>
+<p>A VARMA model is another extension of the ARMA model for a multivariate time-series model that contains a vector autoregressive (VAR) component, as well as the vector moving average (VMA). The method is used for multivariate time-series data deprived of trend and seasonal components.</p>
+<p>Let’s define a parameter grid for selecting AR(p), MA(q) and trend (tr).</p>
+<div id="get-best-p-q-and-tr-terms" class="section level3">
+<h3>7.2.1 Get best p, q and tr Terms</h3>
+<pre class="r"><code>param_grid = {&#39;p&#39;: [1,2,3], &#39;q&#39;:[1,2,3], &#39;tr&#39;: [&#39;n&#39;,&#39;c&#39;,&#39;t&#39;,&#39;ct&#39;]}
+pg = list(ParameterGrid(param_grid))</code></pre>
+<p>In the following I will calculate the rmse for all available variables. Since one must decide at the end for the best rmse value of only one variable, this must not be calculated at this point for all further variables (and/or the syntax necessary for it must be written).</p>
+<pre class="r"><code>df_results_VARMA = pd.DataFrame(columns=[&#39;p&#39;, &#39;q&#39;, &#39;tr&#39;,&#39;RMSE open&#39;,&#39;RMSE high&#39;,&#39;RMSE low&#39;,&#39;RMSE close&#39;])
+
+for a,b in enumerate(pg):
+    p = b.get(&#39;p&#39;)
+    q = b.get(&#39;q&#39;)
+    tr = b.get(&#39;tr&#39;)
+    model = VARMAX(train_diff, order=(p,q), trend=tr).fit()
+    z = model.forecast(y=train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]].values, steps=len(testX))
+    df_pred = pd.DataFrame(z, columns=[ &#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;])
+    res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]],df_pred)
+    openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, res.Open_1st_inv_diff))
+    highrmse = np.sqrt(metrics.mean_squared_error(testX.High, res.High_1st_inv_diff))
+    lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, res.Low_1st_inv_diff))
+    closermse = np.sqrt(metrics.mean_squared_error(testX.Close, res.Close_1st_inv_diff))
+    df_results_VARMA = df_results_VARMA.append({&#39;p&#39;: p, &#39;q&#39;: q, &#39;tr&#39;: tr,&#39;RMSE open&#39;: openrmse,
+                                                &#39;RMSE high&#39;:highrmse,&#39;RMSE low&#39;:lowrmse,
+                                                &#39;RMSE close&#39;:closermse }, ignore_index=True)</code></pre>
+<pre class="r"><code>df_results_VARMA.sort_values(by=[&#39;RMSE open&#39;, &#39;RMSE high&#39;, &#39;RMSE low&#39;, &#39;RMSE close&#39;]).head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p21.png" /></p>
+<pre class="r"><code>best_values_VARMA = df_results_VARMA.sort_values(by=[&#39;RMSE open&#39;, &#39;RMSE high&#39;, &#39;RMSE low&#39;, &#39;RMSE close&#39;]).head(1)
+best_values_VARMA</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p22.png" /></p>
+<pre class="r"><code>p_value_VARMA = best_values_VARMA[&#39;p&#39;].iloc[0]
+q_value_VARMA = best_values_VARMA[&#39;q&#39;].iloc[0] 
+tr_value_VARMA = best_values_VARMA[&#39;tr&#39;].iloc[0] 
+
+print(&quot;p_value_VARMA: &quot;, p_value_VARMA)
+print(&quot;q_value_VARMA: &quot;, q_value_VARMA)
+print(&quot;tr_value_VARMA: &quot;, tr_value_VARMA)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p23.png" /></p>
+</div>
+<div id="fit-varma" class="section level3">
+<h3>7.2.2 Fit VARMA</h3>
+<pre class="r"><code>model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], 
+               order=(p_value_VARMA, q_value_VARMA),trends = tr_value_VARMA).fit(disp=False)
+result = model.forecast(steps = len(testX))</code></pre>
+</div>
+<div id="inverse-transformation-1" class="section level3">
+<h3>7.2.3 Inverse Transformation</h3>
+<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], result)
+
+res.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p24.png" /></p>
+</div>
+<div id="evaluation-of-varma" class="section level3">
+<h3>7.2.4 Evaluation of VARMA</h3>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]:
+    print(f&#39;Evaluation metric for {i}&#39;)
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+&#39;_1st_inv_diff&#39;])</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p25.png" /></p>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]:
+    
+    plt.rcParams[&quot;figure.figsize&quot;] = [10,7]
+    plt.plot(trainX[str(i)], label=&#39;Train &#39;+str(i))
+    plt.plot(testX[str(i)], label=&#39;Test &#39;+str(i))
+    plt.plot(res[str(i)+&#39;_1st_inv_diff&#39;], label=&#39;Predicted &#39;+str(i))
+    plt.legend(loc=&#39;best&#39;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p26.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p27.png" /></p>
+</div>
+</div>
+<div id="varma-with-auto-arima" class="section level2">
+<h2>7.3 VARMA with Auto Arima</h2>
+<p>We can also use the auto_arima function from the pmdarima librarie to determine p and q.</p>
+<div id="get-best-p-and-q" class="section level3">
+<h3>7.3.1 Get best p and q</h3>
+<pre class="r"><code>pq = []
+for name, column in train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]].iteritems():
+    print(f&#39;Searching order of p and q for : {name}&#39;)
+    stepwise_model = auto_arima(train_diff[name],start_p=1, start_q=1,max_p=7, max_q=7, seasonal=False,
+        trace=True,error_action=&#39;ignore&#39;,suppress_warnings=True, stepwise=True,maxiter=1000)
+    parameter = stepwise_model.get_params().get(&#39;order&#39;)
+    print(f&#39;optimal order for:{name} is: {parameter} \n\n&#39;)
+    pq.append(stepwise_model.get_params().get(&#39;order&#39;))</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p28.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p29.png" /></p>
+<pre class="r"><code>pq</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p30.png" /></p>
+<pre class="r"><code>df_results_VARMA_2 = pd.DataFrame(columns=[&#39;p&#39;, &#39;q&#39;,&#39;RMSE Open&#39;,&#39;RMSE High&#39;,&#39;RMSE Low&#39;,&#39;RMSE Close&#39;])
+
+for i in pq:
+    if i[0]== 0 and i[2] ==0:
+        pass
+    else:
+        print(f&#39; Running for {i}&#39;)
+        model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], order=(i[0],i[2])).fit(disp=False)
+        result = model.forecast(steps = len(testX))
+        inv_res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], result)
+        Opensrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;Open&#39;], inv_res.Open_1st_inv_diff))
+        Highrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;High&#39;], inv_res.High_1st_inv_diff))
+        Lowrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;Low&#39;], inv_res.Low_1st_inv_diff))
+        Closermse = np.sqrt(metrics.mean_squared_error(testX[&#39;Close&#39;], inv_res.Close_1st_inv_diff))
+        df_results_VARMA_2 = df_results_VARMA_2.append({&#39;p&#39;: i[0], &#39;q&#39;: i[2], &#39;RMSE Open&#39;:Opensrmse,
+                                                        &#39;RMSE High&#39;:Highrmse,&#39;RMSE Low&#39;:Lowrmse,
+                                                        &#39;RMSE Close&#39;:Closermse }, ignore_index=True)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p31.png" /></p>
+<pre class="r"><code>df_results_VARMA_2.sort_values(by=[&#39;RMSE Open&#39;, &#39;RMSE High&#39;, &#39;RMSE Low&#39;, &#39;RMSE Close&#39;])</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p32.png" /></p>
+<pre class="r"><code>best_values_VAR_2 = df_results_VARMA_2.sort_values(by=[&#39;RMSE Open&#39;, &#39;RMSE High&#39;, 
+                                                       &#39;RMSE Low&#39;, &#39;RMSE Close&#39;]).head(1)
+best_values_VAR_2</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p33.png" /></p>
+<pre class="r"><code>p_value_VARMA_2 = best_values_VAR_2[&#39;p&#39;].iloc[0]
+q_value_VARMA_2 = best_values_VAR_2[&#39;q&#39;].iloc[0] 
+
+print(&quot;p_value_VARMA_2: &quot;, p_value_VARMA_2)
+print(&quot;q_value_VARMA_2: &quot;, q_value_VARMA_2)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p34.png" /></p>
+</div>
+<div id="fit-varma_2" class="section level3">
+<h3>7.3.2 Fit VARMA_2</h3>
+<pre class="r"><code>model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], 
+               order=(int(p_value_VARMA_2),int(q_value_VARMA_2))).fit(disp=False)
+result = model.forecast(steps = len(testX))</code></pre>
+</div>
+<div id="inverse-transformation-2" class="section level3">
+<h3>7.3.3 Inverse Transformation</h3>
+<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]],result)
+res.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p35.png" /></p>
+</div>
+<div id="evaluation-of-varma_2" class="section level3">
+<h3>7.3.4 Evaluation of VARMA_2</h3>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]:
+    print(f&#39;Evaluation metric for {i}&#39;)
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+&#39;_1st_inv_diff&#39;])</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p36.png" /></p>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]:
+    
+    plt.rcParams[&quot;figure.figsize&quot;] = [10,7]
+    plt.plot(trainX[str(i)], label=&#39;Train &#39;+str(i))
+    plt.plot(testX[str(i)], label=&#39;Test &#39;+str(i))
+    plt.plot(res[str(i)+&#39;_1st_inv_diff&#39;], label=&#39;Predicted &#39;+str(i))
+    plt.legend(loc=&#39;best&#39;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p37.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p38.png" /></p>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>Wow another great chapter created!
+In this post about time series prediction of multiple variables, I introduced the VAR and VARMA algorithms.</p>
 <p><strong>References</strong></p>
 <p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
 <p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>
