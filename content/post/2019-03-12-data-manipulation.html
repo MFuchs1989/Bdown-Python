@@ -42,6 +42,7 @@ output:
 <li><a href="#round-each-column">4.1 Round each column</a></li>
 <li><a href="#round-columns-differently-within-a-df">4.2 Round columns differently within a df</a></li>
 <li><a href="#add-rows-with-the-stack-function">4.3 Add rows with the stack() function</a></li>
+<li><a href="#drop-duplicates">4.4 Drop Duplicates</a></li>
 </ul></li>
 <li><a href="#replacing-values">5 Replacing Values</a>
 <ul>
@@ -281,6 +282,34 @@ final = pd.merge(new_df, df[[&#39;title&#39;, &#39;Runtime&#39;]], on=&#39;title
 final</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z5.png" /></p>
 <p>Here we go !</p>
+</div>
+<div id="drop-duplicates" class="section level2">
+<h2>4.4 Drop Duplicates</h2>
+<p>To get clean data it is often necessary to remove duplicates.
+We can do so with the drop_duplicates function.
+Have a look at this dataframe:</p>
+<pre class="r"><code>df_duplicates = pd.DataFrame({&#39;Case&#39;: [1,2,3,4,5],
+                   &#39;Value&#39;: [5,5,5,7,8]})
+df_duplicates</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z7.png" /></p>
+<p>As we can see, there are several identical values in the ‘Value’ column. We do not want to have them like this.
+With keep=‘first’ we consider only the first value as unique and rest of the same values as duplicate.</p>
+<pre class="r"><code>df_subset_1 = df_duplicates.drop_duplicates(subset=[&#39;Value&#39;], keep=&#39;first&#39;)
+df_subset_1</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z8.png" /></p>
+<p>With keep=‘last’ we consider only the last value as unique and rest of the same values as duplicate.</p>
+<pre class="r"><code>df_subset_2 = df_duplicates.drop_duplicates(subset=[&#39;Value&#39;], keep=&#39;last&#39;)
+df_subset_2</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z9.png" /></p>
+<p>With keep=False we consider all of the same values as duplicates.</p>
+<pre class="r"><code>df_subset_3 = df_duplicates.drop_duplicates(subset=[&#39;Value&#39;], keep=False)
+df_subset_3</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z10.png" /></p>
+<p>With the drop_duplicates function there is one more parameter that can be set: inplace. By default this is set to False. If we set this to True, the record does not have to be assigned to a separate object (as we have always done before).</p>
+<pre class="r"><code>df_duplicates.drop_duplicates(subset=[&#39;Value&#39;], keep=False, inplace=True)
+
+df_duplicates</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z11.png" /></p>
 </div>
 </div>
 <div id="replacing-values" class="section level1">

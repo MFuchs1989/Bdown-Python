@@ -438,6 +438,64 @@ final
 
 Here we go !
 
+
+
+## 4.4 Drop Duplicates
+
+To get clean data it is often necessary to remove duplicates.
+We can do so with the drop_duplicates function.
+Have a look at this dataframe:
+
+
+```{r, eval=F, echo=T}
+df_duplicates = pd.DataFrame({'Case': [1,2,3,4,5],
+                   'Value': [5,5,5,7,8]})
+df_duplicates
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z7.png)
+
+As we can see, there are several identical values in the 'Value' column. We do not want to have them like this.
+With keep='first' we consider only the first value as unique and rest of the same values as duplicate.
+
+
+```{r, eval=F, echo=T}
+df_subset_1 = df_duplicates.drop_duplicates(subset=['Value'], keep='first')
+df_subset_1
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z8.png)
+
+With keep='last' we consider only the last value as unique and rest of the same values as duplicate.
+
+```{r, eval=F, echo=T}
+df_subset_2 = df_duplicates.drop_duplicates(subset=['Value'], keep='last')
+df_subset_2
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z9.png)
+
+With keep=False we consider all of the same values as duplicates.
+
+```{r, eval=F, echo=T}
+df_subset_3 = df_duplicates.drop_duplicates(subset=['Value'], keep=False)
+df_subset_3
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z10.png)
+
+With the drop_duplicates function there is one more parameter that can be set: inplace. By default this is set to False. If we set this to True, the record does not have to be assigned to a separate object (as we have always done before). 
+
+```{r, eval=F, echo=T}
+df_duplicates.drop_duplicates(subset=['Value'], keep=False, inplace=True)
+
+df_duplicates
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z11.png)
+
+
+
 # 5 Replacing Values
 
 ## 5.1 One by One
