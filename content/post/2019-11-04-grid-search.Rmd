@@ -63,6 +63,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+
+# For chapter 8
+from sklearn.model_selection import ParameterGrid
+from sklearn.metrics import accuracy_score
 ```
 
 
@@ -264,7 +268,101 @@ print('Calculation time: ' + str(round(end - start,2)) + ' seconds')
 ![](/post/2019-11-04-grid-search_files/p36p10.png)
 
 
-# 8 Conclusion
+# 8 Parameter Grid
+
+Another very useful feature is Parameter Grid.
+Here I have the possibility to output evaluation metrics for each individual parameter combination. 
+For the following example, I again use the Logistic Regression algorithm and the associated parameters.
+
+
+```{r, eval=F, echo=T}
+param_grid = {'penalty': ['l1', 'l2'],
+              'C':[0.001, 0.10, 0.1, 10, 25, 50],
+              'solver': ['liblinear', 'saga', 'lbfgs']}
+
+pg = list(ParameterGrid(param_grid))
+
+pg
+```
+
+![](/post/2019-11-04-grid-search_files/p36p11.png)
+
+```{r, eval=F, echo=T}
+df_results_LogReg = pd.DataFrame(columns=['penalty', 'C', 'solver', 'Accuracy'])
+
+for a,b in enumerate(pg):
+    penalty_setting = b.get('penalty')
+    C_value = b.get('C')
+    solver_setting = b.get('solver')
+    
+    fit_LogReg = LogisticRegression().fit(trainX, trainY)
+    pred_gs_pred_LogReg = fit_LogReg.predict(testX)
+    
+    df_pred = pd.DataFrame(pred_gs_pred_LogReg, columns=['Prediction_result'])
+    acc = accuracy_score(testY, df_pred.Prediction_result)
+
+    df_results_LogReg = df_results_LogReg.append({'penalty':penalty_setting, 
+                                                  'C':C_value, 'solver': solver_setting, 
+                                                  'Accuracy':acc}, ignore_index=True)
+```
+
+Let's have a look at the results:
+I use .head() to print only the first 5 rows.
+Without .head() we would get the entire list of parameter combinations and the corresponding validation metrics.
+
+```{r, eval=F, echo=T}
+df_results_LogReg.head()
+```
+
+![](/post/2019-11-04-grid-search_files/p36p12.png)
+
+Normally we would get different accuracy values. To get the row with the highest accuracy I use .sort_values() and the addition ascending=False.
+
+```{r, eval=F, echo=T}
+df_results_LogReg.sort_values(by=['Accuracy'], ascending=False).head()
+```
+
+![](/post/2019-11-04-grid-search_files/p36p13.png)
+
+Let's pick the first row.
+
+```{r, eval=F, echo=T}
+best_values_LogReg = df_results_LogReg.sort_values(by=['Accuracy'], ascending=False).head(1)
+best_values_LogReg
+```
+
+![](/post/2019-11-04-grid-search_files/p36p14.png)
+
+And extract the best values:
+
+```{r, eval=F, echo=T}
+penalty_setting_LogReg = best_values_LogReg['penalty'].iloc[0]
+c_value_LogReg = best_values_LogReg['C'].iloc[0]
+solver_setting_LogReg = best_values_LogReg['solver'].iloc[0]
+
+print("penalty_setting_LogReg: ", penalty_setting_LogReg)
+print("c_value_LogReg: ", c_value_LogReg)
+print("solver_setting_LogReg: ", solver_setting_LogReg)
+```
+
+![](/post/2019-11-04-grid-search_files/p36p15.png)
+
+Now we can train our final model.
+
+```{r, eval=F, echo=T}
+final_LogReg = LogisticRegression(penalty=penalty_setting_LogReg, C=c_value_LogReg, solver=solver_setting_LogReg)
+final_LogReg.fit(trainX, trainY)
+
+y_pred = final_LogReg.predict(testX)
+
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2019-11-04-grid-search_files/p36p16.png)
+
+
+
+# 9 Conclusion
 
 In this post, the functionality and application of Grid Search was shown.
 Have fun creating machine learning models with optimized hyperparameters.
