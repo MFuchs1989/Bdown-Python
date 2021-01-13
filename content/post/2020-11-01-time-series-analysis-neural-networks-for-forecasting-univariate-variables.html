@@ -1,0 +1,1063 @@
+---
+title: Time Series Analysis - Neural Networks for Forecasting Univariate Variables
+author: Michael Fuchs
+date: '2020-11-01'
+slug: time-series-analysis-neural-networks-for-forecasting-univariate-variables
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a>
+<ul>
+<li><a href="#drop-duplicates">4.1 Drop Duplicates</a></li>
+<li><a href="#generate-test-set">4.2 Generate Test Set</a></li>
+<li><a href="#define-target-variable">4.3 Define Target Variable</a></li>
+<li><a href="#scaling">4.4 Scaling</a></li>
+<li><a href="#train-validation-split">4.5 Train-Validation Split</a>
+<ul>
+<li><a href="#for-single-step-style-sss">4.5.1 for Single Step Style (sss)</a></li>
+<li><a href="#for-horizon-style-hs">4.5.2 for Horizon Style (hs)</a></li>
+</ul></li>
+<li><a href="#prepare-training-and-test-data-using-tf">4.6 Prepare training and test data using tf</a>
+<ul>
+<li><a href="#for-single-step-style-sss-1">4.6.1 for Single Step Style (sss)</a></li>
+<li><a href="#for-horizon-style-hs-1">4.6.2 for Horizon Style (hs)</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#neural-networks">5 Neural Networks</a>
+<ul>
+<li><a href="#lstm">5.1 LSTM</a>
+<ul>
+<li><a href="#single-step-style">5.1.1 Single Step Style</a></li>
+<li><a href="#horizon-style">5.1.2 Horizon Style</a></li>
+</ul></li>
+<li><a href="#bidirectional-lstm">5.2 Bidirectional LSTM</a>
+<ul>
+<li><a href="#single-step-style-1">5.2.1 Single Step Style</a></li>
+<li><a href="#horizon-style-1">5.2.2 Horizon Style</a></li>
+</ul></li>
+<li><a href="#gru">5.3 GRU</a>
+<ul>
+<li><a href="#single-step-style-2">5.3.1 Single Step Style</a></li>
+<li><a href="#horizon-style-2">5.3.2 Horizon Style</a></li>
+</ul></li>
+<li><a href="#encoder-decoder-lstm">5.4 Encoder Decoder LSTM</a>
+<ul>
+<li><a href="#single-step-style-3">5.4.1 Single Step Style</a></li>
+<li><a href="#horizon-style-3">5.4.2 Horizon Style</a></li>
+</ul></li>
+<li><a href="#cnn">5.5 CNN</a>
+<ul>
+<li><a href="#single-step-style-4">5.5.1 Single Step Style</a></li>
+<li><a href="#horizon-style-4">5.5.2 Horizon Style</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#get-the-best-model">6 Get the Best Model</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Now it’s time to take time series forecasting a step further. In this post, I explain the use of different neural networks to effectively predict time series.</p>
+<p>For this post the dataset <em>Metro_Interstate_Traffic_Volume</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn import metrics
+from sklearn import preprocessing
+import tensorflow as tf
+
+import matplotlib.pyplot as plt</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;Metro_Interstate_Traffic_Volume.csv&#39;)
+
+print(df.shape)
+df.head()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p1.png" /></p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required functions</h1>
+<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    &#39;&#39;&#39;    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100</code></pre>
+<pre class="r"><code>def timeseries_evaluation_metrics_func(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    &#39;&#39;&#39;    
+    #print(&#39;Evaluation metric results: &#39;)
+    print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
+    print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
+<pre class="r"><code>def univariate_data_prep_function(dataset, start, end, window, horizon):
+    &#39;&#39;&#39;
+    Prepare univariate data that is suitable for a time series
+    
+    Args:
+        dataset (float64): Scaled values for the dependent variable, numpy array of floats 
+        start (int): Start point of range, integer
+        end (int): End point of range, integer
+        window (int): Number of units to be viewed per step, integer
+        horizon (int): Number of units to be predicted, integer
+    
+    Returns:
+        X (float64): Generated X-values for each step, numpy array of floats
+        y (float64): Generated y-values for each step, numpy array of floats
+    &#39;&#39;&#39;   
+    X = []
+    y = []
+
+    start = start + window
+    if end is None:
+        end = len(dataset) - horizon
+
+    for i in range(start, end):
+        indicesx = range(i-window, i)
+        X.append(np.reshape(dataset[indicesx], (window, 1)))
+        indicesy = range(i,i+horizon)
+        y.append(dataset[indicesy])
+    return np.array(X), np.array(y)</code></pre>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<div id="drop-duplicates" class="section level2">
+<h2>4.1 Drop Duplicates</h2>
+<pre class="r"><code>df = df.drop_duplicates(subset=[&#39;date_time&#39;], keep=False)
+
+df.shape</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p2.png" /></p>
+</div>
+<div id="generate-test-set" class="section level2">
+<h2>4.2 Generate Test Set</h2>
+<pre class="r"><code>test_data = df[&#39;traffic_volume&#39;].tail(10)
+
+df = df.drop(df[&#39;traffic_volume&#39;].tail(10).index)
+
+df.shape</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p3.png" /></p>
+</div>
+<div id="define-target-variable" class="section level2">
+<h2>4.3 Define Target Variable</h2>
+<pre class="r"><code>uni_data = df[&#39;traffic_volume&#39;]
+uni_data.index = df[&#39;date_time&#39;]
+uni_data.head()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p4.png" /></p>
+</div>
+<div id="scaling" class="section level2">
+<h2>4.4 Scaling</h2>
+<pre class="r"><code>uni_data = uni_data.values
+scaler_x = preprocessing.MinMaxScaler()
+x_scaled = scaler_x.fit_transform(uni_data.reshape(-1, 1))</code></pre>
+</div>
+<div id="train-validation-split" class="section level2">
+<h2>4.5 Train-Validation Split</h2>
+<p>In order to add the data to a neural network for training, they must be processed accordingly.
+There are two ways to do this:</p>
+<ul>
+<li>Single Step Style</li>
+<li>Horizon Style</li>
+</ul>
+<p><code>Single Step Style</code></p>
+<p>Single Step time-series forecasting is a technique where the model is exposed to one window of data at a time, such as days, weeks, months, years … and attempts to predict the next consecutive step.
+For example: Data is at the daily level. The model is shown the first window from the <strong>1st to the 90th</strong> day (i.e. three months of data) and <strong>predicts the 91st</strong> day’s value. Then the next iteration (<strong>the 2nd to 91st day</strong>) for training it tries to predict the <strong>92nd day</strong>.</p>
+<p><code>Horizon Style</code></p>
+<p>Horizon style time-series forecasting is a technique where the model is exposed to one window of data at a time, such as days, weeks, months, years … and attempts to predict the next n consecutive steps.
+For example: Data is at the daily level. The model is shown the first window from the <strong>1st to the 90th</strong> day (i.e. three months of data) and <strong>predicts the values for the 91st to 101st</strong> days. Then the next iteration (<strong>the 2nd to 91st day</strong>) for training it tries to predict the <strong>92nd to 102nd days</strong>.</p>
+<p>I will use both variants in the following neural networks.</p>
+<div id="for-single-step-style-sss" class="section level3">
+<h3>4.5.1 for Single Step Style (sss)</h3>
+<p>In the examples where I use single-step forecasting, I want to train the model on the last 48 hours and then try to predict the values for the 49th hour. Therefore horizon_sss = 1.</p>
+<pre class="r"><code>univar_hist_window_sss = 48
+horizon_sss = 1
+train_split_sss = 30000
+
+x_train_uni_sss, y_train_uni_sss = univariate_data_prep_function(x_scaled, 0, train_split_sss, 
+                                                                 univar_hist_window_sss, horizon_sss)
+
+x_val_uni_sss, y_val_uni_sss = univariate_data_prep_function(x_scaled, train_split_sss, None, 
+                                                             univar_hist_window_sss, horizon_sss)</code></pre>
+<pre class="r"><code>print (&#39;Length of first Single Window:&#39;)
+print (len(x_train_uni_sss[0]))
+print()
+print (&#39;Target horizon:&#39;)
+print (y_train_uni_sss[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p5.png" /></p>
+</div>
+<div id="for-horizon-style-hs" class="section level3">
+<h3>4.5.2 for Horizon Style (hs)</h3>
+<p>In the examples where I use the horizon style, I want to train the model on the last 48 hours and then try to predict the values for the next 10 hours. Therefore horizon_hs = 10.</p>
+<pre class="r"><code>univar_hist_window_hs = 48
+horizon_hs = 10
+train_split_hs = 30000
+
+x_train_uni_hs, y_train_uni_hs = univariate_data_prep_function(x_scaled, 0, train_split_hs, 
+                                                               univar_hist_window_hs, horizon_hs)
+
+x_val_uni_hs, y_val_uni_hs = univariate_data_prep_function(x_scaled, train_split_hs, None, 
+                                                           univar_hist_window_hs, horizon_hs)</code></pre>
+<pre class="r"><code>print (&#39;Length of first Single Window:&#39;)
+print (len(x_train_uni_hs[0]))
+print()
+print (&#39;Target horizon:&#39;)
+print (y_train_uni_hs[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p6.png" /></p>
+</div>
+</div>
+<div id="prepare-training-and-test-data-using-tf" class="section level2">
+<h2>4.6 Prepare training and test data using tf</h2>
+<p>To prepare the training and validation data I use the tf.data function. This allows a much faster and more efficient training of the neural networks.</p>
+<div id="for-single-step-style-sss-1" class="section level3">
+<h3>4.6.1 for Single Step Style (sss)</h3>
+<pre class="r"><code>BATCH_SIZE_sss = 256
+BUFFER_SIZE_sss = 150
+
+train_univariate_sss = tf.data.Dataset.from_tensor_slices((x_train_uni_sss, y_train_uni_sss))
+train_univariate_sss = train_univariate_sss.cache().shuffle(BUFFER_SIZE_sss).batch(BATCH_SIZE_sss).repeat()
+
+validation_univariate_sss = tf.data.Dataset.from_tensor_slices((x_val_uni_sss, y_val_uni_sss))
+validation_univariate_sss = validation_univariate_sss.batch(BATCH_SIZE_sss).repeat()</code></pre>
+</div>
+<div id="for-horizon-style-hs-1" class="section level3">
+<h3>4.6.2 for Horizon Style (hs)</h3>
+<pre class="r"><code>BATCH_SIZE_hs = 256
+BUFFER_SIZE_hs = 150
+
+train_univariate_hs = tf.data.Dataset.from_tensor_slices((x_train_uni_hs, y_train_uni_hs))
+train_univariate_hs = train_univariate_hs.cache().shuffle(BUFFER_SIZE_hs).batch(BATCH_SIZE_hs).repeat()
+
+validation_univariate_hs = tf.data.Dataset.from_tensor_slices((x_val_uni_hs, y_val_uni_hs))
+validation_univariate_hs = validation_univariate_hs.batch(BATCH_SIZE_hs).repeat()</code></pre>
+</div>
+</div>
+</div>
+<div id="neural-networks" class="section level1">
+<h1>5 Neural Networks</h1>
+<p>To save me more lines of code later, I’ll set a few parameters for the model training at this point:</p>
+<pre class="r"><code>n_steps_per_epoch = 117
+n_validation_steps = 20
+n_epochs = 100</code></pre>
+<p>This is how I calculated the selected values:</p>
+<ul>
+<li>n_steps_per_epoch: len(df) / batch_size</li>
+<li>n_validation_steps: len(df) / batch_size</li>
+</ul>
+<div id="lstm" class="section level2">
+<h2>5.1 LSTM</h2>
+<div id="single-step-style" class="section level3">
+<h3>5.1.1 Single Step Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(100, input_shape=x_train_uni_sss.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.LSTM(units=50,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_sss)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/lstm_model_sss.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_sss, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_sss, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p7.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_lstm_model_sss = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_sss)
+test_history = test_horizon.values
+
+result = []
+# Define Forecast length here
+window_len = len(test_data)
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+
+for i in range(1, window_len+1): 
+    test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+    
+    # Inserting the model
+    predicted_results = trained_lstm_model_sss.predict(test_scaled)
+    
+    print(f&#39;predicted : {predicted_results}&#39;)
+    result.append(predicted_results[0])
+    test_scaled = np.append(test_scaled[:,1:],[[predicted_results]])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p8.png" /></p>
+<pre class="r"><code>result_inv_trans = scaler_x.inverse_transform(result)
+result_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p9.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, result_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p10.png" /></p>
+<pre class="r"><code>rmse_lstm_model_sss = np.sqrt(metrics.mean_squared_error(test_data, result_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(result_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p11.png" /></p>
+</div>
+<div id="horizon-style" class="section level3">
+<h3>5.1.2 Horizon Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(100, input_shape=x_train_uni_hs.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.LSTM(units=50,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/lstm_model_hs.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p12.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_lstm_model_hs = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+
+# Inserting the model
+predicted_results = trained_lstm_model_hs.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p13.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_x.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p14.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p15.png" /></p>
+<pre class="r"><code>rmse_lstm_model_hs = np.sqrt(metrics.mean_squared_error(test_data, predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p16.png" /></p>
+</div>
+</div>
+<div id="bidirectional-lstm" class="section level2">
+<h2>5.2 Bidirectional LSTM</h2>
+<div id="single-step-style-1" class="section level3">
+<h3>5.2.1 Single Step Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(100, return_sequences=True), 
+                                  input_shape=x_train_uni_sss.shape[-2:]),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(50)),
+    tf.keras.layers.Dense(20, activation=&#39;softmax&#39;),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_sss)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/bi_lstm_model_sss.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_sss, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_sss, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p17.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_bi_lstm_model_sss = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_sss)
+test_history = test_horizon.values
+
+result = []
+# Define Forecast length here
+window_len = len(test_data)
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+
+for i in range(1, window_len+1):
+    
+    test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+    
+    # Inserting the model
+    predicted_results = trained_bi_lstm_model_sss.predict(test_scaled)
+    
+    print(f&#39;predicted : {predicted_results}&#39;)
+    result.append(predicted_results[0])
+    test_scaled = np.append(test_scaled[:,1:],[[predicted_results]])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p18.png" /></p>
+<pre class="r"><code>result_inv_trans = scaler_x.inverse_transform(result)
+result_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p19.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, result_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p20.png" /></p>
+<pre class="r"><code>rmse_bi_lstm_model_sss = np.sqrt(metrics.mean_squared_error(test_data, result_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(result_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p21.png" /></p>
+</div>
+<div id="horizon-style-1" class="section level3">
+<h3>5.2.2 Horizon Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(100, return_sequences=True), 
+                                  input_shape=x_train_uni_hs.shape[-2:]),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(50)),
+    tf.keras.layers.Dense(20, activation=&#39;softmax&#39;),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/bi_lstm_model_hs.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p22.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_bi_lstm_model_hs = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+
+# Inserting the model
+predicted_results = trained_bi_lstm_model_hs.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p23.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_x.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p24.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p25.png" /></p>
+<pre class="r"><code>rmse_bi_lstm_model_hs = np.sqrt(metrics.mean_squared_error(test_data, predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p26.png" /></p>
+</div>
+</div>
+<div id="gru" class="section level2">
+<h2>5.3 GRU</h2>
+<div id="single-step-style-2" class="section level3">
+<h3>5.3.1 Single Step Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.GRU(100, input_shape=x_train_uni_sss.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.GRU(units=50,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_sss)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/gru_model_sss.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_sss, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_sss, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p27.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_gru_model_sss = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_sss)
+test_history = test_horizon.values
+
+result = []
+# Define Forecast length here
+window_len = len(test_data)
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+
+for i in range(1, window_len+1):
+    
+    test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+    
+    # Inserting the model
+    predicted_results = trained_gru_model_sss.predict(test_scaled)
+    
+    print(f&#39;predicted : {predicted_results}&#39;)
+    result.append(predicted_results[0])
+    test_scaled = np.append(test_scaled[:,1:],[[predicted_results]])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p28.png" /></p>
+<pre class="r"><code>result_inv_trans = scaler_x.inverse_transform(result)
+result_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p29.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, result_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p30.png" /></p>
+<pre class="r"><code>rmse_gru_model_sss = np.sqrt(metrics.mean_squared_error(test_data, result_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(result_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p31.png" /></p>
+</div>
+<div id="horizon-style-2" class="section level3">
+<h3>5.3.2 Horizon Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.GRU(100, input_shape=x_train_uni_hs.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.GRU(units=50,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/gru_model_hs.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p32.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_gru_model_hs = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+
+# Inserting the model
+predicted_results = trained_gru_model_hs.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p33.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_x.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p34.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p35.png" /></p>
+<pre class="r"><code>rmse_gru_model_hs = np.sqrt(metrics.mean_squared_error(test_data, predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p36.png" /></p>
+</div>
+</div>
+<div id="encoder-decoder-lstm" class="section level2">
+<h2>5.4 Encoder Decoder LSTM</h2>
+<div id="single-step-style-3" class="section level3">
+<h3>5.4.1 Single Step Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(100, input_shape=x_train_uni_sss.shape[-2:], return_sequences=True),
+    tf.keras.layers.LSTM(units=50,return_sequences=True),
+    tf.keras.layers.LSTM(units=15),
+    tf.keras.layers.RepeatVector(y_train_uni_sss.shape[1]), 
+    tf.keras.layers.LSTM(units=100,return_sequences=True),
+    tf.keras.layers.LSTM(units=50,return_sequences=True),
+    tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(units=horizon_sss))])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/ed_lstm_model_sss.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_sss, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_sss, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p37.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_ed_lstm_model_sss = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_sss)
+test_history = test_horizon.values
+
+result = []
+# Define Forecast length here
+window_len = len(test_data)
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+
+for i in range(1, window_len+1):
+    
+    test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+    
+    # Inserting the model
+    predicted_results = trained_ed_lstm_model_sss.predict(test_scaled)
+    
+    print(f&#39;predicted : {predicted_results}&#39;)
+    result.append(predicted_results[0])
+    test_scaled = np.append(test_scaled[:,1:],[[predicted_results]])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p38.png" /></p>
+<pre class="r"><code>result_inv_trans = scaler_x.inverse_transform(np.array(result).reshape(-1,1))
+result_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p39.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, result_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p40.png" /></p>
+<pre class="r"><code>rmse_ed_lstm_model_sss = np.sqrt(metrics.mean_squared_error(test_data, result_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(result_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p41.png" /></p>
+</div>
+<div id="horizon-style-3" class="section level3">
+<h3>5.4.2 Horizon Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(100, input_shape=x_train_uni_hs.shape[-2:], return_sequences=True),
+    tf.keras.layers.LSTM(units=50,return_sequences=True),
+    tf.keras.layers.LSTM(units=15),
+    tf.keras.layers.RepeatVector(y_train_uni_hs.shape[1]), 
+    tf.keras.layers.LSTM(units=100,return_sequences=True),
+    tf.keras.layers.LSTM(units=50,return_sequences=True),
+    tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(units=1))])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/ed_lstm_model_hs.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p42.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_ed_lstm_model_hs = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+
+# Inserting the model
+predicted_results = trained_ed_lstm_model_hs.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p43.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_x.inverse_transform(predicted_results[0])
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p44.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, predicted_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p45.png" /></p>
+<pre class="r"><code>rmse_ed_lstm_model_hs = np.sqrt(metrics.mean_squared_error(test_data, predicted_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(predicted_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p46.png" /></p>
+</div>
+</div>
+<div id="cnn" class="section level2">
+<h2>5.5 CNN</h2>
+<div id="single-step-style-4" class="section level3">
+<h3>5.5.1 Single Step Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation=&#39;relu&#39;, 
+                                 input_shape=(x_train_uni_sss.shape[1], x_train_uni_sss.shape[2])))
+model.add(tf.keras.layers.MaxPool1D(pool_size=2))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(30, activation=&#39;relu&#39;))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Dense(units=horizon_sss))
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/cnn_model_sss.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_sss, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_sss, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p47.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_cnn_model_sss = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_sss)
+test_history = test_horizon.values
+
+result = []
+# Define Forecast length here
+window_len = len(test_data)
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+
+for i in range(1, window_len+1):
+    
+    test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+    
+    # Inserting the model
+    predicted_results = trained_cnn_model_sss.predict(test_scaled)
+    
+    print(f&#39;predicted : {predicted_results}&#39;)
+    result.append(predicted_results[0])
+    test_scaled = np.append(test_scaled[:,1:],[[predicted_results]])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p48.png" /></p>
+<pre class="r"><code>result_inv_trans = scaler_x.inverse_transform(result)
+result_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p49.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, result_inv_trans)</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p50.png" /></p>
+<pre class="r"><code>rmse_cnn_model_sss = np.sqrt(metrics.mean_squared_error(test_data, result_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(result_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p51.png" /></p>
+</div>
+<div id="horizon-style-4" class="section level3">
+<h3>5.5.2 Horizon Style</h3>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation=&#39;relu&#39;, 
+                                 input_shape=(x_train_uni_hs.shape[1], x_train_uni_hs.shape[2])))
+model.add(tf.keras.layers.MaxPool1D(pool_size=2))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(30, activation=&#39;relu&#39;))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Dense(units=horizon_hs))
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/cnn_model_hs.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_univariate_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_univariate_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p52.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_cnn_model_hs = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[&#39;traffic_volume&#39;]
+test_horizon = df_temp.tail(univar_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history.reshape(-1, 1))
+test_scaled = test_scaled.reshape((1, test_scaled.shape[0], 1))
+
+# Inserting the model
+predicted_results = trained_cnn_model_hs.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p53.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_x.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p54.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data, predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p55.png" /></p>
+<pre class="r"><code>rmse_cnn_model_hs = np.sqrt(metrics.mean_squared_error(test_data, predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p56.png" /></p>
+</div>
+</div>
+</div>
+<div id="get-the-best-model" class="section level1">
+<h1>6 Get the Best Model</h1>
+<p>Now we want to know which model performed best:</p>
+<pre class="r"><code>column_names = [&quot;Model&quot;, &quot;RMSE&quot;]
+df = pd.DataFrame(columns = column_names)
+
+rmse_lstm_model_sss_df = pd.DataFrame([(&#39;lstm_model_sss&#39;, rmse_lstm_model_sss)], columns=column_names)
+df = df.append(rmse_lstm_model_sss_df)
+
+rmse_lstm_model_hs_df = pd.DataFrame([(&#39;lstm_model_hs&#39;, rmse_lstm_model_hs)], columns=column_names)
+df = df.append(rmse_lstm_model_hs_df)
+
+rmse_bi_lstm_model_sss_df = pd.DataFrame([(&#39;bi_lstm_model_sss&#39;, rmse_bi_lstm_model_sss)], columns=column_names)
+df = df.append(rmse_bi_lstm_model_sss_df)
+
+rmse_bi_lstm_model_hs_df = pd.DataFrame([(&#39;bi_lstm_model_hs&#39;, rmse_bi_lstm_model_hs)], columns=column_names)
+df = df.append(rmse_bi_lstm_model_hs_df)
+
+rmse_gru_model_sss_df = pd.DataFrame([(&#39;gru_model_sss&#39;, rmse_gru_model_sss)], columns=column_names)
+df = df.append(rmse_gru_model_sss_df)
+
+rmse_gru_model_hs_df = pd.DataFrame([(&#39;gru_model_hs&#39;, rmse_gru_model_hs)], columns=column_names)
+df = df.append(rmse_gru_model_hs_df)
+
+rmse_ed_lstm_model_sss_df = pd.DataFrame([(&#39;ed_lstm_model_sss&#39;, rmse_ed_lstm_model_sss)], columns=column_names)
+df = df.append(rmse_ed_lstm_model_sss_df)
+
+rmse_ed_lstm_model_hs_df = pd.DataFrame([(&#39;ed_lstm_model_hs&#39;, rmse_ed_lstm_model_hs)], columns=column_names)
+df = df.append(rmse_ed_lstm_model_hs_df)
+
+rmse_cnn_model_sss_df = pd.DataFrame([(&#39;cnn_model_sss&#39;, rmse_cnn_model_sss)], columns=column_names)
+df = df.append(rmse_cnn_model_sss_df)
+
+rmse_cnn_model_hs_df = pd.DataFrame([(&#39;cnn_model_hs&#39;, rmse_cnn_model_hs)], columns=column_names)
+df = df.append(rmse_cnn_model_hs_df)
+
+df</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p57.png" /></p>
+<pre class="r"><code>best_model = df.sort_values(by=&#39;RMSE&#39;, ascending=True)
+best_model</code></pre>
+<p><img src="/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p58.png" /></p>
+<p>As we can see, there are already serious performance differences in the different neural networks. It is therefore always worthwhile to use different networks to see which one fits best. The best fit can then be further optimized.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post I showed how to make time series predictions using neural networks.
+I have applied:</p>
+<ul>
+<li>LSTM</li>
+<li>Bidirectional LSTM</li>
+<li>GRU</li>
+<li>Encoder Decoder LSTM</li>
+<li>CNN</li>
+</ul>
+<p><strong>References</strong></p>
+<p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
+<p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>
+<p>McKinney, W., Perktold, J., &amp; Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.</p>
+<p>Pal, A., &amp; Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.</p>
+<p>Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., &amp; Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.</p>
+<p>Vishwas, B. V., &amp; Patel, A. Hands-on Time Series Analysis with Python.</p>
+</div>
