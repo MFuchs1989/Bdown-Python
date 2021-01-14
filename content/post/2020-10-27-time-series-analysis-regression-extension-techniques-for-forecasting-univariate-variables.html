@@ -40,6 +40,15 @@ output:
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Now that we are familiar with smoothing methods for predicting time series, we come to so-called regression extension techniques.</p>
+<p><strong>Univariate vs. Multivariate Time Series</strong></p>
+<p>Since these terms often cause confusion, I would like to explain these differences again at the beginning.</p>
+<p><code>Univariate</code></p>
+<p>This post will be about Univariate Time Series Analysis. This means we look at the time course of only one variable and try to build a model to predict future values based on the past course.</p>
+<p><code>Multivariate</code></p>
+<p>The following post I plan to write is about Multivariate Time Series Analysis.
+In this case, several dependent/target variables (criterions) are considered simultaneously and values for them are predicted.
+This is not to be confused with multiple models. Here, several independent variables (predictors) are used to explain a dependent variable.</p>
+<p><strong>Overview of the algorithms used</strong></p>
 <p>In the following I will present the following algorithms:</p>
 <ul>
 <li>ARIMA</li>
@@ -50,7 +59,7 @@ output:
 </div>
 <div id="theoretical-background" class="section level1">
 <h1>2 Theoretical Background</h1>
-<p>Before we jump in with Regression Extension Techniques for Forecasting Univariate Variables, it is worthwhile to understand some theoretical terminology and what it means for the algorithms that follow.</p>
+<p>Before we jump in with Regression Extension Techniques, it is worthwhile to understand some theoretical terminology and what it means for the algorithms that follow.</p>
 <p><strong>Autoregressive Models</strong></p>
 <p>An autoregression model (AR) predicts future behavior based on its past data.
 The autoregressive model is a lagged dependent variable, which contains an autoregressive term, which perhaps corrects on the grounds of habit resolve. AR is part of a time series Y(t), whihc contains a value that depends on some linear grouping of the previous value, which defined maximum lags.</p>
@@ -441,8 +450,8 @@ plt.show()</code></pre>
 <li>SARIMA</li>
 <li>SARIMAX</li>
 </ul>
-<p>These were used to predict values for univariate variables.
-In my following post I will present algorithms that allow the prediction of multiple variables.</p>
+<p>These were used to predict values for univariate time series.
+In my following post I will present algorithms that allow the prediction of multiple target variables.</p>
 <p><strong>References</strong></p>
 <p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
 <p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>

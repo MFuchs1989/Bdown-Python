@@ -1,6 +1,5 @@
 ---
-title: Time Series Analysis - Regression Extension Techniques for Forecasting Multivariate
-  Variables
+title: Time Series Analysis - Regression Extension Techniques for Multivariate Time Series
 author: Michael Fuchs
 date: '2020-10-29'
 slug: time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables
@@ -17,7 +16,7 @@ output:
 
 # 1 Introduction
 
-In my last post (["Regression Extension Techniques for Forecasting Univariate Variables"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)) I showed how to make time series predictions of single variables. Now we come to the exciting topic of how to do this for multiple variables at the same time. 
+In my last post (["Regression Extension Techniques for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)) I showed how to make time series predictions of single variables. Now we come to the exciting topic of how to do this for multiple target variables at the same time. 
 
 For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
 
@@ -653,7 +652,7 @@ for i in ['Open', 'High', 'Low', 'Close' ]:
 # 8 Conclusion
 
 Wow another great chapter created!
-In this post about time series prediction of multiple variables, I introduced the VAR and VARMA algorithms. 
+In this post about time series prediction of multiple target variables, I introduced the VAR and VARMA algorithms. 
 
  
 

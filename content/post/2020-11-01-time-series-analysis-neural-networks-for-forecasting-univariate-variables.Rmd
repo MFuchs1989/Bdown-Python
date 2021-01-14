@@ -1,5 +1,5 @@
 ---
-title: Time Series Analysis - Neural Networks for Forecasting Univariate Variables
+title: Time Series Analysis - Neural Networks for Univariate Time Series
 author: Michael Fuchs
 date: '2020-11-01'
 slug: time-series-analysis-neural-networks-for-forecasting-univariate-variables
@@ -16,7 +16,7 @@ output:
 
 # 1 Introduction
 
-Now it's time to take time series forecasting a step further. In this post, I explain the use of different neural networks to effectively predict time series. 
+Now it's time to take time series forecasting a step further. In this post, I explain the use of different neural networks to effectively predict time series. Here, we will focus on one target variable and use its time history to calculate future values.
 
 For this post the dataset *Metro_Interstate_Traffic_Volume* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
 
