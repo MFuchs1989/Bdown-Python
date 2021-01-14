@@ -250,6 +250,7 @@ df.round(decimals).head(2)</code></pre>
 </div>
 <div id="add-rows-with-the-stack-function" class="section level2">
 <h2>4.3 Add rows with the stack() function</h2>
+<p><code>information from rows</code></p>
 <p>For some analysis methods it is necessary to have the values per line in one column available separately.
 Have a look at this dataframe:</p>
 <pre class="r"><code>df = pd.DataFrame({&#39;title&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;],
@@ -282,6 +283,24 @@ final = pd.merge(new_df, df[[&#39;title&#39;, &#39;Runtime&#39;]], on=&#39;title
 final</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z5.png" /></p>
 <p>Here we go !</p>
+<p><code>information from columns</code></p>
+<p>Just as often it can happen that the structure of the data (e.g. when joining datasets) does not fit.
+Have a look at this case:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Year&#39;: [2019, 2019, 2020, 2020],
+                   &#39;Season&#39;: [&#39;Summer&#39;, &#39;Winter&#39;,&#39;Summer&#39;,&#39;Winter&#39;],
+                   &#39;Rainfall_mm&#39;: [185, 2500, 320, 1800],
+                   &#39;Sunshine_h&#39;: [800, 500, 900, 600]})
+
+df2 = df.groupby([&#39;Year&#39;, &#39;Season&#39;]).sum()
+df2</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z12.png" /></p>
+<p>In such a case the stack function can also be used:</p>
+<pre class="r"><code>df_stacked = df2.stack().reset_index()
+df_stacked.columns = [&#39;Year&#39;, &#39;Season&#39;, 
+                      &#39;Weather_Information&#39;, 
+                      &#39;Value&#39;]
+df_stacked</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z13.png" /></p>
 </div>
 <div id="drop-duplicates" class="section level2">
 <h2>4.4 Drop Duplicates</h2>
