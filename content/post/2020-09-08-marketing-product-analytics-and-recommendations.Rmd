@@ -532,6 +532,12 @@ customer_item_matrix
 
 ## 4.1 Collaborative Filtering
 
+Collaborative filtering leverages the power of community to provide recommendations. 
+Collaborative filters are one of the most popular recommender models used in the industry and have found huge success for companies. 
+
+One of the biggest prerequisites of a collaborative filtering system is the availability of data of past activity. Therefore, collaborative filters suffer from what we call the cold start problem if this data is not yet available.
+
+
 Here we are going to explore two approches to building a product recommender:
 
 + user-based

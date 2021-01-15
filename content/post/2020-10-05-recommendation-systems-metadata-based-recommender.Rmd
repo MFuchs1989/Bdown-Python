@@ -22,6 +22,9 @@ output:
 
 Now that we have developed a ["recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/) based on the film descriptions, we will go a step further in this post and add more metadata. 
 
+Unlike collaborative filters, conten-based recommenders do not require data relating to the past activity. Instead they provide recommendations based on a user profile and metadata it has on particular items. 
+However, since content-based systems don’t leverage the power of the community, they often come up with results that are not as impressive or relevant as the ones offered by collaborative filters.
+
 
 For this post the datasets *movies_metadata*, *keywords* and *credits* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender) and here:
 

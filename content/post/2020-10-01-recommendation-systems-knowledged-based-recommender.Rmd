@@ -24,6 +24,12 @@ As we have already touched on ["recommendations in the marketing context"](https
 We will start with a very simple recommender: The **Knowledged-based Recommender**
 
 
+Knowledge-based recommenders are used for items that are very rarely bought. It is simply impossible to recommend such items based on past purchasing activity or by building a user profile. 
+
+The purchase of real estate is a very good example here. Most of us make such a real estate purchase only once in their lives. Therefore, it is impossible to have historical data in this regard. In such a case, a recommendation system is needed which asks for specific criteria and preferences from the user in order to make appropriate recommendations.
+
+
+
 For this post the dataset *movies_metadata* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender).
 
 
