@@ -991,7 +991,7 @@ However, it should be mentioned at this point that the neural networks created p
 
 
 
-# 7 Conclusion
+# 7 Conclusion & Overview
 
 In this post, I showed how to do time series analysis using neural networks with the inclusion of multiple predictors. 
 

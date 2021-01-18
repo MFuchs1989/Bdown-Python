@@ -179,6 +179,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 9 Time Series Analysis
 
++ [Neural Networks with multiple predictors](https://michael-fuchs-python.netlify.app/2020/11/04/time-series-analysis-neural-networks-with-multiple-predictors/)
 + ["Neural Networks for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/11/01/time-series-analysis-neural-networks-for-forecasting-univariate-variables/)
 + ["Regression Extension Techniques for Multivariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/)
 + ["Regression Extension Techniques for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)
