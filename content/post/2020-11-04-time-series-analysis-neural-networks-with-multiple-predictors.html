@@ -40,6 +40,8 @@ output:
 <li><a href="#encoder-decoder-lstm">5.4 Encoder Decoder LSTM</a></li>
 <li><a href="#cnn">5.5 CNN</a></li>
 </ul></li>
+<li><a href="#get-the-best-model">6 Get the Best Model</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -635,6 +637,53 @@ plt.ylabel(&quot;Traffic volume&quot;)
 plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
 plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p33.png" /></p>
-<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p.png" /></p>
 </div>
+</div>
+<div id="get-the-best-model" class="section level1">
+<h1>6 Get the Best Model</h1>
+<p>Let’s see which model performs best:</p>
+<pre class="r"><code>column_names = [&quot;Model&quot;, &quot;RMSE&quot;]
+df = pd.DataFrame(columns = column_names)
+
+rmse_lstm_model_multi_df = pd.DataFrame([(&#39;lstm_model_multi&#39;, rmse_lstm_model_multi)], columns=column_names)
+df = df.append(rmse_lstm_model_multi_df)
+
+rmse_bi_lstm_model_multi_df = pd.DataFrame([(&#39;bi_lstm_model_multi&#39;, rmse_bi_lstm_model_multi)], columns=column_names)
+df = df.append(rmse_bi_lstm_model_multi_df)
+
+rmse_gru_model_multi_df = pd.DataFrame([(&#39;gru_model_multi&#39;, rmse_gru_model_multi)], columns=column_names)
+df = df.append(rmse_gru_model_multi_df)
+
+rmse_ed_lstm_model_multi_df = pd.DataFrame([(&#39;ed_lstm_model_multi&#39;, rmse_ed_lstm_model_multi)], columns=column_names)
+df = df.append(rmse_ed_lstm_model_multi_df)
+
+rmse_cnn_model_multi_df = pd.DataFrame([(&#39;cnn_model_multi&#39;, rmse_cnn_model_multi)], columns=column_names)
+df = df.append(rmse_cnn_model_multi_df)
+
+df</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p34.png" /></p>
+<pre class="r"><code>best_model = df.sort_values(by=&#39;RMSE&#39;, ascending=True)
+best_model</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p35.png" /></p>
+<p>As we can see, the CNN model fits best and outperforms the other models by far.</p>
+<p>However, it should be mentioned at this point that the neural networks created performed even better with univariate time series than with the use of multiple predictors.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post, I showed how to do time series analysis using neural networks with the inclusion of multiple predictors.</p>
+<p>Looking back, I would like to give a summary of the different posts on the topic of time series analysis:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/10/23/time-series-analysis-smoothing-methods/">Smoothing methods</a> -&gt; Prediction of <strong>1 Target Variable over Time</strong></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/">Regression Extension Techniques for Univariate Time Series</a> -&gt; Prediction of <strong>1 Target Variable over Time</strong></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/">Regression Extension Techniques for Multivariate Time Series</a> -&gt; Prediction of <strong>n Target Variable over Time</strong></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/11/01/time-series-analysis-neural-networks-for-forecasting-univariate-variables/">Neural Networks for Univariate Time Series</a> -&gt; Prediction of <strong>1 Target Variable over Time</strong></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/11/04/time-series-analysis-neural-networks-with-multiple-predictors/">Neural Networks with multiple predictors</a> -&gt; Prediction of <strong>1 Target Variable over Time with multiple predictors</strong></li>
+</ul>
+<p><strong>References</strong></p>
+<p>Christ, M., Braun, N., Neuffer, J., &amp; Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.</p>
+<p>Faouzi, J., &amp; Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.</p>
+<p>McKinney, W., Perktold, J., &amp; Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.</p>
+<p>Pal, A., &amp; Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.</p>
+<p>Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., &amp; Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.</p>
+<p>Vishwas, B. V., &amp; Patel, A. Hands-on Time Series Analysis with Python.</p>
 </div>
