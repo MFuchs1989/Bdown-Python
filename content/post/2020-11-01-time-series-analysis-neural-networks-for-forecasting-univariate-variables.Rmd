@@ -45,6 +45,7 @@ df.head()
 
 ![](/post/2020-11-01-time-series-analysis-neural-networks-for-forecasting-univariate-variables_files/p98p1.png)
 
+The variable 'traffic_volume' will be our target variable here. 
 
 
 # 3 Definition of required functions

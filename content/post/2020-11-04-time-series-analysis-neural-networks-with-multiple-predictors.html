@@ -1,0 +1,640 @@
+---
+title: Time Series Analysis - Neural Networks with multiple predictors
+author: Michael Fuchs
+date: '2020-11-04'
+slug: time-series-analysis-neural-networks-with-multiple-predictors
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a>
+<ul>
+<li><a href="#drop-duplicates">4.1 Drop Duplicates</a></li>
+<li><a href="#feature-encoding">4.2 Feature Encoding</a></li>
+<li><a href="#check-for-feature-importance">4.3 Check for Feature Importance</a></li>
+<li><a href="#generate-test-set">4.4 Generate Test Set</a></li>
+<li><a href="#feature-scaling">4.5 Feature Scaling</a></li>
+<li><a href="#train-validation-split">4.6 Train-Validation Split</a></li>
+<li><a href="#prepare-training-and-test-data-using-tf">4.7 Prepare training and test data using tf</a></li>
+</ul></li>
+<li><a href="#neural-networks-with-mult.-predictors">5 Neural Networks with mult. predictors</a></li>
+<li><a href="#lstm">5.1 LSTM</a>
+<ul>
+<li><a href="#bidirectional-lstm">5.2 Bidirectional LSTM</a></li>
+<li><a href="#gru">5.3 GRU</a></li>
+<li><a href="#encoder-decoder-lstm">5.4 Encoder Decoder LSTM</a></li>
+<li><a href="#cnn">5.5 CNN</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Neural networks can be used not only for <a href="https://michael-fuchs-python.netlify.app/2020/11/01/time-series-analysis-neural-networks-for-forecasting-univariate-variables/">“univariate time series”</a>.
+We can also incorporate other predictors into the model with their help.
+This is what this post is about.</p>
+<p>For this post the dataset <em>Metro_Interstate_Traffic_Volume</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn import preprocessing
+from sklearn import metrics
+import tensorflow as tf
+from xgboost import XGBRegressor
+
+import matplotlib.pyplot as plt
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;Metro_Interstate_Traffic_Volume.csv&#39;)
+
+print(df.shape)
+df.head()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p1.png" /></p>
+<p>The variable ‘traffic_volume’ will be our target variable again.</p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required functions</h1>
+<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    &#39;&#39;&#39;    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100</code></pre>
+<pre class="r"><code>def timeseries_evaluation_metrics_func(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    &#39;&#39;&#39;    
+    #print(&#39;Evaluation metric results: &#39;)
+    print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
+    print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
+<pre class="r"><code>def multiple_data_prep_function(predictors, target, start, end, window, horizon):
+    &#39;&#39;&#39;
+    Prepare univariate data that is suitable for a time series
+    
+    Args:
+        predictors (float64): Scaled values for the predictors, numpy array of floats 
+        target (float64): Scaled values for the target variable, numpy array of floats       
+        start (int): Start point of range, integer
+        end (int): End point of range, integer
+        window (int): Number of units to be viewed per step, integer
+        horizon (int): Number of units to be predicted, integer
+    
+    Returns:
+        X (float64): Generated X-values for each step, numpy array of floats
+        y (float64): Generated y-values for each step, numpy array of floats
+    &#39;&#39;&#39;   
+    X = []
+    y = []
+
+    start = start + window
+    if end is None:
+        end = len(predictors) - horizon
+
+    for i in range(start, end):
+        indices = range(i-window, i)
+        X.append(predictors[indices])
+        indicey = range(i+1, i+1+horizon)
+        y.append(target[indicey])
+    return np.array(X), np.array(y)</code></pre>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<div id="drop-duplicates" class="section level2">
+<h2>4.1 Drop Duplicates</h2>
+<pre class="r"><code>df = df.drop_duplicates(subset=[&#39;date_time&#39;], keep=False)
+
+df.shape</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p2.png" /></p>
+</div>
+<div id="feature-encoding" class="section level2">
+<h2>4.2 Feature Encoding</h2>
+<p>We have three categorical variables (‘holiday’, ‘weather_main’ and ‘weather_description’) which need to be coded. We use the <a href="https://michael-fuchs-python.netlify.app/2019/06/14/the-use-of-dummy-variables/">get_dummies function</a> for this which does the same as <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/#one-hot-encoder">One Hot Encoding from Scikit Learn</a>.</p>
+<pre class="r"><code># Encode feature &#39;holiday&#39;
+dummy_holiday = pd.get_dummies(df[&#39;holiday&#39;], prefix=&quot;holiday&quot;)
+column_name = df.columns.values.tolist()
+column_name.remove(&#39;holiday&#39;)
+df = df[column_name].join(dummy_holiday)
+
+# Encode feature &#39;weather_main&#39;
+dummy_weather_main = pd.get_dummies(df[&#39;weather_main&#39;], prefix=&quot;weather_main&quot;)
+column_name = df.columns.values.tolist()
+column_name.remove(&#39;weather_main&#39;)
+df = df[column_name].join(dummy_weather_main)
+
+
+# Encode feature &#39;weather_description&#39;
+dummy_weather_description = pd.get_dummies(df[&#39;weather_description&#39;], prefix=&quot;weather_description&quot;)
+column_name = df.columns.values.tolist()
+column_name.remove(&#39;weather_description&#39;)
+df = df[column_name].join(dummy_weather_description)
+
+# Print final dataframe
+print()
+print(&#39;Shape of new dataframe: &#39; + str(df.shape))</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p3.png" /></p>
+<p>Now we have increased the number of features from our dataset from 9 to 60.</p>
+</div>
+<div id="check-for-feature-importance" class="section level2">
+<h2>4.3 Check for Feature Importance</h2>
+<p>Since not all features are relevant, we can check the Feature Importance at this point. We use XGBoost for this, since this algorithm has a very strong performance for our problem.</p>
+<pre class="r"><code>column_names_predictors = df.columns.values.tolist()
+
+# Exclude target variable and date_time
+column_names_predictors.remove(&#39;traffic_volume&#39;)
+column_names_predictors.remove(&#39;date_time&#39;)
+
+column_name_criterium = &#39;traffic_volume&#39;
+
+print(&#39;Length of remaining predictors: &#39; + str(len(column_names_predictors)))
+print()
+print(&#39;Target Variable: &#39; + str(column_name_criterium))</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p4.png" /></p>
+<pre class="r"><code>model = XGBRegressor()
+model.fit(df[column_names_predictors],df[column_name_criterium])</code></pre>
+<p>Let’s output the features with the corresponding score value, which have been retained by XGBoost.</p>
+<pre class="r"><code>feature_important = model.get_booster().get_score(importance_type=&#39;gain&#39;)
+keys = list(feature_important.keys())
+values = list(feature_important.values())
+
+data = pd.DataFrame(data=values, index=keys, columns=[&quot;score&quot;]).sort_values(by = &quot;score&quot;, ascending=False)
+data.plot(kind=&#39;barh&#39;)
+
+print()
+print(&#39;Length of remaining predictors after XGB: &#39; + str(len(data)))</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p5.png" /></p>
+<p>The calculation of the respective score can be set differently depending on the importance_type. Here is an overview of which calculation types are available:</p>
+<ul>
+<li><code>weight</code> - the number of times a feature is used to split the data across all trees.</li>
+<li><code>gain</code> - the average gain across all splits the feature is used in.</li>
+<li><code>cover</code> - the average coverage across all splits the feature is used in.</li>
+<li><code>total_gain</code> - the total gain across all splits the feature is used in.</li>
+<li><code>total_cover</code> - the total coverage across all splits the feature is used in.</li>
+</ul>
+<p>Let’s create our final dataframe:</p>
+<pre class="r"><code># Get column names of remaining predictors after XGB
+features_to_keep = list(data.index)
+# Append name of target variable
+features_to_keep.append(column_name_criterium)
+
+# Create final dataframe
+final_df = df[features_to_keep]
+
+print()
+print(&#39;Length of features_to_keep: &#39; + str(len(features_to_keep)))
+print(&#39;(includes 44 predictors and the target variable)&#39;)
+print()
+print(&#39;Shape of final dataframe: &#39; + str(final_df.shape))</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p6.png" /></p>
+</div>
+<div id="generate-test-set" class="section level2">
+<h2>4.4 Generate Test Set</h2>
+<p>Of course, we again need a test set that was not seen in any way by the created neural networks.</p>
+<pre class="r"><code>test_data = final_df.tail(10)
+
+final_df = final_df.drop(final_df.tail(10).index)
+
+final_df.shape</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p7.png" /></p>
+</div>
+<div id="feature-scaling" class="section level2">
+<h2>4.5 Feature Scaling</h2>
+<pre class="r"><code>scaler_x = preprocessing.MinMaxScaler()
+scaler_y = preprocessing.MinMaxScaler()
+
+
+x_scaled = scaler_x.fit_transform(final_df)
+y_scaled = scaler_y.fit_transform(final_df[[column_name_criterium]])</code></pre>
+</div>
+<div id="train-validation-split" class="section level2">
+<h2>4.6 Train-Validation Split</h2>
+<p>In the last post about time series analysis with neural networks I presented two methods:</p>
+<ul>
+<li>Single Step Style</li>
+<li>Horizon Style</li>
+</ul>
+<p>The single step style is not possible for neural networks with multiple predictors.
+Why not ? See here:</p>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99s1.png" /></p>
+<p>Here in the Single Step Style at univariate Time Series, we can use the prediction made before for the one that follows.</p>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99s2.png" /></p>
+<p>If we now have multiple predictors, we can determine the one value for the target variable, but we do not have predicted values for our predictors on the basis of which we can make the further predictions.</p>
+<p>For this reason, we must limit ourselves to Horizon Style at this point.</p>
+<pre class="r"><code>multi_hist_window_hs = 48
+horizon_hs = 10
+train_split_hs = 30000
+
+x_train_multi_hs, y_train_multi_hs = multiple_data_prep_function(x_scaled, y_scaled, 
+                                                                 0, train_split_hs, 
+                                                                 multi_hist_window_hs, horizon_hs)
+
+x_val_multi_hs, y_val_multi_hs= multiple_data_prep_function(x_scaled, y_scaled, 
+                                                            train_split_hs, None, 
+                                                            multi_hist_window_hs, horizon_hs)</code></pre>
+<pre class="r"><code>print (&#39;Length of first Single Window:&#39;)
+print (len(x_train_multi_hs[0]))
+print()
+print (&#39;Target horizon:&#39;)
+print (y_train_multi_hs[0])</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p8.png" /></p>
+</div>
+<div id="prepare-training-and-test-data-using-tf" class="section level2">
+<h2>4.7 Prepare training and test data using tf</h2>
+<pre class="r"><code>BATCH_SIZE_hs = 256
+BUFFER_SIZE_hs = 150
+
+train_multi_hs = tf.data.Dataset.from_tensor_slices((x_train_multi_hs, y_train_multi_hs))
+train_multi_hs = train_multi_hs.cache().shuffle(BUFFER_SIZE_hs).batch(BATCH_SIZE_hs).repeat()
+
+validation_multi_hs = tf.data.Dataset.from_tensor_slices((x_val_multi_hs, y_val_multi_hs))
+validation_multi_hs = validation_multi_hs.batch(BATCH_SIZE_hs).repeat()</code></pre>
+</div>
+</div>
+<div id="neural-networks-with-mult.-predictors" class="section level1">
+<h1>5 Neural Networks with mult. predictors</h1>
+<p>In the following, I will again use several types of neural networks, which are possible for time series analysis, to check which type of neural network fits our data best.</p>
+<p>The following networks will be used:</p>
+<ul>
+<li>LSTM</li>
+<li>Bidirectional LSTM</li>
+<li>GRU</li>
+<li>Encoder Decoder LSTM</li>
+<li>CNN</li>
+</ul>
+<p>To save me more lines of code later, I’ll set a few parameters for the model training at this point:</p>
+<pre class="r"><code>n_steps_per_epoch = 117
+n_validation_steps = 20
+n_epochs = 100</code></pre>
+</div>
+<div id="lstm" class="section level1">
+<h1>5.1 LSTM</h1>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(100, input_shape=x_train_multi_hs.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.LSTM(units=100,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/lstm_model_multi.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_multi_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_multi_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p9.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[features_to_keep]
+test_horizon = df_temp.tail(multi_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history)
+test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+# Inserting the model
+predicted_results = trained_lstm_model_multi.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p10.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_y.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p11.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data[column_name_criterium], predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p12.png" /></p>
+<pre class="r"><code>rmse_lstm_model_multi = np.sqrt(metrics.mean_squared_error(test_data[column_name_criterium], predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data[column_name_criterium]))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p13.png" /></p>
+<div id="bidirectional-lstm" class="section level2">
+<h2>5.2 Bidirectional LSTM</h2>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(150, return_sequences=True), 
+                                  input_shape=x_train_multi_hs.shape[-2:]),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(50)),
+    tf.keras.layers.Dense(20, activation=&#39;tanh&#39;),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/bi_lstm_model_multi.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_multi_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_multi_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p14.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_bi_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[features_to_keep]
+test_horizon = df_temp.tail(multi_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history)
+test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+# Inserting the model
+predicted_results = trained_bi_lstm_model_multi.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p15.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_y.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p16.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data[column_name_criterium], predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p17.png" /></p>
+<pre class="r"><code>rmse_bi_lstm_model_multi = np.sqrt(metrics.mean_squared_error(test_data[column_name_criterium], predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data[column_name_criterium]))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p18.png" /></p>
+</div>
+<div id="gru" class="section level2">
+<h2>5.3 GRU</h2>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.GRU(100, input_shape=x_train_multi_hs.shape[-2:],return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.GRU(units=50,return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(units=horizon_hs)])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/gru_model_multi.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_multi_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_multi_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p19.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_gru_model_multi = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[features_to_keep]
+test_horizon = df_temp.tail(multi_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history)
+test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+# Inserting the model
+predicted_results = trained_gru_model_multi.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p20.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_y.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p21.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data[column_name_criterium], predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p22.png" /></p>
+<pre class="r"><code>rmse_gru_model_multi = np.sqrt(metrics.mean_squared_error(test_data[column_name_criterium], predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data[column_name_criterium]))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p23.png" /></p>
+</div>
+<div id="encoder-decoder-lstm" class="section level2">
+<h2>5.4 Encoder Decoder LSTM</h2>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential([
+    tf.keras.layers.LSTM(40, input_shape=x_train_multi_hs.shape[-2:], return_sequences=True),
+    tf.keras.layers.LSTM(units=20,return_sequences=True),
+    tf.keras.layers.LSTM(units=15),
+    tf.keras.layers.RepeatVector(y_train_multi_hs.shape[1]), 
+    tf.keras.layers.LSTM(units=40,return_sequences=True),
+    tf.keras.layers.LSTM(units=25,return_sequences=True),
+    tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(units=1))])
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/ed_lstm_model_multi.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_multi_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_multi_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p24.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_ed_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[features_to_keep]
+test_horizon = df_temp.tail(multi_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history)
+test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+# Inserting the model
+predicted_results = trained_ed_lstm_model_multi.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p25.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_y.inverse_transform(predicted_results.reshape(-1,1))
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p26.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data[column_name_criterium], predicted_inv_trans)</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p27.png" /></p>
+<pre class="r"><code>rmse_ed_lstm_model_multi = np.sqrt(metrics.mean_squared_error(test_data[column_name_criterium], predicted_inv_trans))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data[column_name_criterium]))
+plt.plot(list(predicted_inv_trans))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p28.png" /></p>
+</div>
+<div id="cnn" class="section level2">
+<h2>5.5 CNN</h2>
+<p><strong>Define Layer Structure</strong></p>
+<pre class="r"><code>model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation=&#39;relu&#39;, 
+                                 input_shape=(x_train_multi_hs.shape[1], x_train_multi_hs.shape[2])))
+model.add(tf.keras.layers.MaxPool1D(pool_size=2))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(30, activation=&#39;relu&#39;))
+model.add(tf.keras.layers.Dropout(0.2))
+model.add(tf.keras.layers.Dense(units=horizon_hs))
+
+model.compile(loss=&#39;mse&#39;,
+              optimizer=&#39;adam&#39;)</code></pre>
+<p><strong>Fit the model</strong></p>
+<pre class="r"><code>model_path = &#39;model/cnn_model_multi.h5&#39;</code></pre>
+<pre class="r"><code>keras_callbacks = [tf.keras.callbacks.EarlyStopping(monitor=&#39;val_loss&#39;, 
+                                                    min_delta=0, patience=10, 
+                                                    verbose=1, mode=&#39;min&#39;),
+                   tf.keras.callbacks.ModelCheckpoint(model_path,monitor=&#39;val_loss&#39;, 
+                                                      save_best_only=True, 
+                                                      mode=&#39;min&#39;, verbose=0)]</code></pre>
+<pre class="r"><code>history = model.fit(train_multi_hs, epochs=n_epochs, steps_per_epoch=n_steps_per_epoch,
+                    validation_data=validation_multi_hs, validation_steps=n_validation_steps, verbose =1,
+                    callbacks = keras_callbacks)</code></pre>
+<p><strong>Validate the model</strong></p>
+<pre class="r"><code>loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(loss) + 1)
+
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p29.png" /></p>
+<p><strong>Test the model</strong></p>
+<pre class="r"><code>trained_cnn_model_multi = tf.keras.models.load_model(model_path)</code></pre>
+<pre class="r"><code>df_temp = df[features_to_keep]
+test_horizon = df_temp.tail(multi_hist_window_hs)
+test_history = test_horizon.values
+
+
+test_scaled = scaler_x.fit_transform(test_history)
+test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+# Inserting the model
+predicted_results = trained_cnn_model_multi.predict(test_scaled)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p30.png" /></p>
+<pre class="r"><code>predicted_inv_trans = scaler_y.inverse_transform(predicted_results)
+predicted_inv_trans</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p31.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(test_data[column_name_criterium], predicted_inv_trans[0])</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p32.png" /></p>
+<pre class="r"><code>rmse_cnn_model_multi = np.sqrt(metrics.mean_squared_error(test_data[column_name_criterium], predicted_inv_trans[0]))</code></pre>
+<pre class="r"><code>plt.plot(list(test_data[column_name_criterium]))
+plt.plot(list(predicted_inv_trans[0]))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;Traffic volume&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p33.png" /></p>
+<p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p.png" /></p>
+</div>
+</div>
