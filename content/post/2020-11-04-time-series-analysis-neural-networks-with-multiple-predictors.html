@@ -32,9 +32,9 @@ output:
 <li><a href="#train-validation-split">4.6 Train-Validation Split</a></li>
 <li><a href="#prepare-training-and-test-data-using-tf">4.7 Prepare training and test data using tf</a></li>
 </ul></li>
-<li><a href="#neural-networks-with-mult.-predictors">5 Neural Networks with mult. predictors</a></li>
-<li><a href="#lstm">5.1 LSTM</a>
+<li><a href="#neural-networks-with-mult.-predictors">5 Neural Networks with mult. predictors</a>
 <ul>
+<li><a href="#lstm">5.1 LSTM</a></li>
 <li><a href="#bidirectional-lstm">5.2 Bidirectional LSTM</a></li>
 <li><a href="#gru">5.3 GRU</a></li>
 <li><a href="#encoder-decoder-lstm">5.4 Encoder Decoder LSTM</a></li>
@@ -307,9 +307,8 @@ validation_multi_hs = validation_multi_hs.batch(BATCH_SIZE_hs).repeat()</code></
 <pre class="r"><code>n_steps_per_epoch = 117
 n_validation_steps = 20
 n_epochs = 100</code></pre>
-</div>
-<div id="lstm" class="section level1">
-<h1>5.1 LSTM</h1>
+<div id="lstm" class="section level2">
+<h2>5.1 LSTM</h2>
 <p><strong>Define Layer Structure</strong></p>
 <pre class="r"><code>model = tf.keras.models.Sequential([
     tf.keras.layers.LSTM(100, input_shape=x_train_multi_hs.shape[-2:],return_sequences=True),
@@ -372,6 +371,7 @@ plt.ylabel(&quot;Traffic volume&quot;)
 plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
 plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p13.png" /></p>
+</div>
 <div id="bidirectional-lstm" class="section level2">
 <h2>5.2 Bidirectional LSTM</h2>
 <p><strong>Define Layer Structure</strong></p>
