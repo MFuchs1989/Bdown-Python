@@ -1,0 +1,315 @@
+---
+title: Ensemble Modeling - XGBoost
+author: Michael Fuchs
+date: '2020-04-01'
+slug: ensemble-modeling-xgboost
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#theoretical-background">2 Theoretical Background</a></li>
+<li><a href="#import-the-libraries">3 Import the libraries</a></li>
+<li><a href="#xgboost-for-classification">4 XGBoost for Classification</a>
+<ul>
+<li><a href="#load-the-bank-dataset">4.1 Load the bank dataset</a></li>
+<li><a href="#pre-process-the-bank-dataset">4.2 Pre-process the bank dataset</a></li>
+<li><a href="#fit-the-model">4.3 Fit the Model</a></li>
+<li><a href="#evaluate-the-model">4.4 Evaluate the Model</a></li>
+<li><a href="#monitor-performance-and-early-stopping">4.5 Monitor Performance and Early Stopping</a></li>
+<li><a href="#xgboost-built-in-feature-importance">4.6 Xgboost Built-in Feature Importance</a>
+<ul>
+<li><a href="#get-feature-importance-of-all-features">4.6.1 Get Feature Importance of all Features</a></li>
+<li><a href="#get-the-feature-importance-of-all-the-features-the-model-has-retained">4.6.2 Get the feature importance of all the features the model has retained</a></li>
+</ul></li>
+<li><a href="#grid-search">4.7 Grid Search</a></li>
+</ul></li>
+<li><a href="#xgboost-for-regression">5 XGBoost for Regression</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my previous post I talked about <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">boosting methods</a> and introduced the algorithms <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/#adaboost-adaptive-boosting">AdaBoost</a> and <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/#gradient-boosting">Gradient Boosting</a>.</p>
+<p>There is another boosting algorithm that has become very popular because its performance and predictive power is extremely good. We are talking here about the so-called <strong>XGBoost</strong>.</p>
+<p>For this post I used two different datasets which can be found on the statistics platform <a href="https://www.kaggle.com">“Kaggle”</a>.
+You can download them from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets">“GitHub Repository”</a> as well.</p>
+<p>I used:</p>
+<ul>
+<li><code>bank.csv</code> for the Classification part and</li>
+<li><code>houce_prices.csv</code> for the Regression part</li>
+</ul>
+</div>
+<div id="theoretical-background" class="section level1">
+<h1>2 Theoretical Background</h1>
+<p>As we know from the <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">Ensemble Modeling - Boosting</a> post, gradient boosting is one of the most powerful techniques for building predictive models.
+XGBoost is an efficient implementation of gradient boosting for classification and regression problems.</p>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://xgboost.readthedocs.io/en/latest/index.html">XGBoost documentation</a></li>
+<li><a href="https://xgboost.readthedocs.io/en/latest/parameter.html">Parameters</a></li>
+<li><a href="https://xgboost.readthedocs.io/en/latest/python/python_intro.html">Python package</a></li>
+<li><a href="https://github.com/dmlc/xgboost/tree/master/demo/guide-python">Python examples</a></li>
+<li><a href="https://github.com/dmlc/xgboost/blob/master/demo/guide-python/sklearn_examples.py">scikit-learn examples</a></li>
+</ul>
+<p><strong>Introduction to Gradient Boosting</strong></p>
+<p>The Gradient Boosting algorithm involves three elements:</p>
+<ul>
+<li>A loss function to be optimized, such as cross entropy for classification or mean squared error for regression problems.</li>
+<li>A weak learner to make predictions, such as a greedily constructed decision tree.</li>
+<li>An additive model, used to add weak learners to minimize the loss function.</li>
+</ul>
+<p>New weak learners are added to the model in an effort to correct the residual errors of all previous trees. The result is a powerful predictive modeling algorithm.</p>
+<p><strong>Introduction to XGBoost</strong></p>
+<p>XGBoost is an implementation of gradient boosted decision trees designed for speed and performance.</p>
+<p>XGBoost stands for</p>
+<ul>
+<li>e<strong>X</strong>treme</li>
+<li><strong>G</strong>radient</li>
+<li><strong>Boost</strong>ing</li>
+</ul>
+<p>In addition to supporting all key variations of the technique, the real interest is the speed provided by the careful engineering of the implementation, including:</p>
+<ul>
+<li>Parallelization of tree construction using all of your CPU cores during training.</li>
+<li>Distributed Computing for training very large models using a cluster of machines.</li>
+<li>Out-of-Core Computing for very large datasets that don’t fit into memory.</li>
+<li>Cache Optimization of data structures and algorithms to make best use of hardware.</li>
+</ul>
+<p>The advantage of XGBoost over other boosting algorithms is clearly the speed at which it works.</p>
+<p><strong>Getting Started</strong></p>
+<p>The machine learning library Scikit-Learn supports different implementations of gradient boosting classifiers, including XGBoost.
+You can install it using pip, as follows:</p>
+<p><code>pip install xgboost</code></p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>3 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from matplotlib import pyplot as plt
+from matplotlib import pyplot
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import mean_squared_error
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import TimeSeriesSplit
+
+
+import xgboost as xgb
+from xgboost import plot_importance
+from xgboost import XGBClassifier
+from xgboost import XGBRegressor
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)</code></pre>
+</div>
+<div id="xgboost-for-classification" class="section level1">
+<h1>4 XGBoost for Classification</h1>
+<div id="load-the-bank-dataset" class="section level2">
+<h2>4.1 Load the bank dataset</h2>
+<pre class="r"><code>bank = pd.read_csv(&quot;bank.csv&quot;, sep=&quot;;&quot;)
+bank.head()</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p1.png" /></p>
+</div>
+<div id="pre-process-the-bank-dataset" class="section level2">
+<h2>4.2 Pre-process the bank dataset</h2>
+<pre class="r"><code>safe_y = bank[[&#39;y&#39;]]
+
+col_to_exclude = [&#39;y&#39;]
+bank = bank.drop(col_to_exclude, axis=1)
+
+#Just select the categorical variables
+cat_col = [&#39;object&#39;]
+cat_columns = list(bank.select_dtypes(include=cat_col).columns)
+cat_data = bank[cat_columns]
+cat_vars = cat_data.columns
+
+#Create dummy variables for each cat. variable
+for var in cat_vars:
+    cat_list = pd.get_dummies(bank[var], prefix=var)
+    bank=bank.join(cat_list)
+
+    
+data_vars=bank.columns.values.tolist()
+to_keep=[i for i in data_vars if i not in cat_vars]
+
+#Create final dataframe
+bank_final=bank[to_keep]
+
+bank = pd.concat([bank_final, safe_y], axis=1)
+bank.head()</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p2.png" /></p>
+<pre class="r"><code>x = bank.drop(&#39;y&#39;, axis=1)
+y = bank[&#39;y&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="fit-the-model" class="section level2">
+<h2>4.3 Fit the Model</h2>
+<p>I use objective=‘binary:logistic’ function because I train a classifier which handles <strong>only two classes</strong>.</p>
+<p>If you have a <strong>multi label classification</strong> problem use objective=‘multi:softmax’ or ‘multi:softprob’ as described here: <a href="https://xgboost-clone.readthedocs.io/en/latest/parameter.html#learning-task-parameters">Learning Task Parameters</a>.</p>
+<pre class="r"><code>xgb = XGBClassifier(objective= &#39;binary:logistic&#39;)
+xgb.fit(trainX, trainY)</code></pre>
+</div>
+<div id="evaluate-the-model" class="section level2">
+<h2>4.4 Evaluate the Model</h2>
+<pre class="r"><code>preds_train = xgb.predict(trainX)
+preds_test = xgb.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;XGBoosting:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on validation data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=preds_train),
+    accuracy_score(y_true=testY, y_pred=preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p3.png" /></p>
+</div>
+<div id="monitor-performance-and-early-stopping" class="section level2">
+<h2>4.5 Monitor Performance and Early Stopping</h2>
+<p>XGBoost can evaluate and report on the performance on a test set during model training.</p>
+<p>For example, we can report on the <strong>binary classification</strong> error rate (error) on a standalone test set (eval_set) while training an XGBoost model as follows:</p>
+<pre class="r"><code>eval_set = [(testX, testY)]
+xgb.fit(trainX, trainY, eval_metric=&quot;error&quot;, eval_set=eval_set, verbose=True)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p4.png" /></p>
+<p>For <strong>multiple classification</strong> problems use eval_metric=“merror”.</p>
+<p>To get a better overview of the available parameters, check out <a href="https://xgboost.readthedocs.io/en/latest/parameter.html#">XGBoost Parameters</a>.</p>
+<p>Subsequently, we will use this information to interrupt the model training as soon as no significant improvement takes place. We can do this by setting the early_stopping_rounds parameter when calling model.fit() to the number of iterations that no improvement is seen on the validation dataset before training is stopped.</p>
+<pre class="r"><code>xgb_es = XGBClassifier(objective= &#39;binary:logistic&#39;)
+
+eval_set = [(testX, testY)]
+xgb_es.fit(trainX, trainY, early_stopping_rounds=7, eval_metric=&quot;error&quot;, eval_set=eval_set, verbose=True)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p5.png" /></p>
+<pre class="r"><code>preds_train = xgb_es.predict(trainX)
+preds_test = xgb_es.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;XGBoosting:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on validation data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=preds_train),
+    accuracy_score(y_true=testY, y_pred=preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p6.png" /></p>
+</div>
+<div id="xgboost-built-in-feature-importance" class="section level2">
+<h2>4.6 Xgboost Built-in Feature Importance</h2>
+<p>Another general advantage of using ensembles of decision tree methods like gradient boosting (which has not yet come up in my <a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">boosting post</a>) is that they can automatically provide estimates of feature importance from a trained model.</p>
+<p>A trained XGBoost model automatically calculates feature importance on your predictive modeling problem.</p>
+<div id="get-feature-importance-of-all-features" class="section level3">
+<h3>4.6.1 Get Feature Importance of all Features</h3>
+<pre class="r"><code>print(xgb_es.feature_importances_)
+print()
+print(&#39;Length of feature_importances_ list: &#39; + str(len(xgb_es.feature_importances_)))
+print()
+print(&#39;Number of predictors in trainX: &#39; + str(trainX.shape[1]))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p7.png" /></p>
+<p>We can directly plot the feature importance with plot_importance.</p>
+<pre class="r"><code># plot feature importance
+plot_importance(xgb_es)
+pyplot.show()</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p8.png" /></p>
+<p>Since this overview is extremely poor, let’s look at just the best 10 features:</p>
+<pre class="r"><code>feature_names = trainX.columns
+
+feature_importance_df = pd.DataFrame(xgb_es.feature_importances_, feature_names)
+feature_importance_df = feature_importance_df.reset_index()
+feature_importance_df.columns = [&#39;Feature&#39;, &#39;Importance&#39;]
+feature_importance_df</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p9.png" /></p>
+<pre class="r"><code>feature_importance_df_top_10 = feature_importance_df.sort_values(by=&#39;Importance&#39;, ascending=False).head(10)
+feature_importance_df_top_10</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p10.png" /></p>
+<pre class="r"><code>plt.barh(feature_importance_df_top_10.Feature, feature_importance_df_top_10.Importance)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p11.png" /></p>
+</div>
+<div id="get-the-feature-importance-of-all-the-features-the-model-has-retained" class="section level3">
+<h3>4.6.2 Get the feature importance of all the features the model has retained</h3>
+<p>Previously, we saw the importance that the XGBoost algorithm assigns to each predictor. XGBoost automatically takes this information for effective model training. This means that not all variables are included in the training.</p>
+<pre class="r"><code>features_selected_from_XGBoost = xgb_es.get_booster().get_score(importance_type=&#39;gain&#39;)
+keys = list(features_selected_from_XGBoost.keys())
+values = list(features_selected_from_XGBoost.values())
+
+features_selected_from_XGBoost = pd.DataFrame(data=values, 
+                                              index=keys, 
+                                              columns=[&quot;Importance&quot;]).sort_values(by = &quot;Importance&quot;, 
+                                                                             ascending=False)
+features_selected_from_XGBoost.plot(kind=&#39;barh&#39;)
+
+print()
+print(&#39;Length of remaining predictors after XGB: &#39; + str(len(features_selected_from_XGBoost)))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p12.png" /></p>
+<p>So what variables were <strong>not considered</strong>? Quite simply: all those that have been assigned an Importance Score of 0. Let’s filter our feature_importance_df for score == 0.</p>
+<pre class="r"><code>print(feature_importance_df[(feature_importance_df[&quot;Importance&quot;] == 0)])
+print()
+print(&#39;Length of features with Importance = zero:  &#39; + str(feature_importance_df[(feature_importance_df[&quot;Importance&quot;] == 0)].shape[0] ))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p13.png" /></p>
+<p>The following step can be considered superfluous, but I’ll do it anyway and get the 10 best features that the model has kept. These should also be the same as in the last step in chapter 4.6.1.</p>
+<pre class="r"><code>top_10_of_retained_features_from_model = features_selected_from_XGBoost.sort_values(by=&#39;Importance&#39;, ascending=False).head(10)
+top_10_of_retained_features_from_model</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p14.png" /></p>
+<pre class="r"><code>plt.barh(top_10_of_retained_features_from_model.index, top_10_of_retained_features_from_model.Importance)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p15.png" /></p>
+</div>
+</div>
+<div id="grid-search" class="section level2">
+<h2>4.7 Grid Search</h2>
+<pre class="r"><code>xgb_grid = XGBClassifier(objective= &#39;binary:logistic&#39;)</code></pre>
+<pre class="r"><code>parameters = {
+    &#39;max_depth&#39;: range (2, 10, 1),
+    &#39;colsample_bytree&#39;: [0.6, 0.8, 1.0],     
+    &#39;gamma&#39;: [0.5, 1, 1.5],   
+    &#39;n_estimators&#39;: range(60, 220, 40),
+    &#39;learning_rate&#39;: [0.0001, 0.001, 0.01, 0.1, 0.2]}</code></pre>
+<p>Grid Search may take an extremely long time to calculate all possible given combinations of parameters. With XGBoost we have the comfortable situation of using early stopping. This function can also be implemented in Grid Search.</p>
+<pre class="r"><code>fit_params={&quot;early_stopping_rounds&quot;:10, 
+            &quot;eval_metric&quot; : &quot;rmse&quot;, 
+            &quot;eval_set&quot; : [[testX, testY]]}</code></pre>
+<p>For scoring I have chosen ‘neg_log_loss’ here. However, a number of other parameters can also be used, see here: <a href="https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter">Scoring parameter</a>.</p>
+<p>Set verbose=1 if you want to receive information about the processing status of grid search.
+As you can see from the output below, there are 1440 possible combinations for the defined parameter values, which are calculated by GridSearch (8<em>3</em>3<em>4</em>5 = 1,440). Add to this the number of cross-validations (cv=5) resulting in a total number of 7,200 fits (1,440*5).</p>
+<p>These calculations would take a long time even with a good computer. I therefore strongly recommend to use early stopping also when using GridSearch.</p>
+<pre class="r"><code>cv = 5
+
+grid_search = GridSearchCV(
+    estimator=xgb_grid,
+    param_grid=parameters,
+    scoring = &#39;neg_log_loss&#39;,
+    n_jobs = -1,
+    cv = TimeSeriesSplit(n_splits=cv).get_n_splits([trainX, trainY]),
+    verbose=1)
+
+xgb_grid_model = grid_search.fit(trainX, trainY, **fit_params)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p16.png" /></p>
+<pre class="r"><code>print(&#39;Best Parameter:&#39;)
+print(xgb_grid_model.best_params_) 
+print()
+print(&#39;------------------------------------------------------------------&#39;)
+print()
+print(xgb_grid_model.best_estimator_)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p17.png" /></p>
+<pre class="r"><code>preds_train = xgb_grid_model.predict(trainX)
+preds_test = xgb_grid_model.predict(testX)
+
+print(&#39;XGBoosting with GridSearch:\n&gt; Accuracy on training data = {:.4f}\n&gt; Accuracy on validation data = {:.4f}&#39;.format(
+    accuracy_score(y_true=trainY, y_pred=preds_train),
+    accuracy_score(y_true=testY, y_pred=preds_test)
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p18.png" /></p>
+<p>Yeah, we were able to increase the prediction accuracy again.</p>
+</div>
+</div>
+<div id="xgboost-for-regression" class="section level1">
+<h1>5 XGBoost for Regression</h1>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+</div>
