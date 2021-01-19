@@ -33,14 +33,14 @@ In conclusion to all publications on dimension reduction methods, I am giving an
 
 Here are the links to the individual topics.
 
-+ ["PCA in general"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
-+ ["PCA for speed up ML models"](https://michael-fuchs-python.netlify.app/2020/07/31/pca-for-speed-up-ml-models/)
-+ ["PCA for Visualization"](https://michael-fuchs-python.netlify.app/2020/07/27/pca-for-visualization/)
-+ ["Randomized PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
-+ ["Incremental PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
-+ ["Kernel PCA"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
-+ ["LDA"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
-+ ["Manifold Learning"](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
++ [PCA in general](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
++ [PCA for speed up ML models](https://michael-fuchs-python.netlify.app/2020/07/31/pca-for-speed-up-ml-models/)
++ [PCA for Visualization](https://michael-fuchs-python.netlify.app/2020/07/27/pca-for-visualization/)
++ [Randomized PCA](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
++ [Incremental PCA](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
++ [Kernel PCA](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
++ [LDA](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
++ [Manifold Learning](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
 
 
 
