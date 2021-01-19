@@ -86,6 +86,7 @@ Embedded methods:
 + ["AdaBoost Regressor"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
 + ["AdaBoost Regressor with Decision Tree Reg as base_estimator"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
 + ["Gradient Boosting Regressor"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [XGBoost Regressor](https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/#xgboost-for-regression)
 + ["Stacking Regressor"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
 
 

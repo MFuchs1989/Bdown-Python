@@ -94,6 +94,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + ["Ensemble Modeling - Voting"](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
 + ["Stacking with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
 + ["Ensemble Modeling - Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
++ [Ensemble Modeling - XGBoost](https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/#xgboost-for-classification)
 + ["Ensemble Modeling - Boosting"](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
 + ["Ensemble Modeling - Bagging"](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
 + ["Introduction to KNN Classifier"](https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/)
