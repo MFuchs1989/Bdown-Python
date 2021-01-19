@@ -1,0 +1,314 @@
+---
+title: Time Series Analysis - XGBoost for Univariate Time Series
+author: Michael Fuchs
+date: '2020-11-10'
+slug: time-series-analysis-xgboost-for-univariate-time-series
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the libraries and the data</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
+<li><a href="#train-test-split">4 Train Test Split</a></li>
+<li><a href="#create-time-series-features">5 Create Time Series Features</a></li>
+<li><a href="#fit-the-model">6 Fit the Model</a></li>
+<li><a href="#get-feature-importance">7 Get Feature Importance</a></li>
+<li><a href="#forecast-and-evaluation">8 Forecast And Evaluation</a></li>
+<li><a href="#look-at-worst-and-best-predicted-days">9 Look at Worst and Best Predicted Days</a></li>
+<li><a href="#grid-search">10 Grid Search</a></li>
+<li><a href="#conclusion">11 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Now I have written a few posts in the recent past about Time Series and Forecasting. But I didn’t want to deprive you of a very well-known and popular algorithm: XGBoost</p>
+<p>The exact functionality of this algorithm and an extensive theoretical background I have already given in this post: <a href="https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/">Ensemble Modeling - XGBoost</a>.</p>
+<p>For this post the dataset <em>PJME_hourly</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from matplotlib import pyplot as plt
+from sklearn import metrics
+
+from pmdarima.model_selection import train_test_split as time_train_test_split
+
+from xgboost import XGBRegressor
+from xgboost import plot_importance
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)</code></pre>
+<p>The dataset is about the Hourly Energy Consumption from PJM Interconnection LLC (PJM) in Megawatts.</p>
+<pre class="r"><code>pjme = pd.read_csv(&#39;PJME_hourly.csv&#39;)
+
+# Convert column Datetime to data format datetime
+pjme[&#39;Datetime&#39;] = pd.to_datetime(pjme[&#39;Datetime&#39;])
+
+# Make sure that you have the correct order of the times 
+pjme = pjme.sort_values(by=&#39;Datetime&#39;, ascending=True)
+
+# Set Datetime as index
+pjme = pjme.set_index(&#39;Datetime&#39;)
+pjme</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p1.png" /></p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required functions</h1>
+<pre class="r"><code>def create_features(df, target_variable):
+    &quot;&quot;&quot;
+    Creates time series features from datetime index
+    
+    Args:
+        df (float64): Values to be added to the model incl. corresponding datetime
+                      , numpy array of floats
+        target_variable (string): Name of the target variable within df   
+    
+    Returns:
+        X (int): Extracted values from datetime index, dataframe
+        y (int): Values of target variable, numpy array of integers
+    &quot;&quot;&quot;
+    df[&#39;date&#39;] = df.index
+    df[&#39;hour&#39;] = df[&#39;date&#39;].dt.hour
+    df[&#39;dayofweek&#39;] = df[&#39;date&#39;].dt.dayofweek
+    df[&#39;quarter&#39;] = df[&#39;date&#39;].dt.quarter
+    df[&#39;month&#39;] = df[&#39;date&#39;].dt.month
+    df[&#39;year&#39;] = df[&#39;date&#39;].dt.year
+    df[&#39;dayofyear&#39;] = df[&#39;date&#39;].dt.dayofyear
+    df[&#39;dayofmonth&#39;] = df[&#39;date&#39;].dt.day
+    df[&#39;weekofyear&#39;] = df[&#39;date&#39;].dt.weekofyear
+    
+    X = df[[&#39;hour&#39;,&#39;dayofweek&#39;,&#39;quarter&#39;,&#39;month&#39;,&#39;year&#39;,
+           &#39;dayofyear&#39;,&#39;dayofmonth&#39;,&#39;weekofyear&#39;]]
+    if target_variable:
+        y = df[target_variable]
+        return X, y
+    return X</code></pre>
+<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    &#39;&#39;&#39;    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100</code></pre>
+<pre class="r"><code>def timeseries_evaluation_metrics_func(y_true, y_pred):
+    &#39;&#39;&#39;
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    &#39;&#39;&#39;    
+    #print(&#39;Evaluation metric results: &#39;)
+    print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
+    print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
+</div>
+<div id="train-test-split" class="section level1">
+<h1>4 Train Test Split</h1>
+<pre class="r"><code>X = pjme[&#39;PJME_MW&#39;]
+
+# Test Size = 20%
+train_pjme, test_pjme = time_train_test_split(X, test_size=int(len(pjme)*0.2))
+
+train_pjme = pd.DataFrame(train_pjme)
+test_pjme = pd.DataFrame(test_pjme)</code></pre>
+<pre class="r"><code>Overview_Train_Test_Data = test_pjme \
+    .rename(columns={&#39;PJME_MW&#39;: &#39;TEST SET&#39;}) \
+    .join(train_pjme.rename(columns={&#39;PJME_MW&#39;: &#39;TRAINING SET&#39;}), how=&#39;outer&#39;) \
+    .plot(figsize=(15,5), title=&#39;Overview Train Test Data&#39;, style=&#39;.&#39;)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p2.png" /></p>
+</div>
+<div id="create-time-series-features" class="section level1">
+<h1>5 Create Time Series Features</h1>
+<pre class="r"><code>train_pjme_copy = train_pjme.copy()
+test_pjme_copy = test_pjme.copy()
+
+trainX, trainY = create_features(train_pjme_copy, target_variable=&#39;PJME_MW&#39;)
+testX, testY = create_features(test_pjme_copy, target_variable=&#39;PJME_MW&#39;)</code></pre>
+<pre class="r"><code>trainX</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p3.png" /></p>
+<pre class="r"><code>trainY</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p4.png" /></p>
+</div>
+<div id="fit-the-model" class="section level1">
+<h1>6 Fit the Model</h1>
+<pre class="r"><code>xgb = XGBRegressor(objective= &#39;reg:linear&#39;, n_estimators=1000)
+xgb
+
+xgb.fit(trainX, trainY,
+        eval_set=[(trainX, trainY), (testX, testY)],
+        early_stopping_rounds=50,
+        verbose=False) # Change verbose to True if you want to see it train</code></pre>
+</div>
+<div id="get-feature-importance" class="section level1">
+<h1>7 Get Feature Importance</h1>
+<pre class="r"><code>feature_importance = plot_importance(xgb, height=0.9)
+feature_importance</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p5.png" /></p>
+</div>
+<div id="forecast-and-evaluation" class="section level1">
+<h1>8 Forecast And Evaluation</h1>
+<pre class="r"><code>predicted_results = xgb.predict(testX)
+predicted_results</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p6.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(testY, predicted_results)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p7.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(13,8))
+plt.plot(list(testY))
+plt.plot(list(predicted_results))
+plt.title(&quot;Actual vs Predicted&quot;)
+plt.ylabel(&quot;PJME_MW&quot;)
+plt.legend((&#39;Actual&#39;,&#39;predicted&#39;))
+plt.show()</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p8.png" /></p>
+<pre class="r"><code>test_pjme[&#39;Prediction&#39;] = predicted_results
+pjme_all = pd.concat([test_pjme, train_pjme], sort=False)
+pjme_all = pjme_all.rename(columns={&#39;PJME_MW&#39;:&#39;Original_Value&#39;})
+
+Overview_Complete_Data_And_Prediction = pjme_all[[&#39;Original_Value&#39;,&#39;Prediction&#39;]].plot(figsize=(15, 5))</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p9.png" /></p>
+<p>Let’s have a look at the smallest date for which predictions were made.</p>
+<pre class="r"><code>print(&#39;Smallest date for which predictions were made: &#39; )
+print(str(test_pjme.index.min()))</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p10.png" /></p>
+<pre class="r"><code># Plot the forecast with the actuals for Mai
+f, ax = plt.subplots(1)
+f.set_figheight(5)
+f.set_figwidth(13)
+Overview_Mai_2015 = pjme_all[[&#39;Prediction&#39;,&#39;Original_Value&#39;]].plot(ax=ax,
+                                                                   style=[&#39;-&#39;,&#39;.&#39;])
+ax.set_xbound(lower=&#39;2015-05-01&#39;, upper=&#39;2015-06-01&#39;)
+ax.set_ylim(0, 60000)
+plot = plt.suptitle(&#39;Mai 2015 Forecast vs Actuals&#39;)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p11.png" /></p>
+<pre class="r"><code># Plot the forecast with the actuals for the first week of Mai
+f, ax = plt.subplots(1)
+f.set_figheight(5)
+f.set_figwidth(13)
+Overview_Mai_2015 = pjme_all[[&#39;Prediction&#39;,&#39;Original_Value&#39;]].plot(ax=ax,
+                                                                   style=[&#39;-&#39;,&#39;.&#39;])
+ax.set_xbound(lower=&#39;2015-05-01&#39;, upper=&#39;2015-05-08&#39;)
+ax.set_ylim(0, 60000)
+plot = plt.suptitle(&#39;First Week of Mai 2015 Forecast vs Actuals&#39;)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p12.png" /></p>
+</div>
+<div id="look-at-worst-and-best-predicted-days" class="section level1">
+<h1>9 Look at Worst and Best Predicted Days</h1>
+<pre class="r"><code># Copy test_pjme
+Worst_Best_Pred = test_pjme.copy()
+Worst_Best_Pred = Worst_Best_Pred.reset_index()
+
+# Generate error and absolut error values for the predictions made
+Worst_Best_Pred[&#39;error&#39;] = Worst_Best_Pred[&#39;PJME_MW&#39;] - Worst_Best_Pred[&#39;Prediction&#39;]
+Worst_Best_Pred[&#39;abs_error&#39;] = Worst_Best_Pred[&#39;error&#39;].apply(np.abs)
+
+# Extract Year, Month, Day of Month
+Worst_Best_Pred[&#39;year&#39;] = Worst_Best_Pred[&#39;Datetime&#39;].dt.year
+Worst_Best_Pred[&#39;month&#39;] = Worst_Best_Pred[&#39;Datetime&#39;].dt.month
+Worst_Best_Pred[&#39;dayofmonth&#39;] = Worst_Best_Pred[&#39;Datetime&#39;].dt.day
+
+Worst_Best_Pred</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p13.png" /></p>
+<pre class="r"><code># Group error by days
+error_by_day = Worst_Best_Pred.groupby([&#39;year&#39;,&#39;month&#39;,&#39;dayofmonth&#39;]) \
+    .mean()[[&#39;PJME_MW&#39;,&#39;Prediction&#39;,&#39;error&#39;,&#39;abs_error&#39;]]
+
+error_by_day</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p14.png" /></p>
+<pre class="r"><code># Worst absolute predicted days
+error_by_day.sort_values(&#39;abs_error&#39;, ascending=False).head(10)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p15.png" /></p>
+<pre class="r"><code># Best predicted days
+error_by_day.sort_values(&#39;abs_error&#39;, ascending=True).head(10)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p16.png" /></p>
+<pre class="r"><code># Plot the forecast with the actuals for Mai
+f, ax = plt.subplots(1)
+f.set_figheight(5)
+f.set_figwidth(13)
+Overview_Mai_2015 = pjme_all[[&#39;Prediction&#39;,&#39;Original_Value&#39;]].plot(ax=ax,
+                                                                   style=[&#39;-&#39;,&#39;.&#39;])
+ax.set_xbound(lower=&#39;2016-08-13&#39;, upper=&#39;2016-08-14&#39;)
+ax.set_ylim(0, 60000)
+plot = plt.suptitle(&#39;13 Aug, 2016 - Worst Predicted Day&#39;)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p17.png" /></p>
+<pre class="r"><code># Plot the forecast with the actuals for Mai
+f, ax = plt.subplots(1)
+f.set_figheight(5)
+f.set_figwidth(13)
+Overview_Mai_2015 = pjme_all[[&#39;Prediction&#39;,&#39;Original_Value&#39;]].plot(ax=ax,
+                                                                   style=[&#39;-&#39;,&#39;.&#39;])
+ax.set_xbound(lower=&#39;2018-05-17&#39;, upper=&#39;2018-05-18&#39;)
+ax.set_ylim(0, 60000)
+plot = plt.suptitle(&#39;17 Mai, 2018 - Best Predicted Day&#39;)</code></pre>
+<p><img src="/post/2020-11-10-time-series-analysis-xgboost-for-univariate-time-series_files/p101p18.png" /></p>
+</div>
+<div id="grid-search" class="section level1">
+<h1>10 Grid Search</h1>
+<p>If you want, you can try to increase the result and the prediction accuracy by using GridSearch. Here is the necessary syntax for it. I have not run these functions but feel free to do so.</p>
+<pre class="r"><code>from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import TimeSeriesSplit</code></pre>
+<pre class="r"><code>xgb_grid = XGBRegressor(objective= &#39;reg:linear&#39;)</code></pre>
+<pre class="r"><code>parameters = {
+    &#39;n_estimators&#39;: [700, 1000, 1400],
+    &#39;colsample_bytree&#39;: [0.7, 0.8],
+    &#39;max_depth&#39;: [15,20,25],
+    &#39;reg_alpha&#39;: [1.1, 1.2, 1.3],
+    &#39;reg_lambda&#39;: [1.1, 1.2, 1.3],
+    &#39;subsample&#39;: [0.7, 0.8, 0.9]}</code></pre>
+<pre class="r"><code>fit_params={&quot;early_stopping_rounds&quot;:50, 
+            &quot;eval_metric&quot; : &quot;rmse&quot;, 
+            &quot;eval_set&quot; : [[testX, testY]]}</code></pre>
+<pre class="r"><code>cv = 5
+
+grid_search = GridSearchCV(
+    estimator=xgb_grid,
+    param_grid=parameters,
+    scoring = &#39;neg_mean_squared_error&#39;,
+    n_jobs = -1,
+    cv = TimeSeriesSplit(n_splits=cv).get_n_splits([trainX, trainY]),
+    verbose=1)
+
+xgb_grid_model = grid_search.fit(trainX, trainY, **fit_params)</code></pre>
+<pre class="r"><code>print(&#39;Best Parameter:&#39;)
+print(xgb_grid_model.best_params_) 
+print()
+print(&#39;------------------------------------------------------------------&#39;)
+print()
+print(xgb_grid_model.best_estimator_)</code></pre>
+</div>
+<div id="conclusion" class="section level1">
+<h1>11 Conclusion</h1>
+<p>In this post I showed how to make Time Series Forcasts with the XG Boost.</p>
+</div>
