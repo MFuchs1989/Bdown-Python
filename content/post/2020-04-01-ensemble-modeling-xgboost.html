@@ -36,7 +36,16 @@ output:
 </ul></li>
 <li><a href="#grid-search">4.7 Grid Search</a></li>
 </ul></li>
-<li><a href="#xgboost-for-regression">5 XGBoost for Regression</a></li>
+<li><a href="#xgboost-for-regression">5 XGBoost for Regression</a>
+<ul>
+<li><a href="#load-the-house_prices-dataset">5.1 Load the house_prices dataset</a></li>
+<li><a href="#fit-the-model-1">5.2 Fit the Model</a></li>
+<li><a href="#evaluate-the-model-1">5.3 Evaluate the Model</a></li>
+<li><a href="#early-stopping">5.4 Early Stopping</a></li>
+<li><a href="#feature-importance">5.5 Feature Importance</a></li>
+<li><a href="#grid-search-1">5.6 Grid Search</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -307,9 +316,106 @@ print(&#39;XGBoosting with GridSearch:\n&gt; Accuracy on training data = {:.4f}\
 </div>
 <div id="xgboost-for-regression" class="section level1">
 <h1>5 XGBoost for Regression</h1>
-<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
-<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
-<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
-<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
-<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p.png" /></p>
+<div id="load-the-house_prices-dataset" class="section level2">
+<h2>5.1 Load the house_prices dataset</h2>
+<pre class="r"><code>house = pd.read_csv(&quot;houce_prices.csv&quot;)
+house = house.drop([&#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;, &#39;date&#39;, &#39;id&#39;], axis=1)
+house.head()</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p19.png" /></p>
+<pre class="r"><code>x = house.drop(&#39;price&#39;, axis=1)
+y = house[&#39;price&#39;]
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="fit-the-model-1" class="section level2">
+<h2>5.2 Fit the Model</h2>
+<pre class="r"><code>xgb = XGBRegressor(objective= &#39;reg:linear&#39;)
+xgb.fit(trainX, trainY)</code></pre>
+</div>
+<div id="evaluate-the-model-1" class="section level2">
+<h2>5.3 Evaluate the Model</h2>
+<pre class="r"><code>preds_train = xgb.predict(trainX)
+preds_test = xgb.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;XGBoosting:\n&gt; RMSE on training data = {:.4f}\n&gt; RMSE on validation data = {:.4f}&#39;.format(
+    np.sqrt(mean_squared_error(y_true=trainY, y_pred=preds_train)),
+    np.sqrt(mean_squared_error(y_true=testY, y_pred=preds_test))
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p20.png" /></p>
+</div>
+<div id="early-stopping" class="section level2">
+<h2>5.4 Early Stopping</h2>
+<pre class="r"><code>xgb_es = XGBRegressor(objective= &#39;reg:linear&#39;)
+
+eval_set = [(testX, testY)]
+xgb_es.fit(trainX, trainY, early_stopping_rounds=20, eval_metric=&quot;rmse&quot;, eval_set=eval_set, verbose=True)</code></pre>
+<pre class="r"><code>preds_train = xgb_es.predict(trainX)
+preds_test = xgb_es.predict(testX)</code></pre>
+<pre class="r"><code>print(&#39;XGBoosting:\n&gt; RMSE on training data = {:.4f}\n&gt; RMSE on validation data = {:.4f}&#39;.format(
+    np.sqrt(mean_squared_error(y_true=trainY, y_pred=preds_train)),
+    np.sqrt(mean_squared_error(y_true=testY, y_pred=preds_test))
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p21.png" /></p>
+</div>
+<div id="feature-importance" class="section level2">
+<h2>5.5 Feature Importance</h2>
+<pre class="r"><code># plot feature importance
+plot_importance(xgb_es)
+pyplot.show()</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p22.png" /></p>
+</div>
+<div id="grid-search-1" class="section level2">
+<h2>5.6 Grid Search</h2>
+<pre class="r"><code>xgb_grid = XGBRegressor(objective= &#39;reg:linear&#39;)</code></pre>
+<pre class="r"><code>parameters = {
+    &#39;n_estimators&#39;: [400, 700, 1000],
+    &#39;colsample_bytree&#39;: [0.7, 0.8],
+    &#39;max_depth&#39;: [15,20,25],
+    &#39;reg_alpha&#39;: [1.1, 1.2, 1.3],
+    &#39;reg_lambda&#39;: [1.1, 1.2, 1.3],
+    &#39;subsample&#39;: [0.7, 0.8, 0.9]}</code></pre>
+<pre class="r"><code>fit_params={&quot;early_stopping_rounds&quot;:10, 
+            &quot;eval_metric&quot; : &quot;rmse&quot;, 
+            &quot;eval_set&quot; : [[testX, testY]]}</code></pre>
+<pre class="r"><code>cv = 5
+
+grid_search = GridSearchCV(
+    estimator=xgb_grid,
+    param_grid=parameters,
+    scoring = &#39;neg_mean_squared_error&#39;,
+    n_jobs = -1,
+    cv = TimeSeriesSplit(n_splits=cv).get_n_splits([trainX, trainY]),
+    verbose=1)
+
+xgb_grid_model = grid_search.fit(trainX, trainY, **fit_params) </code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p23.png" /></p>
+<pre class="r"><code>print(&#39;Best Parameter:&#39;)
+print(xgb_grid_model.best_params_) 
+print()
+print(&#39;------------------------------------------------------------------&#39;)
+print()
+print(xgb_grid_model.best_estimator_)</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p24.png" /></p>
+<pre class="r"><code>preds_train = xgb_grid_model.predict(trainX)
+preds_test = xgb_grid_model.predict(testX)
+
+print(&#39;XGBoosting:\n&gt; RMSE on training data = {:.4f}\n&gt; RMSE on validation data = {:.4f}&#39;.format(
+    np.sqrt(mean_squared_error(y_true=trainY, y_pred=preds_train)),
+    np.sqrt(mean_squared_error(y_true=testY, y_pred=preds_test))
+))</code></pre>
+<p><img src="/post/2020-04-01-ensemble-modeling-xgboost_files/p100p25.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>That’s it.
+I gave a comprehensive theoretical introduction to gradient boosting and went into detail about XGBoost and its use. I showed how the XGBoost algorithm can be used to solve classification and regression problems.</p>
+<p>Comparing the performance with the results of the other ensemble algorithms:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/">Bagging</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/">Boosting</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">Stacking</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/">Stacking with Scikit-Learn</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/">Voting</a></li>
+</ul>
+<p>we see that the XG Boost performs better. This is the reason of its great popularity.
+The same applies when using the XGBoost for regressions.</p>
 </div>
