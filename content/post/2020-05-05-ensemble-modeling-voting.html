@@ -20,7 +20,7 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#backgroundinformation-on-voting">2 Backgroundinformation on Voting</a></li>
+<li><a href="#background-information-on-voting">2 Background Information on Voting</a></li>
 <li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
 <li><a href="#data-pre-processing">4 Data pre-processing</a></li>
 <li><a href="#voting-with-scikit-learn">5 Voting with scikit learn</a></li>
@@ -37,8 +37,8 @@ output:
 It is a technique that may be used to improve model performance, ideally achieving better performance than any single model used in the ensemble. A voting ensemble works by combining the predictions from multiple models. It can be used for classification or regression. In the case of regression, this involves calculating the average of the predictions from the models. In the case of classification, the predictions for each label are summed and the label with the majority vote is predicted.</p>
 <p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
 </div>
-<div id="backgroundinformation-on-voting" class="section level1">
-<h1>2 Backgroundinformation on Voting</h1>
+<div id="background-information-on-voting" class="section level1">
+<h1>2 Background Information on Voting</h1>
 <p><img src="/post/2020-05-05-ensemble-modeling-voting_files/p65s1.png" /></p>
 <p>A voting classifier works like an electoral system in which a predictions on new data points is made based on a voting system of the members of a group of machine learning models. According to the documentation of scikit-learn, one may choose between the hard and the soft voting type.</p>
 <p>The hard voting is applied to predicted class labels for majority rule voting. This uses the idea of “Majority carries the vote” i.e. a decision is made in favor of whoever has more than half of the vote.</p>

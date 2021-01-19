@@ -24,7 +24,7 @@ For this post the dataset *Bank Data* from the platform ["UCI Machine Learning r
 
 
 
-# 2 Backgroundinformation on Stacking
+# 2 Background Information on Stacking
 
 The aim of this technique is to increase the predictie power of the classifier, as it involves training multiple models and then using a combiner algorithm to make the final prediction by using the predictions from all these models additional inputs. 
 

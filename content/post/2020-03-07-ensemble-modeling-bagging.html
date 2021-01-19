@@ -20,7 +20,7 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#backgroundinformation-on-bagging">2 Backgroundinformation on Bagging</a></li>
+<li><a href="#background-information-on-bagging">2 Background Information on Bagging</a></li>
 <li><a href="#loading-the-libraries-and-the-data">3 Loading the libraries and the data</a></li>
 <li><a href="#data-pre-processing">4 Data pre-processing</a></li>
 <li><a href="#decision-tree-classifier">5 Decision Tree Classifier</a></li>
@@ -51,8 +51,8 @@ Ensemble learning is a machine learning paradigm where multiple models (often ca
 <p>In this post we will start with bagging, and then move on to boosting and stacking in separate publications.</p>
 <p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning repository”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD" class="uri">https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD</a>.</p>
 </div>
-<div id="backgroundinformation-on-bagging" class="section level1">
-<h1>2 Backgroundinformation on Bagging</h1>
+<div id="background-information-on-bagging" class="section level1">
+<h1>2 Background Information on Bagging</h1>
 <p>The term bagging is derived from a technique calles bootstrap aggregation. In a nutshell: The bootstrap method refers to random sampling with replacement (please see figure below). Several small data records (resamples) are removed from an existing data record. It doesn’t matter whether an observation is taken out twice or not. With the help of these resamples, individual models are calculated and ultimately combined to form an aggregated prediction.</p>
 <p><img src="/post/2020-03-07-ensemble-modeling-bagging_files/p42s1.png" /></p>
 </div>

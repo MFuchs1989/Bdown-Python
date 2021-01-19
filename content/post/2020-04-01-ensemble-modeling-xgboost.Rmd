@@ -605,7 +605,9 @@ The same applies when using the XGBoost for regressions.
 
 
 
+One final note:
 
+You can also use XG Boost for time series analysis. See this post of mine about this: [XGBoost for Univariate Time Series](https://michael-fuchs-python.netlify.app/2020/11/10/time-series-analysis-xgboost-for-univariate-time-series/)
 
 
 
