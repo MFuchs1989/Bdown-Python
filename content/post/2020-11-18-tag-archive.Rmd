@@ -29,53 +29,53 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 1 Roadmaps
 
-+ ["Roadmap for ETL"](https://michael-fuchs-python.netlify.app/2020/11/28/roadmap-for-etl/)
-+ ["Roadmap for the Machine Learning fields"](https://michael-fuchs-python.netlify.app/2020/08/20/roadmap-for-the-machine-learning-fields/)
-+ ["Roadmap for Dimensionality Reduction"](https://michael-fuchs-python.netlify.app/2020/08/18/roadmap-for-dimensionality-reduction/)
-+ ["Roadmap for Cluster Analysis"](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/)
-+ ["Roadmap for Classification Tasks"](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/)
-+ ["Roadmap for Regression Analysis"](https://michael-fuchs-python.netlify.app/2019/10/14/roadmap-for-regression-analysis/)
++ [Roadmap for ETL](https://michael-fuchs-python.netlify.app/2020/11/28/roadmap-for-etl/)
++ [Roadmap for the Machine Learning fields](https://michael-fuchs-python.netlify.app/2020/08/20/roadmap-for-the-machine-learning-fields/)
++ [Roadmap for Dimensionality Reduction](https://michael-fuchs-python.netlify.app/2020/08/18/roadmap-for-dimensionality-reduction/)
++ [Roadmap for Cluster Analysis](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/)
++ [Roadmap for Classification Tasks](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/)
++ [Roadmap for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/10/14/roadmap-for-regression-analysis/)
 
 
 # 2 Data Science
 
 
-+ ["The Data Science Process (CRISP-DM)"](https://michael-fuchs-python.netlify.app/2020/11/07/the-data-science-process-crisp-dm/)
-+ ["Randomized Search"](https://michael-fuchs-python.netlify.app/2019/11/06/randomized-search/)
-+ ["Grid Search"](https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/)
-+ ["Data Management"](https://michael-fuchs-python.netlify.app/2019/04/16/data-management/)
-+ ["Data Manipulation"](https://michael-fuchs-python.netlify.app/2019/03/12/data-manipulation/)
-+ ["Data type conversion"](https://michael-fuchs-python.netlify.app/2019/03/10/data-type-conversion/)
-+ ["Add new columns"](https://michael-fuchs-python.netlify.app/2019/03/06/add-new-columns/)
-+ ["Data Wrangling"](https://michael-fuchs-python.netlify.app/2019/03/03/data-wrangling/)
-+ ["The use of the groupby function"](https://michael-fuchs-python.netlify.app/2019/05/30/the-use-of-the-groupby-function/)
-+ ["Selection of columns per data type"](https://michael-fuchs-python.netlify.app/2019/03/04/selection-of-columns-per-data-type/)
++ [The Data Science Process (CRISP-DM)](https://michael-fuchs-python.netlify.app/2020/11/07/the-data-science-process-crisp-dm/)
++ [Randomized Search](https://michael-fuchs-python.netlify.app/2019/11/06/randomized-search/)
++ [Grid Search](https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/)
++ [Data Management](https://michael-fuchs-python.netlify.app/2019/04/16/data-management/)
++ [Data Manipulation](https://michael-fuchs-python.netlify.app/2019/03/12/data-manipulation/)
++ [Data type conversion](https://michael-fuchs-python.netlify.app/2019/03/10/data-type-conversion/)
++ [Add new columns](https://michael-fuchs-python.netlify.app/2019/03/06/add-new-columns/)
++ [Data Wrangling](https://michael-fuchs-python.netlify.app/2019/03/03/data-wrangling/)
++ [The use of the groupby function](https://michael-fuchs-python.netlify.app/2019/05/30/the-use-of-the-groupby-function/)
++ [Selection of columns per data type](https://michael-fuchs-python.netlify.app/2019/03/04/selection-of-columns-per-data-type/)
 
 
 # 3 Data pre-processing
 
 ## 3.1 General
 
-+ ["Feature Scaling with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/)
-+ ["Check for normal distribution "](https://michael-fuchs-python.netlify.app/2019/09/13/check-for-normal-distribution/)
-+ ["Dealing with outliers"](https://michael-fuchs-python.netlify.app/2019/08/20/dealing-with-outliers/)
-+ ["Dealing with constant and duplicate features"](https://michael-fuchs-python.netlify.app/2019/08/09/dealing-with-constant-and-duplicate-features/)
-+ ["Dealing with highly correlated features"](https://michael-fuchs-python.netlify.app/2019/07/28/dealing-with-highly-correlated-features/)
-+ ["Random sampling "](https://michael-fuchs-python.netlify.app/2019/05/16/random-sampling/)
-+ ["Types of Encoder "](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/)
-+ ["The use of dummy variables"](https://michael-fuchs-python.netlify.app/2019/06/14/the-use-of-dummy-variables/)
-+ ["Dealing with missing values"](https://michael-fuchs-python.netlify.app/2019/03/18/dealing-with-missing-values/)
++ [Feature Scaling with Scikit-Learn](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/)
++ [Check for normal distribution ](https://michael-fuchs-python.netlify.app/2019/09/13/check-for-normal-distribution/)
++ [Dealing with outliers](https://michael-fuchs-python.netlify.app/2019/08/20/dealing-with-outliers/)
++ [Dealing with constant and duplicate features](https://michael-fuchs-python.netlify.app/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ [Dealing with highly correlated features](https://michael-fuchs-python.netlify.app/2019/07/28/dealing-with-highly-correlated-features/)
++ [Random sampling ](https://michael-fuchs-python.netlify.app/2019/05/16/random-sampling/)
++ [Types of Encoder ](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/)
++ [The use of dummy variables](https://michael-fuchs-python.netlify.app/2019/06/14/the-use-of-dummy-variables/)
++ [Dealing with missing values](https://michael-fuchs-python.netlify.app/2019/03/18/dealing-with-missing-values/)
 
 
 ## 3.2 for Regression
 
-+ ["Embedded methods"](https://michael-fuchs-python.netlify.app/2019/10/08/embedded-methods/)
-+ ["Wrapper methods"](https://michael-fuchs-python.netlify.app/2019/09/27/wrapper-methods/)
++ [Embedded methods](https://michael-fuchs-python.netlify.app/2019/10/08/embedded-methods/)
++ [Wrapper methods](https://michael-fuchs-python.netlify.app/2019/09/27/wrapper-methods/)
 
 ## 3.3 for Classification
 
-+ ["Feature selection methods for classification tasks"](https://michael-fuchs-python.netlify.app/2020/01/31/feature-selection-methods-for-classification-tasks/)
-+ ["Dealing with imbalanced classes"](https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/)
++ [Feature selection methods for classification tasks](https://michael-fuchs-python.netlify.app/2020/01/31/feature-selection-methods-for-classification-tasks/)
++ [Dealing with imbalanced classes](https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/)
 
 
 
@@ -83,68 +83,68 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 ## 4.1 Regression Algorithms
 
-+ ["Further Regression Algorithms"](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
-+ ["Non-linear regression analysis"](https://michael-fuchs-python.netlify.app/2019/07/14/non-linear-regression-analysis/)
-+ ["statsmodel.formula.api vs statsmodel.api"](https://michael-fuchs-python.netlify.app/2019/07/02/statsmodel-formula-api-vs-statsmodel-api/)
-+ ["Introduction to regression analysis and predictions "](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/)
++ [Further Regression Algorithms](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Non-linear regression analysis](https://michael-fuchs-python.netlify.app/2019/07/14/non-linear-regression-analysis/)
++ [statsmodel.formula.api vs statsmodel.api](https://michael-fuchs-python.netlify.app/2019/07/02/statsmodel-formula-api-vs-statsmodel-api/)
++ [Introduction to regression analysis and predictions ](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/)
 
 
 ## 4.2 Classification Algorithms
 
-+ ["Ensemble Modeling - Voting"](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
-+ ["Stacking with Scikit-Learn"](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
-+ ["Ensemble Modeling - Stacking"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
++ [Ensemble Modeling - Voting](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
++ [Stacking with Scikit-Learn](https://michael-fuchs-python.netlify.app/2020/04/29/stacking-with-scikit-learn/)
++ [Ensemble Modeling - Stacking](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
 + [Ensemble Modeling - XGBoost](https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/#xgboost-for-classification)
-+ ["Ensemble Modeling - Boosting"](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
-+ ["Ensemble Modeling - Bagging"](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
-+ ["Introduction to KNN Classifier"](https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/)
-+ ["Introduction to Naive Bayes Classifier"](https://michael-fuchs-python.netlify.app/2019/12/15/introduction-to-naive-bayes-classifier/)
-+ ["Introduction to Decision Trees"](https://michael-fuchs-python.netlify.app/2019/11/30/introduction-to-decision-trees/)
-+ ["Multinomial logistic regression"](https://michael-fuchs-python.netlify.app/2019/11/15/multinomial-logistic-regression/)
-+ ["Introduction to Perceptron Algorithm"](https://michael-fuchs-python.netlify.app/2019/11/14/introduction-to-perceptron-algorithm/)
-+ ["OvO and OvR Classifier"](https://michael-fuchs-python.netlify.app/2019/11/13/ovo-and-ovr-classifier/)
-+ ["Introduction to SGD Classifier"](https://michael-fuchs-python.netlify.app/2019/11/11/introduction-to-sgd-classifier/)
-+ ["Introduction to Support Vector Machines"](https://michael-fuchs-python.netlify.app/2019/11/08/introduction-to-support-vector-machines/)
-+ ["Introduction to Logistic Regression"](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/)
++ [Ensemble Modeling - Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
++ [Ensemble Modeling - Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
++ [Introduction to KNN Classifier](https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/)
++ [Introduction to Naive Bayes Classifier](https://michael-fuchs-python.netlify.app/2019/12/15/introduction-to-naive-bayes-classifier/)
++ [Introduction to Decision Trees](https://michael-fuchs-python.netlify.app/2019/11/30/introduction-to-decision-trees/)
++ [Multinomial logistic regression](https://michael-fuchs-python.netlify.app/2019/11/15/multinomial-logistic-regression/)
++ [Introduction to Perceptron Algorithm](https://michael-fuchs-python.netlify.app/2019/11/14/introduction-to-perceptron-algorithm/)
++ [OvO and OvR Classifier](https://michael-fuchs-python.netlify.app/2019/11/13/ovo-and-ovr-classifier/)
++ [Introduction to SGD Classifier](https://michael-fuchs-python.netlify.app/2019/11/11/introduction-to-sgd-classifier/)
++ [Introduction to Support Vector Machines](https://michael-fuchs-python.netlify.app/2019/11/08/introduction-to-support-vector-machines/)
++ [Introduction to Logistic Regression](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/)
 
 
 ## 4.3 Cluster Algorithms
 
-+ ["Spectral Clustering"](https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/)
-+ ["Mean Shift Clustering"](https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/)
-+ ["Affinity Propagation"](https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/)
-+ ["Bayesian Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/26/bayesian-gaussian-mixture-models/)
-+ ["Gaussian Mixture Models"](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/)
-+ ["HDBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/20/hdbscan/)
-+ ["DBSCAN"](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/)
-+ ["Hierarchical Clustering"](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/)
-+ ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
++ [Spectral Clustering](https://michael-fuchs-python.netlify.app/2020/07/08/spectral-clustering/)
++ [Mean Shift Clustering](https://michael-fuchs-python.netlify.app/2020/07/01/mean-shift-clustering/)
++ [Affinity Propagation](https://michael-fuchs-python.netlify.app/2020/06/29/affinity-propagation/)
++ [Bayesian Gaussian Mixture Models](https://michael-fuchs-python.netlify.app/2020/06/26/bayesian-gaussian-mixture-models/)
++ [Gaussian Mixture Models](https://michael-fuchs-python.netlify.app/2020/06/24/gaussian-mixture-models/)
++ [HDBSCAN](https://michael-fuchs-python.netlify.app/2020/06/20/hdbscan/)
++ [DBSCAN](https://michael-fuchs-python.netlify.app/2020/06/15/dbscan/)
++ [Hierarchical Clustering](https://michael-fuchs-python.netlify.app/2020/06/04/hierarchical-clustering/)
++ [k-Means Clustering](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/)
 
 
 ## 4.4 Dimensionality Reduction Algorithms
 
-+ ["Manifold Learning"](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
-+ ["Linear Discriminant Analysis (LDA)"](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
-+ ["PCA for speed up ML models"](https://michael-fuchs-python.netlify.app/2020/07/31/pca-for-speed-up-ml-models/)
-+ ["PCA for Visualization"](https://michael-fuchs-python.netlify.app/2020/07/27/pca-for-visualization/)
-+ ["Principal Component Analysis (PCA)"](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
++ [Manifold Learning](https://michael-fuchs-python.netlify.app/2020/08/12/manifold-learning/)
++ [Linear Discriminant Analysis (LDA)](https://michael-fuchs-python.netlify.app/2020/08/07/linear-discriminant-analysis-lda/)
++ [PCA for speed up ML models](https://michael-fuchs-python.netlify.app/2020/07/31/pca-for-speed-up-ml-models/)
++ [PCA for Visualization](https://michael-fuchs-python.netlify.app/2020/07/27/pca-for-visualization/)
++ [Principal Component Analysis (PCA)](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/)
 
 
 # 5 Some Python Stuff
 
-+ ["How to use Pandas set_option()"](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
-+ ["How to suppress scientific notation in Pandas"](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)
-+ ["Saving machine learning models to disc"](https://michael-fuchs-python.netlify.app/2020/02/29/saving-machine-learning-models-to-disc/)
-+ ["Read and write to files"](https://michael-fuchs-python.netlify.app/2019/03/01/read-and-write-to-files/)
++ [How to use Pandas set_option()](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
++ [How to suppress scientific notation in Pandas](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)
++ [Saving machine learning models to disc](https://michael-fuchs-python.netlify.app/2020/02/29/saving-machine-learning-models-to-disc/)
++ [Read and write to files](https://michael-fuchs-python.netlify.app/2019/03/01/read-and-write-to-files/)
 
 
 # 6 Some Intuitions
 
-+ ["How to create artificial datasets"](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/)
-+ ["NumPy. An intuition."](https://michael-fuchs-python.netlify.app/2019/05/07/numpy-an-intuition/)
-+ ["Pivot Tables with Python"](https://michael-fuchs-python.netlify.app/2019/04/24/pivot-tables-with-python/)
-+ ["Python's Pipe - Operator"](https://michael-fuchs-python.netlify.app/2019/04/04/python-s-pipe-operator/)
-+ ["String Manipulation. An intuition."](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/)
++ [How to create artificial datasets](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/)
++ [NumPy. An intuition.](https://michael-fuchs-python.netlify.app/2019/05/07/numpy-an-intuition/)
++ [Pivot Tables with Python](https://michael-fuchs-python.netlify.app/2019/04/24/pivot-tables-with-python/)
++ [Python's Pipe - Operator](https://michael-fuchs-python.netlify.app/2019/04/04/python-s-pipe-operator/)
++ [String Manipulation. An intuition.](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/)
 
 
 
@@ -153,39 +153,39 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 ## 7.1 Marketing Analytics
 
-+ ["A/B Testing"](https://michael-fuchs-python.netlify.app/2020/09/29/marketing-a-b-testing/)
-+ ["Customer Lifetime Value"](https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/)
-+ ["Market Basket Analysis"](https://michael-fuchs-python.netlify.app/2020/09/15/marketing-market-basket-analysis/)
-+ ["Product Analytics and Recommendations"](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
-+ ["Conversion Rate Analytics"](https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/)
++ [A/B Testing](https://michael-fuchs-python.netlify.app/2020/09/29/marketing-a-b-testing/)
++ [Customer Lifetime Value](https://michael-fuchs-python.netlify.app/2020/09/22/marketing-customer-lifetime-value/)
++ [Market Basket Analysis](https://michael-fuchs-python.netlify.app/2020/09/15/marketing-market-basket-analysis/)
++ [Product Analytics and Recommendations](https://michael-fuchs-python.netlify.app/2020/09/08/marketing-product-analytics-and-recommendations/)
++ [Conversion Rate Analytics](https://michael-fuchs-python.netlify.app/2020/09/01/marketing-conversion-rate-analytics/)
 
 ## 7.2 Recommendation Systems
 
-+ ["Metadata-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/05/recommendation-systems-metadata-based-recommender/)
-+ ["Plot Description-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/)
-+ ["Knowledged-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
++ [Metadata-based Recommender](https://michael-fuchs-python.netlify.app/2020/10/05/recommendation-systems-metadata-based-recommender/)
++ [Plot Description-based Recommender](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/)
++ [Knowledged-based Recommender](https://michael-fuchs-python.netlify.app/2020/10/01/recommendation-systems-knowledged-based-recommender/)
 
 
 
 
 # 8 ETL
 
-+ ["Pipeline with intermediate storage"](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
-+ ["Pipeline with join2"](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
-+ ["Pipeline with join"](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
-+ ["Simple Pipeline"](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
-+ ["ETL - Read .py from different sources"](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
++ [Pipeline with intermediate storage](https://michael-fuchs-python.netlify.app/2020/11/27/etl-pipeline-with-intermediate-storage/)
++ [Pipeline with join2](https://michael-fuchs-python.netlify.app/2020/11/26/etl-pipeline-with-join2/)
++ [Pipeline with join](https://michael-fuchs-python.netlify.app/2020/11/25/etl-pipeline-with-join/)
++ [Simple Pipeline](https://michael-fuchs-python.netlify.app/2020/11/24/etl-simple-pipeline/)
++ [ETL - Read .py from different sources](https://michael-fuchs-python.netlify.app/2020/11/23/etl-read-py-from-different-sources/)
 
 
 
 # 9 Time Series Analysis
 
 + [Neural Networks with multiple predictors](https://michael-fuchs-python.netlify.app/2020/11/04/time-series-analysis-neural-networks-with-multiple-predictors/)
-+ ["Neural Networks for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/11/01/time-series-analysis-neural-networks-for-forecasting-univariate-variables/)
-+ ["Regression Extension Techniques for Multivariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/)
-+ ["Regression Extension Techniques for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)
-+ ["Smoothing Methods"](https://michael-fuchs-python.netlify.app/2020/10/23/time-series-analysis-smoothing-methods/) 
-+ ["Working with Dates and Times"](https://michael-fuchs-python.netlify.app/2020/10/19/time-series-analysis-working-with-dates-and-times/)
++ [Neural Networks for Univariate Time Series](https://michael-fuchs-python.netlify.app/2020/11/01/time-series-analysis-neural-networks-for-forecasting-univariate-variables/)
++ [Regression Extension Techniques for Multivariate Time Series](https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/)
++ [Regression Extension Techniques for Univariate Time Series](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)
++ [Smoothing Methods](https://michael-fuchs-python.netlify.app/2020/10/23/time-series-analysis-smoothing-methods/) 
++ [Working with Dates and Times](https://michael-fuchs-python.netlify.app/2020/10/19/time-series-analysis-working-with-dates-and-times/)
 
 
 
