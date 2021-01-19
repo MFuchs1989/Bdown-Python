@@ -109,7 +109,7 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 
 from pmdarima import auto_arima
-from pmdarima.model_selection import train_test_split
+from pmdarima.model_selection import train_test_split as time_train_test_split
 ```
 
 
@@ -233,7 +233,7 @@ Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
 ```{r, eval=F, echo=T}
 X = df['Close']
 
-trainX, testX = train_test_split(X, test_size=30)
+trainX, testX = time_train_test_split(X, test_size=30)
 ```
 
 The pmdarima modul will help us identify p,d and q without the hassle of looking at the plot.

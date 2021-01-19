@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
-from pmdarima.model_selection import train_test_split
+from pmdarima.model_selection import train_test_split as time_train_test_split
 from sklearn import metrics
 from sklearn.model_selection import ParameterGrid
 
@@ -223,7 +223,7 @@ for name, column in df[['Open', 'High', 'Low', 'Close']].iteritems():
 ```{r, eval=F, echo=T}
 X = df[['Open', 'High', 'Low', 'Close' ]]
 
-trainX, testX = train_test_split(X, test_size=30)
+trainX, testX = time_train_test_split(X, test_size=30)
 ```
 
 

@@ -76,7 +76,7 @@ import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
-from pmdarima.model_selection import train_test_split
+from pmdarima.model_selection import train_test_split as time_train_test_split
 from sklearn import metrics
 from sklearn.model_selection import ParameterGrid
 
@@ -224,7 +224,7 @@ df.head()</code></pre>
 <h2>5.2 Train Test Split</h2>
 <pre class="r"><code>X = df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]]
 
-trainX, testX = train_test_split(X, test_size=30)</code></pre>
+trainX, testX = time_train_test_split(X, test_size=30)</code></pre>
 </div>
 <div id="make-data-stationary" class="section level2">
 <h2>5.3 Make data stationary</h2>

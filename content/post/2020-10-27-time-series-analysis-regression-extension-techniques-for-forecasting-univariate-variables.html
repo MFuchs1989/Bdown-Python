@@ -99,7 +99,7 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 
 from pmdarima import auto_arima
-from pmdarima.model_selection import train_test_split</code></pre>
+from pmdarima.model_selection import train_test_split as time_train_test_split</code></pre>
 <pre class="r"><code>df = pd.read_csv(&#39;FB.csv&#39;)
 df.head()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p1.png" /></p>
@@ -190,7 +190,7 @@ plt.show()</code></pre>
 <h1>6 ARIMA in Action</h1>
 <pre class="r"><code>X = df[&#39;Close&#39;]
 
-trainX, testX = train_test_split(X, test_size=30)</code></pre>
+trainX, testX = time_train_test_split(X, test_size=30)</code></pre>
 <p>The pmdarima modul will help us identify p,d and q without the hassle of looking at the plot.
 For a simple ARIMA model we have to use seasonal=False.</p>
 <pre class="r"><code>stepwise_model = auto_arima(trainX,start_p=1, start_q=1,
