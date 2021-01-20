@@ -21,6 +21,26 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#install-anaconda">2 Install Anaconda</a></li>
+<li><a href="#getting-started-with-anaconda-navigator">3 Getting Started with Anaconda Navigator</a></li>
+<li><a href="#getting-started-with-jupyter-notebooks">4 Getting Started with Jupyter Notebooks</a>
+<ul>
+<li><a href="#exploring-your-environments">4.1 Exploring your environments</a></li>
+<li><a href="#change-your-working-direcotry">4.2 Change your working direcotry</a></li>
+<li><a href="#activate-your-environment">4.3 Activate your Environment</a></li>
+<li><a href="#start-of-the-jupyter-notebook">4.4 Start of the Jupyter Notebook</a></li>
+<li><a href="#all-in-one">4.5 All in One</a></li>
+</ul></li>
+<li><a href="#anaconda-powershell-prompt">5 Anaconda Powershell Prompt</a>
+<ul>
+<li><a href="#installing-new-libraries">5.1 Installing new libraries</a></li>
+<li><a href="#export-environments">5.2 Export environments</a></li>
+<li><a href="#import-environments">5.3 Import environments</a>
+<ul>
+<li><a href="#via-anaconda-powershell-prompt">5.3.1 via Anaconda Powershell Prompt</a></li>
+<li><a href="#via-anaconda-navigator">5.3.2 via Anaconda Navigator</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#closing-words">6 Closing Words</a></li>
 </ul>
 </div>
 
@@ -53,5 +73,153 @@ Anaconda is a free and open source distribution of the programming languages Pyt
 There is only one step to pay attention to here. When you get to the Advanced Options section, select <strong>‘Add Anaconda3 to my PATH environment variable’</strong>.
 Otherwise we would have to add this path manually later.</p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p1.png" /></p>
+</div>
+<div id="getting-started-with-anaconda-navigator" class="section level1">
+<h1>3 Getting Started with Anaconda Navigator</h1>
+<p>After successful installation, search for Anaconda Navigator on your computer.</p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p2.png" /></p>
+<p>As we can see, different IDEs have already been installed with it, including Jupyter Notebooks.
+On the left side we can now select Environments.</p>
+<p><strong>What are environments?</strong></p>
+<p>To program with Python we need different libraries (for example numpy or pandas). We can store these collected in virtual environments. It is of great advantage that you can also use specific versions of the libraries.</p>
+<p>To program with Python we need different libraries (for example numpy or pandas). We can store these collected in virtual environments. It is of great advantage that you can also use specific versions of the libraries. Why is this important, especially in project work, when you have developed models or done analyses for customers? You have the option of extracting all the libraries used for this purpose with their respective version and handing them over to the customer. In this way, the customer is able to execute the code without errors for a long time. It often happens that parts of packages change and then no longer work. That’s why version management is so incredibly beneficial.</p>
+<p><strong>Create a new Environment</strong></p>
+<p>We have now selected Environments on the left side.
+At the bottom there is a button ‘Create’ with which you can create a new environment.<br />
+Give it a desired name and select the Python or R programming language.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p3.png" /></p>
+<p>Click on your new environment and select ‘Not installed’ at the top.</p>
+<p>Now you can search for new libraries that you have not yet installed in the respective environment. Here for example Pandas.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p4.png" /></p>
+<p>At the bottom you can press ‘apply’ to perform the installation.
+Often it happens that with large libraries like pandas is one, further packages are installed with it.</p>
+<p>In our demp_env I installed the following basic libraries:</p>
+<ul>
+<li>pandas</li>
+<li>numpy</li>
+<li>matplotlib</li>
+<li>seaborn</li>
+<li>pip</li>
+</ul>
+<p>Of course, some cool libraries will be added over time. How to add them you know now.</p>
+</div>
+<div id="getting-started-with-jupyter-notebooks" class="section level1">
+<h1>4 Getting Started with Jupyter Notebooks</h1>
+<p>With Anaconda, the ‘Anaconda Powershell Prompt’ was also downloaded. With its help I always start my Jupyter Notebooks.</p>
+<div id="exploring-your-environments" class="section level2">
+<h2>4.1 Exploring your environments</h2>
+<p>With the following command we get an overview of the existing environments installed:</p>
+<p><code>conda info --envs</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p5.png" /></p>
+<p>To see which libraries with which version are installed in a particular environment use the following command:</p>
+<p><code>conda list -n demo_env</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p6.png" /></p>
+</div>
+<div id="change-your-working-direcotry" class="section level2">
+<h2>4.2 Change your working direcotry</h2>
+<p>The first thing I always do is specify where I want to work. I can do that easily with the command <code>cd "path/to/root directory</code></p>
+</div>
+<div id="activate-your-environment" class="section level2">
+<h2>4.3 Activate your Environment</h2>
+<p>To activate your environment use: <code>conda activate demo_env</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p7.png" /></p>
+<p>The brackets at the beginning of the line now say (demo_env) inside. From this you can see which environment is currently active.</p>
+</div>
+<div id="start-of-the-jupyter-notebook" class="section level2">
+<h2>4.4 Start of the Jupyter Notebook</h2>
+<p>Quite easy just type: <code>jupyter notebook</code></p>
+</div>
+<div id="all-in-one" class="section level2">
+<h2>4.5 All in One</h2>
+<p><code>cd "path/to/root directory</code></p>
+<p><code>conda activate demo_env</code></p>
+<p><code>jupyter notebook</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p8.png" /></p>
+<p>A new tab is generated in the specified default browser from which you can launch Jupyter Notebooks.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p9.png" /></p>
+<p>How exactly the Jupyter notebooks can be used is not central to this post. But you can find lots of beginners guides on the internet:</p>
+<ul>
+<li><a href="https://realpython.com/jupyter-notebook-introduction/">Jupyter Notebook: An Introduction</a></li>
+<li><a href="https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook">Jupyter Notebook Tutorial: The Definitive Guide</a></li>
+<li><a href="https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/">Jupyter/IPython Notebook Quick Start Guide</a></li>
+</ul>
+</div>
+</div>
+<div id="anaconda-powershell-prompt" class="section level1">
+<h1>5 Anaconda Powershell Prompt</h1>
+<p>I actually manage my environment exclusively via the Anaconda Powershell Prompt.
+The reason for this is that I can’t do everything via the Anaconda Navigator.
+For example, I can’t find all libraries via the search function such as the very popular <a href="https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html">jupyter_contrib_nbextensions</a>. Or extracting environments for a complete project handover.</p>
+<div id="installing-new-libraries" class="section level2">
+<h2>5.1 Installing new libraries</h2>
+<p>When I want to add another library to my existing environment and I don’t know exactly what it’s called, I always search the internet like this: ‘Anaconda Cloud Install Library’.</p>
+<p>Very quickly you will also find what you are looking for under <a href="https://anaconda.org/">Anaconda Cloud</a>.</p>
+<p>Here the page for example for the installation of Pandas:</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p10.png" /></p>
+<p>Below is the exact name of the library.</p>
+<p>I now use the Anaconda Powershell prompt again and first activate the environment in which I want to install the new package and then use ‘pip install’ to install the new library.</p>
+<p><code>conda activate demo_env</code></p>
+<p><code>pip install pandas</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p11.png" /></p>
+<p><strong>Update existing libraries</strong></p>
+<p>With this command you can not only install new libraries, you can also update them to the latest version.</p>
+<p>If you want to update your complete environment you can do it with this:</p>
+<p><code>conda update -n demo_env --all</code></p>
+</div>
+<div id="export-environments" class="section level2">
+<h2>5.2 Export environments</h2>
+<p>As mentioned before, it is not possible to export existing environments via the Anaconda Navigator.
+But via the Anaconda Powershell Prompt it works.</p>
+<p>First I specify the path where I want to save the environment.
+Then I activate the environment I want to export. Then I execute the following command:</p>
+<p><code>cd "path/to/root directory</code></p>
+<p><code>conda activate demo_env</code></p>
+<p><code>conda env export &gt; environment.yml</code></p>
+<p>The activated environment is now exported to the named destination and saved as a .yml file with the name ‘environment’.
+The name can of course be used/changed as desired.</p>
+<p>Here it is</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p12.png" /></p>
+<p>I always use <a href="https://code.visualstudio.com/">Visual Studio Code</a> to open this .yml file.</p>
+<p><strong>Change Character Encoding</strong></p>
+<p>We have only one problem here. By default the file is extracted and saved in UTF-16. So we can’t import it as a new environment.
+But there is a workaround for this. We open the .yml file in Visual Studio Code.
+On the bottom right we see the current character encoding.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p13.png" /></p>
+<p>Click on it and select ‘Reopen with Encoding’.
+Select UTF-8.</p>
+<p>The file now looks very strange.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p14.png" /></p>
+<p>Hit <code>ctrl+z</code></p>
+<p>Voilà</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p15.png" /></p>
+<p>Now the file can be saved.</p>
+<p>But first I change the name (at the top). I use the same as I named the .yml file so that it is unique.</p>
+<p>The prefix at the end of the file can also be deleted.</p>
+</div>
+<div id="import-environments" class="section level2">
+<h2>5.3 Import environments</h2>
+<p>Importing environments can be done in two ways:</p>
+<ul>
+<li>via Anaconda Powershell Prompt</li>
+<li>via Anaconda Navigator</li>
+</ul>
+<div id="via-anaconda-powershell-prompt" class="section level3">
+<h3>5.3.1 via Anaconda Powershell Prompt</h3>
+<p>Here I navigate again with cd to the respective place where the .yml file is stored. Then I execute the following command:</p>
+<p><code>cd "path/to/root directory</code></p>
+<p><code>conda env create -f environment.yml</code></p>
+</div>
+<div id="via-anaconda-navigator" class="section level3">
+<h3>5.3.2 via Anaconda Navigator</h3>
+<p>Let’s use the Anaconda Navigator again and go to the environments via the corresponding button on the left side. At the bottom there is a button called ‘Import’. With this we can import our new environment as well.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p16.png" /></p>
+<p>As we can see, our new environment is now also listed.</p>
+</div>
+</div>
+</div>
+<div id="closing-words" class="section level1">
+<h1>6 Closing Words</h1>
+<p>You can view the saved libraries under the following path on your computer:</p>
+<p><code>C:\Users\anaconda3\envs</code></p>
+<p>If you delete these files, they will no longer appear in the Anaconda Navigator or in the Anaconda Powershell Prompt.</p>
 </div>
