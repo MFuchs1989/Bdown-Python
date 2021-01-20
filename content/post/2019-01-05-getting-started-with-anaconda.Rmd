@@ -1,0 +1,15 @@
+---
+title: Getting Started with Anaconda
+author: Michael Fuchs
+date: '2019-01-05'
+slug: getting-started-with-anaconda
+categories:
+  - R
+tags:
+  - R Markdown
+---
+
+
+first line 
+
+
