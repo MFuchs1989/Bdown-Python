@@ -136,6 +136,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + [How to suppress scientific notation in Pandas](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)
 + [Saving machine learning models to disc](https://michael-fuchs-python.netlify.app/2020/02/29/saving-machine-learning-models-to-disc/)
 + [Read and write to files](https://michael-fuchs-python.netlify.app/2019/03/01/read-and-write-to-files/)
++ [Getting Started with Anaconda](https://michael-fuchs-python.netlify.app/2019/01/05/getting-started-with-anaconda/)
 
 
 # 6 Some Intuitions
