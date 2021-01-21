@@ -252,7 +252,7 @@ The file now looks very strange.
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p14.png)
 
 
-Hit `ctrl+z`
+Type `ctrl+z`
 
 Voilà
 
