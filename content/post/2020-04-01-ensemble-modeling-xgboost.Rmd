@@ -22,7 +22,7 @@ There is another boosting algorithm that has become very popular because its per
 
 
 For this post I used two different datasets which can be found on the statistics platform ["Kaggle"](https://www.kaggle.com). 
-You can download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets) as well.
+You can download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets) as well.
 
 I used:
 
