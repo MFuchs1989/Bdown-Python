@@ -27,7 +27,7 @@ To be precise, the analysis of conversion rates, their influencing factors and h
 
 In this post I will use the data set 'bank-additional-full' and 'WA_Fn-UseC_-Marketing-Customer-Value-Analysis'. 
 Both are from the website ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/bank+marketing).
-You can also download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+You can also download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 

@@ -47,7 +47,7 @@ This results in a total amount of 120,000€ (500€ x 20 years x 12 months).
 Because we do not typically know the lifetime span of customers, we often try to estimate CLV over the course of a certain period (3 months, 12 months, 24 months ...). And that is exactly what we will do in the following.
 
 
-For this post the dataset *Online Retail* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets).
+For this post the dataset *Online Retail* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 
