@@ -29,7 +29,7 @@ Finally I want to save the final dataset.
 
 At the end I will test the created ETL. I will show this from another jupyter notebook and a fully automatic call from the command line. 
 
-For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2). 
+For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/ETL/Pipeline%20with%20join2). 
 
 
 # 2 Setup
@@ -267,7 +267,7 @@ We have removed the part self.preprocess_countries(), because it is not used her
 
 Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file. 
 I prefer ["Visual Studio Code"](https://code.visualstudio.com/) from Microsoft.
-But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join2) from where you can get it.
+But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/ETL/Pipeline%20with%20join2) from where you can get it.
 
 
 

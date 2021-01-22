@@ -19,7 +19,7 @@ Now I have written a few posts in the recent past about Time Series and Forecast
 
 The exact functionality of this algorithm and an extensive theoretical background I have already given in this post: [Ensemble Modeling - XGBoost](https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/).
 
-For this post the dataset *PJME_hourly* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+For this post the dataset *PJME_hourly* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 
 # 2 Import the libraries and the data

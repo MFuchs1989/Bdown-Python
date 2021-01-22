@@ -31,7 +31,7 @@ In my last post I showed a ["simple ETL"](https://michael-fuchs-python.netlify.a
 
 At the end I will test the created ETL. I will show this from another jupyter notebook and a fully automatic call from the command line. 
 
-For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join). 
+For this post I use two specially created sample data sets. A copy of them is stored in my ["GitHub Repo"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/ETL/Pipeline%20with%20join). 
 
 
 # 2 Setup
@@ -228,7 +228,7 @@ def main():
 We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.
 Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file. 
 I prefer ["Visual Studio Code"](https://code.visualstudio.com/) from Microsoft.
-But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/ETL/Pipeline%20with%20join) from where you can get it.
+But I also put the file in my ["GitHub Repo"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/ETL/Pipeline%20with%20join) from where you can get it.
 
 
 

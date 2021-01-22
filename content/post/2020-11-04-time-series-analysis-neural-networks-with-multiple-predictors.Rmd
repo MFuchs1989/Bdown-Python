@@ -20,7 +20,7 @@ Neural networks can be used not only for ["univariate time series"](https://mich
 We can also incorporate other predictors into the model with their help.
 This is what this post is about. 
 
-For this post the dataset *Metro_Interstate_Traffic_Volume* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+For this post the dataset *Metro_Interstate_Traffic_Volume* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 
 
