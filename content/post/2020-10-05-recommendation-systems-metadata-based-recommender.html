@@ -44,7 +44,7 @@ output:
 <p>Now that we have developed a <a href="https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/">“recommender”</a> based on the film descriptions, we will go a step further in this post and add more metadata.</p>
 <p>Unlike collaborative filters, conten-based recommenders do not require data relating to the past activity. Instead they provide recommendations based on a user profile and metadata it has on particular items.
 However, since content-based systems don’t leverage the power of the community, they often come up with results that are not as impressive or relevant as the ones offered by collaborative filters.</p>
-<p>For this post the datasets <em>movies_metadata</em>, <em>keywords</em> and <em>credits</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender">“GitHub Repository”</a> and here:</p>
+<p>For this post the datasets <em>movies_metadata</em>, <em>keywords</em> and <em>credits</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Recommendation%20Systems/Knowledged-based%20Recommender">“GitHub Repository”</a> and here:</p>
 <ul>
 <li><a href="https://drive.google.com/file/d/130LECn3_7LoBL6nMHVIGG0zw6DqitPib/view?usp=sharing">“keywords dataframe”</a></li>
 <li><a href="https://drive.google.com/file/d/1ReopPjfDglnCiKeJs_TfnMP0T5wM36zx/view?usp=sharing">“credits dataframe”</a></li>
@@ -62,7 +62,7 @@ from ast import literal_eval
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity</code></pre>
 <p>As in the <a href="https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/">“Plot Description-based Recommender”</a> post I will execute the first pre-processing steps for the main dataset using my stored function in the preprocessing_recommender_systems.py file.
-This file is also stored on my <a href="https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Metadata-based%20Recommender">“GitHub Account”</a> and can be downloaded from there.</p>
+This file is also stored on my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Recommendation%20Systems/Metadata-based%20Recommender">“GitHub Account”</a> and can be downloaded from there.</p>
 <pre class="r"><code>df = pd.read_csv(&#39;movies_metadata.csv&#39;)
 df = prs.clean_data(df)
 df</code></pre>

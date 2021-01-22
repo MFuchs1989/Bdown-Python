@@ -14,9 +14,6 @@ output:
 ---
  
 
-
-
-
 # 1 Introduction
 
 
@@ -26,7 +23,7 @@ Unlike collaborative filters, conten-based recommenders do not require data rela
 However, since content-based systems don’t leverage the power of the community, they often come up with results that are not as impressive or relevant as the ones offered by collaborative filters.
 
 
-For this post the datasets *movies_metadata*, *keywords* and *credits* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Knowledged-based%20Recommender) and here:
+For this post the datasets *movies_metadata*, *keywords* and *credits* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Recommendation%20Systems/Knowledged-based%20Recommender) and here:
 
 + ["keywords dataframe"](https://drive.google.com/file/d/130LECn3_7LoBL6nMHVIGG0zw6DqitPib/view?usp=sharing)
 + ["credits dataframe"](https://drive.google.com/file/d/1ReopPjfDglnCiKeJs_TfnMP0T5wM36zx/view?usp=sharing)
@@ -49,7 +46,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 As in the ["Plot Description-based Recommender"](https://michael-fuchs-python.netlify.app/2020/10/03/recommendation-systems-plot-description-based-recommender/) post I will execute the first pre-processing steps for the main dataset using my stored function in the preprocessing_recommender_systems.py file.
-This file is also stored on my ["GitHub Account"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Recommendation%20Systems/Metadata-based%20Recommender) and can be downloaded from there.
+This file is also stored on my ["GitHub Account"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Recommendation%20Systems/Metadata-based%20Recommender) and can be downloaded from there.
 
 
 ```{r, eval=F, echo=T}

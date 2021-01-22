@@ -68,6 +68,8 @@ import pandas as pd
 import datetime
 ```
 
+I have created a separate dataset for this post. 
+You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 ```{r, eval=F, echo=T}
 df = pd.read_csv('timestamp_df.csv', usecols=['timestamp'])

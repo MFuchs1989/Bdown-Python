@@ -30,7 +30,7 @@ In the following, we will look at three different smoothing methods:
 + Double Exponential Smoothing
 + Triple Exponential Smoothing
 
-For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 
 

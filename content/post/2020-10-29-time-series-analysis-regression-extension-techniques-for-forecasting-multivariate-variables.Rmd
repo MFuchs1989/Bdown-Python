@@ -18,7 +18,7 @@ output:
 
 In my last post (["Regression Extension Techniques for Univariate Time Series"](https://michael-fuchs-python.netlify.app/2020/10/27/time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables/)) I showed how to make time series predictions of single variables. Now we come to the exciting topic of how to do this for multiple target variables at the same time. 
 
-For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/Time%20Series%20Analysis).
+For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 
 # 2 Import the libraries and the data
