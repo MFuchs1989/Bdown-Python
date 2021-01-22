@@ -95,6 +95,12 @@ In our demp_env I installed the following basic libraries:
 + matplotlib
 + seaborn
 + pip
++ scikit-learn
++ keras
++ tensorflow
++ xgboost
+
+
 
 Of course, some cool libraries will be added over time. How to add them you know now.
 
