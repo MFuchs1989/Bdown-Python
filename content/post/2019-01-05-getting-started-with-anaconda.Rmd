@@ -206,20 +206,8 @@ I now use the Anaconda Powershell prompt again and first activate the environmen
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p11.png)
 
 
-### 5.1.1 Installing jupyter_contrib_nbextensions
 
-Here, the installation is not quite so trivial. Therefore I list the commands for the installation of the jupyter_contrib_nbextensions separately:
-
-
-+ `conda activate demo_env`
-+ `pip install jupyter_contrib_nbextensions`
-+ `conda install -c conda-forge jupyter_contrib_nbextensions`
-+ `jupyter contrib nbextension install --user`
-+ `conda install -c conda-forge jupyter_nbextensions_configurator`
-
-
-
-### 5.1.2 Update existing libraries**
+**Update existing libraries**
 
 With this command you can not only install new libraries, you can also update them to the latest version.
 

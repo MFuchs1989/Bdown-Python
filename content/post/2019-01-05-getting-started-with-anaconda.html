@@ -32,11 +32,7 @@ output:
 </ul></li>
 <li><a href="#anaconda-powershell-prompt">5 Anaconda Powershell Prompt</a>
 <ul>
-<li><a href="#installing-new-libraries">5.1 Installing new libraries</a>
-<ul>
-<li><a href="#installing-jupyter_contrib_nbextensions">5.1.1 Installing jupyter_contrib_nbextensions</a></li>
-<li><a href="#update-existing-libraries">5.1.2 Update existing libraries**</a></li>
-</ul></li>
+<li><a href="#installing-new-libraries">5.1 Installing new libraries</a></li>
 <li><a href="#export-environments">5.2 Export environments</a></li>
 <li><a href="#import-environments">5.3 Import environments</a>
 <ul>
@@ -170,23 +166,10 @@ For example, I can’t find all libraries via the search function such as the ve
 <p><code>conda activate demo_env</code></p>
 <p><code>pip install pandas</code></p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p11.png" /></p>
-<div id="installing-jupyter_contrib_nbextensions" class="section level3">
-<h3>5.1.1 Installing jupyter_contrib_nbextensions</h3>
-<p>Here, the installation is not quite so trivial. Therefore I list the commands for the installation of the jupyter_contrib_nbextensions separately:</p>
-<ul>
-<li><code>conda activate demo_env</code></li>
-<li><code>pip install jupyter_contrib_nbextensions</code></li>
-<li><code>conda install -c conda-forge jupyter_contrib_nbextensions</code></li>
-<li><code>jupyter contrib nbextension install --user</code></li>
-<li><code>conda install -c conda-forge jupyter_nbextensions_configurator</code></li>
-</ul>
-</div>
-<div id="update-existing-libraries" class="section level3">
-<h3>5.1.2 Update existing libraries**</h3>
+<p><strong>Update existing libraries</strong></p>
 <p>With this command you can not only install new libraries, you can also update them to the latest version.</p>
 <p>If you want to update your complete environment you can do it with this:</p>
 <p><code>conda update -n demo_env --all</code></p>
-</div>
 </div>
 <div id="export-environments" class="section level2">
 <h2>5.2 Export environments</h2>
