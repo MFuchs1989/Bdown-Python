@@ -211,13 +211,11 @@ I now use the Anaconda Powershell prompt again and first activate the environmen
 Here, the installation is not quite so trivial. Therefore I list the commands for the installation of the jupyter_contrib_nbextensions separately:
 
 
-`conda activate demo_env`
-
-`pip install jupyter_contrib_nbextensions`
-
-`jupyter contrib nbextension install --user`
-
-`conda install -c conda-forge jupyter_nbextensions_configurator`
++ `conda activate demo_env`
++ `pip install jupyter_contrib_nbextensions`
++ `conda install -c conda-forge jupyter_contrib_nbextensions`
++ `jupyter contrib nbextension install --user`
++ `conda install -c conda-forge jupyter_nbextensions_configurator`
 
 
 
