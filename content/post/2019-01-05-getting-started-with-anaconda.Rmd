@@ -313,5 +313,7 @@ You can view the saved libraries under the following path on your computer:
 If you delete these files, they will no longer appear in the Anaconda Navigator or in the Anaconda Powershell Prompt.
 
 
+# 7 Download the created environment
+
 If you want to have the created sample environment feel free to download it from my [GitHub Repository](https://github.com/MFuchs1989/Bdown-Python/tree/master/datasets/environment).
 
