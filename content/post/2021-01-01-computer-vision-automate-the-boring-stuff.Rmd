@@ -29,16 +29,23 @@ We will come to the topic of how to build neural networks to solve computer visi
 Since I already had a lot to do with computer vision and it was too stupid for me to do the repetitive tasks manually, I automated some steps. And that's what this post is about. 
 
 
-
-<p align="center">
-  <img src="https://media.giphy.com/media/B3e4dAhcp36C4Pwpkj/giphy.gif?raw=true" alt="readme crisp dm"/>
-</p>
-
-
-
 <p align="center">
   <img src="https://media.giphy.com/media/sQU8fBKJjt9GGeIyMM/giphy.gif?raw=true" alt="readme crisp dm"/>
 </p>
+
+
+
+# Import the libraries
+
+```{r, eval=F, echo=T}
+
+```
+
+
+
+
+
+
 
 
 
