@@ -373,53 +373,61 @@ If you are wondering why the following sequence (first the determination of the 
 **for cats dataset**
 
 ```{r, eval=F, echo=T}
-
+list_cats_test = random.sample(list_cats_full, round(len(list_cats_full)*test_part_proportion))
+list_cats_test
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p12.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+list_remaining_cat_images = [item for item in list_cats_full if item not in list_cats_test]
+len(list_remaining_cat_images)
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p13.png)
 
 
 
 **for dogs dataset**
 
 ```{r, eval=F, echo=T}
-
+list_dogs_test = random.sample(list_dogs_full, round(len(list_dogs_full)*test_part_proportion))
+list_dogs_test
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p14.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+list_remaining_dog_images = [item for item in list_dogs_full if item not in list_dogs_test]
+len(list_remaining_dog_images)
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p15.png)
 
 
 ### 6.1.2 Validation Part
 
 
 ```{r, eval=F, echo=T}
-
+list_cats_validation = random.sample(list_remaining_cat_images, 
+                                     round(len(list_cats_full)*validation_part_proportion))
+list_cats_validation
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p16.png)
 
 
 ```{r, eval=F, echo=T}
-
+list_dogs_validation = random.sample(list_remaining_dog_images, 
+                                     round(len(list_dogs_full)*validation_part_proportion))
+list_dogs_validation
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p17.png)
 
 
 
@@ -427,28 +435,191 @@ If you are wondering why the following sequence (first the determination of the 
 
 
 ```{r, eval=F, echo=T}
-
+list_cats_training = [item for item in list_remaining_cat_images if item not in list_cats_validation]
+len(list_cats_training)
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p18.png)
 
 
 ```{r, eval=F, echo=T}
-
+list_dogs_training = [item for item in list_remaining_dog_images if item not in list_dogs_validation]
+len(list_dogs_training)
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p19.png)
 
 
+Now we have the randomly selected images for each category (cats, dogs) for the training, the validation and the testing part.
 
 
+## 6.2 Setting the folder structure
 
+Now that we have determined the images for their appropriate use, we set up an adequate folder structure in which we will store the images. 
 
-
+This looks like a lot of code now but I have commented every single step in the code. 
 
 
 ```{r, eval=F, echo=T}
+# Get root directory
+root_directory = os.getcwd()
 
+# Define original datasets direction
+original_dataset_dir_cats = os.path.join(root_directory, 'cats')
+original_dataset_dir_dogs = os.path.join(root_directory, 'dogs')
+
+# Define base direction 
+# This is the place where the image splitting 
+# (train, validation, test) should take place. 
+base_dir = os.path.join(root_directory, 'cats_and_dogs')
+os.mkdir(base_dir)
 ```
 
-![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png)
+
+```{r, eval=F, echo=T}
+# Define general train, validation and test direction
+
+train_dir = os.path.join(base_dir, 'train')
+os.mkdir(train_dir)
+
+validation_dir = os.path.join(base_dir, 'validation')
+os.mkdir(validation_dir)
+
+test_dir = os.path.join(base_dir, 'test')
+os.mkdir(test_dir)
+```
+
+
+```{r, eval=F, echo=T}
+# Define train direction for cats
+train_cats_dir = os.path.join(train_dir, 'cats')
+os.mkdir(train_cats_dir)
+
+# Define train direction for dogs
+train_dogs_dir = os.path.join(train_dir, 'dogs')
+os.mkdir(train_dogs_dir)
+```
+
+
+```{r, eval=F, echo=T}
+# Define validation direction for cats
+validation_cats_dir = os.path.join(validation_dir, 'cats')
+os.mkdir(validation_cats_dir)
+
+# Define validation direction for dogs
+validation_dogs_dir = os.path.join(validation_dir, 'dogs')
+os.mkdir(validation_dogs_dir)
+```
+
+
+```{r, eval=F, echo=T}
+# Define test direction for cats
+test_cats_dir = os.path.join(test_dir, 'cats')
+os.mkdir(test_cats_dir)
+
+# Define test direction for dogs
+test_dogs_dir = os.path.join(test_dir, 'dogs')
+os.mkdir(test_dogs_dir)
+```
+
+
+The created folder structure in the root directory now looks like this
+
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p20.png)
+
+
+## 6.3 Copying the determined images to the appropriate folders
+
+Now we will distribute the previously determined images to the folders accordingly.
+
+
+### 6.3.1 Train Part
+
+```{r, eval=F, echo=T}
+fnames = ['cat{}.jpg'.format(i) for i in list_cats_training]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(train_cats_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+```{r, eval=F, echo=T}
+fnames = ['dog{}.jpg'.format(i) for i in list_dogs_training]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(train_dogs_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+
+### 6.3.2 Validation Part
+
+```{r, eval=F, echo=T}
+fnames = ['cat{}.jpg'.format(i) for i in list_cats_validation]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(validation_cats_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+```{r, eval=F, echo=T}
+fnames = ['dog{}.jpg'.format(i) for i in list_dogs_validation]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(validation_dogs_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+
+### 6.3.3 Test Part
+
+```{r, eval=F, echo=T}
+fnames = ['cat{}.jpg'.format(i) for i in list_cats_test]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(test_cats_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+```{r, eval=F, echo=T}
+fnames = ['dog{}.jpg'.format(i) for i in list_dogs_test]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(test_dogs_dir, fname)
+    shutil.copyfile(src, dst)
+```
+
+
+## 6.4 Final Check
+
+
+Now that we have copied the images accordingly, let's take a final look at the distribution:
+
+```{r, eval=F, echo=T}
+print('Total training cat images:', len(os.listdir(train_cats_dir)))
+print('Total training dog images:', len(os.listdir(train_dogs_dir)))
+print()
+print('Total validation cat images:', len(os.listdir(validation_cats_dir)))
+print('Total validation dog images:', len(os.listdir(validation_dogs_dir)))
+print()
+print('Total test cat images:', len(os.listdir(test_cats_dir)))
+print('Total test dog images:', len(os.listdir(test_dogs_dir)))
+```
+
+![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p21.png)
+
+
+That's it. Now we are ready for model training. 
+
+
+# 7 Conclusion
+
+In this post I showed how to extract images from word files and rename them accordingly.
+Also the conversion of the file formats was covered. 
+Lastly, I showed how to usefully divide the available image data for model training. 
+
+
+
+
+
+

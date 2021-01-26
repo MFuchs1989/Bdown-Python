@@ -43,7 +43,16 @@ output:
 <li><a href="#validation-part">6.1.2 Validation Part</a></li>
 <li><a href="#train-part">6.1.3 Train Part</a></li>
 </ul></li>
+<li><a href="#setting-the-folder-structure">6.2 Setting the folder structure</a></li>
+<li><a href="#copying-the-determined-images-to-the-appropriate-folders">6.3 Copying the determined images to the appropriate folders</a>
+<ul>
+<li><a href="#train-part-1">6.3.1 Train Part</a></li>
+<li><a href="#validation-part-1">6.3.2 Validation Part</a></li>
+<li><a href="#test-part-1">6.3.3 Test Part</a></li>
 </ul></li>
+<li><a href="#final-check">6.4 Final Check</a></li>
+</ul></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -270,22 +279,153 @@ test_part_proportion = 0.1</code></pre>
 <div id="test-part" class="section level3">
 <h3>6.1.1 Test Part</h3>
 <p><strong>for cats dataset</strong></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
+<pre class="r"><code>list_cats_test = random.sample(list_cats_full, round(len(list_cats_full)*test_part_proportion))
+list_cats_test</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p12.png" /></p>
+<pre class="r"><code>list_remaining_cat_images = [item for item in list_cats_full if item not in list_cats_test]
+len(list_remaining_cat_images)</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p13.png" /></p>
 <p><strong>for dogs dataset</strong></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
+<pre class="r"><code>list_dogs_test = random.sample(list_dogs_full, round(len(list_dogs_full)*test_part_proportion))
+list_dogs_test</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p14.png" /></p>
+<pre class="r"><code>list_remaining_dog_images = [item for item in list_dogs_full if item not in list_dogs_test]
+len(list_remaining_dog_images)</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p15.png" /></p>
 </div>
 <div id="validation-part" class="section level3">
 <h3>6.1.2 Validation Part</h3>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
+<pre class="r"><code>list_cats_validation = random.sample(list_remaining_cat_images, 
+                                     round(len(list_cats_full)*validation_part_proportion))
+list_cats_validation</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p16.png" /></p>
+<pre class="r"><code>list_dogs_validation = random.sample(list_remaining_dog_images, 
+                                     round(len(list_dogs_full)*validation_part_proportion))
+list_dogs_validation</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p17.png" /></p>
 </div>
 <div id="train-part" class="section level3">
 <h3>6.1.3 Train Part</h3>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
-<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p.png" /></p>
+<pre class="r"><code>list_cats_training = [item for item in list_remaining_cat_images if item not in list_cats_validation]
+len(list_cats_training)</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p18.png" /></p>
+<pre class="r"><code>list_dogs_training = [item for item in list_remaining_dog_images if item not in list_dogs_validation]
+len(list_dogs_training)</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p19.png" /></p>
+<p>Now we have the randomly selected images for each category (cats, dogs) for the training, the validation and the testing part.</p>
 </div>
 </div>
+<div id="setting-the-folder-structure" class="section level2">
+<h2>6.2 Setting the folder structure</h2>
+<p>Now that we have determined the images for their appropriate use, we set up an adequate folder structure in which we will store the images.</p>
+<p>This looks like a lot of code now but I have commented every single step in the code.</p>
+<pre class="r"><code># Get root directory
+root_directory = os.getcwd()
+
+# Define original datasets direction
+original_dataset_dir_cats = os.path.join(root_directory, &#39;cats&#39;)
+original_dataset_dir_dogs = os.path.join(root_directory, &#39;dogs&#39;)
+
+# Define base direction 
+# This is the place where the image splitting 
+# (train, validation, test) should take place. 
+base_dir = os.path.join(root_directory, &#39;cats_and_dogs&#39;)
+os.mkdir(base_dir)</code></pre>
+<pre class="r"><code># Define general train, validation and test direction
+
+train_dir = os.path.join(base_dir, &#39;train&#39;)
+os.mkdir(train_dir)
+
+validation_dir = os.path.join(base_dir, &#39;validation&#39;)
+os.mkdir(validation_dir)
+
+test_dir = os.path.join(base_dir, &#39;test&#39;)
+os.mkdir(test_dir)</code></pre>
+<pre class="r"><code># Define train direction for cats
+train_cats_dir = os.path.join(train_dir, &#39;cats&#39;)
+os.mkdir(train_cats_dir)
+
+# Define train direction for dogs
+train_dogs_dir = os.path.join(train_dir, &#39;dogs&#39;)
+os.mkdir(train_dogs_dir)</code></pre>
+<pre class="r"><code># Define validation direction for cats
+validation_cats_dir = os.path.join(validation_dir, &#39;cats&#39;)
+os.mkdir(validation_cats_dir)
+
+# Define validation direction for dogs
+validation_dogs_dir = os.path.join(validation_dir, &#39;dogs&#39;)
+os.mkdir(validation_dogs_dir)</code></pre>
+<pre class="r"><code># Define test direction for cats
+test_cats_dir = os.path.join(test_dir, &#39;cats&#39;)
+os.mkdir(test_cats_dir)
+
+# Define test direction for dogs
+test_dogs_dir = os.path.join(test_dir, &#39;dogs&#39;)
+os.mkdir(test_dogs_dir)</code></pre>
+<p>The created folder structure in the root directory now looks like this</p>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p20.png" /></p>
+</div>
+<div id="copying-the-determined-images-to-the-appropriate-folders" class="section level2">
+<h2>6.3 Copying the determined images to the appropriate folders</h2>
+<p>Now we will distribute the previously determined images to the folders accordingly.</p>
+<div id="train-part-1" class="section level3">
+<h3>6.3.1 Train Part</h3>
+<pre class="r"><code>fnames = [&#39;cat{}.jpg&#39;.format(i) for i in list_cats_training]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(train_cats_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+<pre class="r"><code>fnames = [&#39;dog{}.jpg&#39;.format(i) for i in list_dogs_training]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(train_dogs_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+</div>
+<div id="validation-part-1" class="section level3">
+<h3>6.3.2 Validation Part</h3>
+<pre class="r"><code>fnames = [&#39;cat{}.jpg&#39;.format(i) for i in list_cats_validation]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(validation_cats_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+<pre class="r"><code>fnames = [&#39;dog{}.jpg&#39;.format(i) for i in list_dogs_validation]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(validation_dogs_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+</div>
+<div id="test-part-1" class="section level3">
+<h3>6.3.3 Test Part</h3>
+<pre class="r"><code>fnames = [&#39;cat{}.jpg&#39;.format(i) for i in list_cats_test]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_cats, fname)
+    dst = os.path.join(test_cats_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+<pre class="r"><code>fnames = [&#39;dog{}.jpg&#39;.format(i) for i in list_dogs_test]
+for fname in fnames:
+    src = os.path.join(original_dataset_dir_dogs, fname)
+    dst = os.path.join(test_dogs_dir, fname)
+    shutil.copyfile(src, dst)</code></pre>
+</div>
+</div>
+<div id="final-check" class="section level2">
+<h2>6.4 Final Check</h2>
+<p>Now that we have copied the images accordingly, let’s take a final look at the distribution:</p>
+<pre class="r"><code>print(&#39;Total training cat images:&#39;, len(os.listdir(train_cats_dir)))
+print(&#39;Total training dog images:&#39;, len(os.listdir(train_dogs_dir)))
+print()
+print(&#39;Total validation cat images:&#39;, len(os.listdir(validation_cats_dir)))
+print(&#39;Total validation dog images:&#39;, len(os.listdir(validation_dogs_dir)))
+print()
+print(&#39;Total test cat images:&#39;, len(os.listdir(test_cats_dir)))
+print(&#39;Total test dog images:&#39;, len(os.listdir(test_dogs_dir)))</code></pre>
+<p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p21.png" /></p>
+<p>That’s it. Now we are ready for model training.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>In this post I showed how to extract images from word files and rename them accordingly.
+Also the conversion of the file formats was covered.
+Lastly, I showed how to usefully divide the available image data for model training.</p>
 </div>
