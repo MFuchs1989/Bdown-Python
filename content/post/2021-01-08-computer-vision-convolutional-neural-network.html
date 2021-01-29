@@ -45,6 +45,25 @@ output:
 <li><a href="#obtaining-class-assignments">5.7 Obtaining class assignments</a></li>
 <li><a href="#validation">5.8 Validation</a></li>
 <li><a href="#load-best-model">5.9 Load best model</a></li>
+<li><a href="#model-testing">5.10 Model Testing</a></li>
+</ul></li>
+<li><a href="#cnn-with-data-augmentation">6 CNN with Data Augmentation</a>
+<ul>
+<li><a href="#name-definitions-1">6.1 Name Definitions</a></li>
+<li><a href="#parameter-settings-1">6.2 Parameter Settings</a></li>
+<li><a href="#instantiating-a-cnn-with-data-augmentation">6.3 Instantiating a CNN with Data Augmentation</a>
+<ul>
+<li><a href="#layer-structure-1">6.3.1 Layer Structure</a></li>
+<li><a href="#configuring-the-model-for-training-1">6.3.2 Configuring the model for training</a></li>
+<li><a href="#using-imagedatagenerator-with-data-augmentation">6.3.3 Using ImageDataGenerator with data augmentation</a></li>
+</ul></li>
+<li><a href="#callbacks-1">6.4 Callbacks</a></li>
+<li><a href="#fitting-the-model-1">6.5 Fitting the model</a></li>
+<li><a href="#obtaining-the-best-model-values-1">6.6 Obtaining the best model values</a></li>
+<li><a href="#obtaining-class-assignments-1">6.7 Obtaining class assignments</a></li>
+<li><a href="#validation-1">6.8 Validation</a></li>
+<li><a href="#load-best-model-1">6.9 Load best model</a></li>
+<li><a href="#model-testing-1">6.10 Model Testing</a></li>
 </ul></li>
 </ul>
 </div>
@@ -435,7 +454,171 @@ plt.show()</code></pre>
 </div>
 <div id="load-best-model" class="section level2">
 <h2>5.9 Load best model</h2>
+<p>As you can see from the current folder structure shown above, the automatically created subfolders inside the ModelCheckpoint folder are not that great. The best model was saved as a .pb file and did not get a proper naming.</p>
+<p>I want my final model to be saved with apt naming under the created ModelCheckpoint folder.
+Since I am aiming for this tidy approach I will load the .pb model below, save it as an .h5 file and delete the unnecessary folders.</p>
+<p>Our ModelCheckpoint folder should then look like this:</p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p21.png" /></p>
+<p>The overall folder structure should look like this:</p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p22.png" /></p>
+<p>As a final step we load the saved .h5 model.</p>
+<pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
+</div>
+<div id="model-testing" class="section level2">
+<h2>5.10 Model Testing</h2>
+<p>With the .h5 model reloaded, let’s now check the performance of the CNN using the test data.</p>
+<pre class="r"><code>test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+
+test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
+print()
+print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p23.png" /></p>
+<p>As expected, the performance is not that good yet. Therefore, we perform another model training.</p>
+</div>
+</div>
+<div id="cnn-with-data-augmentation" class="section level1">
+<h1>6 CNN with Data Augmentation</h1>
+<p><a href="https://www.analyticsvidhya.com/blog/2020/08/image-augmentation-on-the-fly-using-keras-imagedatagenerator/">Data Augmentation</a> is a nice way to prevent overfitting, especially in computer vision. Here the amount of training is increased by rotating, stretching and other modification processes of the images.</p>
+<p>Most steps and settings remain the same. Therefore, I will only discuss noteworthy changes in the following.</p>
+<div id="name-definitions-1" class="section level2">
+<h2>6.1 Name Definitions</h2>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_2_CNN_with_augm&#39;
+model_name = &#39;Cats_Dogs_CNN_4_Conv_F32_64_128_128_epoch_60_es&#39;</code></pre>
+</div>
+<div id="parameter-settings-1" class="section level2">
+<h2>6.2 Parameter Settings</h2>
+<pre class="r"><code>img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 64
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 60
+
+print(&#39;Input Shape: &#39;+&#39;(&#39;+str(img_height)+&#39;, &#39;+str(img_width)+&#39;, &#39; + str(3)+&#39;)&#39;)
+print(&#39;Batch Size: &#39; + str(n_batch_size))
+print()
+print(&#39;Steps per Epoch: &#39; + str(n_steps_per_epoch))
+print()
+print(&#39;Validation Steps: &#39; + str(n_validation_steps))
+print(&#39;Test Steps: &#39; + str(n_test_steps))
+print()
+print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p24.png" /></p>
+</div>
+<div id="instantiating-a-cnn-with-data-augmentation" class="section level2">
+<h2>6.3 Instantiating a CNN with Data Augmentation</h2>
+<div id="layer-structure-1" class="section level3">
+<h3>6.3.1 Layer Structure</h3>
+<p>I have added an additional dropout layer here, which should also counteract overfittig.</p>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation=&#39;relu&#39;,input_shape=input_shape))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(64, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Flatten())
+
+model.add(layers.Dropout(0.5))
+
+model.add(layers.Dense(512, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+<pre class="r"><code>model.summary()</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p25.png" /></p>
+</div>
+<div id="configuring-the-model-for-training-1" class="section level3">
+<h3>6.3.2 Configuring the model for training</h3>
+<pre class="r"><code>model.compile(loss=&#39;binary_crossentropy&#39;,
+              optimizer=&#39;adam&#39;,
+              metrics=[&#39;accuracy&#39;])</code></pre>
+</div>
+<div id="using-imagedatagenerator-with-data-augmentation" class="section level3">
+<h3>6.3.3 Using ImageDataGenerator with data augmentation</h3>
+<pre class="r"><code>train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,)
+
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p26.png" /></p>
+</div>
+</div>
+<div id="callbacks-1" class="section level2">
+<h2>6.4 Callbacks</h2>
+<p>As previously announced, I use not only the ModelCheckpoint callback here but also the EarlyStopping.</p>
+<pre class="r"><code># Prepare a directory to store all the checkpoints.
+checkpoint_dir = &#39;./&#39;+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)</code></pre>
+<pre class="r"><code>keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + &#39;/&#39; + model_name, 
+                                   monitor=&#39;val_loss&#39;, save_best_only=True, mode=&#39;auto&#39;),
+                   EarlyStopping(monitor=&#39;val_loss&#39;, patience=5, mode=&#39;auto&#39;, 
+                                 min_delta = 0, verbose=1)]</code></pre>
+</div>
+<div id="fitting-the-model-1" class="section level2">
+<h2>6.5 Fitting the model</h2>
+<pre class="r"><code>history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p27.png" /></p>
+</div>
+<div id="obtaining-the-best-model-values-1" class="section level2">
+<h2>6.6 Obtaining the best model values</h2>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+</div>
+<div id="obtaining-class-assignments-1" class="section level2">
+<h2>6.7 Obtaining class assignments</h2>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+</div>
+<div id="validation-1" class="section level2">
+<h2>6.8 Validation</h2>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+</div>
+<div id="load-best-model-1" class="section level2">
+<h2>6.9 Load best model</h2>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+</div>
+<div id="model-testing-1" class="section level2">
+<h2>6.10 Model Testing</h2>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
 </div>

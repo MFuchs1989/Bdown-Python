@@ -580,22 +580,258 @@ The graphs clearly show that we have a problem with [overfitting](https://toward
 
 ## 5.9 Load best model
 
+As you can see from the current folder structure shown above, the automatically created subfolders inside the ModelCheckpoint folder are not that great. The best model was saved as a .pb file and did not get a proper naming. 
 
+I want my final model to be saved with apt naming under the created ModelCheckpoint folder. 
+Since I am aiming for this tidy approach I will load the .pb model below, save it as an .h5 file and delete the unnecessary folders.
+
+Our ModelCheckpoint folder should then look like this: 
 
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p21.png)
 
 
+The overall folder structure should look like this:
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p22.png)
+
+
+
+As a final step we load the saved .h5 model. 
+
+```{r, eval=F, echo=T}
+best_model = load_model(model_name_temp)
+```
+
+
+## 5.10 Model Testing
+
+With the .h5 model reloaded, let's now check the performance of the CNN using the test data.
+
+```{r, eval=F, echo=T}
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
+print()
+print('Test Accuracy:', test_acc)
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p23.png)
+
+As expected, the performance is not that good yet. Therefore, we perform another model training.
+
+
+
+# 6 CNN with Data Augmentation
+
+[Data Augmentation](https://www.analyticsvidhya.com/blog/2020/08/image-augmentation-on-the-fly-using-keras-imagedatagenerator/) is a nice way to prevent overfitting, especially in computer vision. Here the amount of training is increased by rotating, stretching and other modification processes of the images. 
+
+Most steps and settings remain the same. Therefore, I will only discuss noteworthy changes in the following.
+
+## 6.1 Name Definitions
+
+```{r, eval=F, echo=T}
+checkpoint_no = 'ckpt_2_CNN_with_augm'
+model_name = 'Cats_Dogs_CNN_4_Conv_F32_64_128_128_epoch_60_es'
+```
+
+## 6.2 Parameter Settings
+
+
+```{r, eval=F, echo=T}
+img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 64
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 60
+
+print('Input Shape: '+'('+str(img_height)+', '+str(img_width)+', ' + str(3)+')')
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p24.png)
 
 
 
 
+## 6.3 Instantiating a CNN with Data Augmentation
+
+### 6.3.1 Layer Structure
+
+I have added an additional dropout layer here, which should also counteract overfittig.
+
+```{r, eval=F, echo=T}
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu',input_shape=input_shape))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Flatten())
+
+model.add(layers.Dropout(0.5))
+
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+```{r, eval=F, echo=T}
+model.summary()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p25.png)
+
+
+### 6.3.2 Configuring the model for training
+
+```{r, eval=F, echo=T}
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+```
+
+
+### 6.3.3 Using ImageDataGenerator with data augmentation
+
+
+```{r, eval=F, echo=T}
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,)
+
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p26.png)
+
+
+## 6.4 Callbacks
+
+As previously announced, I use not only the ModelCheckpoint callback here but also the EarlyStopping.
+
+```{r, eval=F, echo=T}
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = './'+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+```
+
+```{r, eval=F, echo=T}
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + '/' + model_name, 
+                                   monitor='val_loss', save_best_only=True, mode='auto'),
+                   EarlyStopping(monitor='val_loss', patience=5, mode='auto', 
+                                 min_delta = 0, verbose=1)]
+```
+
+
+## 6.5 Fitting the model
+
+
+```{r, eval=F, echo=T}
+history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p27.png)
+
+
+
+## 6.6 Obtaining the best model values
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
 
 
 
 
+## 6.7 Obtaining class assignments
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
 
 
 
+## 6.8 Validation
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+## 6.9 Load best model
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+
+## 6.10 Model Testing
 
 
 
