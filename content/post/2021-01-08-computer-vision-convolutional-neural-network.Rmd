@@ -1,0 +1,386 @@
+---
+title: Computer Vision - Convolutional Neural Network
+author: Michael Fuchs
+date: '2021-01-08'
+slug: computer-vision-convolutional-neural-network
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+So we got into [Computer Vision](https://tryolabs.com/resources/introductory-guide-computer-vision/) and I described how to deal with image data in my last post [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/). 
+Here I have also shown how to automatically split a dataset of images into a training, validation and test part. 
+
+I'll barely cover that part in the post below and focus entirely on the topic at hand: How to classify the content of images using **Convolutional Neural Networks**. 
+
+
+
+What is a [Convolutional Neural(https://www.analyticsvidhya.com/blog/2016/04/deep-learning-computer-vision-introduction-convolution-neural-networks/) Network] (CNN)?
+
+A CNN is is a deep learning neural network designed for processing structured arrays of data such as images.
+Convolutional Neural Networks are widely used in computer vision and have become the state of the art for many visual applications such as image classification. 
+However, they can also be used for Recommender Systems, Natural Language Processing or Time Series Forecasting. 
+
+CNNs are very good at picking up on patterns in the input image, such as lines, gradients, circles or even eyes and faces. It is this property that makes CNNs so powerful for Computer Vision.
+A CNN is a [feed-forward neural network](https://deepai.org/machine-learning-glossary-and-terms/feed-forward-neural-network). The power of a CNN comes from a special kind of layer called the [convolutional layer](https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53).
+CNNs contain many convolutional layers stacked on top of each other, each one capable of recognizing more sophisticated shapes. 
+
+<p align="center">
+  <img src="https://d2h0cx97tjks2p.cloudfront.net/blogs/wp-content/uploads/sites/2/2020/05/Cats-Dogs-Classification-deep-learning.gif?raw=true" alt="readme crisp dm"/>
+</p>
+
+
+In this publication I will show how to classify image data using a CNN. 
+For this I used the images from the *cats and dogs* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/c/dogs-vs-cats/data). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network). 
+
+
+
+# 2 Import the libraries
+
+```{r, eval=F, echo=T}
+from preprocessing_CNN import Train_Validation_Test_Split
+
+import numpy as np
+import pandas as pd
+
+import os
+import shutil
+
+import cv2 
+import matplotlib.pyplot as plt
+%matplotlib inline 
+
+from keras import layers
+from keras import models
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import load_model
+```
+
+
+# 3 Data pre-processing
+
+To get started with the training of a CNN, we first have to divide the data set into a training, validation and test part and determine some directories and metrics, so that we have less work later and can run through all processes fully automatically. 
+
+Please download the two folders *cats* and *dogs* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the two files are stored. 
+
+
+## 3.1 Train-Validation-Test Split
+
+
+In my post [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split) I showed how to do such a split with image data automatically. I used exactly this syntax and packed it into a .py file to keep this notebook clear. You can also download this .py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network). 
+
+Place this file (preprocessing_CNN.py) next to the folders *cats* and *dogs* and start your Jupyter notebook from here.
+
+Your folder structure should then look like this:
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p1.png)
+
+The function stored in the preprocessing_CNN.py file (Train_Validation_Test_Split) can be used as follows:
+
+```{r, eval=F, echo=T}
+c_train, d_train, c_val, d_val, c_test, d_test = Train_Validation_Test_Split('cats', 'dogs')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p0.png)
+
+
+You only need to specify the two names of the folders in which the original image data is located or the entire path to the respective folders if you have stored the files somewhere else. 
+
+I have chosen the percentage distribution as follows: 
+
++ Trainings Part: 60%
++ Validation Part: 20%
++ Testing Part: 20%
+
+Using the executed function, folders and subfolders are automatically created for the areas of training, validation and testing, and the image data is randomly divided according to the specified proportions. 
+
+As you can read in the function itself it returns 6 values:
+
++ list_cats_training (int): List of randomly selected images for the training part of the first category
++ list_dogs_training (int): List of randomly selected images for the training part of the second category
++ list_cats_validation (int): List of randomly selected images for the validation part of the first category
++ list_dogs_validation (int): List of randomly selected images for the validation part of the second category
++ list_cats_test (int): List of randomly selected images for the test part of the first category
++ list_dogs_test (int): List of randomly selected images for the test part of the second category
+
+
+You don't have to have these metrics output, but I use them later to determine some parameter settings of the neural network. You save as much as you can with smart programming. 
+
+
+## 3.2 Obtaining the lists of randomly selected images
+
+To make the naming of the output of the function more meaningful I rename it accordingly
+
+
+```{r, eval=F, echo=T}
+list_cats_training = c_train
+list_dogs_training = d_train
+
+list_cats_validation = c_val
+list_dogs_validation = d_val
+
+list_cats_test = c_test
+list_dogs_test = d_test
+```
+
+
+
+## 3.3 Determination of the directories
+
+Here I specify the path where the neural network can later find the data. 
+
+```{r, eval=F, echo=T}
+root_directory = os.getcwd()
+
+train_dir = os.path.join(root_directory, 'cats_and_dogs\\train')
+validation_dir = os.path.join(root_directory, 'cats_and_dogs\\validation')
+test_dir = os.path.join(root_directory, 'cats_and_dogs\\test')
+```
+
+
+## 3.4 Obtain the total number of training, validation and test images
+
+Here I'm not interested in reissuing the folder sizes but much more in getting the total number of images for the respective areas. 
+
+
+```{r, eval=F, echo=T}
+num_cats_img_train = len(list_cats_training)
+num_dogs_img_train = len(list_dogs_training)
+
+num_train_images_total = num_cats_img_train + num_dogs_img_train
+
+print('Total training cat images: ' + str(num_cats_img_train))
+print('Total training dog images: ' + str(num_dogs_img_train))
+print()
+print('Total training images: ' + str(num_train_images_total))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p2.png)
+
+
+```{r, eval=F, echo=T}
+num_cats_img_validation = len(list_cats_validation)
+num_dogs_img_validation = len(list_dogs_validation)
+
+num_validation_images_total = num_cats_img_validation + num_dogs_img_validation
+
+print('Total validation cat images: ' + str(num_cats_img_validation))
+print('Total validation dog images: ' + str(num_dogs_img_validation))
+print()
+print('Total validation images: ' + str(num_validation_images_total))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p3.png)
+
+
+```{r, eval=F, echo=T}
+num_cats_img_test = len(list_cats_test)
+num_dogs_img_test = len(list_dogs_test)
+
+num_test_images_total = num_cats_img_test + num_dogs_img_test
+
+print('Total test cat images: ' + str(num_cats_img_test))
+print('Total test dog images: ' + str(num_dogs_img_test))
+print()
+print('Total test images: ' + str(num_test_images_total))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p4.png)
+
+
+The folder structure should now look like this:
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p5.png)
+
+
+# 4 Descriptive Statistics
+
+Here are a few more descriptive statistics on the images we have available to us:
+
+```{r, eval=F, echo=T}
+root_directory = os.getcwd()
+train_files_cats_dir = os.path.join(root_directory, 'cats_and_dogs\\train\\cats')
+
+height, width = [], []
+
+fnames = ['cat{}.jpg'.format(i) for i in list_cats_training]
+for fname in fnames:
+    img_name = os.path.join(train_files_cats_dir, fname)
+    img = cv2.imread(img_name)
+    height.append(img.shape[0])
+    width.append(img.shape[1])
+
+plt.scatter(height,width, s=1)
+plt.xlabel('Height', fontsize=16)
+plt.ylabel('Width', fontsize=16)
+plt.title('Scatter Plot of Height and Width of cat train images')
+plt.show()  
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p6.png)
+
+
+```{r, eval=F, echo=T}
+plt.hist(height,bins = 50, alpha=0.5)
+plt.hist(width,bins = 50,alpha=0.5)
+plt.axis([0,600,0,4000])
+plt.xlabel('Height/Width', fontsize=16)
+plt.ylabel('Num of Images', fontsize=16)
+plt.title('Variation of image sizes within dataset')
+plt.show()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p7.png)
+
+
+```{r, eval=F, echo=T}
+root_directory = os.getcwd()
+train_files_dogs_dir = os.path.join(root_directory, 'cats_and_dogs\\train\\dogs')
+
+height, width = [], []
+
+fnames = ['dog{}.jpg'.format(i) for i in list_dogs_training]
+for fname in fnames:
+    img_name = os.path.join(train_files_dogs_dir, fname)
+    img = cv2.imread(img_name)
+    height.append(img.shape[0])
+    width.append(img.shape[1])
+
+plt.scatter(height,width, s=1)
+plt.xlabel('Height', fontsize=16)
+plt.ylabel('Width', fontsize=16)
+plt.title('Scatter Plot of Height and Width of dog train images')
+plt.show() 
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p8.png)
+
+
+```{r, eval=F, echo=T}
+plt.hist(height,bins = 50, alpha=0.5)
+plt.hist(width,bins = 50,alpha=0.5)
+plt.axis([0,600,0,4000])
+plt.xlabel('Height/Width', fontsize=16)
+plt.ylabel('Num of Images', fontsize=16)
+plt.title('Variation of image sizes within dataset')
+plt.show()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p9.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+
