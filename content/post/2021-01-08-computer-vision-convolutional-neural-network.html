@@ -29,6 +29,15 @@ output:
 <li><a href="#obtain-the-total-number-of-training-validation-and-test-images">3.4 Obtain the total number of training, validation and test images</a></li>
 </ul></li>
 <li><a href="#descriptive-statistics">4 Descriptive Statistics</a></li>
+<li><a href="#simple-cnn">5 Simple CNN</a>
+<ul>
+<li><a href="#name-definitions">5.1 Name Definitions</a></li>
+<li><a href="#parameter-settings">5.2 Parameter Settings</a></li>
+<li><a href="#instantiating-a-small-cnn">5.3 Instantiating a small CNN</a>
+<ul>
+<li><a href="#layer-structure">5.3.1 Layer Structure</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -216,7 +225,84 @@ plt.ylabel(&#39;Num of Images&#39;, fontsize=16)
 plt.title(&#39;Variation of image sizes within dataset&#39;)
 plt.show()</code></pre>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p9.png" /></p>
+</div>
+<div id="simple-cnn" class="section level1">
+<h1>5 Simple CNN</h1>
+<div id="name-definitions" class="section level2">
+<h2>5.1 Name Definitions</h2>
+<p>I always want to save the created models right away. For this purpose, I specify the name of the folder in which the future model is to be saved and the name that the model itself is to receive.</p>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_1_simple_CNN&#39;
+model_name = &#39;Cats_Dogs_CNN_4_Conv_F32_64_128_128_epoch_30&#39;</code></pre>
+</div>
+<div id="parameter-settings" class="section level2">
+<h2>5.2 Parameter Settings</h2>
+<p>First, I determine the height and width of the images as they are to be read into the model.
+This then results in the input_shape. The 3 stands for the image depth. Since we are dealing with colored images, we have a depth of 3 for red, green and blue (RGB).</p>
+<p><strong>batch_size</strong></p>
+<p>Batch Size determines the number of samples in each mini-batch. Its maximum is the number of all samples, which makes the gradient descent accurate, the loss will decrease towards the minimum if the learning rate is small enough, but the iterations are slower. Its minimum is 1, resulting in a stochastic gradient descent: Fast, but the direction of the gradient step is based on one example only, the loss can jump around. Batch Size allows setting between the two extremes: exact gradient direction and fast iteration. Also, the maximum value for Batch Size may be limited if your model and dataset do not fit in the available (GPU) memory.</p>
+<p><strong>steps_per_epoch</strong></p>
+<p>Steps per Epoch is the number of batch iterations before a training epoch is considered complete. If you have a fixed-size training dataset, you can ignore it, but it can be useful if you have a huge dataset or if you generate random data extensions on the fly, i.e. if your training dataset has a (generated) infinite size. If you have the time to go through your entire training dataset, I recommend skipping this parameter.</p>
+<p><strong>validation_steps</strong> and <strong>test_steps</strong></p>
+<p>These two parameter are similar to Steps per Epoch but on the validation and test data set instead on the training data. If you have the time to go through your whole validation and test data set I recommend to skip this parameter as well.</p>
+<p><strong>n_epochs</strong></p>
+<p>Number of epochs how often a complete run should be performed.
+One epoch is when an entire dataset is passed forward and backward through the neural network only once.</p>
+<p><code>We can divide a dataset of 2000 examples into Batch Size of 500 then it will take 4 Steps per Epoch to complete 1 epoch.</code></p>
+<p>Here we see the reason why I have some metrics returned from the Train_Validation_Test_Split function. After I have set a batch size of 32, the total amount of 15,000 training images results in 468 steps per epoch, so that all images were seen once per epoch.</p>
+<p>The same is true for validation and test steps.</p>
+<pre class="r"><code>img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 32
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 30
+
+print(&#39;Input Shape: &#39;+&#39;(&#39;+str(img_height)+&#39;, &#39;+str(img_width)+&#39;, &#39; + str(3)+&#39;)&#39;)
+print(&#39;Batch Size: &#39; + str(n_batch_size))
+print()
+print(&#39;Steps per Epoch: &#39; + str(n_steps_per_epoch))
+print()
+print(&#39;Validation Steps: &#39; + str(n_validation_steps))
+print(&#39;Test Steps: &#39; + str(n_test_steps))
+print()
+print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p10.png" /></p>
+<p>I will always need this information with the ImageDataGenerators as well. Therefore, it has become a best practice to define the parameters once based on the calculations of the metrics from the split function.</p>
+</div>
+<div id="instantiating-a-small-cnn" class="section level2">
+<h2>5.3 Instantiating a small CNN</h2>
+<div id="layer-structure" class="section level3">
+<h3>5.3.1 Layer Structure</h3>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation=&#39;relu&#39;,input_shape=input_shape))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(64, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation=&#39;relu&#39;))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Flatten())
+
+model.add(layers.Dense(512, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+<p>I set the last <strong>Dense Layer to 1</strong> and chose <strong>‘sigmoid’</strong> as the activation function, since this is a <strong>binary classification problem</strong>.</p>
+<pre class="r"><code>model.summary()</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p11.png" /></p>
+<p>Wie die parameter sich berechnen:</p>
+<p><a href="https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d" class="uri">https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d</a></p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+</div>
+</div>
 </div>

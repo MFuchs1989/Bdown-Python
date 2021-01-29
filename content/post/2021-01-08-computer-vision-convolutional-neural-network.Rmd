@@ -283,6 +283,112 @@ plt.show()
 
 
 
+# 5 Simple CNN
+
+
+## 5.1 Name Definitions
+
+I always want to save the created models right away. For this purpose, I specify the name of the folder in which the future model is to be saved and the name that the model itself is to receive. 
+
+```{r, eval=F, echo=T}
+checkpoint_no = 'ckpt_1_simple_CNN'
+model_name = 'Cats_Dogs_CNN_4_Conv_F32_64_128_128_epoch_30'
+```
+
+
+## 5.2 Parameter Settings
+
+First, I determine the height and width of the images as they are to be read into the model.
+This then results in the input_shape. The 3 stands for the image depth. Since we are dealing with colored images, we have a depth of 3 for red, green and blue (RGB). 
+
+
+**batch_size** 
+
+Batch Size determines the number of samples in each mini-batch. Its maximum is the number of all samples, which makes the gradient descent accurate, the loss will decrease towards the minimum if the learning rate is small enough, but the iterations are slower. Its minimum is 1, resulting in a stochastic gradient descent: Fast, but the direction of the gradient step is based on one example only, the loss can jump around. Batch Size allows setting between the two extremes: exact gradient direction and fast iteration. Also, the maximum value for Batch Size may be limited if your model and dataset do not fit in the available (GPU) memory.
+
+**steps_per_epoch** 
+
+Steps per Epoch is the number of batch iterations before a training epoch is considered complete. If you have a fixed-size training dataset, you can ignore it, but it can be useful if you have a huge dataset or if you generate random data extensions on the fly, i.e. if your training dataset has a (generated) infinite size. If you have the time to go through your entire training dataset, I recommend skipping this parameter.
+
+**validation_steps** and **test_steps**
+
+These two parameter are similar to Steps per Epoch but on the validation and test data set instead on the training data. If you have the time to go through your whole validation and test data set I recommend to skip this parameter as well.
+
+**n_epochs**
+
+Number of epochs how often a complete run should be performed. 
+One epoch is when an entire dataset is passed forward and backward through the neural network only once.
+
+
+`We can divide a dataset of 2000 examples into Batch Size of 500 then it will take 4 Steps per Epoch to complete 1 epoch.`
+
+Here we see the reason why I have some metrics returned from the Train_Validation_Test_Split function. After I have set a batch size of 32, the total amount of 15,000 training images results in 468 steps per epoch, so that all images were seen once per epoch. 
+
+The same is true for validation and test steps.
+
+```{r, eval=F, echo=T}
+img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 32
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 30
+
+print('Input Shape: '+'('+str(img_height)+', '+str(img_width)+', ' + str(3)+')')
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p10.png)
+
+I will always need this information with the ImageDataGenerators as well. Therefore, it has become a best practice to define the parameters once based on the calculations of the metrics from the split function. 
+
+
+
+## 5.3 Instantiating a small CNN
+
+### 5.3.1 Layer Structure
+
+
+```{r, eval=F, echo=T}
+model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu',input_shape=input_shape))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+
+model.add(layers.Flatten())
+
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+I set the last **Dense Layer to 1** and chose **'sigmoid'** as the activation function, since this is a **binary classification problem**. 
+
+
+```{r, eval=F, echo=T}
+model.summary()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p11.png)
 
 
 
@@ -302,9 +408,9 @@ plt.show()
 
 
 
+Wie die parameter sich berechnen:
 
-
-
+https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d
 
 
 
