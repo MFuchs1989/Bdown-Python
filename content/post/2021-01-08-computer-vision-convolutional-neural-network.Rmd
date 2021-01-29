@@ -38,6 +38,8 @@ CNNs contain many convolutional layers stacked on top of each other, each one ca
 <p align="center">
   <img src="https://d2h0cx97tjks2p.cloudfront.net/blogs/wp-content/uploads/sites/2/2020/05/Cats-Dogs-Classification-deep-learning.gif?raw=true" alt="readme crisp dm"/>
 </p>
+Source: [DataFlair](https://data-flair.training/)
+
 
 
 In this publication I will show how to classify image data using a CNN. 
@@ -390,50 +392,197 @@ model.summary()
 
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p11.png)
 
+If you want to know how the total number of parameters is calculated, see this [post](https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d). 
 
 
 
+### 5.3.2 Configuring the model for training
+
+```{r, eval=F, echo=T}
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+```
 
 
+### 5.3.3 Using ImageDataGenerator
+
+```{r, eval=F, echo=T}
+train_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1./255)
 
 
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p12.png)
 
 
+## 5.4 Callbacks
 
+The Keras library offers the option of [callbacks](https://keras.io/api/callbacks/). Personally, I pretty much always use two of them:
 
++ [ModelCheckpoint](https://keras.io/api/callbacks/model_checkpoint/)
++ [EarlyStopping](https://keras.io/api/callbacks/early_stopping/)
 
+**ModelCheckpoint** gives me the possibility to automatically save models measured by a defined metric (here validation loss) if this metric has improved after an epoch. 
 
+**EarlyStopping** protects me from unnecessary further training of the model if a particular metric does not continue to improve over a number of n epochs. In such a case, the model training would be automatically aborted. 
 
+But there are other useful callbacks like [ReduceLROnPlateau](https://keras.io/api/callbacks/reduce_lr_on_plateau/). Here, the learning rate would automatically reduce if a metric stopped improving.
 
-
-
-
-Wie die parameter sich berechnen:
-
-https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d
-
-
-
-
-
+In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under chapter 6 I also included EarlyStopping. 
 
 
 ```{r, eval=F, echo=T}
-
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = './'+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+```{r, eval=F, echo=T}
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + '/' + model_name, 
+                                   monitor='val_loss', save_best_only=True, mode='auto')]
+```
 
 
 
+## 5.5 Fitting the model
+
+After we have already determined the parameters, we now benefit from the fact that we no longer have to make any manual entries. 
+
+```{r, eval=F, echo=T}
+history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p13.png)
+
+After model training, your folder structure should look like this:
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p14.png)
+
+
+Here we see that our callback (ModelCheckpoint) has automatically created a folder 'ckpt_1_simple_CNN' (the name I gave in chapter 5.1) with a subfolder containing the automatically saved model. 
+
+
+## 5.6 Obtaining the best model values
+
+By using the callback ModelCheckpoint the model was saved which had the lowest validaton loss. 
+But what exactly were the values of this model? 
+With the following code I have the possibility to display the values per epoch.
+And with this dataframe I also have the possibility to display the values for the model that was automatically saved. 
+
+
+```{r, eval=F, echo=T}
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p15.png)
+
+
+```{r, eval=F, echo=T}
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p16.png)
+
+
+Since I will possibly train several models in several notebooks at the same time, it is advisable at this point to save the dataframe shown above as a .csv file in order to be able to refer to it again at a later time, for example to compare the model performance of the best models.
+
+I have now saved the history values in my ModelCheckpoint folder. 
+This folder now looks like this: 
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p17.png)
+
+ 
+## 5.7 Obtaining class assignments
+
+In addition to the metric values achieved per epoch during model training, it is also advisable to have the assigned class distribution output and to save this information as a .csv file so that you can refer to it again later. 
+
+
+```{r, eval=F, echo=T}
+class_assignment = train_generator.class_indices
+
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop(['level_0'], axis=1)
+df_temp.columns = ['Category', 'Allocated Number']
+df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv')
+
+print('Class assignment:', str(class_assignment))
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p18.png)
+
+Both files (the history values and the class assignments) are now stored in my ModelCheckpoint folder. 
+This folder now looks like this: 
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p19.png)
+
+
+## 5.8 Validation
+
+In the following I will generate two graphs showing the training and validation accuracy on the one hand and the training and validation loss on the other hand.
+
+
+```{r, eval=F, echo=T}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p20.png)
+
+The graphs clearly show that we have a problem with [overfitting](https://towardsdatascience.com/overfitting-vs-underfitting-a-conceptual-explanation-d94ee20ca7f9).
+
+
+## 5.9 Load best model
 
 
 
-
-
-
-
-
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p21.png)
 
 
 

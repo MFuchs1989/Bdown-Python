@@ -36,7 +36,15 @@ output:
 <li><a href="#instantiating-a-small-cnn">5.3 Instantiating a small CNN</a>
 <ul>
 <li><a href="#layer-structure">5.3.1 Layer Structure</a></li>
+<li><a href="#configuring-the-model-for-training">5.3.2 Configuring the model for training</a></li>
+<li><a href="#using-imagedatagenerator">5.3.3 Using ImageDataGenerator</a></li>
 </ul></li>
+<li><a href="#callbacks">5.4 Callbacks</a></li>
+<li><a href="#fitting-the-model">5.5 Fitting the model</a></li>
+<li><a href="#obtaining-the-best-model-values">5.6 Obtaining the best model values</a></li>
+<li><a href="#obtaining-class-assignments">5.7 Obtaining class assignments</a></li>
+<li><a href="#validation">5.8 Validation</a></li>
+<li><a href="#load-best-model">5.9 Load best model</a></li>
 </ul></li>
 </ul>
 </div>
@@ -56,6 +64,7 @@ CNNs contain many convolutional layers stacked on top of each other, each one ca
 <p align="center">
 <img src="https://d2h0cx97tjks2p.cloudfront.net/blogs/wp-content/uploads/sites/2/2020/05/Cats-Dogs-Classification-deep-learning.gif?raw=true" alt="readme crisp dm"/>
 </p>
+<p>Source: <a href="https://data-flair.training/">DataFlair</a></p>
 <p>In this publication I will show how to classify image data using a CNN.
 For this I used the images from the <em>cats and dogs</em> dataset from the statistics platform <a href="https://www.kaggle.com/c/dogs-vs-cats/data">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a>.</p>
 </div>
@@ -298,11 +307,136 @@ model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
 <p>I set the last <strong>Dense Layer to 1</strong> and chose <strong>‘sigmoid’</strong> as the activation function, since this is a <strong>binary classification problem</strong>.</p>
 <pre class="r"><code>model.summary()</code></pre>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p11.png" /></p>
-<p>Wie die parameter sich berechnen:</p>
-<p><a href="https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d" class="uri">https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d</a></p>
-<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
-<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
-<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+<p>If you want to know how the total number of parameters is calculated, see this <a href="https://towardsdatascience.com/understanding-and-calculating-the-number-of-parameters-in-convolution-neural-networks-cnns-fc88790d530d">post</a>.</p>
 </div>
+<div id="configuring-the-model-for-training" class="section level3">
+<h3>5.3.2 Configuring the model for training</h3>
+<pre class="r"><code>model.compile(loss=&#39;binary_crossentropy&#39;,
+              optimizer=&#39;adam&#39;,
+              metrics=[&#39;accuracy&#39;])</code></pre>
+</div>
+<div id="using-imagedatagenerator" class="section level3">
+<h3>5.3.3 Using ImageDataGenerator</h3>
+<pre class="r"><code>train_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p12.png" /></p>
+</div>
+</div>
+<div id="callbacks" class="section level2">
+<h2>5.4 Callbacks</h2>
+<p>The Keras library offers the option of <a href="https://keras.io/api/callbacks/">callbacks</a>. Personally, I pretty much always use two of them:</p>
+<ul>
+<li><a href="https://keras.io/api/callbacks/model_checkpoint/">ModelCheckpoint</a></li>
+<li><a href="https://keras.io/api/callbacks/early_stopping/">EarlyStopping</a></li>
+</ul>
+<p><strong>ModelCheckpoint</strong> gives me the possibility to automatically save models measured by a defined metric (here validation loss) if this metric has improved after an epoch.</p>
+<p><strong>EarlyStopping</strong> protects me from unnecessary further training of the model if a particular metric does not continue to improve over a number of n epochs. In such a case, the model training would be automatically aborted.</p>
+<p>But there are other useful callbacks like <a href="https://keras.io/api/callbacks/reduce_lr_on_plateau/">ReduceLROnPlateau</a>. Here, the learning rate would automatically reduce if a metric stopped improving.</p>
+<p>In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under chapter 6 I also included EarlyStopping.</p>
+<pre class="r"><code># Prepare a directory to store all the checkpoints.
+checkpoint_dir = &#39;./&#39;+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)</code></pre>
+<pre class="r"><code>keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + &#39;/&#39; + model_name, 
+                                   monitor=&#39;val_loss&#39;, save_best_only=True, mode=&#39;auto&#39;)]</code></pre>
+</div>
+<div id="fitting-the-model" class="section level2">
+<h2>5.5 Fitting the model</h2>
+<p>After we have already determined the parameters, we now benefit from the fact that we no longer have to make any manual entries.</p>
+<pre class="r"><code>history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p13.png" /></p>
+<p>After model training, your folder structure should look like this:</p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p14.png" /></p>
+<p>Here we see that our callback (ModelCheckpoint) has automatically created a folder ‘ckpt_1_simple_CNN’ (the name I gave in chapter 5.1) with a subfolder containing the automatically saved model.</p>
+</div>
+<div id="obtaining-the-best-model-values" class="section level2">
+<h2>5.6 Obtaining the best model values</h2>
+<p>By using the callback ModelCheckpoint the model was saved which had the lowest validaton loss.
+But what exactly were the values of this model?
+With the following code I have the possibility to display the values per epoch.
+And with this dataframe I also have the possibility to display the values for the model that was automatically saved.</p>
+<pre class="r"><code>hist_df = pd.DataFrame(history.history)
+hist_df[&#39;epoch&#39;] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
+hist_df.head()</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p15.png" /></p>
+<pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p16.png" /></p>
+<p>Since I will possibly train several models in several notebooks at the same time, it is advisable at this point to save the dataframe shown above as a .csv file in order to be able to refer to it again at a later time, for example to compare the model performance of the best models.</p>
+<p>I have now saved the history values in my ModelCheckpoint folder.
+This folder now looks like this:</p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p17.png" /></p>
+</div>
+<div id="obtaining-class-assignments" class="section level2">
+<h2>5.7 Obtaining class assignments</h2>
+<p>In addition to the metric values achieved per epoch during model training, it is also advisable to have the assigned class distribution output and to save this information as a .csv file so that you can refer to it again later.</p>
+<pre class="r"><code>class_assignment = train_generator.class_indices
+
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop([&#39;level_0&#39;], axis=1)
+df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
+df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
+
+print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p18.png" /></p>
+<p>Both files (the history values and the class assignments) are now stored in my ModelCheckpoint folder.
+This folder now looks like this:</p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p19.png" /></p>
+</div>
+<div id="validation" class="section level2">
+<h2>5.8 Validation</h2>
+<p>In the following I will generate two graphs showing the training and validation accuracy on the one hand and the training and validation loss on the other hand.</p>
+<pre class="r"><code>acc = history.history[&#39;accuracy&#39;]
+val_acc = history.history[&#39;val_accuracy&#39;]
+loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, &#39;bo&#39;, label=&#39;Training acc&#39;)
+plt.plot(epochs, val_acc, &#39;b&#39;, label=&#39;Validation acc&#39;)
+plt.title(&#39;Training and validation accuracy&#39;)
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p20.png" /></p>
+<p>The graphs clearly show that we have a problem with <a href="https://towardsdatascience.com/overfitting-vs-underfitting-a-conceptual-explanation-d94ee20ca7f9">overfitting</a>.</p>
+</div>
+<div id="load-best-model" class="section level2">
+<h2>5.9 Load best model</h2>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p21.png" /></p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
+<p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png" /></p>
 </div>
 </div>
