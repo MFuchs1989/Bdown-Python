@@ -752,6 +752,7 @@ validation_generator = validation_datagen.flow_from_directory(
 ## 6.4 Callbacks
 
 As previously announced, I use not only the ModelCheckpoint callback here but also the EarlyStopping.
+With EarlyStopping I also monitor the validation loss and say with patience=5, if this value does not improve over a number of 5 epochs, please stop the model training.
 
 ```{r, eval=F, echo=T}
 # Prepare a directory to store all the checkpoints.
@@ -788,90 +789,236 @@ history = model.fit(
 ## 6.6 Obtaining the best model values
 
 
-
 ```{r, eval=F, echo=T}
-
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p28.png)
 
 
+
+```{r, eval=F, echo=T}
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p29.png)
 
 
 ## 6.7 Obtaining class assignments
 
 
 ```{r, eval=F, echo=T}
+class_assignment = train_generator.class_indices
 
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop(['level_0'], axis=1)
+df_temp.columns = ['Category', 'Allocated Number']
+df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv')
+
+print('Class assignment:', str(class_assignment))
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p30.png)
 
 
 
 ## 6.8 Validation
 
-
-
-
 ```{r, eval=F, echo=T}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p31.png)
+
+
+That looks a lot better.
+
 
 ## 6.9 Load best model
 
 
-
 ```{r, eval=F, echo=T}
+# Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + '/' + model_name)
 
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + '.h5')
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+
+```{r, eval=F, echo=T}
+best_model = load_model(model_name_temp)
+```
 
 
 ## 6.10 Model Testing
 
 
+```{r, eval=F, echo=T}
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
+print()
+print('Test Accuracy:', test_acc)
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p32.png)
 
 
+As we can see, the use of Data Augmentation and an increased number of training epochs has brought the Accuracy to over 91%. 
+
+I am sure that this value can be increased again by either increasing the patience value in EarlyStopping or leaving EarlyStopping out altogether, so that in both cases the model training runs over an even longer time. 
+
+In our case, the best model from epoch 38 was saved. 
 
 
+Feel free to try this out for yourself and report back to [me](https://www.linkedin.com/in/michael-fuchs-139172131/) with your results.
+
+The final folder structure should now look like this:
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p33.png)
+
+
+# 7 Test Out of the Box Pictures
+
+Last but not least, I always test the final model again with completely different images that were not included in the main data sets.
+
+Look at the results:
+
+```{r, eval=F, echo=T}
+CATEGORIES = ["Cat", "Dog"]
+```
 
 
 ```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_1.jpg')
 
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+
+classes = model.predict_classes(img_pred)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p34.png)
 
 
 ```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
 
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+
+classes = model.predict_classes(img_pred)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
 ```
 
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p.png)
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p35.png)
 
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+
+classes = model.predict_classes(img_pred)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p36.png)
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+
+classes = model.predict_classes(img_pred)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p37.png)
+
+
+# 8 Conclusion
+
+In this post I have talked in detail about the use of Convolutional Neural Networks and how they can be used to solve binary classification problems with images. 
+
+
+# Recommended reading:
+
+In the following I would like to list some literature, which helped me to get acquainted with this topic:
+
+Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
+
+Goodfellow, I., Bengio, Y., Courville, A., & Bengio, Y. (2016). Deep learning (Vol. 1, No. 2). Cambridge: MIT press.
+
+Khan, S., Rahmani, H., Shah, S. A. A., & Bennamoun, M. (2018). A guide to convolutional neural networks for computer vision. Synthesis Lectures on Computer Vision, 8(1), 1-207.
+
+Szeliski, R. (2010). Computer vision: algorithms and applications. Springer Science & Business Media.
 
