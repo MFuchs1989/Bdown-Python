@@ -1010,7 +1010,7 @@ print('------------------------------------')
 In this post I have talked in detail about the use of Convolutional Neural Networks and how they can be used to solve binary classification problems with images. 
 
 
-# Recommended reading:
+**Recommended reading**
 
 In the following I would like to list some literature, which helped me to get acquainted with this topic:
 
