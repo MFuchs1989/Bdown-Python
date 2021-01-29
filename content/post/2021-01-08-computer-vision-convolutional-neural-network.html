@@ -366,7 +366,7 @@ validation_generator = validation_datagen.flow_from_directory(
 <p><strong>ModelCheckpoint</strong> gives me the possibility to automatically save models measured by a defined metric (here validation loss) if this metric has improved after an epoch.</p>
 <p><strong>EarlyStopping</strong> protects me from unnecessary further training of the model if a particular metric does not continue to improve over a number of n epochs. In such a case, the model training would be automatically aborted.</p>
 <p>But there are other useful callbacks like <a href="https://keras.io/api/callbacks/reduce_lr_on_plateau/">ReduceLROnPlateau</a>. Here, the learning rate would automatically reduce if a metric stopped improving.</p>
-<p>In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under chapter 6 I also included EarlyStopping.</p>
+<p>In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks-1">chapter 6.4</a> I also included EarlyStopping.</p>
 <pre class="r"><code># Prepare a directory to store all the checkpoints.
 checkpoint_dir = &#39;./&#39;+ checkpoint_no
 if not os.path.exists(checkpoint_dir):
@@ -387,7 +387,7 @@ if not os.path.exists(checkpoint_dir):
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p13.png" /></p>
 <p>After model training, your folder structure should look like this:</p>
 <p><img src="/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p14.png" /></p>
-<p>Here we see that our callback (ModelCheckpoint) has automatically created a folder ‘ckpt_1_simple_CNN’ (the name I gave in chapter 5.1) with a subfolder containing the automatically saved model.</p>
+<p>Here we see that our callback (ModelCheckpoint) has automatically created a folder ‘ckpt_1_simple_CNN’ (the name I gave in <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#name-definitions">chapter 5.1</a>) with a subfolder containing the automatically saved model.</p>
 </div>
 <div id="obtaining-the-best-model-values" class="section level2">
 <h2>5.6 Obtaining the best model values</h2>

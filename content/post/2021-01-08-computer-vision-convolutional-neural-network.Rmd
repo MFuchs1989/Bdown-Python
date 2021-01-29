@@ -441,7 +441,7 @@ The Keras library offers the option of [callbacks](https://keras.io/api/callback
 
 But there are other useful callbacks like [ReduceLROnPlateau](https://keras.io/api/callbacks/reduce_lr_on_plateau/). Here, the learning rate would automatically reduce if a metric stopped improving.
 
-In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under chapter 6 I also included EarlyStopping. 
+In the following I first used only ModelCheckpoint but in the model training with Data Augmentation under [chapter 6.4](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks-1) I also included EarlyStopping. 
 
 
 ```{r, eval=F, echo=T}
@@ -480,7 +480,7 @@ After model training, your folder structure should look like this:
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p14.png)
 
 
-Here we see that our callback (ModelCheckpoint) has automatically created a folder 'ckpt_1_simple_CNN' (the name I gave in chapter 5.1) with a subfolder containing the automatically saved model. 
+Here we see that our callback (ModelCheckpoint) has automatically created a folder 'ckpt_1_simple_CNN' (the name I gave in [chapter 5.1](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#name-definitions)) with a subfolder containing the automatically saved model. 
 
 
 ## 5.6 Obtaining the best model values
