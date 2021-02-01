@@ -922,7 +922,23 @@ print('Test Accuracy:', test_acc)
 
 As we can see, the use of Data Augmentation and an increased number of training epochs has brought the Accuracy to over 91%. 
 
-I am sure that this value can be increased again by either increasing the patience value in EarlyStopping or leaving EarlyStopping out altogether, so that in both cases the model training runs over an even longer time. 
+
+Since this will be our final model, it is advisable to save the following two metrics that we used for this model training:
+
++ img_height
++ img_width
+
+Why do we store these two values separately? 
+
+We want to use our model later to predict completely new images. To be able to do this, we need to put the images we read in later into the same format as the model training took place. In this case we have resized all images to 150x150. This is exactly what we will do with future images to be able to predict them. 
+
+```{r, eval=F, echo=T}
+pk.dump(img_height, open(checkpoint_dir+ '\\' +'img_height.pkl', 'wb'))
+pk.dump(img_width, open(checkpoint_dir+ '\\' +'img_width.pkl', 'wb'))
+```
+
+
+I'm sure we can increase the accuracy again by either increasing the patience value in EarlyStopping or omitting EarlyStopping altogether, so in both cases the model training runs for an even longer time.  
 
 In our case, the best model from epoch 38 was saved. 
 
@@ -936,43 +952,41 @@ The final folder structure should now look like this:
 
 # 7 Test Out of the Box Pictures
 
-Last but not least, I always test the final model again with completely different images that were not included in the main data sets.
+Last but not least, I always test the final model again with completely different images that were not included in the main data sets. To do this, we load the categories and some of the training metrics used. 
 
-Look at the results:
+
 
 ```{r, eval=F, echo=T}
-CATEGORIES = ["Cat", "Dog"]
+# Load the categories
+df = pd.read_csv('ckpt_2_CNN_with_augm/class_assignment_df_Cats_Dogs_CNN_4_Conv_F32_64_128_128_epoch_60_es.csv')
+df = df.sort_values(by='Allocated Number', ascending=True)
+CATEGORIES = df['Category'].to_list()
+
+# Load the used image height and width
+img_height_reload = pk.load(open("ckpt_2_CNN_with_augm/img_height.pkl",'rb'))
+img_width_reload = pk.load(open("ckpt_2_CNN_with_augm/img_width.pkl",'rb'))
+
+
+print('CATEGORIES : ' + str(CATEGORIES))
+print()
+print('Used image height: ' + str(img_height_reload))
+print('Used image width: ' + str(img_width_reload))
 ```
 
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p34.png)
+
+
+Look at the results:
 
 ```{r, eval=F, echo=T}
 img_pred = cv2.imread('out of the box pic/test_cat_pic_1.jpg')
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
 
-classes = best_model.predict_classes(img_pred)
-
-print()
-print('------------------------------------')
-print('Predicted Class: ' + CATEGORIES[int(classes[0])])
-print('------------------------------------')
-```
-
-![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p34.png)
-
-
-```{r, eval=F, echo=T}
-img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
-
-print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
-
-img_pred = cv2.resize(img_pred,(img_height,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
-
-classes = best_model.predict_classes(img_pred)
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
 
 print()
 print('------------------------------------')
@@ -984,14 +998,14 @@ print('------------------------------------')
 
 
 ```{r, eval=F, echo=T}
-img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
+img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
 
-classes = best_model.predict_classes(img_pred)
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
 
 print()
 print('------------------------------------')
@@ -1001,15 +1015,16 @@ print('------------------------------------')
 
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p36.png)
 
+
 ```{r, eval=F, echo=T}
-img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
+img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
 
-classes = best_model.predict_classes(img_pred)
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
 
 print()
 print('------------------------------------')
@@ -1018,6 +1033,24 @@ print('------------------------------------')
 ```
 
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p37.png)
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
+img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p38.png)
 
 
 # 8 Conclusion
