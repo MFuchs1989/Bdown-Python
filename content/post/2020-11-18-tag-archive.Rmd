@@ -195,6 +195,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 + [Classification of Dog-Breeds using a pre-trained CNN model](https://michael-fuchs-python.netlify.app/2020/12/21/classification-of-dog-breeds-using-a-pre-trained-cnn-model/)
++ [CNN for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
 + [Convolutional Neural Network](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/)
 + [Automate The Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/)
 

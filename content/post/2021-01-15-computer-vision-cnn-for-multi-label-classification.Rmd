@@ -22,10 +22,10 @@ In my last post, we saw how Convolutional Neural Networks can be used to make [b
 
 ![](/post/2021-01-15-computer-vision-cnn-for-multi-label-classification_files/p105s1.png)
 
-Most of the steps are the same as for binary classification. If new ones are added, I will of course explain them in this post.
+Most of the steps are the same as for [binary classification](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/). If new ones are added, I will of course explain them in this post.
 
 
-For this post I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
 
 
 
@@ -354,6 +354,7 @@ history = model.fit(
 ```
 
 ![](/post/2021-01-15-computer-vision-cnn-for-multi-label-classification_files/p105p8.png)
+...
 
 
 ## 4.6 Obtaining the best model values
