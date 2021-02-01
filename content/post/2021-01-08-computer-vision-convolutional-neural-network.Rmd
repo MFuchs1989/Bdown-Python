@@ -580,10 +580,26 @@ The graphs clearly show that we have a problem with [overfitting](https://toward
 
 ## 5.9 Load best model
 
-As you can see from the current folder structure shown above, the automatically created subfolders inside the ModelCheckpoint folder are not that great. The best model was saved as a .pb file and did not get a proper naming. 
+As you can see from the current folder structure shown above ([Chapter 5.7](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#obtaining-class-assignments)), the automatically created subfolders inside the ModelCheckpoint folder are not that great. The best model was saved as a .pb file and did not get a proper naming. 
 
-I want my final model to be saved with apt naming under the created ModelCheckpoint folder. 
+I want my final model to be saved with appropriate naming under the created ModelCheckpoint folder.
 Since I am aiming for this tidy approach I will load the .pb model below, save it as an .h5 file and delete the unnecessary folders.
+
+```{r, eval=F, echo=T}
+# Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + '/' + model_name)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + '.h5')
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)
+```
+
 
 Our ModelCheckpoint folder should then look like this: 
 
@@ -593,7 +609,6 @@ Our ModelCheckpoint folder should then look like this:
 The overall folder structure should look like this:
 
 ![](/post/2021-01-08-computer-vision-convolutional-neural-network_files/p104p22.png)
-
 
 
 As a final step we load the saved .h5 model. 
