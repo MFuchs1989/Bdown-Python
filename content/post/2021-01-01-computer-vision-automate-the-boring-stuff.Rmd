@@ -72,7 +72,7 @@ def createFolder(directory):
 
 
 
-# 4 Extract Images from .docx
+# 4 Extract Images from .docx (+renaming)
 
 Imagine we have one or more word documents that contain images. I have two such files here at my root directory:
 
@@ -91,7 +91,7 @@ And also a look at the dogs_pic.docx:
 We now want to extract these images and place them in an appropriate folder.
 
 
-## 4.1 Extract Cats Images
+## 4.1 Extract and rename Cats Images
 
 This creates a new folder ('cats') at the root directory and saves the extracted images from the word file there.
 
@@ -126,7 +126,7 @@ print('Number of cat pictures:', len(os.listdir('cats')))
 ![](/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p4.png)
 
 
-## 4.2 Extract Dogs Images
+## 4.2 Extract and rename Dogs Images
 
 Now we do the same with the dogs_pic file.
 

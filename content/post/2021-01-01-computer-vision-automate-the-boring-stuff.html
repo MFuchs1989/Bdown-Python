@@ -22,10 +22,10 @@ output:
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-the-libraries">2 Import the libraries</a></li>
 <li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
-<li><a href="#extract-images-from-.docx">4 Extract Images from .docx</a>
+<li><a href="#extract-images-from-.docx-renaming">4 Extract Images from .docx (+renaming)</a>
 <ul>
-<li><a href="#extract-cats-images">4.1 Extract Cats Images</a></li>
-<li><a href="#extract-dogs-images">4.2 Extract Dogs Images</a></li>
+<li><a href="#extract-and-rename-cats-images">4.1 Extract and rename Cats Images</a></li>
+<li><a href="#extract-and-rename-dogs-images">4.2 Extract and rename Dogs Images</a></li>
 <li><a href="#current-folder-structure">4.3 Current folder structure</a></li>
 </ul></li>
 <li><a href="#convert-images-from-.png-to-.jpg">5 Convert Images from .png to .jpg</a>
@@ -96,8 +96,8 @@ import random</code></pre>
     except OSError:
         print (&#39;Error: Creating directory. &#39; +  directory)</code></pre>
 </div>
-<div id="extract-images-from-.docx" class="section level1">
-<h1>4 Extract Images from .docx</h1>
+<div id="extract-images-from-.docx-renaming" class="section level1">
+<h1>4 Extract Images from .docx (+renaming)</h1>
 <p>Imagine we have one or more word documents that contain images. I have two such files here at my root directory:</p>
 <p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p1.png" /></p>
 <p>Let’s have a look at the cats_pic.docx:</p>
@@ -105,8 +105,8 @@ import random</code></pre>
 <p>And also a look at the dogs_pic.docx:</p>
 <p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p3.png" /></p>
 <p>We now want to extract these images and place them in an appropriate folder.</p>
-<div id="extract-cats-images" class="section level2">
-<h2>4.1 Extract Cats Images</h2>
+<div id="extract-and-rename-cats-images" class="section level2">
+<h2>4.1 Extract and rename Cats Images</h2>
 <p>This creates a new folder (‘cats’) at the root directory and saves the extracted images from the word file there.</p>
 <pre class="r"><code>createFolder(&#39;./cats/&#39;)
 
@@ -125,8 +125,8 @@ for i, filename in enumerate(os.listdir(name_of_pic_folder)):
 <pre class="r"><code>print(&#39;Number of cat pictures:&#39;, len(os.listdir(&#39;cats&#39;)))</code></pre>
 <p><img src="/post/2021-01-01-computer-vision-automate-the-boring-stuff_files/p103p4.png" /></p>
 </div>
-<div id="extract-dogs-images" class="section level2">
-<h2>4.2 Extract Dogs Images</h2>
+<div id="extract-and-rename-dogs-images" class="section level2">
+<h2>4.2 Extract and rename Dogs Images</h2>
 <p>Now we do the same with the dogs_pic file.</p>
 <pre class="r"><code>createFolder(&#39;./dogs/&#39;)
 
