@@ -261,4 +261,15 @@ In this publication I showed what boosting is, how it should be differentiated f
 
 
 
+# References
+
+Guedj, B., & Desikan, B. S. (2018). Pycobra: A python toolbox for ensemble learning and visualisation. Journal of Machine Learning Research, 18(190), 1-5.
+
+Guedj, B., & Srinivasa Desikan, B. (2020). Kernel-Based Ensemble Learning in Python. Information, 11(2), 63.
+
+Johnston, B. & Mathur, I (2019). Applied Supervised Learning with Python. UK: Packt
+
+Zhao, Y., Wang, X., Cheng, C., & Ding, X. (2020, April). Combining machine learning models using Combo library. In Proceedings of the AAAI Conference on Artificial Intelligence (Vol. 34, No. 09, pp. 13648-13649).
+
+
 
