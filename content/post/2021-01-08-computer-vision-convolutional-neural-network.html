@@ -738,8 +738,8 @@ print(&#39;Used image width: &#39; + str(img_width_reload))</code></pre>
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
 
@@ -752,8 +752,8 @@ print(&#39;------------------------------------&#39;)</code></pre>
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
 
@@ -766,8 +766,8 @@ print(&#39;------------------------------------&#39;)</code></pre>
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
 
@@ -780,8 +780,8 @@ print(&#39;------------------------------------&#39;)</code></pre>
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
-img_pred = cv2.resize(img_pred,(img_height_reload,img_width))
-img_pred = np.reshape(img_pred,[1,img_height,img_width_reload,3])
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
 

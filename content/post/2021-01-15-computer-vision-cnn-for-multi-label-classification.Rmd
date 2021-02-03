@@ -517,7 +517,7 @@ img_pred = cv2.imread('out of the box pic/test_cat_pic_1.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -536,7 +536,7 @@ img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -555,7 +555,7 @@ img_pred = cv2.imread('out of the box pic/test_cat_pic_3.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -575,7 +575,7 @@ img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -595,7 +595,7 @@ img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -615,7 +615,7 @@ img_pred = cv2.imread('out of the box pic/test_dog_pic_3.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -635,7 +635,7 @@ img_pred = cv2.imread('out of the box pic/test_wild_pic_1.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -655,7 +655,7 @@ img_pred = cv2.imread('out of the box pic/test_wild_pic_2.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
@@ -675,7 +675,7 @@ img_pred = cv2.imread('out of the box pic/test_wild_pic_3.jpg')
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
-img_pred = np.reshape(img_pred,[1,img_height,img_width,3])
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
 classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
