@@ -261,7 +261,7 @@ In this publication I showed what boosting is, how it should be differentiated f
 
 
 
-# References
+**References**
 
 Guedj, B., & Desikan, B. S. (2018). Pycobra: A python toolbox for ensemble learning and visualisation. Journal of Machine Learning Research, 18(190), 1-5.
 

@@ -460,7 +460,7 @@ In this post I showed what bagging is and how to use this ensemble method.
 Furthermore, I went into detail about the use of the Random Forest algorithm.
 
 
-# References
+**References**
 
 Guedj, B., & Desikan, B. S. (2018). Pycobra: A python toolbox for ensemble learning and visualisation. Journal of Machine Learning Research, 18(190), 1-5.
 
