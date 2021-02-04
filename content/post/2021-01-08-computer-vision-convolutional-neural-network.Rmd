@@ -1058,7 +1058,12 @@ print('------------------------------------')
 In this post I have talked in detail about the use of Convolutional Neural Networks and how they can be used to solve binary classification problems with images. 
 
 
-**Recommended reading**
+# 9 Link to the GitHub Repository
+
+Here is the link to my GitHub repository where I have listed all necessary steps: [Computer Vision: CNN for binary Classification](https://github.com/MFuchs1989/CV-CNN-for-binary-Classification)
+
+
+**References**
 
 In the following I would like to list some literature, which helped me to get acquainted with this topic:
 

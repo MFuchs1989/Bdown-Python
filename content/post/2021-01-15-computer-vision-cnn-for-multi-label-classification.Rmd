@@ -688,15 +688,17 @@ print('------------------------------------')
 ![](/post/2021-01-15-computer-vision-cnn-for-multi-label-classification_files/p105p23.png)
 
 
-
-
 # 6 Conclusion
 
 In addition to my post [CNNs for binary Classification](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/), I have shown here how to make multi-label classifications using Convolutional Neural Networks. 
 
 
+# 7 Link to the GitHub Repository
 
-**Recommended reading**
+Here is the link to my GitHub repository where I have listed all necessary steps: [Computer Vision: CNN for Multi-Label Classification](https://github.com/MFuchs1989/CV-CNN-for-Multi-Label-Classification)
+
+
+**References**
 
 In the following I would like to list some literature, which helped me to get acquainted with this topic:
 
