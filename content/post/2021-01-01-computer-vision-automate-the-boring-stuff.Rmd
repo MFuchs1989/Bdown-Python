@@ -621,5 +621,9 @@ Lastly, I showed how to usefully divide the available image data for model train
 In my following post, I will use the images prepared here and show how to create an image classification model using neural networks. 
 
 
+Check out these publications:
 
++ [Classification of Dog-Breeds using a pre-trained CNN model](https://michael-fuchs-python.netlify.app/2021/01/27/classification-of-dog-breeds-using-a-pre-trained-cnn-model/)
++ [CNN for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
++ [Convolutional Neural Network](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/)
 
