@@ -507,25 +507,7 @@ On the other hand you can also use these 3 month customer value prediction outpu
 
 **References**
 
-
-Besemer, S. P. (1998). Creative product analysis matrix: testing the model structure and a comparison among products--three novel chairs. Creativity Research Journal, 11(4), 333-346.
-
-Do Ruibin, K., & Vintilescu Borglöv, T. (2018). Predicting Customer Lifetime Value: Understanding its accuracy and drivers from a frequent flyer program perspective.
-
-Glady, N., Baesens, B., & Croux, C. (2009). Modeling churn using customer lifetime value. European Journal of Operational Research, 197(1), 402-411.
-
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
-
-Johnston, B., Jones, A. & Kruger, C. (2019). Applied Unsupervised Learning with Python : Discover hidden patterns and relationships in unstructured data with Python. 
-Packt Publishing Ltd.
-
-Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
-
-Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
-
-Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
-
-Xu, Z., Frankwick, G. L., & Ramirez, E. (2016). Effects of big data analytics and traditional marketing analytics on new product success: A knowledge fusion perspective. Journal of Business Research, 69(5), 1562-1566.
 
 
 

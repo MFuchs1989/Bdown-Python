@@ -705,13 +705,7 @@ The following points were covered in the main chapters 3-6:
 
 
 
-# References
-
-Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
-
-Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
-
-Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
+**References**
 
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
 

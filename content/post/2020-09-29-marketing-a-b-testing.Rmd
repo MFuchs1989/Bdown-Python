@@ -272,21 +272,8 @@ Since a lot depends on the decisions of the marketing department, it is worthwhi
 
 **References**
 
-
-Bernhardt, A. M., Wilking, C., Gilbert-Diamond, D., Emond, J. A., & Sargent, J. D. (2015). Children’s Recall of Fast Food Television Advertising—Testing the Adequacy of Food Marketing Regulation. PloS one, 10(3), e0119300.
-
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
 
-Johnston, B., Jones, A. & Kruger, C. (2019). Applied Unsupervised Learning with Python : Discover hidden patterns and relationships in unstructured data with Python. 
-Packt Publishing Ltd.
-
-Miller, T. W. (2015). Marketing data science: modeling techniques in predictive analytics with R and Python. FT Press.
-
-Provost, F., & Fawcett, T. (2013). Data Science for Business: What you need to know about data mining and data-analytic thinking. " O'Reilly Media, Inc.".
-
-Wedel, M., Kamakura, W., & Böckenholt, U. (2000). Marketing data, models and decisions. International Journal of Research in Marketing, 17(2-3), 203-208.
-
-Woodside, A. G. (1990). Measuring advertising effectiveness in destination marketing strategies. Journal of Travel Research, 29(2), 3-8.
 
 
 
