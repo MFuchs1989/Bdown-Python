@@ -624,19 +624,12 @@ In this post I presented the first algorithms with which you can make time serie
 
 
 
+
 **References**
 
-Christ, M., Braun, N., Neuffer, J., & Kempa-Liehr, A. W. (2018). Time series feature extraction on basis of scalable hypothesis tests (tsfresh–a python package). Neurocomputing, 307, 72-77.
+Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
 
-Faouzi, J., & Janati, H. (2020). pyts: A Python Package for Time Series Classification. Journal of Machine Learning Research, 21(46), 1-6.
 
-McKinney, W., Perktold, J., & Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.
-
-Pal, A., & Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.
-
-Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., & Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.
-
-Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python.
 
 
 

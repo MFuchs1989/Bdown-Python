@@ -1007,9 +1007,10 @@ Looking back, I would like to give a summary of the different posts on the topic
 
 
 
+
 **References**
 
-Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python.
+Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
 
 
 
