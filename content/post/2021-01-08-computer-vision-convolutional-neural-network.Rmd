@@ -58,6 +58,8 @@ import pandas as pd
 import os
 import shutil
 
+import pickle as pk
+
 import cv2 
 import matplotlib.pyplot as plt
 %matplotlib inline 
