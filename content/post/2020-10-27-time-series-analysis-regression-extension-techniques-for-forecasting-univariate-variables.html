@@ -61,29 +61,17 @@ This is not to be confused with multiple models. Here, several independent varia
 <h1>2 Theoretical Background</h1>
 <p>Before we jump in with Regression Extension Techniques, it is worthwhile to understand some theoretical terminology and what it means for the algorithms that follow.</p>
 <p><strong>Autoregressive Models</strong></p>
-<p>An autoregression model (AR) predicts future behavior based on its past data.
-The autoregressive model is a lagged dependent variable, which contains an autoregressive term, which perhaps corrects on the grounds of habit resolve. AR is part of a time series Y(t), whihc contains a value that depends on some linear grouping of the previous value, which defined maximum lags.</p>
-<p><strong>Autocorrelation and Partial Autocorrelation Functions</strong></p>
-<p>An autocorrelation function (ACF) is a method to determine the linear relationship between time t and t-1. After checking the ACF helps in determining if differencing is required or not.
-If we are using the autoregressive model AR, then we have to determine the only correlation between Y(t) and Y(t-1) and check for a direct influence between the random variables that lie in the time series, which requires differencing and transforming the time series. After transforming the time series, we calculate the correlation, which is known as a partial autocorrelation function (PACF).</p>
+<p>In an autoregression model, we forecast the variable of interest using a linear combination of past values of the variable.
+The term autoregression indicates that it is a regression of the variable against itself.</p>
+<p><strong>Autocorrelation</strong></p>
+<p>Autocorrelation refers to the degree of correlation between the values of the same variables across different observations in the data. After checking the ACF helps in determining if differencing is required or not.</p>
 <p><strong>Moving Average</strong></p>
-<p>A moving average (MA) is a method to get all the trends in a time series. It is utilized for long-term forecasting trends. Basically, a moving average forecasts future points by using an average of several past data points.
-The MA part of a time-series Y(t), which is an observed value in terms of a random error and some linear grouping of previous arbitrary error terms, up to a described maximum lag.</p>
+<p>A moving average (MA) is a calculation used to analyze data points by creating a series of averages of different subsets of the full data set. It is utilized for long-term forecasting trends.</p>
 <p><strong>The Integration (I)</strong></p>
-<p>Time-series data is often nonstationary and to make them stationary, the series needs to be differentiated. This process is known as the integration part (I), and the order of differencing is signified as d. Differencing eradicates signals with time, which contains trends and seasonality, so this series contains noise and an irregular component, which will be modeled only.</p>
+<p>Time-series data is often nonstationary and to make them stationary, the series needs to be differentiated. This process is known as the integration part (I), and the order of differencing is signified as d. </p>
 <p><strong>Autoregressive Integrated Moving Average</strong></p>
-<p>Autoregressive Integrated Moving Average - also called ARIMA(p,d,q) is a forecasting equation that can make time series stationary with the help of differencing and log techniques when required.</p>
-<ul>
-<li>p is the number of autoregressive terms</li>
-<li>d is the number of nonseasonal differences needed for stationarity</li>
-<li>q is the number of lagged forecast errors in the prediction equation</li>
-</ul>
+<p>Autoregressive Integrated Moving Average - also called ARIMA(p,d,q) is a forecasting equation that can make time series stationary and thus predict future trends.</p>
 <p>ARIMA is a method among several used for forecasting univariate variables and has three components: the autoregression part (AR), the integration part (I) and the moving average part (MA).</p>
-<ul>
-<li>AR(p) is where p equals the order of autocorrelation</li>
-<li>I(d) is where d is the order of integration (differencing), which indicates linear trend or polynomial trend</li>
-<li>MA(q) is where q equals the order of moving averages</li>
-</ul>
 <p>ARIMA is made up of two models: AR and MA</p>
 </div>
 <div id="import-the-libraries-and-data" class="section level1">
@@ -458,5 +446,5 @@ In my following post I will present algorithms that allow the prediction of mult
 <p>McKinney, W., Perktold, J., &amp; Seabold, S. (2011). Time series analysis in Python with statsmodels. Jarrodmillman Com, 96-102.</p>
 <p>Pal, A., &amp; Prakash, P. K. S. (2017). Practical Time Series Analysis: Master Time Series Data Processing, Visualization, and Modeling using Python. Packt Publishing Ltd.</p>
 <p>Roberts, W., Williams, G. P., Jackson, E., Nelson, E. J., &amp; Ames, D. P. (2018). Hydrostats: A Python package for characterizing errors between observed and predicted time series. Hydrology, 5(4), 66.</p>
-<p>Vishwas, B. V., &amp; Patel, A. Hands-on Time Series Analysis with Python.</p>
+<p>Vishwas, B. V., &amp; Patel, A. (2020). Hands-on Time Series Analysis with Python.</p>
 </div>
