@@ -217,25 +217,7 @@ plt.show()</code></pre>
 </div>
 <div id="seasonal-arima-sarima" class="section level1">
 <h1>7 Seasonal ARIMA (SARIMA)</h1>
-<p>Seasonal ARIMA (SARIMA) is a technique of ARIMA, where the seasonal component can be handled in univariate time-series data. It adjoins three new parameters to lay down AR(P), I(D) and MA(Q) for the seasonality component of a time series. SARIMA allows for the occurrence of seasonality in a series.</p>
-<p>The seasonal ARIMA model combines both sonseasonal and seasonal components in a multiplicative model. The notation can be defined as follows:</p>
-<p>ARIMA(p,d,q)X(P,D,Q)m</p>
-<p>where m is the number of observations per year.</p>
-<p>The three trend elements which needs to be configured are still known from the ARIMA model.
-(p,d,q) is a nonseasonal component as shown here:</p>
-<ul>
-<li>p: Trend autoregressive order</li>
-<li>d: Trend differencing order</li>
-<li>q: Trend moving average order</li>
-</ul>
-<p>(P,D,Q) is a nonseasonal compoment as shown here:</p>
-<ul>
-<li>P: Seasonal autoregressive order</li>
-<li>D: Seasonal differencing order</li>
-<li>Q: Seasonal moving average order</li>
-<li>m: Timestamp for single-season order</li>
-</ul>
-<p>Now we are going to configure and run seasonal ARIMA for the parameters given in the for loop and check the optimal number of periods in each seasonal suitable for our dataset.</p>
+<p>Seasonal ARIMA (SARIMA) is a technique of ARIMA, where the seasonal component can be handled in univariate time-series data.</p>
 <pre class="r"><code>df_results_SARIMA = pd.DataFrame()
 
 
@@ -326,7 +308,7 @@ plt.show()</code></pre>
 </div>
 <div id="sarimax" class="section level1">
 <h1>8 SARIMAX</h1>
-<p>The SARIMAX model is a SARIMA model with external influencing variables, called SARIMAX(p,d,q)X(P,D,Q)m(X), where X is the vector of exogenous variables.</p>
+<p>The SARIMAX model is a SARIMA model with external influencing variables.</p>
 <p>We know from the column ‘Close’ that it is non-stationary. But what about the other columns?</p>
 <pre class="r"><code>for name, column in df[[&#39;Close&#39; ,&#39;Open&#39; ,&#39;High&#39;,&#39;Low&#39;]].iteritems():
     Augmented_Dickey_Fuller_Test_func(df[name],name)

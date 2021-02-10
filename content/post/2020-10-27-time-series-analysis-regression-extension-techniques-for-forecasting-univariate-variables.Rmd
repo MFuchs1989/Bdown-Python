@@ -299,30 +299,7 @@ stepwise_model.plot_diagnostics()
 
 # 7 Seasonal ARIMA (SARIMA)
 
-Seasonal ARIMA (SARIMA) is a technique of ARIMA, where the seasonal component can be handled in univariate time-series data. It adjoins three new parameters to lay down AR(P), I(D) and MA(Q) for the seasonality component of a time series. SARIMA allows for the occurrence of seasonality in a series.
-
-The seasonal ARIMA model combines both sonseasonal and seasonal components in a multiplicative model. The notation can be defined as follows:
-
-ARIMA(p,d,q)X(P,D,Q)m
-
-where m is the number of observations per year.
-
-The three trend elements which needs to be configured are still known from the ARIMA model.
-(p,d,q) is a nonseasonal component as shown here:
-
-+ p: Trend autoregressive order
-+ d: Trend differencing order
-+ q: Trend moving average order
-
-(P,D,Q) is a nonseasonal compoment as shown here:
-
-+ P: Seasonal autoregressive order
-+ D: Seasonal differencing order
-+ Q: Seasonal moving average order
-+ m: Timestamp for single-season order
-
-
-Now we are going to configure and run seasonal ARIMA for the parameters given in the for loop and check the optimal number of periods in each seasonal suitable for our dataset.
+Seasonal ARIMA (SARIMA) is a technique of ARIMA, where the seasonal component can be handled in univariate time-series data. 
 
 ```{r, eval=F, echo=T}
 df_results_SARIMA = pd.DataFrame()
@@ -463,7 +440,7 @@ plt.show()
 
 # 8 SARIMAX
 
-The SARIMAX model is a SARIMA model with external influencing variables, called SARIMAX(p,d,q)X(P,D,Q)m(X), where X is the vector of exogenous variables.
+The SARIMAX model is a SARIMA model with external influencing variables.
 
 We know from the column 'Close' that it is non-stationary. But what about the other columns?
 
@@ -645,6 +622,7 @@ Furthermore, I presented the following algorithms:
 
 These were used to predict values for univariate time series. 
 In my following post I will present algorithms that allow the prediction of multiple target variables. 
+
 
 **References**
 
