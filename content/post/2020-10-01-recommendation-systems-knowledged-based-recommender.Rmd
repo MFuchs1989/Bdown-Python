@@ -232,13 +232,7 @@ In the following posts I will go deeper into the subject Recommendation Systems 
 
 **References**
 
-Alfarhood, M., & Cheng, J. (2018, December). DeepHCF: a deep learning based hybrid collaborative filtering approach for recommendation systems. In 2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA) (pp. 89-96). IEEE.
-
-Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Packt Publishing Ltd.
-
-Hug, N. (2020). Surprise: A Python library for recommender systems. Journal of Open Source Software, 5(52), 2174.
-
-Richert, W. (2013). Building machine learning systems with Python. Packt Publishing Ltd.
+Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Birmingham: Packt Publishing Ltd.
 
 
 
