@@ -236,64 +236,266 @@ print(&#39;Number of channels: &#39; + str(n_channels))</code></pre>
 </div>
 <div id="extracting-features-using-the-pretrained-convolutional-base" class="section level3">
 <h3>4.4.2 Extracting features using the pretrained convolutional base</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>datagen = ImageDataGenerator(rescale=1./255)
+
+
+def extract_features(directory, sample_count):
+    features = np.zeros(shape=(sample_count, n_pooled_rows, n_pooled_cols, n_channels))
+    labels = np.zeros(shape=(sample_count))
+    generator = datagen.flow_from_directory(
+        directory,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+    
+    class_assignments = generator.class_indices
+    
+    i = 0
+    for inputs_batch, labels_batch in generator:
+        features_batch = conv_base.predict(inputs_batch)
+        features[i * n_batch_size : (i + 1) * n_batch_size] = features_batch
+        labels[i * n_batch_size : (i + 1) * n_batch_size] = labels_batch
+        i += 1
+        if i * n_batch_size &gt;= sample_count:
+            break
+    return features, labels, class_assignments</code></pre>
+<pre class="r"><code>train_features, train_labels, train_class_assignments = extract_features(train_dir, num_train_images_total)
+validation_features, validation_labels, validation_class_assignments = extract_features(validation_dir, num_validation_images_total)
+test_features, test_labels, test_class_assignments = extract_features(test_dir, num_test_images_total)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p11.png" /></p>
 </div>
 <div id="reshape-train--validation--and-test-features" class="section level3">
 <h3>4.4.3 Reshape train-, validation- and test features</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<p>The extracted features are currently of shape <em>(samples, 4, 4, 512)</em>. We are going to feed them to a densely connected classifier, so first we must flatten them to <em>(samples, 8192)</em>.</p>
+<pre class="r"><code>train_features = np.reshape(train_features, (num_train_images_total, 
+                                             n_pooled_rows * n_pooled_cols * n_channels))
+
+validation_features = np.reshape(validation_features, (num_validation_images_total, 
+                                                       n_pooled_rows * n_pooled_cols * n_channels))
+
+test_features = np.reshape(test_features, (num_test_images_total, 
+                                           n_pooled_rows * n_pooled_cols * n_channels))</code></pre>
 </div>
 <div id="instantiating-a-densely-connected-classifier" class="section level3">
 <h3>4.5 Instantiating a densely connected classifier</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
 </div>
 <div id="layer-structure" class="section level3">
 <h3>4.5.1 Layer Structure</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Dense(256, activation=&#39;relu&#39;, 
+                       input_dim= n_pooled_rows * n_pooled_cols * n_channels))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+<pre class="r"><code>model.summary()</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p12.png" /></p>
 </div>
 <div id="configuring-the-model-for-training" class="section level3">
 <h3>4.5.2 Configuring the model for training</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>model.compile(loss=&#39;binary_crossentropy&#39;,
+              optimizer=&#39;adam&#39;,
+              metrics=[&#39;accuracy&#39;])</code></pre>
 </div>
 </div>
 <div id="callbacks" class="section level2">
 <h2>4.6 Callbacks</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code># Prepare a directory to store all the checkpoints.
+checkpoint_dir = checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)</code></pre>
+<pre class="r"><code>keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + &#39;/&#39; + model_name, 
+                                   monitor=&#39;val_loss&#39;, save_best_only=True, mode=&#39;auto&#39;)]</code></pre>
 </div>
 <div id="fitting-the-model" class="section level2">
 <h2>4.7 Fitting the model</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>history = model.fit(
+    train_features, train_labels,
+    epochs = n_epochs,
+    batch_size = n_batch_size,
+    validation_data = (validation_features, validation_labels),
+    callbacks=keras_callbacks)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p12.png" /></p>
 </div>
 <div id="obtaining-the-best-model-values" class="section level2">
 <h2>4.8 Obtaining the best model values</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>hist_df = pd.DataFrame(history.history)
+hist_df[&#39;epoch&#39;] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
+hist_df.head()</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p13.png" /></p>
+<pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p14.png" /></p>
 </div>
 <div id="obtaining-class-assignments" class="section level2">
 <h2>4.9 Obtaining class assignments</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>class_assignment = train_class_assignments
+
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop([&#39;level_0&#39;], axis=1)
+df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
+df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
+
+print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p15.png" /></p>
 </div>
 <div id="validation" class="section level2">
 <h2>4.10 Validation</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>acc = history.history[&#39;accuracy&#39;]
+val_acc = history.history[&#39;val_accuracy&#39;]
+loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, &#39;bo&#39;, label=&#39;Training acc&#39;)
+plt.plot(epochs, val_acc, &#39;b&#39;, label=&#39;Validation acc&#39;)
+plt.title(&#39;Training and validation accuracy&#39;)
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p16.png" /></p>
 </div>
 <div id="load-best-model" class="section level2">
 <h2>4.11 Load best model</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code># Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + &#39;/&#39; + model_name)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + &#39;.h5&#39;)
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)</code></pre>
+<pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
 </div>
 <div id="model-testing" class="section level2">
 <h2>4.12 Model Testing</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>test_loss, test_acc = best_model.evaluate(test_features, test_labels, 
+                                          batch_size = n_batch_size)
+print()
+print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p17.png" /></p>
+<pre class="r"><code>pk.dump(img_height, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_height.pkl&#39;, &#39;wb&#39;))
+pk.dump(img_width, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_width.pkl&#39;, &#39;wb&#39;))
+
+pk.dump(n_pooled_rows, open(checkpoint_dir+ &#39;\\&#39; +&#39;n_pooled_rows.pkl&#39;, &#39;wb&#39;))
+pk.dump(n_pooled_cols, open(checkpoint_dir+ &#39;\\&#39; +&#39;n_pooled_cols.pkl&#39;, &#39;wb&#39;))
+pk.dump(n_channels, open(checkpoint_dir+ &#39;\\&#39; +&#39;n_channels.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
 <div id="test-out-of-the-box-pictures" class="section level2">
 <h2>4.13 Test Out of the Box Pictures</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code># Determine Checkpoint Dir
+checkpoint_dir = &#39;ckpt_1_CNN_with_TF_VGG19&#39;
+
+# Load best model
+best_model = load_model(checkpoint_dir + &#39;/&#39; + &#39;Cats_Dogs_CNN_TF_VGG19_epoch_30.h5&#39;)
+
+# Load the categories
+df = pd.read_csv(checkpoint_dir + &#39;/&#39; + &#39;class_assignment_df_Cats_Dogs_CNN_TF_VGG19_epoch_30.csv&#39;)
+df = df.sort_values(by=&#39;Allocated Number&#39;, ascending=True)
+CATEGORIES = df[&#39;Category&#39;].to_list()
+
+
+# Load the used image height and width
+img_height_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;img_height.pkl&#39;,&#39;rb&#39;))
+img_width_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;img_width.pkl&#39;,&#39;rb&#39;))
+
+
+# Load the used n_pooled_rows, n_pooled_cols and n_channels
+n_pooled_rows_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;n_pooled_rows.pkl&#39;,&#39;rb&#39;))
+n_pooled_cols_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;n_pooled_cols.pkl&#39;,&#39;rb&#39;))
+n_channels_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;n_channels.pkl&#39;,&#39;rb&#39;))
+
+print(&#39;Model Summary :&#39; + str(best_model.summary()))
+print()
+print()
+print(&#39;CATEGORIES : &#39; + str(CATEGORIES))
+print()
+print(&#39;Used image height: &#39; + str(img_height_reload))
+print(&#39;Used image width: &#39; + str(img_width_reload))
+print()
+print(&#39;Used n_pooled_rows: &#39; + str(n_pooled_rows))
+print(&#39;Used n_pooled_cols: &#39; + str(n_pooled_cols))
+print(&#39;Used n_channels: &#39; + str(n_channels))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p18.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_1.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p19.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_2.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p20.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_1.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p21.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_2.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p22.png" /></p>
 </div>
 </div>
 <div id="feature-extraction-with-data-augmentation" class="section level1">
 <h1>5 Feature Extraction with Data Augmentation</h1>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
 <div id="name-definitions-1" class="section level2">
 <h2>5.1 Name Definitions</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_2_CNN_with_TF_VGG19_with_DataAug&#39;
+model_name = &#39;Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES&#39;</code></pre>
 </div>
 <div id="parameter-settings-1" class="section level2">
 <h2>5.2 Parameter Settings</h2>

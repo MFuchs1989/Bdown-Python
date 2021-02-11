@@ -248,78 +248,119 @@ print('Number of channels: ' + str(n_channels))
 
 ### 4.4.2 Extracting features using the pretrained convolutional base
 
-
 ```{r, eval=F, echo=T}
+datagen = ImageDataGenerator(rescale=1./255)
 
+
+def extract_features(directory, sample_count):
+    features = np.zeros(shape=(sample_count, n_pooled_rows, n_pooled_cols, n_channels))
+    labels = np.zeros(shape=(sample_count))
+    generator = datagen.flow_from_directory(
+        directory,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+    
+    class_assignments = generator.class_indices
+    
+    i = 0
+    for inputs_batch, labels_batch in generator:
+        features_batch = conv_base.predict(inputs_batch)
+        features[i * n_batch_size : (i + 1) * n_batch_size] = features_batch
+        labels[i * n_batch_size : (i + 1) * n_batch_size] = labels_batch
+        i += 1
+        if i * n_batch_size >= sample_count:
+            break
+    return features, labels, class_assignments
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+
+```{r, eval=F, echo=T}
+train_features, train_labels, train_class_assignments = extract_features(train_dir, num_train_images_total)
+validation_features, validation_labels, validation_class_assignments = extract_features(validation_dir, num_validation_images_total)
+test_features, test_labels, test_class_assignments = extract_features(test_dir, num_test_images_total)
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p11.png)
 
 
 
 ### 4.4.3 Reshape train-, validation- and test features
 
+The extracted features are currently of shape *(samples, 4, 4, 512)*. We are going to feed them to a densely connected classifier, so first we must flatten them to *(samples, 8192)*.
 
 ```{r, eval=F, echo=T}
+train_features = np.reshape(train_features, (num_train_images_total, 
+                                             n_pooled_rows * n_pooled_cols * n_channels))
 
+validation_features = np.reshape(validation_features, (num_validation_images_total, 
+                                                       n_pooled_rows * n_pooled_cols * n_channels))
+
+test_features = np.reshape(test_features, (num_test_images_total, 
+                                           n_pooled_rows * n_pooled_cols * n_channels))
 ```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
 
 
 ### 4.5 Instantiating a densely connected classifier
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
-
-
 ### 4.5.1 Layer Structure
 
-
 ```{r, eval=F, echo=T}
-
+model = models.Sequential()
+model.add(layers.Dense(256, activation='relu', 
+                       input_dim= n_pooled_rows * n_pooled_cols * n_channels))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation='sigmoid'))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
 
+```{r, eval=F, echo=T}
+model.summary()
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p12.png)
 
 
 ### 4.5.2 Configuring the model for training
 
 
 ```{r, eval=F, echo=T}
-
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
 ```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
 
 
 ## 4.6 Callbacks
 
 
 ```{r, eval=F, echo=T}
-
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
 
+```{r, eval=F, echo=T}
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + '/' + model_name, 
+                                   monitor='val_loss', save_best_only=True, mode='auto')]
+```
 
 
 ## 4.7 Fitting the model
 
 
 ```{r, eval=F, echo=T}
-
+history = model.fit(
+    train_features, train_labels,
+    epochs = n_epochs,
+    batch_size = n_batch_size,
+    validation_data = (validation_features, validation_labels),
+    callbacks=keras_callbacks)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p12.png)
 
 
 
@@ -327,21 +368,41 @@ print('Number of channels: ' + str(n_channels))
 
 
 ```{r, eval=F, echo=T}
-
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p13.png)
 
+```{r, eval=F, echo=T}
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p14.png)
 
 
 ## 4.9 Obtaining class assignments
 
 
 ```{r, eval=F, echo=T}
+class_assignment = train_class_assignments
 
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop(['level_0'], axis=1)
+df_temp.columns = ['Category', 'Allocated Number']
+df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv')
+
+print('Class assignment:', str(class_assignment))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p15.png)
 
 
 
@@ -349,66 +410,205 @@ print('Number of channels: ' + str(n_channels))
 
 
 ```{r, eval=F, echo=T}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p16.png)
 
 
 
 ## 4.11 Load best model
 
-
 ```{r, eval=F, echo=T}
+# Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + '/' + model_name)
 
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + '.h5')
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
 
+```{r, eval=F, echo=T}
+best_model = load_model(model_name_temp)
+```
 
 
 ## 4.12 Model Testing
 
 
 ```{r, eval=F, echo=T}
-
+test_loss, test_acc = best_model.evaluate(test_features, test_labels, 
+                                          batch_size = n_batch_size)
+print()
+print('Test Accuracy:', test_acc)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p17.png)
 
+```{r, eval=F, echo=T}
+pk.dump(img_height, open(checkpoint_dir+ '\\' +'img_height.pkl', 'wb'))
+pk.dump(img_width, open(checkpoint_dir+ '\\' +'img_width.pkl', 'wb'))
+
+pk.dump(n_pooled_rows, open(checkpoint_dir+ '\\' +'n_pooled_rows.pkl', 'wb'))
+pk.dump(n_pooled_cols, open(checkpoint_dir+ '\\' +'n_pooled_cols.pkl', 'wb'))
+pk.dump(n_channels, open(checkpoint_dir+ '\\' +'n_channels.pkl', 'wb'))
+```
 
 
 ## 4.13 Test Out of the Box Pictures
 
 
 ```{r, eval=F, echo=T}
+# Determine Checkpoint Dir
+checkpoint_dir = 'ckpt_1_CNN_with_TF_VGG19'
 
+# Load best model
+best_model = load_model(checkpoint_dir + '/' + 'Cats_Dogs_CNN_TF_VGG19_epoch_30.h5')
+
+# Load the categories
+df = pd.read_csv(checkpoint_dir + '/' + 'class_assignment_df_Cats_Dogs_CNN_TF_VGG19_epoch_30.csv')
+df = df.sort_values(by='Allocated Number', ascending=True)
+CATEGORIES = df['Category'].to_list()
+
+
+# Load the used image height and width
+img_height_reload = pk.load(open(checkpoint_dir + '/' + 'img_height.pkl','rb'))
+img_width_reload = pk.load(open(checkpoint_dir + '/' + 'img_width.pkl','rb'))
+
+
+# Load the used n_pooled_rows, n_pooled_cols and n_channels
+n_pooled_rows_reload = pk.load(open(checkpoint_dir + '/' + 'n_pooled_rows.pkl','rb'))
+n_pooled_cols_reload = pk.load(open(checkpoint_dir + '/' + 'n_pooled_cols.pkl','rb'))
+n_channels_reload = pk.load(open(checkpoint_dir + '/' + 'n_channels.pkl','rb'))
+
+print('Model Summary :' + str(best_model.summary()))
+print()
+print()
+print('CATEGORIES : ' + str(CATEGORIES))
+print()
+print('Used image height: ' + str(img_height_reload))
+print('Used image width: ' + str(img_width_reload))
+print()
+print('Used n_pooled_rows: ' + str(n_pooled_rows))
+print('Used n_pooled_cols: ' + str(n_pooled_cols))
+print('Used n_channels: ' + str(n_channels))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p18.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_1.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p19.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p20.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p21.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = np.zeros(shape=(1, n_pooled_rows_reload, n_pooled_cols_reload, n_channels_reload))
+img_pred = np.reshape(img_pred, (1, n_pooled_rows_reload * n_pooled_cols_reload * n_channels_reload))
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p22.png)
 
 
 
 # 5 Feature Extraction with Data Augmentation
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
-
-
 ## 5.1 Name Definitions
 
 
 ```{r, eval=F, echo=T}
-
+checkpoint_no = 'ckpt_2_CNN_with_TF_VGG19_with_DataAug'
+model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 ```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
 
 
 ## 5.2 Parameter Settings
