@@ -615,10 +615,30 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
+img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
 
+n_batch_size = 32
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 30
+
+print('Input Shape: '+'('+str(img_height)+', '+str(img_width)+', ' + str(3)+')')
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p23.png)
 
 
 
@@ -626,54 +646,105 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
+VGG19_base = VGG19(weights='imagenet',
+                  include_top=False,
+                  input_shape=input_shape)
 
+conv_base = VGG19_base
 ```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
 
 
 
 ## 5.4 Instantiating a densely connected classifier
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
-
-
 ### 5.4.1 Layer Structure
 
-
 ```{r, eval=F, echo=T}
-
+model = models.Sequential()
+model.add(conv_base)
+model.add(layers.Flatten())
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+```{r, eval=F, echo=T}
+model.summary()
+```
 
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p24.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of trainable weights before freezing the conv base:', len(model.trainable_weights))
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p25.png)
+
+```{r, eval=F, echo=T}
+conv_base.trainable = False
+
+model = models.Sequential()
+model.add(conv_base)
+model.add(layers.Flatten())
+model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+```{r, eval=F, echo=T}
+model.summary()
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p26.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of trainable weights after freezing the conv base:', len(model.trainable_weights))
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p27.png)
 
 
 ### 5.4.2 Configuring the model for training
 
 
 ```{r, eval=F, echo=T}
-
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
 ```
-
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
-
 
 
 ### 5.4.3 Using ImageDataGenerator
 
 
 ```{r, eval=F, echo=T}
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,)
 
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p28.png)
 
 
 
@@ -681,10 +752,19 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
-
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+
+```{r, eval=F, echo=T}
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir, 
+                                   monitor='val_loss', save_best_only=True, mode='auto'),
+                   EarlyStopping(monitor='val_loss', patience=5, mode='auto', 
+                                 min_delta = 0, verbose=1)]
+```
 
 
 
@@ -692,10 +772,16 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
-
+history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p29.png)
 
 
 
@@ -703,21 +789,42 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
-
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p30.png)
 
+
+```{r, eval=F, echo=T}
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p31.png)
 
 
 ## 5.8 Obtaining class assignments
 
 
 ```{r, eval=F, echo=T}
+class_assignment = train_generator.class_indices
 
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop(['level_0'], axis=1)
+df_temp.columns = ['Category', 'Allocated Number']
+df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv')
+
+print('Class assignment:', str(class_assignment))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p32.png)
 
 
 
@@ -725,10 +832,29 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p33.png)
 
 
 
@@ -736,49 +862,162 @@ model_name = 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES'
 
 
 ```{r, eval=F, echo=T}
+# Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no)
 
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + '.h5')
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folders/.pb file under Model Checkpoint File.
+folder_name_temp1 = os.path.join(checkpoint_dir, 'assets')
+folder_name_temp2 = os.path.join(checkpoint_dir, 'variables')
+file_name_temp = os.path.join(checkpoint_dir, 'saved_model.pb')
+
+shutil.move(file_name_temp, folder_name_temp1)
+shutil.rmtree(folder_name_temp1, ignore_errors=True)
+shutil.rmtree(folder_name_temp2, ignore_errors=True)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
 
+```{r, eval=F, echo=T}
+best_model = load_model(model_name_temp)
+```
 
 
 ## 5.11 Model Testing
 
 
 ```{r, eval=F, echo=T}
+test_datagen = ImageDataGenerator(rescale=1./255)
 
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode='binary')
+
+test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
+print()
+print('Test Accuracy:', test_acc)
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p34.png)
 
+```{r, eval=F, echo=T}
+pk.dump(img_height, open(checkpoint_dir+ '\\' +'img_height.pkl', 'wb'))
+pk.dump(img_width, open(checkpoint_dir+ '\\' +'img_width.pkl', 'wb'))
+```
 
 
 ## 5.12 Test Out of the Box Pictures
 
 
 ```{r, eval=F, echo=T}
+# Determine Checkpoint Dir
+checkpoint_dir = 'ckpt_2_CNN_with_TF_VGG19_with_DataAug'
 
+# Load best model
+best_model = load_model(checkpoint_dir + '/' + 'Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES.h5')
+
+# Load the categories
+df = pd.read_csv(checkpoint_dir + '/' + 'class_assignment_df_Cats_Dogs_CNN_TF_VGG19_with_DataAug_epoch_30_ES.csv')
+df = df.sort_values(by='Allocated Number', ascending=True)
+CATEGORIES = df['Category'].to_list()
+
+
+# Load the used image height and width
+img_height_reload = pk.load(open(checkpoint_dir + '/' + 'img_height.pkl','rb'))
+img_width_reload = pk.load(open(checkpoint_dir + '/' + 'img_width.pkl','rb'))
+
+
+print('Model Summary :' + str(best_model.summary()))
+print()
+print()
+print('CATEGORIES : ' + str(CATEGORIES))
+print()
+print('Used image height: ' + str(img_height_reload))
+print('Used image width: ' + str(img_width_reload))
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p35.png)
 
 
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_1.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p36.png)
 
 
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_2.jpg')
 
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
 
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
 
-
-
-
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p37.png)
 
 
 
 ```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_1.jpg')
 
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p38.png)
+
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
 ```
 
 ![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png)
