@@ -111,42 +111,128 @@ from keras.applications import VGG19</code></pre>
 <div id="train-validation-test-split" class="section level2">
 <h2>3.1 Train-Validation-Test Split</h2>
 <p>For this please download the preprocessing_CNN.py file from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a> and place this file next to the folders <em>cats</em> and <em>dogs</em> and start your Jupyter notebook from here.</p>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>c_train, d_train, c_val, d_val, c_test, d_test = Train_Validation_Test_Split(&#39;cats&#39;, &#39;dogs&#39;)</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p1.png" /></p>
 </div>
 <div id="obtaining-the-lists-of-randomly-selected-images" class="section level2">
 <h2>3.2 Obtaining the lists of randomly selected images</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>list_cats_training = c_train
+list_dogs_training = d_train
+
+list_cats_validation = c_val
+list_dogs_validation = d_val
+
+list_cats_test = c_test
+list_dogs_test = d_test</code></pre>
 </div>
 <div id="determination-of-the-directories" class="section level2">
 <h2>3.3 Determination of the directories</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>root_directory = os.getcwd()
+
+train_dir = os.path.join(root_directory, &#39;cats_and_dogs\\train&#39;)
+validation_dir = os.path.join(root_directory, &#39;cats_and_dogs\\validation&#39;)
+test_dir = os.path.join(root_directory, &#39;cats_and_dogs\\test&#39;)</code></pre>
 </div>
 <div id="obtain-the-total-number-of-training-validation-and-test-images" class="section level2">
 <h2>3.4 Obtain the total number of training, validation and test images</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>num_cats_img_train = len(list_cats_training)
+num_dogs_img_train = len(list_dogs_training)
+
+num_train_images_total = num_cats_img_train + num_dogs_img_train
+
+print(&#39;Total training cat images: &#39; + str(num_cats_img_train))
+print(&#39;Total training dog images: &#39; + str(num_dogs_img_train))
+print()
+print(&#39;Total training images: &#39; + str(num_train_images_total))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p2.png" /></p>
+<pre class="r"><code>num_cats_img_validation = len(list_cats_validation)
+num_dogs_img_validation = len(list_dogs_validation)
+
+num_validation_images_total = num_cats_img_validation + num_dogs_img_validation
+
+print(&#39;Total validation cat images: &#39; + str(num_cats_img_validation))
+print(&#39;Total validation dog images: &#39; + str(num_dogs_img_validation))
+print()
+print(&#39;Total validation images: &#39; + str(num_validation_images_total))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p3.png" /></p>
+<pre class="r"><code>num_cats_img_test = len(list_cats_test)
+num_dogs_img_test = len(list_dogs_test)
+
+num_test_images_total = num_cats_img_test + num_dogs_img_test
+
+print(&#39;Total test cat images: &#39; + str(num_cats_img_test))
+print(&#39;Total test dog images: &#39; + str(num_dogs_img_test))
+print()
+print(&#39;Total test images: &#39; + str(num_test_images_total))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p4.png" /></p>
 </div>
 </div>
 <div id="feature-extraction-without-data-augmentation" class="section level1">
 <h1>4 Feature Extraction without Data Augmentation</h1>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
 <div id="name-definitions" class="section level2">
 <h2>4.1 Name Definitions</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_1_CNN_with_TF_VGG19&#39;
+model_name = &#39;Cats_Dogs_CNN_TF_VGG19_epoch_30&#39;</code></pre>
 </div>
 <div id="parameter-settings" class="section level2">
 <h2>4.2 Parameter Settings</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 32
+
+n_epochs = 30
+
+print(&#39;Input Shape: &#39;+&#39;(&#39;+str(img_height)+&#39;, &#39;+str(img_width)+&#39;, &#39; + str(3)+&#39;)&#39;)
+print(&#39;Batch Size: &#39; + str(n_batch_size))
+print()
+print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p5.png" /></p>
 </div>
 <div id="instantiating-the-vgg19-convolutional-base" class="section level2">
 <h2>4.3 Instantiating the VGG19 convolutional base</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>VGG19_base = VGG19(weights=&#39;imagenet&#39;,
+                  include_top=False,
+                  input_shape=input_shape)
+
+conv_base = VGG19_base</code></pre>
+<pre class="r"><code>conv_base.summary()</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p6.png" /></p>
 </div>
 <div id="feature-extraction" class="section level2">
 <h2>4.4 Feature Extraction</h2>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
 <div id="get-output-shape-of-last-layer" class="section level3">
 <h3>4.4.1 Get Output Shape of last Layer</h3>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<pre class="r"><code>df_temp = pd.DataFrame()
+
+for layer in conv_base.layers:
+    layer_output_shape = layer.output_shape
+
+    df1 = {&#39;Output_Shape&#39;: layer_output_shape}
+    df_temp = df_temp.append(df1, ignore_index=True)
+
+df_temp</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p7.png" /></p>
+<pre class="r"><code>df_temp = df_temp.loc[df_temp.index == df_temp.index.max()]
+df_temp = df_temp[&#39;Output_Shape&#39;].iloc[0]
+df_temp</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p8.png" /></p>
+<pre class="r"><code>df_temp2 = pd.DataFrame(df_temp).T
+df_temp2.columns= [&#39;batch_size&#39;, &#39;pooled_rows&#39;, &#39;pooled_cols&#39;, &#39;channels&#39;]
+df_temp2[&#39;pooled_rows&#39;] = df_temp2[&#39;pooled_rows&#39;].astype(&#39;int64&#39;)
+df_temp2[&#39;pooled_cols&#39;] = df_temp2[&#39;pooled_cols&#39;].astype(&#39;int64&#39;)
+df_temp2[&#39;channels&#39;] = df_temp2[&#39;channels&#39;].astype(&#39;int64&#39;)
+df_temp2</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p9.png" /></p>
+<pre class="r"><code>n_pooled_rows = df_temp2[&#39;pooled_rows&#39;].iloc[0]
+n_pooled_cols = df_temp2[&#39;pooled_cols&#39;].iloc[0]
+n_channels = df_temp2[&#39;channels&#39;].iloc[0]
+
+print(&#39;Number of pooled rows: &#39; + str(n_pooled_rows))
+print(&#39;Number of pooled cols: &#39; + str(n_pooled_cols))
+print(&#39;Number of channels: &#39; + str(n_channels))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p10.png" /></p>
 </div>
 <div id="extracting-features-using-the-pretrained-convolutional-base" class="section level3">
 <h3>4.4.2 Extracting features using the pretrained convolutional base</h3>
