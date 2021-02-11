@@ -274,6 +274,8 @@ Compared to the Knowledge-based Recommender this has the advantage that it sugge
 
 **References**
 
+The content of the entire post was created using the following sources:
+
 Banik, R. (2018). Hands-On Recommendation Systems with Python: Start building powerful and personalized, recommendation engines with Python. Birmingham: Packt Publishing Ltd.
 
 

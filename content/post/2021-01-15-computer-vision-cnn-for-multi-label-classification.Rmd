@@ -700,6 +700,8 @@ Here is the link to my GitHub repository where I have listed all necessary steps
 
 **References**
 
+The content of the entire post was created using the following sources:
+
 Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
 
 
