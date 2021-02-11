@@ -26,7 +26,29 @@ For this publication I used the images from the *Animal Faces* dataset from the 
 # 2 Import the libraries
 
 
-sssssssss
+```{r, eval=F, echo=T}
+from preprocessing_multi_CNN import Train_Validation_Test_Split
+
+import numpy as np
+import pandas as pd
+
+import os
+import shutil
+
+import pickle as pk
+
+import cv2 
+import matplotlib.pyplot as plt
+%matplotlib inline 
+
+from keras import layers
+from keras import models
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import load_model
+
+from keras.applications import VGG19
+```
 
 
 # 3 Data pre-processing
@@ -41,33 +63,228 @@ Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Reposito
 For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
 
 
+## 3.1 Train-Validation-Test Split
+
+
+```{r, eval=F, echo=T}
+c_train, d_train, w_train, \
+c_val, d_val, w_val, \
+c_test, d_test, w_test = Train_Validation_Test_Split('cats', 'dogs', 'wilds')
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p1.png)
+
+
+
+## 3.2 Obtaining the lists of randomly selected images
+
+
 ```{r, eval=F, echo=T}
 
 ```
 
-![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p107p.png)
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
 
 
-## 3.1 Train-Validation-Test Split
-## 3.2 Obtaining the lists of randomly selected images
+
 ## 3.3 Determination of the directories
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 3.4 Obtain the total number of training, validation and test images
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 # 4 Feature Extraction with Data Augmentation
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.1 Name Definitions
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.2 Parameter Settings
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.3 Instantiating the VGG19 convolutional base
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.4 Instantiating a densely connected classifier
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ### 4.4.1 Layer Structure
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ### 4.4.2 Configuring the model for training
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ### 4.4.3 Using ImageDataGenerator
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.5 Callbacks
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.6 Fitting the model
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.7 Obtaining the best model values
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.8 Obtaining class assignments
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.9 Validation
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.10 Load best model
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.11 Model Testing
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 ## 4.12 Test Out of the Box Pictures
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107p.png)
+
+
+
 # 5 Conclusion
 
 
