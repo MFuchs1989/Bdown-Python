@@ -71,12 +71,15 @@ output:
 <li><a href="#model-testing-1">5.11 Model Testing</a></li>
 <li><a href="#test-out-of-the-box-pictures-1">5.12 Test Out of the Box Pictures</a></li>
 </ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>In my post <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/">Computer Vision - Convolutional Neural Network</a> I showed how to train a Convolutional Neural Network for binary image classification. Now I will try to improve this model again using Transfer Learning.</p>
+<p><a href="https://keras.io/api/applications/">Keras offers several applications</a> that can be used for transfer learning.
+I used the <a href="https://keras.io/api/applications/vgg/#vgg19-function">VGG19</a> to train my binary image classifier below.</p>
 <p>For this publication I used the images from the <em>cats and dogs</em> dataset from the statistics platform <a href="https://www.kaggle.com/c/dogs-vs-cats/data">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a>.</p>
 </div>
 <div id="import-the-libraries" class="section level1">
@@ -169,6 +172,8 @@ print(&#39;Total test images: &#39; + str(num_test_images_total))</code></pre>
 </div>
 <div id="feature-extraction-without-data-augmentation" class="section level1">
 <h1>4 Feature Extraction without Data Augmentation</h1>
+<p>In this method, we run the convolutional basis over our dataset and record its output in a numpy array on disk.
+Subsequently, this data is then used as input to a standalone densely connected classifier.</p>
 <div id="name-definitions" class="section level2">
 <h2>4.1 Name Definitions</h2>
 <pre class="r"><code>checkpoint_no = &#39;ckpt_1_CNN_with_TF_VGG19&#39;
@@ -192,6 +197,7 @@ print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
 </div>
 <div id="instantiating-the-vgg19-convolutional-base" class="section level2">
 <h2>4.3 Instantiating the VGG19 convolutional base</h2>
+<p>We set include_top=False to get only the used conv-blocks and not the used dense layers.</p>
 <pre class="r"><code>VGG19_base = VGG19(weights=&#39;imagenet&#39;,
                   include_top=False,
                   input_shape=input_shape)
@@ -313,7 +319,7 @@ if not os.path.exists(checkpoint_dir):
     batch_size = n_batch_size,
     validation_data = (validation_features, validation_labels),
     callbacks=keras_callbacks)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p12.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p13.png" /></p>
 </div>
 <div id="obtaining-the-best-model-values" class="section level2">
 <h2>4.8 Obtaining the best model values</h2>
@@ -324,10 +330,10 @@ cols = [cols[-1]] + cols[:-1]
 hist_df = hist_df[cols]
 hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
 hist_df.head()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p13.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p14.png" /></p>
 <pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
 values_of_best_model</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p14.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p15.png" /></p>
 </div>
 <div id="obtaining-class-assignments" class="section level2">
 <h2>4.9 Obtaining class assignments</h2>
@@ -340,7 +346,7 @@ df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
 df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
 
 print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p15.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p16.png" /></p>
 </div>
 <div id="validation" class="section level2">
 <h2>4.10 Validation</h2>
@@ -364,7 +370,8 @@ plt.title(&#39;Training and validation loss&#39;)
 plt.legend()
 
 plt.show()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p16.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p17.png" /></p>
+<p>It looks like we have the problem of overfitting here. Let’s see what the subsequent tests bring for results.</p>
 </div>
 <div id="load-best-model" class="section level2">
 <h2>4.11 Load best model</h2>
@@ -388,7 +395,8 @@ shutil.rmtree(folder_name_temp, ignore_errors=True)</code></pre>
                                           batch_size = n_batch_size)
 print()
 print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p17.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p18.png" /></p>
+<p>In order to have all necessary metrics for a later use of the created model, we save them separately.</p>
 <pre class="r"><code>pk.dump(img_height, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_height.pkl&#39;, &#39;wb&#39;))
 pk.dump(img_width, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_width.pkl&#39;, &#39;wb&#39;))
 
@@ -431,7 +439,7 @@ print()
 print(&#39;Used n_pooled_rows: &#39; + str(n_pooled_rows))
 print(&#39;Used n_pooled_cols: &#39; + str(n_pooled_cols))
 print(&#39;Used n_channels: &#39; + str(n_channels))</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p18.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p19.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_1.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -445,7 +453,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p19.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p20.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_2.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -459,7 +467,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p20.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p21.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_1.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -473,7 +481,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p21.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p22.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_2.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -487,11 +495,14 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p22.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p23.png" /></p>
+<p>As we can see from the test images, our classifier does not yet work as desired. Let’s see if we do better with the following method.</p>
 </div>
 </div>
 <div id="feature-extraction-with-data-augmentation" class="section level1">
 <h1>5 Feature Extraction with Data Augmentation</h1>
+<p>For <a href="https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/#feature-extraction-without-data-augmentation">Feature Extraction without Data Augmentation</a>, we simply used the existing trained features from VGG19 and ran them over our dataset. We then used this output as input to a standalone densely-connected classifier.</p>
+<p>Now we will put our dense layers on top of the conv_base and run our image dataset through the entire network. Of course, this method is a lot more computationally intensive than the previous one, but it usually produces better results.</p>
 <div id="name-definitions-1" class="section level2">
 <h2>5.1 Name Definitions</h2>
 <pre class="r"><code>checkpoint_no = &#39;ckpt_2_CNN_with_TF_VGG19_with_DataAug&#39;
@@ -520,7 +531,7 @@ print(&#39;Validation Steps: &#39; + str(n_validation_steps))
 print(&#39;Test Steps: &#39; + str(n_test_steps))
 print()
 print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p23.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p24.png" /></p>
 </div>
 <div id="instantiating-the-vgg19-convolutional-base-1" class="section level2">
 <h2>5.3 Instantiating the VGG19 convolutional base</h2>
@@ -540,9 +551,9 @@ model.add(layers.Flatten())
 model.add(layers.Dense(256, activation=&#39;relu&#39;))
 model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
 <pre class="r"><code>model.summary()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p24.png" /></p>
-<pre class="r"><code>print(&#39;Number of trainable weights before freezing the conv base:&#39;, len(model.trainable_weights))</code></pre>
 <p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p25.png" /></p>
+<pre class="r"><code>print(&#39;Number of trainable weights before freezing the conv base:&#39;, len(model.trainable_weights))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p26.png" /></p>
 <pre class="r"><code>conv_base.trainable = False
 
 model = models.Sequential()
@@ -551,9 +562,9 @@ model.add(layers.Flatten())
 model.add(layers.Dense(256, activation=&#39;relu&#39;))
 model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
 <pre class="r"><code>model.summary()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p26.png" /></p>
-<pre class="r"><code>print(&#39;Number of trainable weights after freezing the conv base:&#39;, len(model.trainable_weights))</code></pre>
 <p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p27.png" /></p>
+<pre class="r"><code>print(&#39;Number of trainable weights after freezing the conv base:&#39;, len(model.trainable_weights))</code></pre>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p28.png" /></p>
 </div>
 <div id="configuring-the-model-for-training-1" class="section level3">
 <h3>5.4.2 Configuring the model for training</h3>
@@ -587,7 +598,7 @@ validation_generator = validation_datagen.flow_from_directory(
         target_size=(img_height, img_width),
         batch_size=n_batch_size,
         class_mode=&#39;binary&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p28.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p29.png" /></p>
 </div>
 </div>
 <div id="callbacks-1" class="section level2">
@@ -610,7 +621,7 @@ if not os.path.exists(checkpoint_dir):
       validation_data=validation_generator,
       validation_steps=n_validation_steps,
       callbacks=keras_callbacks)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p29.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p30.png" /></p>
 </div>
 <div id="obtaining-the-best-model-values-1" class="section level2">
 <h2>5.7 Obtaining the best model values</h2>
@@ -621,10 +632,10 @@ cols = [cols[-1]] + cols[:-1]
 hist_df = hist_df[cols]
 hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
 hist_df.head()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p30.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p31.png" /></p>
 <pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
 values_of_best_model</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p31.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p32.png" /></p>
 </div>
 <div id="obtaining-class-assignments-1" class="section level2">
 <h2>5.8 Obtaining class assignments</h2>
@@ -637,7 +648,7 @@ df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
 df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
 
 print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p32.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p33.png" /></p>
 </div>
 <div id="validation-1" class="section level2">
 <h2>5.9 Validation</h2>
@@ -661,7 +672,7 @@ plt.title(&#39;Training and validation loss&#39;)
 plt.legend()
 
 plt.show()</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p33.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p34.png" /></p>
 </div>
 <div id="load-best-model-1" class="section level2">
 <h2>5.10 Load best model</h2>
@@ -697,9 +708,12 @@ test_generator = test_datagen.flow_from_directory(
 test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
 print()
 print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p34.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p35.png" /></p>
+<p>Once again, we save all the necessary metrics.</p>
 <pre class="r"><code>pk.dump(img_height, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_height.pkl&#39;, &#39;wb&#39;))
 pk.dump(img_width, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_width.pkl&#39;, &#39;wb&#39;))</code></pre>
+<p>Our final folder structure now looks like this:</p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106s1.png" /></p>
 </div>
 <div id="test-out-of-the-box-pictures-1" class="section level2">
 <h2>5.12 Test Out of the Box Pictures</h2>
@@ -727,7 +741,7 @@ print(&#39;CATEGORIES : &#39; + str(CATEGORIES))
 print()
 print(&#39;Used image height: &#39; + str(img_height_reload))
 print(&#39;Used image width: &#39; + str(img_width_reload))</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p35.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p36.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_1.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -741,7 +755,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p36.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p37.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_2.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -755,7 +769,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p37.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p38.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_1.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -769,7 +783,7 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p38.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p39.png" /></p>
 <pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_2.jpg&#39;)
 
 print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
@@ -783,6 +797,13 @@ print()
 print(&#39;------------------------------------&#39;)
 print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
 print(&#39;------------------------------------&#39;)</code></pre>
-<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p40.png" /></p>
+<p>This is exactly how our image classifier is supposed to work.</p>
 </div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post I showed how you can use pre-trained networks to improve the performance of your classifier.</p>
+<p><strong>References</strong></p>
+<p>Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.</p>
 </div>
