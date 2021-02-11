@@ -1,0 +1,269 @@
+---
+title: Computer Vision - CNN with Transfer Learning
+author: Michael Fuchs
+date: '2021-01-17'
+slug: computer-vision-cnn-with-transfer-learning
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a>
+<ul>
+<li><a href="#train-validation-test-split">3.1 Train-Validation-Test Split</a></li>
+<li><a href="#obtaining-the-lists-of-randomly-selected-images">3.2 Obtaining the lists of randomly selected images</a></li>
+<li><a href="#determination-of-the-directories">3.3 Determination of the directories</a></li>
+<li><a href="#obtain-the-total-number-of-training-validation-and-test-images">3.4 Obtain the total number of training, validation and test images</a></li>
+</ul></li>
+<li><a href="#feature-extraction-without-data-augmentation">4 Feature Extraction without Data Augmentation</a>
+<ul>
+<li><a href="#name-definitions">4.1 Name Definitions</a></li>
+<li><a href="#parameter-settings">4.2 Parameter Settings</a></li>
+<li><a href="#instantiating-the-vgg19-convolutional-base">4.3 Instantiating the VGG19 convolutional base</a></li>
+<li><a href="#feature-extraction">4.4 Feature Extraction</a>
+<ul>
+<li><a href="#get-output-shape-of-last-layer">4.4.1 Get Output Shape of last Layer</a></li>
+<li><a href="#extracting-features-using-the-pretrained-convolutional-base">4.4.2 Extracting features using the pretrained convolutional base</a></li>
+<li><a href="#reshape-train--validation--and-test-features">4.4.3 Reshape train-, validation- and test features</a></li>
+<li><a href="#instantiating-a-densely-connected-classifier">4.5 Instantiating a densely connected classifier</a></li>
+<li><a href="#layer-structure">4.5.1 Layer Structure</a></li>
+<li><a href="#configuring-the-model-for-training">4.5.2 Configuring the model for training</a></li>
+</ul></li>
+<li><a href="#callbacks">4.6 Callbacks</a></li>
+<li><a href="#fitting-the-model">4.7 Fitting the model</a></li>
+<li><a href="#obtaining-the-best-model-values">4.8 Obtaining the best model values</a></li>
+<li><a href="#obtaining-class-assignments">4.9 Obtaining class assignments</a></li>
+<li><a href="#validation">4.10 Validation</a></li>
+<li><a href="#load-best-model">4.11 Load best model</a></li>
+<li><a href="#model-testing">4.12 Model Testing</a></li>
+<li><a href="#test-out-of-the-box-pictures">4.13 Test Out of the Box Pictures</a></li>
+</ul></li>
+<li><a href="#feature-extraction-with-data-augmentation">5 Feature Extraction with Data Augmentation</a>
+<ul>
+<li><a href="#name-definitions-1">5.1 Name Definitions</a></li>
+<li><a href="#parameter-settings-1">5.2 Parameter Settings</a></li>
+<li><a href="#instantiating-the-vgg19-convolutional-base-1">5.3 Instantiating the VGG19 convolutional base</a></li>
+<li><a href="#instantiating-a-densely-connected-classifier-1">5.4 Instantiating a densely connected classifier</a>
+<ul>
+<li><a href="#layer-structure-1">5.4.1 Layer Structure</a></li>
+<li><a href="#configuring-the-model-for-training-1">5.4.2 Configuring the model for training</a></li>
+<li><a href="#using-imagedatagenerator">5.4.3 Using ImageDataGenerator</a></li>
+</ul></li>
+<li><a href="#callbacks-1">5.5 Callbacks</a></li>
+<li><a href="#fitting-the-model-1">5.6 Fitting the model</a></li>
+<li><a href="#obtaining-the-best-model-values-1">5.7 Obtaining the best model values</a></li>
+<li><a href="#obtaining-class-assignments-1">5.8 Obtaining class assignments</a></li>
+<li><a href="#validation-1">5.9 Validation</a></li>
+<li><a href="#load-best-model-1">5.10 Load best model</a></li>
+<li><a href="#model-testing-1">5.11 Model Testing</a></li>
+<li><a href="#test-out-of-the-box-pictures-1">5.12 Test Out of the Box Pictures</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my post <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/">Computer Vision - Convolutional Neural Network</a> I showed how to train a Convolutional Neural Network for binary image classification. Now I will try to improve this model again using Transfer Learning.</p>
+<p>For this publication I used the images from the <em>cats and dogs</em> dataset from the statistics platform <a href="https://www.kaggle.com/c/dogs-vs-cats/data">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the libraries</h1>
+<pre class="r"><code>from preprocessing_CNN import Train_Validation_Test_Split
+
+import numpy as np
+import pandas as pd
+
+import os
+import shutil
+
+import pickle as pk
+
+import cv2 
+import matplotlib.pyplot as plt
+%matplotlib inline 
+
+from keras import layers
+from keras import models
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import load_model
+
+from keras.applications import VGG19</code></pre>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>3 Data pre-processing</h1>
+<p>How the data for a CNN model training must be prepared I have already explained in this post: <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/">Computer Vision - Convolutional Neural Network</a></p>
+<p>The exact functionality of the code I have explained in this post: <a href="https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split">Automate the Boring Stuff</a></p>
+<p>Please download the two folders <em>cats</em> and <em>dogs</em> from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a> and navigate to the project’s root directory in the terminal. The notebook must be started from the location where the two files are stored.</p>
+<div id="train-validation-test-split" class="section level2">
+<h2>3.1 Train-Validation-Test Split</h2>
+<p>For this please download the preprocessing_CNN.py file from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network">“GitHub Repository”</a> and place this file next to the folders <em>cats</em> and <em>dogs</em> and start your Jupyter notebook from here.</p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtaining-the-lists-of-randomly-selected-images" class="section level2">
+<h2>3.2 Obtaining the lists of randomly selected images</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="determination-of-the-directories" class="section level2">
+<h2>3.3 Determination of the directories</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtain-the-total-number-of-training-validation-and-test-images" class="section level2">
+<h2>3.4 Obtain the total number of training, validation and test images</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+</div>
+<div id="feature-extraction-without-data-augmentation" class="section level1">
+<h1>4 Feature Extraction without Data Augmentation</h1>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<div id="name-definitions" class="section level2">
+<h2>4.1 Name Definitions</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="parameter-settings" class="section level2">
+<h2>4.2 Parameter Settings</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="instantiating-the-vgg19-convolutional-base" class="section level2">
+<h2>4.3 Instantiating the VGG19 convolutional base</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="feature-extraction" class="section level2">
+<h2>4.4 Feature Extraction</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<div id="get-output-shape-of-last-layer" class="section level3">
+<h3>4.4.1 Get Output Shape of last Layer</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="extracting-features-using-the-pretrained-convolutional-base" class="section level3">
+<h3>4.4.2 Extracting features using the pretrained convolutional base</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="reshape-train--validation--and-test-features" class="section level3">
+<h3>4.4.3 Reshape train-, validation- and test features</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="instantiating-a-densely-connected-classifier" class="section level3">
+<h3>4.5 Instantiating a densely connected classifier</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="layer-structure" class="section level3">
+<h3>4.5.1 Layer Structure</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="configuring-the-model-for-training" class="section level3">
+<h3>4.5.2 Configuring the model for training</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+</div>
+<div id="callbacks" class="section level2">
+<h2>4.6 Callbacks</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="fitting-the-model" class="section level2">
+<h2>4.7 Fitting the model</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtaining-the-best-model-values" class="section level2">
+<h2>4.8 Obtaining the best model values</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtaining-class-assignments" class="section level2">
+<h2>4.9 Obtaining class assignments</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="validation" class="section level2">
+<h2>4.10 Validation</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="load-best-model" class="section level2">
+<h2>4.11 Load best model</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="model-testing" class="section level2">
+<h2>4.12 Model Testing</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="test-out-of-the-box-pictures" class="section level2">
+<h2>4.13 Test Out of the Box Pictures</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+</div>
+<div id="feature-extraction-with-data-augmentation" class="section level1">
+<h1>5 Feature Extraction with Data Augmentation</h1>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<div id="name-definitions-1" class="section level2">
+<h2>5.1 Name Definitions</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="parameter-settings-1" class="section level2">
+<h2>5.2 Parameter Settings</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="instantiating-the-vgg19-convolutional-base-1" class="section level2">
+<h2>5.3 Instantiating the VGG19 convolutional base</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="instantiating-a-densely-connected-classifier-1" class="section level2">
+<h2>5.4 Instantiating a densely connected classifier</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<div id="layer-structure-1" class="section level3">
+<h3>5.4.1 Layer Structure</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="configuring-the-model-for-training-1" class="section level3">
+<h3>5.4.2 Configuring the model for training</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="using-imagedatagenerator" class="section level3">
+<h3>5.4.3 Using ImageDataGenerator</h3>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+</div>
+<div id="callbacks-1" class="section level2">
+<h2>5.5 Callbacks</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="fitting-the-model-1" class="section level2">
+<h2>5.6 Fitting the model</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtaining-the-best-model-values-1" class="section level2">
+<h2>5.7 Obtaining the best model values</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="obtaining-class-assignments-1" class="section level2">
+<h2>5.8 Obtaining class assignments</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="validation-1" class="section level2">
+<h2>5.9 Validation</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="load-best-model-1" class="section level2">
+<h2>5.10 Load best model</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="model-testing-1" class="section level2">
+<h2>5.11 Model Testing</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+<div id="test-out-of-the-box-pictures-1" class="section level2">
+<h2>5.12 Test Out of the Box Pictures</h2>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+<p><img src="/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p106p.png" /></p>
+</div>
+</div>
