@@ -374,6 +374,8 @@ Furthermore, one can now consider targeted discount campaigns. If you discount a
 
 **References**
 
+The content of the entire post was created using the following sources:
+
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
 
 

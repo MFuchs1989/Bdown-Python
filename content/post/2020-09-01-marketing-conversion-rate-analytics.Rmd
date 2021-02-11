@@ -707,6 +707,8 @@ The following points were covered in the main chapters 3-6:
 
 **References**
 
+The content of the entire post was created using the following sources:
+
 Hwang, Y. (2019). Hands-On Data Science for Marketing: Improve your marketing strategies with machine learning using Python and R. Packt Publishing Ltd.
 
 
