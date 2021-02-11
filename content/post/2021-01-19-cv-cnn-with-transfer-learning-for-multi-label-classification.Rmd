@@ -690,6 +690,11 @@ print('------------------------------------')
 In addition to my post [Computer Vision - CNN with Transfer Learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/) I have shown here how to use pre-trained neural networks to solve multiple classification problems. 
 
 
+# 6 Link to the GitHub Repository
+
+Here is the link to my GitHub repository where I have listed all necessary steps: [CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification](https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification)
+
+
 
 **References**
 

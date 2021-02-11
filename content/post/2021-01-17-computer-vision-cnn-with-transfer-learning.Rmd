@@ -1053,6 +1053,11 @@ This is exactly how our image classifier is supposed to work.
 In this post I showed how you can use pre-trained networks to improve the performance of your classifier. 
 
 
+# 7 Link to the GitHub Repository
+
+Here is the link to my GitHub repository where I have listed all necessary steps: [Computer Vision: CNN with Transfer Learning for binary Classification](https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning)
+
+
 **References**
 
 Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
