@@ -474,6 +474,12 @@ pk.dump(img_width, open(checkpoint_dir+ '\\' +'img_width.pkl', 'wb'))
 ```
 
 
+Our final folder structure now looks like this:
+
+![](/post/2021-01-19-cv-cnn-with-transfer-learning-for-multi-label-classification_files/p107s1.png)
+
+
+
 ## 4.12 Test Out of the Box Pictures
 
 
@@ -679,13 +685,14 @@ print('------------------------------------')
 
 
 
-
 # 5 Conclusion
 
+In addition to my post [Computer Vision - CNN with Transfer Learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/) I have shown here how to use pre-trained neural networks to solve multiple classification problems. 
 
 
 
+**References**
 
-
+Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
 
 
