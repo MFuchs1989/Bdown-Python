@@ -1,0 +1,79 @@
+---
+title: CV - CNN with Transfer Learning for Multi-Label Classification
+author: Michael Fuchs
+date: '2021-01-19'
+slug: cv-cnn-with-transfer-learning-for-multi-label-classification
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+After showing how to build [binary classification models using transfer learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/), I would like to show this again for multiple classification problems. 
+
+Once again, I used the [Keras Application](https://keras.io/api/applications/) [VGG19](https://keras.io/api/applications/vgg/#vgg19-function) for transfer learning. 
+
+For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+
+
+# 2 Import the libraries
+
+
+
+
+
+# 3 Data pre-processing
+
+How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - CNN for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
+
+The exact functionality of the code I have explained in this post: [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split)
+
+
+Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the three files are stored. 
+
+For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-17-computer-vision-cnn-with-transfer-learning_files/p107p.png)
+
+
+## 3.1 Train-Validation-Test Split
+## 3.2 Obtaining the lists of randomly selected images
+## 3.3 Determination of the directories
+## 3.4 Obtain the total number of training, validation and test images
+# 4 Feature Extraction with Data Augmentation
+## 4.1 Name Definitions
+## 4.2 Parameter Settings
+## 4.3 Instantiating the VGG19 convolutional base
+## 4.4 Instantiating a densely connected classifier
+### 4.4.1 Layer Structure
+### 4.4.2 Configuring the model for training
+### 4.4.3 Using ImageDataGenerator
+## 4.5 Callbacks
+## 4.6 Fitting the model
+## 4.7 Obtaining the best model values
+## 4.8 Obtaining class assignments
+## 4.9 Validation
+## 4.10 Load best model
+## 4.11 Model Testing
+## 4.12 Test Out of the Box Pictures
+# 5 Conclusion
+
+
+
+
+
+
+
+
