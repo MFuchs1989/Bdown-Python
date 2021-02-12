@@ -49,6 +49,7 @@ output:
 <li><a href="#model-testing">4.12 Model Testing</a></li>
 <li><a href="#test-out-of-the-box-pictures">4.13 Test Out of the Box Pictures</a></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -95,82 +96,364 @@ from keras.applications import VGG19</code></pre>
 </div>
 <div id="obtaining-the-lists-of-randomly-selected-images" class="section level2">
 <h2>3.2 Obtaining the lists of randomly selected images</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>list_cats_training = c_train
+list_dogs_training = d_train
+
+list_cats_validation = c_val
+list_dogs_validation = d_val
+
+list_cats_test = c_test
+list_dogs_test = d_test</code></pre>
 </div>
 <div id="determination-of-the-directories" class="section level2">
 <h2>3.3 Determination of the directories</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>root_directory = os.getcwd()
+
+train_dir = os.path.join(root_directory, &#39;cats_and_dogs\\train&#39;)
+validation_dir = os.path.join(root_directory, &#39;cats_and_dogs\\validation&#39;)
+test_dir = os.path.join(root_directory, &#39;cats_and_dogs\\test&#39;)</code></pre>
 </div>
 <div id="obtain-the-total-number-of-training-validation-and-test-images" class="section level2">
 <h2>3.4 Obtain the total number of training, validation and test images</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>num_cats_img_train = len(list_cats_training)
+num_dogs_img_train = len(list_dogs_training)
+
+num_train_images_total = num_cats_img_train + num_dogs_img_train
+
+print(&#39;Total training cat images: &#39; + str(num_cats_img_train))
+print(&#39;Total training dog images: &#39; + str(num_dogs_img_train))
+print()
+print(&#39;Total training images: &#39; + str(num_train_images_total))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p2.png" /></p>
+<pre class="r"><code>num_cats_img_validation = len(list_cats_validation)
+num_dogs_img_validation = len(list_dogs_validation)
+
+num_validation_images_total = num_cats_img_validation + num_dogs_img_validation
+
+print(&#39;Total validation cat images: &#39; + str(num_cats_img_validation))
+print(&#39;Total validation dog images: &#39; + str(num_dogs_img_validation))
+print()
+print(&#39;Total validation images: &#39; + str(num_validation_images_total))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p3.png" /></p>
+<pre class="r"><code>num_cats_img_test = len(list_cats_test)
+num_dogs_img_test = len(list_dogs_test)
+
+num_test_images_total = num_cats_img_test + num_dogs_img_test
+
+print(&#39;Total test cat images: &#39; + str(num_cats_img_test))
+print(&#39;Total test dog images: &#39; + str(num_dogs_img_test))
+print()
+print(&#39;Total test images: &#39; + str(num_test_images_total))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p4.png" /></p>
 </div>
 </div>
 <div id="feature-extraction-with-data-augmentation" class="section level1">
 <h1>4 Feature Extraction with Data Augmentation</h1>
 <div id="name-definitions" class="section level2">
 <h2>4.1 Name Definitions</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_1_CNN_with_TFL_VGG19_FineTuning&#39;
+model_name = &#39;Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30&#39;</code></pre>
 </div>
 <div id="parameter-settings" class="section level2">
 <h2>4.2 Parameter Settings</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>img_height = 150
+img_width = 150
+input_shape = (img_height, img_width, 3)
+
+n_batch_size = 32
+
+n_steps_per_epoch = int(num_train_images_total / n_batch_size)
+n_validation_steps = int(num_validation_images_total / n_batch_size)
+n_test_steps = int(num_test_images_total / n_batch_size)
+
+n_epochs = 30
+
+print(&#39;Input Shape: &#39;+&#39;(&#39;+str(img_height)+&#39;, &#39;+str(img_width)+&#39;, &#39; + str(3)+&#39;)&#39;)
+print(&#39;Batch Size: &#39; + str(n_batch_size))
+print()
+print(&#39;Steps per Epoch: &#39; + str(n_steps_per_epoch))
+print()
+print(&#39;Validation Steps: &#39; + str(n_validation_steps))
+print(&#39;Test Steps: &#39; + str(n_test_steps))
+print()
+print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p5.png" /></p>
 </div>
 <div id="instantiating-the-vgg19-convolutional-base" class="section level2">
 <h2>4.3 Instantiating the VGG19 convolutional base</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>VGG19_base = VGG19(weights=&#39;imagenet&#39;,
+                  include_top=False,
+                  input_shape=input_shape)
+
+conv_base = VGG19_base</code></pre>
+<pre class="r"><code>conv_base.summary()</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p6.png" /></p>
 </div>
 <div id="freezing-all-layers-up-to-a-specific-one" class="section level2">
 <h2>4.4 Freezing all layers up to a specific one</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<p>How is this post here different from <a href="https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/">CNN with Transfer Learning</a>?
+Up to this point not at all!
+But right here we can make a setting, which we have not made before.
+Until now we had all conv blocks always frozen (see <a href="https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/#layer-structure-1">here</a>). Now we set all parameters to trainable with conv_base.trainable = True. But of course (otherwise we wouldn’t have to do any transfer learning) we want to keep most of the already learned features. So we have the possibility to freeze a part of the conv blocks or to leave a part unfrozen.</p>
+<p>With the following code we can freeze all layers up to ‘block5_conv3’. Thus, in this example, only the weights of the last two conv layers (block5_conv3 and block5_conv4) are adjusted using our training data.</p>
+<pre class="r"><code>conv_base.trainable = True
+
+set_trainable = False
+for layer in conv_base.layers:
+    if layer.name == &#39;block5_conv3&#39;:
+        set_trainable = True
+    if set_trainable:
+        layer.trainable = True
+    else:
+        layer.trainable = False</code></pre>
 </div>
 <div id="instantiating-a-densely-connected-classifier" class="section level2">
 <h2>4.5 Instantiating a densely connected classifier</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
 <div id="layer-structure" class="section level3">
 <h3>4.5.1 Layer Structure</h3>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>model = models.Sequential()
+model.add(conv_base)
+model.add(layers.Flatten())
+model.add(layers.Dense(256, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+<pre class="r"><code>model.summary()</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p7.png" /></p>
 </div>
 <div id="configuring-the-model-for-training" class="section level3">
 <h3>4.5.2 Configuring the model for training</h3>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>model.compile(loss=&#39;binary_crossentropy&#39;,
+              optimizer=&#39;adam&#39;,
+              metrics=[&#39;accuracy&#39;])</code></pre>
 </div>
 <div id="using-imagedatagenerator" class="section level3">
 <h3>4.5.3 Using ImageDataGenerator</h3>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,)
+
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+
+train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+
+
+validation_generator = validation_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p8.png" /></p>
 </div>
 </div>
 <div id="callbacks" class="section level2">
 <h2>4.6 Callbacks</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code># Prepare a directory to store all the checkpoints.
+checkpoint_dir = checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)</code></pre>
+<pre class="r"><code>keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir, 
+                                   monitor=&#39;val_loss&#39;, save_best_only=True, mode=&#39;auto&#39;),
+                   EarlyStopping(monitor=&#39;val_loss&#39;, patience=5, mode=&#39;auto&#39;, 
+                                 min_delta = 0, verbose=1)]</code></pre>
 </div>
 <div id="fitting-the-model" class="section level2">
 <h2>4.7 Fitting the model</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>history = model.fit(
+      train_generator,
+      steps_per_epoch=n_steps_per_epoch,
+      epochs=n_epochs,
+      validation_data=validation_generator,
+      validation_steps=n_validation_steps,
+      callbacks=keras_callbacks)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p9.png" /></p>
 </div>
 <div id="obtaining-the-best-model-values" class="section level2">
 <h2>4.8 Obtaining the best model values</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>hist_df = pd.DataFrame(history.history)
+hist_df[&#39;epoch&#39;] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
+hist_df.head()</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p10.png" /></p>
+<pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p11.png" /></p>
 </div>
 <div id="obtaining-class-assignments" class="section level2">
 <h2>4.9 Obtaining class assignments</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>class_assignment = train_generator.class_indices
+
+df = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_stacked = df.stack()
+df_temp = pd.DataFrame(df_stacked).reset_index().drop([&#39;level_0&#39;], axis=1)
+df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
+df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
+
+print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p12.png" /></p>
 </div>
 <div id="validation" class="section level2">
 <h2>4.10 Validation</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>acc = history.history[&#39;accuracy&#39;]
+val_acc = history.history[&#39;val_accuracy&#39;]
+loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, &#39;bo&#39;, label=&#39;Training acc&#39;)
+plt.plot(epochs, val_acc, &#39;b&#39;, label=&#39;Validation acc&#39;)
+plt.title(&#39;Training and validation accuracy&#39;)
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p13.png" /></p>
 </div>
 <div id="load-best-model" class="section level2">
 <h2>4.11 Load best model</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code># Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + &#39;.h5&#39;)
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folders/.pb file under Model Checkpoint File.
+folder_name_temp1 = os.path.join(checkpoint_dir, &#39;assets&#39;)
+folder_name_temp2 = os.path.join(checkpoint_dir, &#39;variables&#39;)
+file_name_temp = os.path.join(checkpoint_dir, &#39;saved_model.pb&#39;)
+
+shutil.move(file_name_temp, folder_name_temp1)
+shutil.rmtree(folder_name_temp1, ignore_errors=True)
+shutil.rmtree(folder_name_temp2, ignore_errors=True)</code></pre>
+<pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
 </div>
 <div id="model-testing" class="section level2">
 <h2>4.12 Model Testing</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code>test_datagen = ImageDataGenerator(rescale=1./255)
+
+test_generator = test_datagen.flow_from_directory(
+        test_dir,
+        target_size=(img_height, img_width),
+        batch_size=n_batch_size,
+        class_mode=&#39;binary&#39;)
+
+test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
+print()
+print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p14.png" /></p>
+<pre class="r"><code>pk.dump(img_height, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_height.pkl&#39;, &#39;wb&#39;))
+pk.dump(img_width, open(checkpoint_dir+ &#39;\\&#39; +&#39;img_width.pkl&#39;, &#39;wb&#39;))</code></pre>
 </div>
 <div id="test-out-of-the-box-pictures" class="section level2">
 <h2>4.13 Test Out of the Box Pictures</h2>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
-<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png" /></p>
+<pre class="r"><code># Determine Checkpoint Dir
+checkpoint_dir = &#39;ckpt_1_CNN_with_TFL_VGG19_FineTuning&#39;
+
+# Load best model
+best_model = load_model(checkpoint_dir + &#39;/&#39; + &#39;Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30.h5&#39;)
+
+# Load the categories
+df = pd.read_csv(checkpoint_dir + &#39;/&#39; + &#39;class_assignment_df_Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30.csv&#39;)
+df = df.sort_values(by=&#39;Allocated Number&#39;, ascending=True)
+CATEGORIES = df[&#39;Category&#39;].to_list()
+
+
+# Load the used image height and width
+img_height_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;img_height.pkl&#39;,&#39;rb&#39;))
+img_width_reload = pk.load(open(checkpoint_dir + &#39;/&#39; + &#39;img_width.pkl&#39;,&#39;rb&#39;))
+
+
+print(&#39;Model Summary :&#39; + str(best_model.summary()))
+print()
+print()
+print(&#39;CATEGORIES : &#39; + str(CATEGORIES))
+print()
+print(&#39;Used image height: &#39; + str(img_height_reload))
+print(&#39;Used image width: &#39; + str(img_width_reload))</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p15.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_1.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p16.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_cat_pic_2.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p17.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_1.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p18.png" /></p>
+<pre class="r"><code>img_pred = cv2.imread(&#39;out of the box pic/test_dog_pic_2.jpg&#39;)
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = (best_model.predict(img_pred) &gt; 0.5).astype(&quot;int32&quot;)
+
+print()
+print(&#39;------------------------------------&#39;)
+print(&#39;Predicted Class: &#39; + CATEGORIES[int(classes[0])])
+print(&#39;------------------------------------&#39;)</code></pre>
+<p><img src="/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p19.png" /></p>
 </div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>That’s it. In this post I showed how you can use transfer learning and fine tuning to bring your model (especially if you have a small amount of training data) to a quite acceptable performance value.</p>
+<p><strong>References</strong></p>
+<p>The content of the entire post was created using the following sources:</p>
+<p>Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.</p>
 </div>
