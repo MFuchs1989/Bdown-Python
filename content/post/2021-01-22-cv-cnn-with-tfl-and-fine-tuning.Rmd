@@ -1,0 +1,319 @@
+---
+title: CV - CNN with TFL and Fine-Tuning
+author: Michael Fuchs
+date: '2021-01-22'
+slug: cv-cnn-with-tfl-and-fine-tuning
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+In my post [Computer Vision - CNN with Transfer Learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/) I showed how to train a binary image classifier with the help of a pre-trained neural network. Now I would like to improve this model by means of Fine Tuning.
+
+I will again use the pre-trained network [VGG19](https://keras.io/api/applications/vgg/#vgg19-function) from the [Keras applications](https://keras.io/api/applications/) provided.
+
+
+For this publication I used the images from the *cats and dogs* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/c/dogs-vs-cats/data). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network). 
+
+
+
+# 2 Import the libraries
+
+```{r, eval=F, echo=T}
+from preprocessing_CNN import Train_Validation_Test_Split
+
+import numpy as np
+import pandas as pd
+
+import os
+import shutil
+
+import pickle as pk
+
+import cv2 
+import matplotlib.pyplot as plt
+%matplotlib inline 
+
+from keras import layers
+from keras import models
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
+from keras.models import load_model
+
+from keras.applications import VGG19
+```
+
+
+
+# 3 Data pre-processing
+
+How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - Convolutional Neural Network](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/)
+
+The exact functionality of the code I have explained in this post: [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split)
+
+Please download the two folders *cats* and *dogs* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the two files are stored. 
+
+
+## 3.1 Train-Validation-Test Split
+
+For this please download the preprocessing_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network) and place this file next to the folders *cats* and *dogs* and start your Jupyter notebook from here.
+
+
+```{r, eval=F, echo=T}
+c_train, d_train, c_val, d_val, c_test, d_test = Train_Validation_Test_Split('cats', 'dogs')
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p1.png)
+
+
+## 3.2 Obtaining the lists of randomly selected images
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 3.3 Determination of the directories
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 3.4 Obtain the total number of training, validation and test images
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+# 4 Feature Extraction with Data Augmentation
+## 4.1 Name Definitions
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.2 Parameter Settings
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.3 Instantiating the VGG19 convolutional base
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.4 Freezing all layers up to a specific one
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.5 Instantiating a densely connected classifier
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+### 4.5.1 Layer Structure
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+### 4.5.2 Configuring the model for training
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+### 4.5.3 Using ImageDataGenerator
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.6 Callbacks
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.7 Fitting the model
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.8 Obtaining the best model values
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.9 Obtaining class assignments
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.10 Validation
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.11 Load best model
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.12 Model Testing
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+## 4.13 Test Out of the Box Pictures
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
