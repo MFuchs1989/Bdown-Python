@@ -1,8 +1,8 @@
 ---
-title: CV - CNN with TFL and Fine-Tuning
+title: CV - CNN with TFL and Fine-Tuning for Multi-Label Classification
 author: Michael Fuchs
-date: '2021-01-22'
-slug: cv-cnn-with-tfl-and-fine-tuning
+date: '2021-01-24'
+slug: cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification
 categories:
   - R
 tags:
@@ -14,22 +14,20 @@ output:
 ---
 
 
-
 # 1 Introduction
 
-In my post [Computer Vision - CNN with Transfer Learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/) I showed how to train a binary image classifier with the help of a pre-trained neural network. Now I would like to improve this model by means of Fine Tuning.
+In my post [CNN with Transfer Learning for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/19/cv-cnn-with-transfer-learning-for-multi-label-classification/) I showed how to train a Multi-Label image classifier with the help of a pre-trained neural network. Now I would like to improve this model by means of Fine Tuning.
 
 I will again use the pre-trained network [VGG19](https://keras.io/api/applications/vgg/#vgg19-function) from the [Keras applications](https://keras.io/api/applications/) provided.
 
-
-For this publication I used the images from the *cats and dogs* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/c/dogs-vs-cats/data). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network). 
-
+For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
 
 
 # 2 Import the libraries
 
+
 ```{r, eval=F, echo=T}
-from preprocessing_CNN import Train_Validation_Test_Split
+from preprocessing_multi_CNN import Train_Validation_Test_Split
 
 import numpy as np
 import pandas as pd
@@ -53,26 +51,27 @@ from keras.applications import VGG19
 ```
 
 
-
 # 3 Data pre-processing
 
-How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - Convolutional Neural Network](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/)
+How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - CNN for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
 
 The exact functionality of the code I have explained in this post: [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split)
 
-Please download the two folders *cats* and *dogs* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the two files are stored. 
+
+Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the three files are stored. 
+
+For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
 
 
 ## 3.1 Train-Validation-Test Split
 
-For this please download the preprocessing_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/Convolutional%20Neural%20Network) and place this file next to the folders *cats* and *dogs* and start your Jupyter notebook from here.
-
-
 ```{r, eval=F, echo=T}
-c_train, d_train, c_val, d_val, c_test, d_test = Train_Validation_Test_Split('cats', 'dogs')
+c_train, d_train, w_train, \
+c_val, d_val, w_val, \
+c_test, d_test, w_test = Train_Validation_Test_Split('cats', 'dogs', 'wilds')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p1.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p1.png)
 
 
 ## 3.2 Obtaining the lists of randomly selected images
@@ -81,12 +80,15 @@ c_train, d_train, c_val, d_val, c_test, d_test = Train_Validation_Test_Split('ca
 ```{r, eval=F, echo=T}
 list_cats_training = c_train
 list_dogs_training = d_train
+list_wilds_training = w_train
 
 list_cats_validation = c_val
 list_dogs_validation = d_val
+list_wilds_validation = w_val
 
 list_cats_test = c_test
 list_dogs_test = d_test
+list_wilds_test = w_test
 ```
 
 
@@ -96,9 +98,9 @@ list_dogs_test = d_test
 ```{r, eval=F, echo=T}
 root_directory = os.getcwd()
 
-train_dir = os.path.join(root_directory, 'cats_and_dogs\\train')
-validation_dir = os.path.join(root_directory, 'cats_and_dogs\\validation')
-test_dir = os.path.join(root_directory, 'cats_and_dogs\\test')
+train_dir = os.path.join(root_directory, 'animals\\train')
+validation_dir = os.path.join(root_directory, 'animals\\validation')
+test_dir = os.path.join(root_directory, 'animals\\test')
 ```
 
 
@@ -108,56 +110,61 @@ test_dir = os.path.join(root_directory, 'cats_and_dogs\\test')
 ```{r, eval=F, echo=T}
 num_cats_img_train = len(list_cats_training)
 num_dogs_img_train = len(list_dogs_training)
+num_wilds_img_train = len(list_wilds_training)
 
-num_train_images_total = num_cats_img_train + num_dogs_img_train
+num_train_images_total = num_cats_img_train + num_dogs_img_train + num_wilds_img_train
 
 print('Total training cat images: ' + str(num_cats_img_train))
 print('Total training dog images: ' + str(num_dogs_img_train))
+print('Total training wild images: ' + str(num_wilds_img_train))
 print()
 print('Total training images: ' + str(num_train_images_total))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p2.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p2.png)
 
 
 ```{r, eval=F, echo=T}
 num_cats_img_validation = len(list_cats_validation)
 num_dogs_img_validation = len(list_dogs_validation)
+num_wilds_img_validation = len(list_wilds_validation)
 
-num_validation_images_total = num_cats_img_validation + num_dogs_img_validation
+num_validation_images_total = num_cats_img_validation + num_dogs_img_validation + num_wilds_img_validation
 
 print('Total validation cat images: ' + str(num_cats_img_validation))
 print('Total validation dog images: ' + str(num_dogs_img_validation))
+print('Total validation wild images: ' + str(num_wilds_img_validation))
 print()
 print('Total validation images: ' + str(num_validation_images_total))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p3.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p3.png)
 
 
 ```{r, eval=F, echo=T}
 num_cats_img_test = len(list_cats_test)
 num_dogs_img_test = len(list_dogs_test)
+num_wilds_img_test = len(list_wilds_test)
 
-num_test_images_total = num_cats_img_test + num_dogs_img_test
+num_test_images_total = num_cats_img_test + num_dogs_img_test + num_wilds_img_test
 
 print('Total test cat images: ' + str(num_cats_img_test))
 print('Total test dog images: ' + str(num_dogs_img_test))
+print('Total test wild images: ' + str(num_wilds_img_test))
 print()
 print('Total test images: ' + str(num_test_images_total))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p4.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p4.png)
 
 
 # 4 Feature Extraction with Data Augmentation
 
 ## 4.1 Name Definitions
 
-
 ```{r, eval=F, echo=T}
 checkpoint_no = 'ckpt_1_CNN_with_TFL_VGG19_FineTuning'
-model_name = 'Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30'
+model_name = 'Animals_CNN_TFL_VGG19_FineTuning_epoch_30'
 ```
 
 
@@ -177,6 +184,8 @@ n_test_steps = int(num_test_images_total / n_batch_size)
 
 n_epochs = 30
 
+num_classes = len(os.listdir(train_dir))
+
 print('Input Shape: '+'('+str(img_height)+', '+str(img_width)+', ' + str(3)+')')
 print('Batch Size: ' + str(n_batch_size))
 print()
@@ -186,9 +195,11 @@ print('Validation Steps: ' + str(n_validation_steps))
 print('Test Steps: ' + str(n_test_steps))
 print()
 print('Number of Epochs: ' + str(n_epochs))
+print()
+print('Number of Classes: ' + str(num_classes))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p5.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p5.png)
 
 
 ## 4.3 Instantiating the VGG19 convolutional base
@@ -201,20 +212,19 @@ VGG19_base = VGG19(weights='imagenet',
 conv_base = VGG19_base
 ```
 
-
 ```{r, eval=F, echo=T}
 conv_base.summary()
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p6.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p6.png)
 
 
 ## 4.4 Freezing all layers up to a specific one
 
-How is this post here different from [CNN with Transfer Learning](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/)?
+How is this post here different from [CNN with Transfer Learning for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/19/cv-cnn-with-transfer-learning-for-multi-label-classification/)?
 Up to this point not at all!
 But right here we can make a setting, which we have not made before. 
-Until now we had all conv blocks always frozen (see [here](https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/#layer-structure-1)). Now we set all parameters to trainable with conv_base.trainable = True. But of course (otherwise we wouldn't have to do any transfer learning) we want to keep most of the already learned features. So we have the possibility to freeze a part of the conv blocks or to leave a part unfrozen. 
+Until now we had all conv blocks always frozen (see [here](https://michael-fuchs-python.netlify.app/2021/01/19/cv-cnn-with-transfer-learning-for-multi-label-classification/#layer-structure). Now we set all parameters to trainable with conv_base.trainable = True. But of course (otherwise we wouldn't have to do any transfer learning) we want to keep most of the already learned features. So we have the possibility to freeze a part of the conv blocks or to leave a part unfrozen. 
 
 With the following code we can freeze all layers up to 'block5_conv3'. Thus, in this example, only the weights of the last two conv layers (block5_conv3 and block5_conv4) are adjusted using our training data. 
 
@@ -243,21 +253,21 @@ model = models.Sequential()
 model.add(conv_base)
 model.add(layers.Flatten())
 model.add(layers.Dense(256, activation='relu'))
-model.add(layers.Dense(1, activation='sigmoid'))
+model.add(layers.Dense(num_classes, activation='softmax'))
 ```
 
 ```{r, eval=F, echo=T}
 model.summary()
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p7.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p7.png)
 
 
 ### 4.5.2 Configuring the model for training
 
 
 ```{r, eval=F, echo=T}
-model.compile(loss='binary_crossentropy',
+model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 ```
@@ -283,20 +293,21 @@ train_generator = train_datagen.flow_from_directory(
         train_dir,
         target_size=(img_height, img_width),
         batch_size=n_batch_size,
-        class_mode='binary')
+        class_mode='categorical')
 
 
 validation_generator = validation_datagen.flow_from_directory(
         validation_dir,
         target_size=(img_height, img_width),
         batch_size=n_batch_size,
-        class_mode='binary')
+        class_mode='categorical')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p8.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p8.png)
 
 
 ## 4.6 Callbacks
+
 
 ```{r, eval=F, echo=T}
 # Prepare a directory to store all the checkpoints.
@@ -327,7 +338,7 @@ history = model.fit(
       callbacks=keras_callbacks)
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p9.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p9.png)
 
 
 ## 4.8 Obtaining the best model values
@@ -343,7 +354,7 @@ hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
 hist_df.head()
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p10.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p10.png)
 
 
 ```{r, eval=F, echo=T}
@@ -351,7 +362,8 @@ values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
 values_of_best_model
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p11.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p11.png)
+
 
 
 ## 4.9 Obtaining class assignments
@@ -369,11 +381,11 @@ df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv
 print('Class assignment:', str(class_assignment))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p12.png)
-
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p12.png)
 
 
 ## 4.10 Validation
+
 
 ```{r, eval=F, echo=T}
 acc = history.history['accuracy']
@@ -398,11 +410,11 @@ plt.legend()
 plt.show()
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p13.png)
-
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p13.png)
 
 
 ## 4.11 Load best model
+
 
 ```{r, eval=F, echo=T}
 # Loading the automatically saved model
@@ -424,6 +436,7 @@ shutil.rmtree(folder_name_temp1, ignore_errors=True)
 shutil.rmtree(folder_name_temp2, ignore_errors=True)
 ```
 
+
 ```{r, eval=F, echo=T}
 best_model = load_model(model_name_temp)
 ```
@@ -439,14 +452,14 @@ test_generator = test_datagen.flow_from_directory(
         test_dir,
         target_size=(img_height, img_width),
         batch_size=n_batch_size,
-        class_mode='binary')
+        class_mode='categorical')
 
 test_loss, test_acc = best_model.evaluate(test_generator, steps=n_test_steps)
 print()
 print('Test Accuracy:', test_acc)
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p14.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p14.png)
 
 
 ```{r, eval=F, echo=T}
@@ -457,7 +470,7 @@ pk.dump(img_width, open(checkpoint_dir+ '\\' +'img_width.pkl', 'wb'))
 
 Our final folder structure now looks like this:
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108s1.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109s1.png)
 
 
 
@@ -469,10 +482,10 @@ Our final folder structure now looks like this:
 checkpoint_dir = 'ckpt_1_CNN_with_TFL_VGG19_FineTuning'
 
 # Load best model
-best_model = load_model(checkpoint_dir + '/' + 'Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30.h5')
+best_model = load_model(checkpoint_dir + '/' + 'Animals_CNN_TFL_VGG19_FineTuning_epoch_30.h5')
 
 # Load the categories
-df = pd.read_csv(checkpoint_dir + '/' + 'class_assignment_df_Cats_Dogs_CNN_TFL_VGG19_FineTuning_epoch_30.csv')
+df = pd.read_csv(checkpoint_dir + '/' + 'class_assignment_df_Animals_CNN_TFL_VGG19_FineTuning_epoch_30.csv')
 df = df.sort_values(by='Allocated Number', ascending=True)
 CATEGORIES = df['Category'].to_list()
 
@@ -491,7 +504,7 @@ print('Used image height: ' + str(img_height_reload))
 print('Used image width: ' + str(img_width_reload))
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p15.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p15.png)
 
 
 ```{r, eval=F, echo=T}
@@ -502,7 +515,7 @@ print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
 img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
-classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
 print()
 print('------------------------------------')
@@ -510,7 +523,7 @@ print('Predicted Class: ' + CATEGORIES[int(classes[0])])
 print('------------------------------------')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p16.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p16.png)
 
 
 ```{r, eval=F, echo=T}
@@ -521,7 +534,7 @@ print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
 img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
-classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
 print()
 print('------------------------------------')
@@ -529,7 +542,26 @@ print('Predicted Class: ' + CATEGORIES[int(classes[0])])
 print('------------------------------------')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p17.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p17.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_cat_pic_3.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p18.png)
 
 
 ```{r, eval=F, echo=T}
@@ -540,7 +572,7 @@ print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
 img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
-classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
 print()
 print('------------------------------------')
@@ -548,7 +580,7 @@ print('Predicted Class: ' + CATEGORIES[int(classes[0])])
 print('------------------------------------')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p18.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p19.png)
 
 
 ```{r, eval=F, echo=T}
@@ -559,7 +591,7 @@ print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
 img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
 img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
 
-classes = (best_model.predict(img_pred) > 0.5).astype("int32")
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
 
 print()
 print('------------------------------------')
@@ -567,12 +599,89 @@ print('Predicted Class: ' + CATEGORIES[int(classes[0])])
 print('------------------------------------')
 ```
 
-![](/post/2021-01-22-cv-cnn-with-tfl-and-fine-tuning_files/p108p19.png)
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p20.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_dog_pic_3.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p21.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_wild_pic_1.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p22.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_wild_pic_2.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p23.png)
+
+
+```{r, eval=F, echo=T}
+img_pred = cv2.imread('out of the box pic/test_wild_pic_3.jpg')
+
+print(plt.imshow(cv2.cvtColor(img_pred, cv2.COLOR_BGR2RGB)))
+
+img_pred = cv2.resize(img_pred,(img_height_reload,img_width_reload))
+img_pred = np.reshape(img_pred,[1,img_height_reload,img_width_reload,3])
+
+classes = np.argmax(best_model.predict(img_pred), axis=-1)
+
+print()
+print('------------------------------------')
+print('Predicted Class: ' + CATEGORIES[int(classes[0])])
+print('------------------------------------')
+```
+
+![](/post/2021-01-24-cv-cnn-with-tfl-and-fine-tuning-for-multi-label-classification_files/p109p24.png)
+
 
 
 # 5 Conclusion
 
-That's it. In this post I showed how you can use transfer learning and fine tuning to bring your model (especially if you have a small amount of training data) to a quite acceptable performance value. 
+As you can see, transfer learning and fine tuning can also be used to effectively solve multi-label classification problems (especially since we had quite little training data available here as well).
 
 
 
@@ -581,6 +690,8 @@ That's it. In this post I showed how you can use transfer learning and fine tuni
 The content of the entire post was created using the following sources:
 
 Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
+
+
 
 
 
