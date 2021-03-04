@@ -334,8 +334,13 @@ df_scaled = sc.fit_transform(df)</code></pre>
 </div>
 <div id="normalize-or-standardize" class="section level1">
 <h1>7 Normalize or Standardize?</h1>
-<p>The scaling methods presented above can be divided into two categories: <strong>Normalization</strong> and <strong>Normalization</strong></p>
+<p><a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#scaling-methods">Scaling methods</a> can be divided into two categories: <strong>Normalization</strong> and <strong>Standardization</strong></p>
 <p>As a refresher, normalization is a scaling technique where values are shifted and rescaled so that they are in the range between 0 and 1 whereas standardization centers the values around the mean with a unit standard deviation. This means that the mean value of the attribute becomes zero and the resulting distribution has a unit standard deviation.</p>
+<p>Accordingly, the <a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#scaling-methods">scaling methods</a> presented above can be classified as follows:</p>
+<ul>
+<li>Standardization: <a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#standard-scaler">Standard Scaler</a></li>
+<li>Normalization: <a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#min-max-scaler">Min-Max Scaler</a> &amp; [Robust Scaler](<a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#robust-scaler" class="uri">https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#robust-scaler</a></li>
+</ul>
 <p>The question now is when do I have to use which scaling technique?
 There is no single answer to this, but one can use the underlying distribution as a guide:</p>
 <ul>

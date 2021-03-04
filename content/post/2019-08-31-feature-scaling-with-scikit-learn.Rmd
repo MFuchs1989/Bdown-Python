@@ -481,9 +481,14 @@ df_scaled = sc.fit_transform(df)
 
 # 7 Normalize or Standardize?
 
-The scaling methods presented above can be divided into two categories: **Normalization** and **Normalization**
+[Scaling methods](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#scaling-methods) can be divided into two categories: **Normalization** and **Standardization**
 
 As a refresher, normalization is a scaling technique where values are shifted and rescaled so that they are in the range between 0 and 1 whereas standardization centers the values around the mean with a unit standard deviation. This means that the mean value of the attribute becomes zero and the resulting distribution has a unit standard deviation.
+
+Accordingly, the [scaling methods](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#scaling-methods) presented above can be classified as follows:
+
++ Standardization: [Standard Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#standard-scaler)
++ Normalization: [Min-Max Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#min-max-scaler) & [Robust Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#robust-scaler
 
 The question now is when do I have to use which scaling technique? 
 There is no single answer to this, but one can use the underlying distribution as a guide:
