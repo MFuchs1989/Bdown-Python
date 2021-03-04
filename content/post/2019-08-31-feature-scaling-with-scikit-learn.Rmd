@@ -488,7 +488,7 @@ As a refresher, normalization is a scaling technique where values are shifted an
 Accordingly, the [scaling methods](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#scaling-methods) presented above can be classified as follows:
 
 + Standardization: [Standard Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#standard-scaler)
-+ Normalization: [Min-Max Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#min-max-scaler) & [Robust Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#robust-scaler
++ Normalization: [Min-Max Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#min-max-scaler) & [Robust Scaler](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/#robust-scaler)
 
 The question now is when do I have to use which scaling technique? 
 There is no single answer to this, but one can use the underlying distribution as a guide:
