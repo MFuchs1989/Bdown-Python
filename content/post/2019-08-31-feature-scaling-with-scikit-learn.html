@@ -31,7 +31,8 @@ output:
 <li><a href="#inverse-transformation">4 Inverse Transformation</a></li>
 <li><a href="#export-scaler-to-use-in-another-program">5 Export Scaler to use in another program</a></li>
 <li><a href="#feature-scaling-in-practice">6 Feature Scaling in practice</a></li>
-<li><a href="#conclusion">7 Conclusion</a></li>
+<li><a href="#normalize-or-standardize">7 Normalize or Standardize?</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
@@ -331,7 +332,19 @@ Use the previous method for this.</p>
 
 df_scaled = sc.fit_transform(df)</code></pre>
 </div>
+<div id="normalize-or-standardize" class="section level1">
+<h1>7 Normalize or Standardize?</h1>
+<p>The scaling methods presented above can be divided into two categories: <strong>Normalization</strong> and <strong>Normalization</strong></p>
+<p>As a refresher, normalization is a scaling technique where values are shifted and rescaled so that they are in the range between 0 and 1 whereas standardization centers the values around the mean with a unit standard deviation. This means that the mean value of the attribute becomes zero and the resulting distribution has a unit standard deviation.</p>
+<p>The question now is when do I have to use which scaling technique?
+There is no single answer to this, but one can use the underlying distribution as a guide:</p>
+<ul>
+<li>Normalization is good to use when you know that the distribution of your data does <strong>not follow</strong> a Gaussian distribution.</li>
+<li>Standardization, on the other hand, can be helpful in cases where the data <strong>follows a Gaussian distribution</strong>.</li>
+</ul>
+<p>My personal recommendation when developing machine learning models is to first fit the model to raw, normalized and standardized data and compare performance for best results.</p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>7 Conclusion</h1>
+<h1>8 Conclusion</h1>
 <p>As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.</p>
 </div>

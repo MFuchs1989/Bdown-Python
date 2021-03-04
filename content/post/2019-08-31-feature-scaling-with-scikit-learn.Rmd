@@ -479,12 +479,24 @@ df_scaled = sc.fit_transform(df)
 ```
 
 
+# 7 Normalize or Standardize?
 
-# 7 Conclusion
+The scaling methods presented above can be divided into two categories: **Normalization** and **Normalization**
+
+As a refresher, normalization is a scaling technique where values are shifted and rescaled so that they are in the range between 0 and 1 whereas standardization centers the values around the mean with a unit standard deviation. This means that the mean value of the attribute becomes zero and the resulting distribution has a unit standard deviation.
+
+The question now is when do I have to use which scaling technique? 
+There is no single answer to this, but one can use the underlying distribution as a guide:
+
++ Normalization is good to use when you know that the distribution of your data does **not follow** a Gaussian distribution.
++ Standardization, on the other hand, can be helpful in cases where the data **follows a Gaussian distribution**.
+
+My personal recommendation when developing machine learning models is to first fit the model to raw, normalized and standardized data and compare performance for best results.
+
+
+# 8 Conclusion
 
 As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.
-
-
 
 
 
