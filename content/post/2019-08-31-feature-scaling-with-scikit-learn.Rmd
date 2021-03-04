@@ -501,7 +501,7 @@ My personal recommendation when developing machine learning models is to first f
 
 # 8 Conclusion
 
-As described in the introduction, scaling can significantly improve model performance.From this point of view, you should take these into account before training your machine learning algorithm.
+As described in the introduction, scaling can significantly improve model performance. From this point of view, you should take these into account before training your machine learning algorithm.
 
 
 
