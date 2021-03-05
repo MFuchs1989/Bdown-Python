@@ -1,0 +1,10 @@
+---
+title: NN - Multi-layer Perceptron Classifier (MLPClassifier)
+author: Michael Fuchs
+date: '2021-02-03'
+slug: nn-multi-layer-perceptron-classifier-mlpclassifier
+categories:
+  - R
+tags:
+  - R Markdown
+---
