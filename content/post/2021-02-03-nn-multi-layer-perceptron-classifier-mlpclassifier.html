@@ -7,10 +7,30 @@ categories:
   - R
 tags:
   - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+</ul>
+</div>
 
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my post <a href="https://michael-fuchs-python.netlify.app/2021/01/19/cv-cnn-with-transfer-learning-for-multi-label-classification/">CNN with Transfer Learning for Multi-Label Classification</a> I showed how to train a Multi-Label image classifier with the help of a pre-trained neural network. Now I would like to improve this model by means of Fine Tuning.</p>
+<p>I will again use the pre-trained network <a href="https://keras.io/api/applications/vgg/#vgg19-function">VGG19</a> from the <a href="https://keras.io/api/applications/">Keras applications</a> provided.</p>
+<p>For this publication I used the images from the <em>Animal Faces</em> dataset from the statistics platform <a href="https://www.kaggle.com/andrewmvd/animal-faces">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification">“GitHub Repository”</a>.</p>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png" /></p>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png" /></p>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png" /></p>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png" /></p>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png" /></p>
+</div>
