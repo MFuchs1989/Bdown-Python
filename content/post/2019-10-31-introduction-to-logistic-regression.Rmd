@@ -53,6 +53,7 @@ import statsmodels.api as sm
 from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
+from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -348,7 +349,7 @@ columns_x = new_train_x2.columns
 
 
 sm = SMOTE(random_state=0)
-trainX_smote ,trainY_smote = sm.fit_sample(new_train_x2, trainY)
+trainX_smote ,trainY_smote = sm.fit_resample(new_train_x2, trainY)
 
 trainX_smote = pd.DataFrame(data=trainX_smote,columns=columns_x)
 trainY_smote = pd.DataFrame(data=trainY_smote,columns=['final_subscribed'])
@@ -428,12 +429,13 @@ coef[['features', 'coef', 'odds_ratio']]
 
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p17.png)
 
+
 ## 6.3 Model evaluation
 
 ### 6.3.1 Confusion matrix
 
-To evaluate classification models we usualy use a confusion matrix.
-This can be requested in python as follows: 
+We usually use a confusion matrix to evaluate classification models.
+This can be done in python as follows: 
 
 
 ```{r, eval=F, echo=T}
@@ -445,23 +447,13 @@ print(confusion_matrix)
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24p19.png)
 
 
-Or in this way (maybe a little more appealing):
+We can also represent the Confusion Matrix with a nice graphic: 
 
 
 ```{r, eval=F, echo=T}
-fig, ax = plt.subplots()
-
-class_names=[0,1]
-tick_marks = np.arange(len(class_names))
-plt.xticks(tick_marks, class_names)
-plt.yticks(tick_marks, class_names)
-
-sns.heatmap(pd.DataFrame(confusion_matrix), annot=True, cmap="YlGnBu" ,fmt='g')
-ax.xaxis.set_label_position("top")
-plt.tight_layout()
-plt.title('Confusion matrix', y=1.1)
-plt.ylabel('Actual label')
-plt.xlabel('Predicted label')
+fig = plot_confusion_matrix(logreg, testX_final, testY_final, display_labels=logreg.classes_)
+fig.figure_.suptitle("Confusion Matrix for Bank Dataset")
+plt.show()
 ```
 
 

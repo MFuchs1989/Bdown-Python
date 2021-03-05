@@ -85,6 +85,7 @@ import statsmodels.api as sm
 from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
+from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -273,7 +274,7 @@ Hence making the minority class equal to the majority class. SMOTE does this by 
 
 
 sm = SMOTE(random_state=0)
-trainX_smote ,trainY_smote = sm.fit_sample(new_train_x2, trainY)
+trainX_smote ,trainY_smote = sm.fit_resample(new_train_x2, trainY)
 
 trainX_smote = pd.DataFrame(data=trainX_smote,columns=columns_x)
 trainY_smote = pd.DataFrame(data=trainY_smote,columns=[&#39;final_subscribed&#39;])</code></pre>
@@ -324,25 +325,15 @@ coef[[&#39;features&#39;, &#39;coef&#39;, &#39;odds_ratio&#39;]]</code></pre>
 <h2>6.3 Model evaluation</h2>
 <div id="confusion-matrix" class="section level3">
 <h3>6.3.1 Confusion matrix</h3>
-<p>To evaluate classification models we usualy use a confusion matrix.
-This can be requested in python as follows:</p>
+<p>We usually use a confusion matrix to evaluate classification models.
+This can be done in python as follows:</p>
 <pre class="r"><code>confusion_matrix = confusion_matrix(testY_final, y_pred)
 print(confusion_matrix)</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p19.png" /></p>
-<p>Or in this way (maybe a little more appealing):</p>
-<pre class="r"><code>fig, ax = plt.subplots()
-
-class_names=[0,1]
-tick_marks = np.arange(len(class_names))
-plt.xticks(tick_marks, class_names)
-plt.yticks(tick_marks, class_names)
-
-sns.heatmap(pd.DataFrame(confusion_matrix), annot=True, cmap=&quot;YlGnBu&quot; ,fmt=&#39;g&#39;)
-ax.xaxis.set_label_position(&quot;top&quot;)
-plt.tight_layout()
-plt.title(&#39;Confusion matrix&#39;, y=1.1)
-plt.ylabel(&#39;Actual label&#39;)
-plt.xlabel(&#39;Predicted label&#39;)</code></pre>
+<p>We can also represent the Confusion Matrix with a nice graphic:</p>
+<pre class="r"><code>fig = plot_confusion_matrix(logreg, testX_final, testY_final, display_labels=logreg.classes_)
+fig.figure_.suptitle(&quot;Confusion Matrix for Bank Dataset&quot;)
+plt.show()</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p20.png" /></p>
 <p>But what does the confusion matrix tell us?
 To explain this we look at the following graphic:</p>
