@@ -16,151 +16,256 @@ output:
 
 # 1 Introduction
 
-In my post [CNN with Transfer Learning for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/19/cv-cnn-with-transfer-learning-for-multi-label-classification/) I showed how to train a Multi-Label image classifier with the help of a pre-trained neural network. Now I would like to improve this model by means of Fine Tuning.
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110s1.png)
 
-I will again use the pre-trained network [VGG19](https://keras.io/api/applications/vgg/#vgg19-function) from the [Keras applications](https://keras.io/api/applications/) provided.
+After I already got into the topic of Deep Learning (Computer Vision) with my past posts from January I would like to write about Neural Networks here with a more general post. 
 
-For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+When one thinks of Deep Learning, the well-known libraries such as [Keras](https://keras.io/), [PyTorch](https://pytorch.org/) or [TensorFlow](https://www.tensorflow.org/) immediately come to mind. 
+Most of us may not know that the very popular machine learning library [Scikit-Learn](https://scikit-learn.org/stable/) is also capable of basic deep learning modeling. 
 
+How to create a neronal net with this library for classification I want to show in this post. 
 
-
-
-
-
-
+For this publication the datasets *Winequality* and *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) were used. You can download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 
+# 2 Loading the libraries
+
+```{r, eval=F, echo=T}
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+
+from sklearn.neural_network import MLPClassifier
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.metrics import classification_report
+```
 
 
 
+# 3 MLPClassifier for binary Classification
+
+The [multilayer perceptron (MLP)](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html) is a feedforward artificial neural network model that maps input data sets to a set of appropriate outputs. An MLP consists of multiple layers and each layer is fully connected to the following one. The nodes of the layers are neurons with nonlinear activation functions, except for the nodes of the input layer. Between the input and the output layer there may be one or more nonlinear hidden layers.
 
 
-
+## 3.1 Loading the data
 
 
 ```{r, eval=F, echo=T}
-
+df = pd.read_csv('winequality.csv').dropna()
+df
 ```
 
-![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png)
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p1.png)
+
+Let's have a look at the target variable:
+
+```{r, eval=F, echo=T}
+df['type'].value_counts()
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p2.png)
 
 
 
+## 3.2 Data pre-processing
+
+```{r, eval=F, echo=T}
+x = df.drop('type', axis=1)
+y = df['type']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
 
 
+To train a MLP network, the data should always be [scaled](https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/) because it is very sensitive to it. 
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)
+```
 
 
+## 3.3 MLPClassifier
+
+Before we train a first MLP, I'll briefly explain something about the [parameters](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html).
+
+Suppose we have two predictor variables and want to do a binary classification. 
+For this I can enter the following parameters at the model:
+
+```{r, eval=F, echo=T}
+mlp_clf = MLPClassifier(hidden_layer_sizes=(5,2),
+                        max_iter = 300,activation = 'relu',
+                        solver = 'adam')
+```
 
 
++ hidden_layer_sizes : With this parameter we can specify the number of layers and the number of nodes we want to have in the Neural Network Classifier. Each element in the tuple represents the number of nodes at the ith position, where i is the index of the tuple. Thus, the length of the tuple indicates the total number of hidden layers in the neural network.
++ max_iter: Indicates the number of epochs. 
++ activation: The activation function for the hidden layers.
++ solver: This parameter specifies the algorithm for weight optimization over the nodes.
+
+The network structure created in the process would look like this: 
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p3.png)
 
 
+So let's train our first MLP (with a higher number of layers):
+
+```{r, eval=F, echo=T}
+mlp_clf = MLPClassifier(hidden_layer_sizes=(150,100,50),
+                        max_iter = 300,activation = 'relu',
+                        solver = 'adam')
+
+mlp_clf.fit(trainX_scaled, trainY)
+```
 
 
+## 3.4 Model Evaluation
 
+The metrics that can be used to measure the performance of classification algorithms should be known. Otherwise, you can read about them [here](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/#model-evaluation). 
 
+```{r, eval=F, echo=T}
+y_pred = mlp_clf.predict(testX_scaled)
 
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
 
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p4.png)
 
 
 ```{r, eval=F, echo=T}
-
+fig = plot_confusion_matrix(mlp_clf, testX_scaled, testY, display_labels=mlp_clf.classes_)
+fig.figure_.suptitle("Confusion Matrix for Winequality Dataset")
+plt.show()
 ```
 
-![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p5.png)
 
 
 ```{r, eval=F, echo=T}
-
+print(classification_report(testY, y_pred))
 ```
 
-![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p6.png)
 
 
 ```{r, eval=F, echo=T}
-
+plt.plot(mlp_clf.loss_curve_)
+plt.title("Loss Curve", fontsize=14)
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.show()
 ```
 
-![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png)
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p7.png)
 
 
 
+# 4 MLPClassifier for Multi-Label Classification
+
+With an MLP, multi-label classifications can of course also be carried out. 
+
+## 4.1 Loading the data
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Iris_Data.csv')
+df
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p8.png)
+
+```{r, eval=F, echo=T}
+df['species'].value_counts()
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p9.png)
 
 
 
+## 4.2 Data pre-processing
+
+```{r, eval=F, echo=T}
+x = df.drop('species', axis=1)
+y = df['species']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)
+```
 
 
-
-
-
-
+## 4.3 MLPClassifier
 
 
 ```{r, eval=F, echo=T}
+mlp_clf = MLPClassifier(hidden_layer_sizes=(150,100,50),
+                        max_iter = 300,activation = 'relu',
+                        solver = 'adam')
 
+mlp_clf.fit(trainX_scaled, trainY)
 ```
 
-![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p.png)
+
+## 4.4 Model Evaluation
+
+
+```{r, eval=F, echo=T}
+y_pred = mlp_clf.predict(testX_scaled)
+
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p10.png)
+
+
+```{r, eval=F, echo=T}
+fig = plot_confusion_matrix(mlp_clf, testX_scaled, testY, display_labels=mlp_clf.classes_)
+fig.figure_.suptitle("Confusion Matrix for Iris Dataset")
+plt.show()
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p11.png)
+
+
+```{r, eval=F, echo=T}
+print(classification_report(testY, y_pred))
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p12.png)
+
+
+```{r, eval=F, echo=T}
+plt.plot(mlp_clf.loss_curve_)
+plt.title("Loss Curve", fontsize=14)
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.show()
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p13.png)
 
 
 
+# 5 Conclusion
 
 
-
-
-
-
-
+In this post, I showed how to build an MLP model to solve binary and multi-label classification problems. 
 
 
 
