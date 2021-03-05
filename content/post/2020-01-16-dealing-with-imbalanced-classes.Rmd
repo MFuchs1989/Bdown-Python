@@ -367,7 +367,7 @@ columns_x = trainX.columns
 
 
 sm = SMOTE()
-trainX_smote ,trainY_smote = sm.fit_sample(trainX, trainY)
+trainX_smote ,trainY_smote = sm.fit_resample(trainX, trainY)
 
 trainX_smote = pd.DataFrame(data=trainX_smote,columns=columns_x)
 trainY_smote = pd.DataFrame(data=trainY_smote,columns=['final_subscribed'])
@@ -429,7 +429,7 @@ columns_x = trainX.columns
 
 
 NearM = NearMiss()
-trainX_NearMiss ,trainY_NearMiss = NearM.fit_sample(trainX, trainY)
+trainX_NearMiss ,trainY_NearMiss = NearM.fit_resample(trainX, trainY)
 
 trainX_NearMiss = pd.DataFrame(data=trainX_NearMiss,columns=columns_x)
 trainY_NearMiss = pd.DataFrame(data=trainY_NearMiss,columns=['final_subscribed'])
