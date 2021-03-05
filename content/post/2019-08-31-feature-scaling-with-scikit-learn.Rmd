@@ -417,11 +417,11 @@ scaled_features2.head()
 
 # 6 Feature Scaling in practice
 
-In practice, not the complete data record is usually scaled There are two reasons for this:
+In practice, not the complete data record is usually scaled. There are two reasons for this:
 
 1. In the case of large data sets, it makes little sense with regard to the storage capacity (RAM) to reserve another scaled data set.
 
-2. To train supervised machine learning algorithms, the data sets are usually divided into training and test parts. It is common to only scale the training part. The metrics used to scale the training part are then applied to the test part. This should prevent that the test part for evaluating an algorithm is really unseen.
+2. To train supervised machine learning algorithms, the data sets are usually divided into training and test parts. It is common to **only scale the training part**. The **metrics** used to scale the **training part** are then **applied to the test part**. This should prevent that the test part for evaluating an algorithm is really unseen.
 
 Sounds complicated, but it's totally easy to implement.
 
@@ -466,8 +466,7 @@ trainX_scaled
 ![](/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png)
 
 
-You can also save yourself a step in the syntax if you don't use the fit & transform function individually but together.
-!! Don't do this if you plan to train a machine learning algorithm !!
+You can also save yourself a step in the syntax if you don't use the fit & transform function individually but together!! Don't do this if you plan to train a machine learning algorithm!!
 Use the previous method for this.
 
 But if you want to scale an entire data set (for example for cluster analysis), then use the fit_transform function:

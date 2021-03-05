@@ -299,10 +299,10 @@ scaled_features2.head()</code></pre>
 </div>
 <div id="feature-scaling-in-practice" class="section level1">
 <h1>6 Feature Scaling in practice</h1>
-<p>In practice, not the complete data record is usually scaled There are two reasons for this:</p>
+<p>In practice, not the complete data record is usually scaled. There are two reasons for this:</p>
 <ol style="list-style-type: decimal">
 <li><p>In the case of large data sets, it makes little sense with regard to the storage capacity (RAM) to reserve another scaled data set.</p></li>
-<li><p>To train supervised machine learning algorithms, the data sets are usually divided into training and test parts. It is common to only scale the training part. The metrics used to scale the training part are then applied to the test part. This should prevent that the test part for evaluating an algorithm is really unseen.</p></li>
+<li><p>To train supervised machine learning algorithms, the data sets are usually divided into training and test parts. It is common to <strong>only scale the training part</strong>. The <strong>metrics</strong> used to scale the <strong>training part</strong> are then <strong>applied to the test part</strong>. This should prevent that the test part for evaluating an algorithm is really unseen.</p></li>
 </ol>
 <p>Sounds complicated, but it’s totally easy to implement.</p>
 <p>First of all we create a random dataframe.</p>
@@ -324,8 +324,7 @@ testX_scaled = scaler.transform(testX)</code></pre>
 Here we have the scaled features:</p>
 <pre class="r"><code>trainX_scaled</code></pre>
 <p><img src="/post/2019-08-31-feature-scaling-with-scikit-learn_files/p18p14.png" /></p>
-<p>You can also save yourself a step in the syntax if you don’t use the fit &amp; transform function individually but together.
-!! Don’t do this if you plan to train a machine learning algorithm !!
+<p>You can also save yourself a step in the syntax if you don’t use the fit &amp; transform function individually but together!! Don’t do this if you plan to train a machine learning algorithm!!
 Use the previous method for this.</p>
 <p>But if you want to scale an entire data set (for example for cluster analysis), then use the fit_transform function:</p>
 <pre class="r"><code>sc=StandardScaler()
