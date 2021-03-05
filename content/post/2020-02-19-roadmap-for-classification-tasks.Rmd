@@ -70,8 +70,9 @@ Wrapper methods:
 
 
 
-## 2.3 Classification Algorithms
+## 2.3 Algorithms
 
+### 2.3.1 Classification Algorithms
 
 
 ![](/post/2020-02-19-roadmap-for-classification-tasks_files/p40p3.png)
@@ -110,6 +111,17 @@ Depending on the underlying problem with the predictions I choose the following 
 + Bagging: Decrease Variance
 +	Boosting: Decrease Bias
 +	Stacking: Improve Predictions
+
+
+### 2.3.2 Classification with Neural Networks
+
+Of course, in addition to traditional classification algorithms, neural networks can be used to solve classification problems. 
+
+Here again are the links to the respective publications: 
+
++ [Multi-layer Perceptron Classifier (MLPClassifier)](https://michael-fuchs-python.netlify.app/2021/02/03/nn-multi-layer-perceptron-classifier-mlpclassifier/)
+
+
 
 
 # 3 Conclusion
