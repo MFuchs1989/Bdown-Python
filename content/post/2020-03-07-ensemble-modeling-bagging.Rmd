@@ -28,7 +28,7 @@ There are three most common types of ensembles:
 
 In this post we will start with bagging, and then move on to boosting and stacking in separate publications.
 
-For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
+For this post the dataset *Bank Data* from the platform ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 

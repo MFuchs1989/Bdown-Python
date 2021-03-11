@@ -21,7 +21,7 @@ output:
 K Nearest Neighbor (KNN) is a very simple supervised classification algorithm which is easy to understand, versatile and one of the topmost machine learning algorithms.
 The KNN algorithm can be used for both classification (binary and multiple) and regression problems.
 
-For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
+For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 # 2 Background information on KNN

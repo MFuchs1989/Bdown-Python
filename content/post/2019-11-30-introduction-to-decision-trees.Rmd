@@ -21,7 +21,7 @@ output:
 
 After ["Multinomial logistic regression"](https://michael-fuchs-python.netlify.com/2019/11/15/multinomial-logistic-regression/) we come to a further multiple class classifier: Decision Trees.
 
-For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
+For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download the dataset from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 # 2 Background information on decision trees

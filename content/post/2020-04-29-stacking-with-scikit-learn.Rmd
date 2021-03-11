@@ -19,7 +19,7 @@ output:
 In my previous post I explained the ["ensemble modeling method 'Stacking'"](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/). As it is described there, it is entirely applicable. However, it can be made even easier with the machine learning library scikit learn. I will show you how to do this in the following article.
 
 
-For this post the dataset *Bank Data* from the platform ["UCI Machine Learning repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
+For this post the dataset *Bank Data* from the platform ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 

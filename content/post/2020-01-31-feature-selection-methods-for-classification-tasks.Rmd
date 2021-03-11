@@ -22,7 +22,7 @@ output:
 I already wrote about feature selection for regression analysis in this ["post"](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/). Feature selection is also relevant for classification problems. And that's what this post is about.
 
 
-For this publication the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
+For this publication the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
 
 
 

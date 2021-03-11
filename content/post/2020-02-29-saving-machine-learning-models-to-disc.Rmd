@@ -19,7 +19,7 @@ output:
 We have seen how to train and use different types of machine learning models. But how do we proceed when we have developed and trained a model with the desired performance? 
 Due to the fact that the training of large machine learning models can sometimes take many hours, it is a good tip to save your trained models regularly so that you can access them later.
 
-For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=13KXvBAEKx_IYRX3iCYPnLtO9S9-a6JTS>.
+For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 

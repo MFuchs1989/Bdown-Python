@@ -20,8 +20,7 @@ output:
 The second cluster algorithm I would like present is hierarchical clustering.
 Hierarchical clustering is also a type of unsupervised machine learning algorithm used to cluster unlabeled data points within a dataset. Like ["k-Means Clustering"](https://michael-fuchs-python.netlify.app/2020/05/19/k-means-clustering/), hierarchical clustering also groups together the data points with similar characteristics.
 
-For this post the dataset *Mall_Customers* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/file/d/16aeG6dy8j1P70kqTEBsJm4fojK3_a6cq/view?usp=sharing>.
-
+For this post the dataset *Mall_Customers* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 # 2 Loading the libraries
 

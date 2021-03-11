@@ -25,7 +25,7 @@ Now in the series of multiple classifiers we come to a very easy to use probabil
 
 Due to the fact that this algorithm has hardly any hyperparameters, it is recommended to always use the Naive Bayes Classifier first in the event of classification problems. If this does not give satisfactory results, however, more complex algorithms should be used.
 
-For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf>.
+For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 # 2 Background information on Naive Bayes Classifier
