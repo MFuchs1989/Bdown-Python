@@ -29,7 +29,7 @@ Here are some applications of Dimensionality Reduction:
 + Financial modelling / risk analysis
 
 
-For this post the datasets *Auto-mpg* and *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) were used. A copy of the records is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs> and <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>. 
+For this post the datasets *Auto-mpg* and *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) were used. A copy of the records is available at my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets) and here: <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>. 
 
 
 # 2 Loading the libraries

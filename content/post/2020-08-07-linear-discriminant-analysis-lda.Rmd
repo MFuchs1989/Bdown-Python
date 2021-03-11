@@ -26,7 +26,7 @@ Now that I have written extensively about the ["PCA"](https://michael-fuchs-pyth
 LDA is a supervised machine learning method that is used to separate two or more classes of objects or events. The main idea of linear discriminant analysis (LDA) is to maximize the separability between the groups so that we can make the best decision to classify them.
 
 
-For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=11e0pIJeiK0yljlBAlow8mcfH56yfnJYf>.
+For this post the dataset *Wine Quality* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 
