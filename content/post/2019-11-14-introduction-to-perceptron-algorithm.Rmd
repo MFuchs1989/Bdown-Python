@@ -19,7 +19,7 @@ output:
 I already wrote about ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) and ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/). I also showed how to optimize these linear classifiers using ["SGD training"](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/) and how to use the ["OneVersusRest and OneVersusAll"](https://michael-fuchs-python.netlify.com/2019/11/13/ovo-and-ovr-classifier/) Classifier to convert binary classifiers to multiple classifiers.
 Let's come to a further binary classifier: the Perceptron.
 
-For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. You can download the dataset from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
+For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/) was used. You can download the dataset from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 

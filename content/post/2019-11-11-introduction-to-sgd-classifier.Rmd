@@ -21,7 +21,7 @@ The name Stochastic Gradient Descent - Classifier (SGD-Classifier) might mislead
 These are two different concepts. While SGD is a optimization method, Logistic Regression or linear Support Vector Machine is a machine learning algorithm/model. You can think of that a machine learning model defines a loss function, and the optimization method minimizes/maximizes it. 
 
 
-For this post the dataset *Run or Walk* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1hGnJI7_p7Bo2Vbp_CY6Lq72bZQzu5nEK>.
+For this post the dataset *Run or Walk* from the statistic platform ["Kaggle"](https://www.kaggle.com/) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Background information on SGD Classifiers

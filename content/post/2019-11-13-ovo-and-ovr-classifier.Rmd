@@ -21,7 +21,7 @@ output:
 We already know from my previous posts how to train a binary classifier using ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) or ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/). We have learned that these machine learning algorithms are strictly binary classifiers. But we can also use this for multiple classification problems. How we can do this will be explained in the following publication.
 
 
-For this post the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
+For this post the dataset *MNIST* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1Bfquk0uKnh6B3Yjh2N87qh0QcmLokrVk>.
 
 
 # 2 Background information on OvO and OvR
