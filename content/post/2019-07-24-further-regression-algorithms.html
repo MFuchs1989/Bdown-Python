@@ -48,7 +48,7 @@ But besides these, there are a lot of other machine learning algorithms that can
 In this publication I would like to introduce them to you.</p>
 <p>Short remark in advance:
 I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.</p>
-<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 <p>The goal is to find an algorithm that can best predict house prices.
 The results of the algorithms will be stored in variables and presented in an overview at the end.</p>
 </div>
@@ -79,7 +79,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import StackingRegressor
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import Ridge</code></pre>
-<pre class="r"><code>house = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+<pre class="r"><code>house = pd.read_csv(&quot;path/to/file/house_prices.csv&quot;)</code></pre>
 <pre class="r"><code>house = house.drop([&#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;, &#39;date&#39;, &#39;id&#39;], axis=1)
 house.head()</code></pre>
 <p><img src="/post/2019-07-24-further-regression-algorithms_files/p68p1.png" /></p>

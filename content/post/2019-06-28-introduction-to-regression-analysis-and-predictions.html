@@ -36,7 +36,7 @@ output:
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p>Regression analyzes are very common and should therefore be mastered by every data scientist.</p>
-<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
 <h1>2 Loading the libraries and the data</h1>
@@ -47,14 +47,14 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn import metrics</code></pre>
-<pre class="r"><code>houce_prices = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+<pre class="r"><code>house_prices = pd.read_csv(&quot;path/to/file/house_prices.csv&quot;)</code></pre>
 </div>
 <div id="implementing-linear-regression-with-the-statsmodel-library" class="section level1">
 <h1>3 Implementing linear regression with the statsmodel library</h1>
 <div id="simple-linear-regression" class="section level2">
 <h2>3.1 Simple linear Regression</h2>
 <p>Following, a simple linear regression with the variables ‘price’ and ‘sqft_living’ is to be performed.</p>
-<pre class="r"><code>HousePrices_SimplReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
+<pre class="r"><code>HousePrices_SimplReg = house_prices[[&#39;price&#39;, &#39;sqft_living&#39;]]
 HousePrices_SimplReg.head()</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p1.png" /></p>
 <pre class="r"><code>x = HousePrices_SimplReg[&#39;sqft_living&#39;]
@@ -101,7 +101,7 @@ RSE, criteria_mean, error</code></pre>
 <h2>3.2 Multiple Regression</h2>
 <p>Now we try to improve the predictive power of the model by adding more predictors.
 Therefore we’ll have a look at the R-squared, the F-statistic and the Prob (F-statistic).</p>
-<pre class="r"><code>HousePrices_MultReg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
+<pre class="r"><code>HousePrices_MultReg = house_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
 HousePrices_MultReg.head()</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p8.png" /></p>
 <ul>
@@ -235,9 +235,9 @@ print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(tes
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
-<p>This was a small insight into the creation and use of linear regression models.</p>
-<p>In a subsequent post, the possible measures for the preparation of a linear model training will be shown.</p>
-<p>In a further contribution methods are to be shown how the predictive power of a linear model can be improved.</p>
+<p>This was a small insight into the creation and use of linear regression models.
+In a subsequent post, the possible measures for the preparation of a linear model training will be shown.
+In a further contribution methods are to be shown how the predictive power of a linear model can be improved.</p>
 </div>
 <div id="source" class="section level1">
 <h1>Source</h1>

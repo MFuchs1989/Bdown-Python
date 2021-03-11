@@ -18,7 +18,7 @@ output:
 
 Regression analyzes are very common and should therefore be mastered by every data scientist.
 
-For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries and the data
@@ -37,7 +37,7 @@ from sklearn import metrics
 
 
 ```{r, eval=F, echo=T}
-houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
+house_prices = pd.read_csv("path/to/file/house_prices.csv")
 ```
 
 
@@ -48,7 +48,7 @@ houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
 Following, a simple linear regression with the variables 'price' and 'sqft_living' is to be performed.
 
 ```{r, eval=F, echo=T}
-HousePrices_SimplReg = houce_prices[['price', 'sqft_living']]
+HousePrices_SimplReg = house_prices[['price', 'sqft_living']]
 HousePrices_SimplReg.head()
 ```
 
@@ -148,7 +148,7 @@ Now we try to improve the predictive power of the model by adding more predictor
 Therefore we'll have a look at the R-squared, the F-statistic and the Prob (F-statistic).
 
 ```{r, eval=F, echo=T}
-HousePrices_MultReg = houce_prices[['price', 'sqft_living', 'bedrooms', 'yr_built']]
+HousePrices_MultReg = house_prices[['price', 'sqft_living', 'bedrooms', 'yr_built']]
 HousePrices_MultReg.head()
 ```
 
@@ -450,9 +450,7 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pr
 
 
 This was a small insight into the creation and use of linear regression models.
-
 In a subsequent post, the possible measures for the preparation of a linear model training will be shown.
-
 In a further contribution methods are to be shown how the predictive power of a linear model can be improved.
 
 

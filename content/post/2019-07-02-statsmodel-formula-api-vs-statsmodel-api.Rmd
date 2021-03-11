@@ -27,7 +27,7 @@ Image Source: ["Statsmodels.org"](https://www.statsmodels.org/stable/index.html)
 In my last post ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/) I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).
 
 
-For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 
@@ -47,14 +47,14 @@ import statsmodels.api as sm
 
 
 ```{r, eval=F, echo=T}
-houce_prices = pd.read_csv("path/to/file/houce_prices.csv")
+house_prices = pd.read_csv("path/to/file/house_prices.csv")
 ```
 
 
 As a simplified example, only the features 'sqft_living', 'bedrooms' & 'yr_built' and the target variable 'price' from the data set are used.
 
 ```{r, eval=F, echo=T}
-mult_reg = houce_prices[['price', 'sqft_living', 'bedrooms', 'yr_built']]
+mult_reg = house_prices[['price', 'sqft_living', 'bedrooms', 'yr_built']]
 mult_reg.head()
 ```
 

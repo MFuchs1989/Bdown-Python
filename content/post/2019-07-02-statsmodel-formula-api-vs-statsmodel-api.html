@@ -32,7 +32,7 @@ output:
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28s1.png" /></p>
 <p>Image Source: <a href="https://www.statsmodels.org/stable/index.html">“Statsmodels.org”</a></p>
 <p>In my last post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a> I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).</p>
-<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. A copy of the record is available at <a href="https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO" class="uri">https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO</a>.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
 <h1>2 Loading the libraries and the data</h1>
@@ -44,9 +44,9 @@ import statsmodels.formula.api as smf
 
 #for chapter 4
 import statsmodels.api as sm</code></pre>
-<pre class="r"><code>houce_prices = pd.read_csv(&quot;path/to/file/houce_prices.csv&quot;)</code></pre>
+<pre class="r"><code>house_prices = pd.read_csv(&quot;path/to/file/house_prices.csv&quot;)</code></pre>
 <p>As a simplified example, only the features ‘sqft_living’, ‘bedrooms’ &amp; ‘yr_built’ and the target variable ‘price’ from the data set are used.</p>
-<pre class="r"><code>mult_reg = houce_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
+<pre class="r"><code>mult_reg = house_prices[[&#39;price&#39;, &#39;sqft_living&#39;, &#39;bedrooms&#39;, &#39;yr_built&#39;]]
 mult_reg.head()</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p1.png" /></p>
 </div>
