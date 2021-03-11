@@ -21,7 +21,7 @@ output:
 It will always happen that you have an incorrect or unsuitable data type and you have to change it. It is therefore worthwhile to familiarize yourself with the conversion methods that exist in python.
 
 
-For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs>.
+For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 

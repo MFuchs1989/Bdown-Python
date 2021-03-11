@@ -21,7 +21,7 @@ output:
 One funcion you always need to work with data is to import the records you want to analyze.
 This publication will show how to load data from different data types for further processing or analysis. The standard library pandas offers a wide range of possibilities.
 
-For this post the dataset *twitter* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as a self-created record as a text format called *some_TEXT_data_as_JSON*. A copy of the records is available here <https://drive.google.com/open?id=1SlMGezY-JBRD74dnxL43zFvppw3iYqPK> (twitter) and here <https://drive.google.com/open?id=1NmRdbk71o_5ZvavcZjFmUT9GtmzXV7Bc> (some_TEXT_data_as_JSON).
+For this post the dataset *twitter* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as a self-created record as a text format called *some_TEXT_data_as_JSON*. You can download them from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries
