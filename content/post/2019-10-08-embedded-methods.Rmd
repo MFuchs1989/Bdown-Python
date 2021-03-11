@@ -29,7 +29,7 @@ L1 (LASSO) and L2 (Ridge) are the most common types of regularization. These upd
 In addition to ridge and lasso, another embedded method will be shown in this post: Elastic Net. This is a combination between a lasso and a ridge regression.
 
 
-For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs>.
+For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 

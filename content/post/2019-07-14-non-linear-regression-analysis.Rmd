@@ -19,7 +19,7 @@ output:
 In my previous post ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/) I showed how to create linear regression models. But what can be done if the data is not distributed linearly?
 
 
-For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs>.
+For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries and the data

@@ -19,7 +19,7 @@ output:
 In addition to ["removing highly correlated features"](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/) as one of the data pre processing steps we also have to take care of constant and duplicate features. Constant features have a variance close to zero and duplicate features are too similar to other variables in the record. Therefore, when pre-processing data for regression analysis, its existence should be checked and, if so, excluded.
 
 
-For this post the dataset *Santandar Customer Satisfaction* (only the train-part) from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1MEt3YiQfNxkCl75WSROWf1L5p9_f4FcD>.
+For this post the dataset *Santandar Customer Satisfaction* (only the train-part) from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries and the data

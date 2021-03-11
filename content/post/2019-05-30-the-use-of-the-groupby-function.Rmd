@@ -20,7 +20,7 @@ output:
 Goupby is one of the most used functions in data analysis. Therefore, it is worth to take a closer look at their functioning.
 
 
-For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1w3c818UAJW4VVqwYmgDIsn-b8WqcZQzL>.
+For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries and the data

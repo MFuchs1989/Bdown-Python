@@ -21,12 +21,11 @@ For example, if you want to calculate a linear regression, you need numerical pr
 However, it is very common that categorical variables also make a notable contribution to variance education. Below is shown how to create dummy variables and use them in a regression analysis.
 
 
-For this post the dataset *Gender discrimination* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1BNv0b0J1KSuSaBUqnXKvEfc1Ic92zqQ7>.
+For this post the dataset *Gender discrimination* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
 
 
 # 2 Loading the libraries and the data
-
-
 
 ```{r, eval=F, echo=T}
 import pandas as pd

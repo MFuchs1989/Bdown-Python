@@ -20,7 +20,7 @@ One of the points to remember about data pre-processing for regression analysis 
 This post is about finding highly correlated predictors within a dataframe.
 
 
-For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1C9SVQS7t_DBOwhgL_dq-joz8R5SssPVs>.
+For this post the dataset *Auto-mpg* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries and the data

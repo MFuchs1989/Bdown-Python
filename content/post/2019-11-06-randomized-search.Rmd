@@ -22,7 +22,7 @@ How Randomized Search work in detail I will show in this publication.
 
 
 
-For this post the dataset *Breast Cancer Wisconsin (Diagnostic)* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. A copy of the record is available at <https://drive.google.com/open?id=1BseQcDID8eU29gpISw2OkU1YV-I4TtTU>.
+For this post the dataset *Breast Cancer Wisconsin (Diagnostic)* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 
