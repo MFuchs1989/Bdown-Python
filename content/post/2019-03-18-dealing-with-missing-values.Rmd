@@ -18,7 +18,7 @@ output:
 
 In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.
 
-For chapter 2.2 of this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1DNhgjyC8oueXIaJU5wVJ6r8diNwTs1JO>.
+For chapter 2.2 of this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 **Loading the libraries**
@@ -97,7 +97,7 @@ To demonstrate the following visualization, we load the data set mentioned under
 
 ```{r, eval=F, echo=T}
 #load the data frame
-house = pd.read_csv("houce_prices.csv")
+house = pd.read_csv("house_prices.csv")
 
 #select some specific columns for this case
 house = house[['bedrooms', 'floors', 'yr_built', 'grade']]

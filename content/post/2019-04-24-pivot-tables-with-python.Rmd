@@ -18,7 +18,7 @@ output:
 
 Many people like to work with pivot tables in Excel. This possibility also exists in Python.
 
-For this post the dataset *WorldHappinessReport* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. A copy of the record is available at <https://drive.google.com/open?id=1bTyuh-sKgDuu4KgT85SVPexQQTZfTIXy>.
+For this post the dataset *WorldHappinessReport* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 
