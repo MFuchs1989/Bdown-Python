@@ -610,11 +610,39 @@ df['Gehalt'] = np.where((df.Name == 'Moni') & (df.Alter > 50), 4000, df.Gehalt)
 df
 ```
 
-
 ![](/post/2019-03-12-data-manipulation_files/p3p38.png)
 
 
-# 6 Conclusion
+# 6 Function for colouring negative values
+
+```{r, eval=F, echo=T}
+negative_values_df = pd.DataFrame({'Col1': [32,22,-62,44],
+                                   'Col2': [32,22,62,-44],
+                                   'Col3': [-4700, 2400,4500,2500]})
+negative_values_df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z14.png)
+
+```{r, eval=F, echo=T}
+# Function for colouring(negative values red and positive values black)
+
+def highlight_neg_values(s): 
+    if s.dtype == np.object: 
+        is_neg = [False for _ in range(s.shape[0])] 
+    else: 
+        is_neg = s < 0
+    return ['color: red;' if cell else 'color:black' 
+            for cell in is_neg] 
+   
+negative_values_df.style.apply(highlight_neg_values)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z15.png)
+
+
+
+# 7 Conclusion
 
 This was a small insight into the field of data manipulation.
 In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.

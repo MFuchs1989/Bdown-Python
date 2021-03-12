@@ -50,7 +50,8 @@ output:
 <li><a href="#collective-replacement">5.2 Collective replacement</a></li>
 <li><a href="#conditional-replacement">5.3 Conditional replacement</a></li>
 </ul></li>
-<li><a href="#conclusion">6 Conclusion</a></li>
+<li><a href="#function-for-colouring-negative-values">6 Function for colouring negative values</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -378,8 +379,28 @@ df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p38.png" /></p>
 </div>
 </div>
+<div id="function-for-colouring-negative-values" class="section level1">
+<h1>6 Function for colouring negative values</h1>
+<pre class="r"><code>negative_values_df = pd.DataFrame({&#39;Col1&#39;: [32,22,-62,44],
+                                   &#39;Col2&#39;: [32,22,62,-44],
+                                   &#39;Col3&#39;: [-4700, 2400,4500,2500]})
+negative_values_df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z14.png" /></p>
+<pre class="r"><code># Function for colouring(negative values red and positive values black)
+
+def highlight_neg_values(s): 
+    if s.dtype == np.object: 
+        is_neg = [False for _ in range(s.shape[0])] 
+    else: 
+        is_neg = s &lt; 0
+    return [&#39;color: red;&#39; if cell else &#39;color:black&#39; 
+            for cell in is_neg] 
+   
+negative_values_df.style.apply(highlight_neg_values)</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z15.png" /></p>
+</div>
 <div id="conclusion" class="section level1">
-<h1>6 Conclusion</h1>
+<h1>7 Conclusion</h1>
 <p>This was a small insight into the field of data manipulation.
 In subsequent posts, the topics of string manipulation and the handling of missing values will be shown.</p>
 </div>
