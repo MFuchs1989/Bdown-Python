@@ -28,6 +28,29 @@ output:
 <li><a href="#encoding">4.2 Encoding</a></li>
 <li><a href="#train-validation-test-split">4.3 Train-Validation-Test Split</a></li>
 </ul></li>
+<li><a href="#ann-for-binary-classification">5 ANN for binary Classification</a>
+<ul>
+<li><a href="#name-definitions">5.1 Name Definitions</a></li>
+<li><a href="#parameter-settings">5.2 Parameter Settings</a></li>
+<li><a href="#layer-structure">5.3 Layer Structure</a></li>
+<li><a href="#configuring-the-model-for-training">5.4 Configuring the model for training</a></li>
+<li><a href="#callbacks">5.5 Callbacks</a></li>
+<li><a href="#fitting-the-model">5.6 Fitting the model</a></li>
+<li><a href="#obtaining-the-best-model-values">5.7 Obtaining the best model values</a></li>
+<li><a href="#obtaining-class-assignments">5.8 Obtaining class assignments</a></li>
+<li><a href="#validation">5.9 Validation</a></li>
+<li><a href="#load-best-model">5.10 Load best model</a></li>
+<li><a href="#model-testing">5.11 Model Testing</a></li>
+<li><a href="#predictions">5.12 Predictions</a></li>
+</ul></li>
+<li><a href="#prevent-overfitting">6 Prevent Overfitting</a>
+<ul>
+<li><a href="#original-layer-structure">6.1 Original Layer Structure</a></li>
+<li><a href="#reduce-the-networks-size">6.2 Reduce the network’s size</a></li>
+<li><a href="#adding-weight-regularization">6.3 Adding weight regularization</a></li>
+<li><a href="#adding-dropout">6.4 Adding dropout</a></li>
+</ul></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -69,7 +92,8 @@ y = df[&#39;type&#39;]</code></pre>
 </div>
 <div id="encoding" class="section level2">
 <h2>4.2 Encoding</h2>
-<p>Since all variables must be numeric, we must code the criterion at this point.</p>
+<p>Since all variables must be numeric, we must recode the criterion at this point.
+For this I used the LabelEncoder. How to use it can be read in the following post: <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/#label-encoding">Types of Encoder</a></p>
 <pre class="r"><code>encoder = LabelEncoder()
 
 encoded_Y = encoder.fit_transform(y)
@@ -92,9 +116,220 @@ valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(
 print(valX.shape)
 print(testX.shape)</code></pre>
 <p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p4.png" /></p>
-<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
-<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
-<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
-<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
 </div>
+</div>
+<div id="ann-for-binary-classification" class="section level1">
+<h1>5 ANN for binary Classification</h1>
+<p>My approach to using neural networks with Keras is described in detail in my post <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#simple-cnn">Computer Vision - Convolutional Neural Network</a> and can be read there if something is unclear.</p>
+<div id="name-definitions" class="section level2">
+<h2>5.1 Name Definitions</h2>
+<pre class="r"><code>checkpoint_no = &#39;ckpt_1_ANN&#39;
+model_name = &#39;Wine_ANN_2FC_F16_16_epoch_20&#39;</code></pre>
+</div>
+<div id="parameter-settings" class="section level2">
+<h2>5.2 Parameter Settings</h2>
+<pre class="r"><code>input_shape = trainX.shape[1]
+
+n_batch_size = 100
+
+n_steps_per_epoch = int(trainX.shape[0] / n_batch_size)
+n_validation_steps = int(valX.shape[0] / n_batch_size)
+n_test_steps = int(testX.shape[0] / n_batch_size)
+
+n_epochs = 25
+
+
+print(&#39;Input Shape: &#39; + str(input_shape))
+print(&#39;Batch Size: &#39; + str(n_batch_size))
+print()
+print(&#39;Steps per Epoch: &#39; + str(n_steps_per_epoch))
+print()
+print(&#39;Validation Steps: &#39; + str(n_validation_steps))
+print(&#39;Test Steps: &#39; + str(n_test_steps))
+print()
+print(&#39;Number of Epochs: &#39; + str(n_epochs))</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p5.png" /></p>
+</div>
+<div id="layer-structure" class="section level2">
+<h2>5.3 Layer Structure</h2>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Dense(16, activation=&#39;relu&#39;, input_shape=(input_shape,)))
+model.add(layers.Dense(16, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+<pre class="r"><code>model.summary()</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p6.png" /></p>
+</div>
+<div id="configuring-the-model-for-training" class="section level2">
+<h2>5.4 Configuring the model for training</h2>
+<pre class="r"><code>model.compile(loss=&#39;binary_crossentropy&#39;,
+              optimizer=&#39;adam&#39;,
+              metrics=[&#39;accuracy&#39;])</code></pre>
+</div>
+<div id="callbacks" class="section level2">
+<h2>5.5 Callbacks</h2>
+<pre class="r"><code># Prepare a directory to store all the checkpoints.
+checkpoint_dir = &#39;./&#39;+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)</code></pre>
+<pre class="r"><code>keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + &#39;/&#39; + model_name, 
+                                   monitor=&#39;val_loss&#39;, save_best_only=True, mode=&#39;auto&#39;)]</code></pre>
+</div>
+<div id="fitting-the-model" class="section level2">
+<h2>5.6 Fitting the model</h2>
+<pre class="r"><code>history = model.fit(trainX,
+                    trainY,
+                    steps_per_epoch=n_steps_per_epoch,
+                    epochs=n_epochs,
+                    batch_size=n_batch_size,
+                    validation_data=(valX, valY),
+                    validation_steps=n_validation_steps,
+                    callbacks=[keras_callbacks])</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p7.png" /></p>
+</div>
+<div id="obtaining-the-best-model-values" class="section level2">
+<h2>5.7 Obtaining the best model values</h2>
+<pre class="r"><code>hist_df = pd.DataFrame(history.history)
+hist_df[&#39;epoch&#39;] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + &#39;/&#39; + &#39;history_df_&#39; + model_name + &#39;.csv&#39;)
+hist_df.head()</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p8.png" /></p>
+<pre class="r"><code>values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p9.png" /></p>
+</div>
+<div id="obtaining-class-assignments" class="section level2">
+<h2>5.8 Obtaining class assignments</h2>
+<p>Similar to the <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#obtaining-class-assignments-1">neural networks for computer vision</a>, I also save the class assignments for later reuse.</p>
+<pre class="r"><code>class_assignment = dict(zip(y, encoded_Y))
+
+df_temp = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_temp = df_temp.stack()
+df_temp = pd.DataFrame(df_temp).reset_index().drop([&#39;level_0&#39;], axis=1)
+df_temp.columns = [&#39;Category&#39;, &#39;Allocated Number&#39;]
+df_temp.to_csv(checkpoint_no + &#39;/&#39; + &#39;class_assignment_df_&#39; + model_name + &#39;.csv&#39;)
+
+print(&#39;Class assignment:&#39;, str(class_assignment))</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p10.png" /></p>
+<p>The encoder used is also saved.</p>
+<pre class="r"><code>pk.dump(encoder, open(checkpoint_no + &#39;/&#39; + &#39;encoder.pkl&#39;, &#39;wb&#39;))</code></pre>
+</div>
+<div id="validation" class="section level2">
+<h2>5.9 Validation</h2>
+<pre class="r"><code>acc = history.history[&#39;accuracy&#39;]
+val_acc = history.history[&#39;val_accuracy&#39;]
+loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, &#39;bo&#39;, label=&#39;Training acc&#39;)
+plt.plot(epochs, val_acc, &#39;b&#39;, label=&#39;Validation acc&#39;)
+plt.title(&#39;Training and validation accuracy&#39;)
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p11.png" /></p>
+</div>
+<div id="load-best-model" class="section level2">
+<h2>5.10 Load best model</h2>
+<p>Again, reference to the <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#load-best-model">Computer Vision posts</a> where I explained why and how I cleaned up the Model Checkpoint folders.</p>
+<pre class="r"><code># Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + &#39;/&#39; + model_name)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + &#39;.h5&#39;)
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)</code></pre>
+<pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
+<p>The overall folder structure should look like this:</p>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112s1.png" /></p>
+</div>
+<div id="model-testing" class="section level2">
+<h2>5.11 Model Testing</h2>
+<pre class="r"><code>test_loss, test_acc = best_model.evaluate(testX,
+                                          testY,
+                                          steps=n_test_steps)
+print()
+print(&#39;Test Accuracy:&#39;, test_acc)</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p12.png" /></p>
+</div>
+<div id="predictions" class="section level2">
+<h2>5.12 Predictions</h2>
+<pre class="r"><code>y_pred = model.predict(testX)
+y_pred</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p13.png" /></p>
+</div>
+</div>
+<div id="prevent-overfitting" class="section level1">
+<h1>6 Prevent Overfitting</h1>
+<p>Often you have the problem of overfitting. For this reason, I have presented here a few approaches on how to counteract overfitting.</p>
+<div id="original-layer-structure" class="section level2">
+<h2>6.1 Original Layer Structure</h2>
+<p>Here again as a reminder the used layer structure</p>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Dense(16, activation=&#39;relu&#39;, input_shape=(input_shape,)))
+model.add(layers.Dense(16, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+</div>
+<div id="reduce-the-networks-size" class="section level2">
+<h2>6.2 Reduce the network’s size</h2>
+<p>The first thing I always try to do is to change something in the layer structure. To counteract overfitting, it is often advisable to reduce the layer structure. Using our example, I would try the following new layer structure if overfitting existed.</p>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Dense(4, activation=&#39;relu&#39;, input_shape=(input_shape,)))
+model.add(layers.Dense(4, activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+</div>
+<div id="adding-weight-regularization" class="section level2">
+<h2>6.3 Adding weight regularization</h2>
+<p>Another option is Weight Regularization:</p>
+<pre class="r"><code>from keras import regularizers
+
+model = models.Sequential()
+model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                       activation=&#39;relu&#39;, input_shape=(input_shape,)))
+model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                       activation=&#39;relu&#39;))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+</div>
+<div id="adding-dropout" class="section level2">
+<h2>6.4 Adding dropout</h2>
+<p>As I used to do with <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#layer-structure-1">Computer Vision</a>, adding dropout layers is also a very useful option.</p>
+<p>An example layer structure in our case would look like this:</p>
+<pre class="r"><code>model = models.Sequential()
+model.add(layers.Dense(16, activation=&#39;relu&#39;, input_shape=(input_shape,)))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(16, activation=&#39;relu&#39;))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation=&#39;sigmoid&#39;))</code></pre>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>Lastly, I would like to mention a few points regarding this post. It was not relevant for this dataset but in case it was (and with real world data this is mostly the case) further metrics should be stored:</p>
+<ul>
+<li>Mean values of the individual predictors in order to be able to compensate for missing values later on.</li>
+<li>Further encoders for predictors, if categorical features are converted.</li>
+<li>Scaler, if these are used.</li>
+<li>If variables would have been excluded, a list with the final features should have been stored.</li>
+</ul>
+<p>For what reason I give these recommendations can be well read in my <a href="https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/">Data Science Post</a>. Here I have also created <a href="https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/#data-science-best-practice-guidlines-for-ml-model-development">best practice guidelines</a> on how to proceed with model training.</p>
+<p>I would like to add one limitation at this point. You may have noticed it already, but the dataset was heavily imbalanced. How to deal with such problems I have explained here: <a href="https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/">Dealing with imbalanced classes</a></p>
+<p><strong>References</strong></p>
+<p>The content of the entire post was created using the following sources:</p>
+<p>Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.</p>
 </div>
