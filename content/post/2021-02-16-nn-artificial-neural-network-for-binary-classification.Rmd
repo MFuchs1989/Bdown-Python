@@ -16,4 +16,209 @@ output:
 
 # 1 Introduction
 
-asdfgsd
+As announced in my [last post](https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/), I will now create a neural network using a Deep Learning library ([Keras](https://keras.io/) in this case) to solve binary classification problems. 
+
+For this publication the dataset *Winequality* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+
+
+# 2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import os
+import shutil
+import pickle as pk
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model
+```
+
+
+
+# 3 Loading the data
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('winequality.csv').dropna()
+df
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p1.png)
+
+
+```{r, eval=F, echo=T}
+df['type'].value_counts()
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p2.png)
+
+
+
+# 4 Data pre-processing
+
+## 4.1 Determination of the predictors and the criterion
+
+```{r, eval=F, echo=T}
+x = df.drop('type', axis=1)
+y = df['type']
+```
+
+
+## 4.2 Encoding
+
+Since all variables must be numeric, we must code the criterion at this point. 
+
+```{r, eval=F, echo=T}
+encoder = LabelEncoder()
+
+encoded_Y = encoder.fit_transform(y)
+encoded_Y
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p3.png)
+
+
+## 4.3 Train-Validation-Test Split
+
+As already known from the [computer vision posts](https://michael-fuchs-python.netlify.app/2019/01/01/tag-archive/#computer-vision), for neural networks we need to split our dataset into a training part, a validation part and a testing part. 
+In the following, I will randomly assign 70% of the data to the training part and 15% each to the validation and test part. 
+
+
+```{r, eval=F, echo=T}
+train_ratio = 0.70
+validation_ratio = 0.15
+test_ratio = 0.15
+
+# Generate TrainX and TrainY
+trainX, testX, trainY, testY = train_test_split(x, encoded_Y, test_size= 1 - train_ratio)
+# Genearate ValX, TestX, ValY and TestY
+valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(test_ratio + validation_ratio)) 
+```
+
+
+```{r, eval=F, echo=T}
+print(trainX.shape)
+print(valX.shape)
+print(testX.shape)
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p4.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -20,10 +20,81 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
+<li><a href="#loading-the-data">3 Loading the data</a></li>
+<li><a href="#data-pre-processing">4 Data pre-processing</a>
+<ul>
+<li><a href="#determination-of-the-predictors-and-the-criterion">4.1 Determination of the predictors and the criterion</a></li>
+<li><a href="#encoding">4.2 Encoding</a></li>
+<li><a href="#train-validation-test-split">4.3 Train-Validation-Test Split</a></li>
+</ul></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>asdfgsd</p>
+<p>As announced in my <a href="https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/">last post</a>, I will now create a neural network using a Deep Learning library (<a href="https://keras.io/">Keras</a> in this case) to solve binary classification problems.</p>
+<p>For this publication the dataset <em>Winequality</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">“GitHub Repository”</a>.</p>
+</div>
+<div id="loading-the-libraries" class="section level1">
+<h1>2 Loading the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import os
+import shutil
+import pickle as pk
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model</code></pre>
+</div>
+<div id="loading-the-data" class="section level1">
+<h1>3 Loading the data</h1>
+<pre class="r"><code>df = pd.read_csv(&#39;winequality.csv&#39;).dropna()
+df</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p1.png" /></p>
+<pre class="r"><code>df[&#39;type&#39;].value_counts()</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p2.png" /></p>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>4 Data pre-processing</h1>
+<div id="determination-of-the-predictors-and-the-criterion" class="section level2">
+<h2>4.1 Determination of the predictors and the criterion</h2>
+<pre class="r"><code>x = df.drop(&#39;type&#39;, axis=1)
+y = df[&#39;type&#39;]</code></pre>
+</div>
+<div id="encoding" class="section level2">
+<h2>4.2 Encoding</h2>
+<p>Since all variables must be numeric, we must code the criterion at this point.</p>
+<pre class="r"><code>encoder = LabelEncoder()
+
+encoded_Y = encoder.fit_transform(y)
+encoded_Y</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p3.png" /></p>
+</div>
+<div id="train-validation-test-split" class="section level2">
+<h2>4.3 Train-Validation-Test Split</h2>
+<p>As already known from the <a href="https://michael-fuchs-python.netlify.app/2019/01/01/tag-archive/#computer-vision">computer vision posts</a>, for neural networks we need to split our dataset into a training part, a validation part and a testing part.
+In the following, I will randomly assign 70% of the data to the training part and 15% each to the validation and test part.</p>
+<pre class="r"><code>train_ratio = 0.70
+validation_ratio = 0.15
+test_ratio = 0.15
+
+# Generate TrainX and TrainY
+trainX, testX, trainY, testY = train_test_split(x, encoded_Y, test_size= 1 - train_ratio)
+# Genearate ValX, TestX, ValY and TestY
+valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(test_ratio + validation_ratio)) </code></pre>
+<pre class="r"><code>print(trainX.shape)
+print(valX.shape)
+print(testX.shape)</code></pre>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p4.png" /></p>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
+<p><img src="/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p.png" /></p>
+</div>
 </div>

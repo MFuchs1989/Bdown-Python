@@ -25,7 +25,7 @@ Most of us may not know that the very popular machine learning library [Scikit-L
 
 How to create a neural net with this library for classification I want to show in this post. 
 
-For this publication the datasets *Winequality* and *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) were used. You can download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
+For this publication the datasets *Winequality* and *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) were used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 
