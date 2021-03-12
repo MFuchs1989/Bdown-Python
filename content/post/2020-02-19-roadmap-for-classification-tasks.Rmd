@@ -120,7 +120,7 @@ Of course, in addition to traditional classification algorithms, neural networks
 Here again are the links to the respective publications: 
 
 + [Multi-layer Perceptron Classifier (MLPClassifier)](https://michael-fuchs-python.netlify.app/2021/02/03/nn-multi-layer-perceptron-classifier-mlpclassifier/)
-
++ [Artificial Neural Network for binary Classification](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/)
 
 
 

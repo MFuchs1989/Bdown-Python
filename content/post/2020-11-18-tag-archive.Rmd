@@ -207,9 +207,8 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 11 Neural Networks
 
-
++ [Artificial Neural Network for binary Classification](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/)
 + [Multi-layer Perceptron Regressor (MLPRegressor)](https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/)
-
 + [Multi-layer Perceptron Classifier (MLPClassifier)](https://michael-fuchs-python.netlify.app/2021/02/03/nn-multi-layer-perceptron-classifier-mlpclassifier/)
 
 

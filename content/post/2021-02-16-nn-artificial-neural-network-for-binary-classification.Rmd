@@ -359,7 +359,7 @@ Often you have the problem of overfitting. For this reason, I have presented her
 
 ## 6.1  Original Layer Structure
 
-Here again as a reminder the used layer structure
+Here again, as a reminder, the used layer structure:
 
 ```{r, eval=F, echo=T}
 model = models.Sequential()
