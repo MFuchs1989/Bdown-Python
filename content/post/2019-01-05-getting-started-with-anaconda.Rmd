@@ -304,6 +304,27 @@ Let's use the Anaconda Navigator again and go to the environments via the corres
 As we can see, our new environment is now also listed. 
 
 
+## 5.4 Updating packages/libs
+
+To update a specific packages within an environment use: 
+
+
+`conda activate demo_env`
+
+`pip install --upgrade pandas`
+
+
+
+## 5.5 Removing packages/libs
+
+To remove a specific packages within an environment use: 
+
+`conda activate demo_env`
+
+`pip uninstall pandas`
+
+
+
 # 6 Closing Words
 
 You can view the saved libraries under the following path on your computer:
