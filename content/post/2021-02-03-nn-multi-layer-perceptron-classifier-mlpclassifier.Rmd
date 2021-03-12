@@ -45,6 +45,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import classification_report
+
+from sklearn.model_selection import GridSearchCV
 ```
 
 
@@ -170,6 +172,41 @@ plt.show()
 ![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p7.png)
 
 
+## 3.5 Hyper Parameter Tuning
+
+
+```{r, eval=F, echo=T}
+param_grid = {
+    'hidden_layer_sizes': [(150,100,50), (120,80,40), (100,50,30)],
+    'max_iter': [50, 100, 150],
+    'activation': ['tanh', 'relu'],
+    'solver': ['sgd', 'adam'],
+    'alpha': [0.0001, 0.05],
+    'learning_rate': ['constant','adaptive'],
+}
+```
+
+
+```{r, eval=F, echo=T}
+grid = GridSearchCV(mlp_clf, param_grid, n_jobs= -1, cv=5)
+grid.fit(trainX_scaled, trainY)
+
+print(grid.best_params_) 
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z1.png)
+
+
+```{r, eval=F, echo=T}
+grid_predictions = grid.predict(testX_scaled) 
+
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z2.png)
+
+
+
 
 # 4 MLPClassifier for Multi-Label Classification
 
@@ -259,6 +296,44 @@ plt.show()
 ```
 
 ![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p13.png)
+
+
+
+
+## 4.5 Hyper Parameter Tuning
+
+
+
+
+```{r, eval=F, echo=T}
+param_grid = {
+    'hidden_layer_sizes': [(150,100,50), (120,80,40), (100,50,30)],
+    'max_iter': [50, 100, 150],
+    'activation': ['tanh', 'relu'],
+    'solver': ['sgd', 'adam'],
+    'alpha': [0.0001, 0.05],
+    'learning_rate': ['constant','adaptive'],
+}
+```
+
+
+```{r, eval=F, echo=T}
+grid = GridSearchCV(mlp_clf, param_grid, n_jobs= -1, cv=5)
+grid.fit(trainX_scaled, trainY)
+
+print(grid.best_params_) 
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z3.png)
+
+
+```{r, eval=F, echo=T}
+grid_predictions = grid.predict(testX_scaled) 
+
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
+```
+
+![](/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z4.png)
 
 
 

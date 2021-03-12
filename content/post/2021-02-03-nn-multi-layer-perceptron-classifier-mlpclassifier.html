@@ -27,6 +27,7 @@ output:
 <li><a href="#data-pre-processing">3.2 Data pre-processing</a></li>
 <li><a href="#mlpclassifier">3.3 MLPClassifier</a></li>
 <li><a href="#model-evaluation">3.4 Model Evaluation</a></li>
+<li><a href="#hyper-parameter-tuning">3.5 Hyper Parameter Tuning</a></li>
 </ul></li>
 <li><a href="#mlpclassifier-for-multi-label-classification">4 MLPClassifier for Multi-Label Classification</a>
 <ul>
@@ -34,6 +35,7 @@ output:
 <li><a href="#data-pre-processing-1">4.2 Data pre-processing</a></li>
 <li><a href="#mlpclassifier-1">4.3 MLPClassifier</a></li>
 <li><a href="#model-evaluation-1">4.4 Model Evaluation</a></li>
+<li><a href="#hyper-parameter-tuning-1">4.5 Hyper Parameter Tuning</a></li>
 </ul></li>
 <li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
@@ -62,7 +64,9 @@ from sklearn.neural_network import MLPClassifier
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import plot_confusion_matrix
-from sklearn.metrics import classification_report</code></pre>
+from sklearn.metrics import classification_report
+
+from sklearn.model_selection import GridSearchCV</code></pre>
 </div>
 <div id="mlpclassifier-for-binary-classification" class="section level1">
 <h1>3 MLPClassifier for binary Classification</h1>
@@ -132,6 +136,26 @@ plt.ylabel(&#39;Cost&#39;)
 plt.show()</code></pre>
 <p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p7.png" /></p>
 </div>
+<div id="hyper-parameter-tuning" class="section level2">
+<h2>3.5 Hyper Parameter Tuning</h2>
+<pre class="r"><code>param_grid = {
+    &#39;hidden_layer_sizes&#39;: [(150,100,50), (120,80,40), (100,50,30)],
+    &#39;max_iter&#39;: [50, 100, 150],
+    &#39;activation&#39;: [&#39;tanh&#39;, &#39;relu&#39;],
+    &#39;solver&#39;: [&#39;sgd&#39;, &#39;adam&#39;],
+    &#39;alpha&#39;: [0.0001, 0.05],
+    &#39;learning_rate&#39;: [&#39;constant&#39;,&#39;adaptive&#39;],
+}</code></pre>
+<pre class="r"><code>grid = GridSearchCV(mlp_clf, param_grid, n_jobs= -1, cv=5)
+grid.fit(trainX_scaled, trainY)
+
+print(grid.best_params_) </code></pre>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z1.png" /></p>
+<pre class="r"><code>grid_predictions = grid.predict(testX_scaled) 
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z2.png" /></p>
+</div>
 </div>
 <div id="mlpclassifier-for-multi-label-classification" class="section level1">
 <h1>4 MLPClassifier for Multi-Label Classification</h1>
@@ -182,6 +206,26 @@ plt.xlabel(&#39;Iterations&#39;)
 plt.ylabel(&#39;Cost&#39;)
 plt.show()</code></pre>
 <p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110p13.png" /></p>
+</div>
+<div id="hyper-parameter-tuning-1" class="section level2">
+<h2>4.5 Hyper Parameter Tuning</h2>
+<pre class="r"><code>param_grid = {
+    &#39;hidden_layer_sizes&#39;: [(150,100,50), (120,80,40), (100,50,30)],
+    &#39;max_iter&#39;: [50, 100, 150],
+    &#39;activation&#39;: [&#39;tanh&#39;, &#39;relu&#39;],
+    &#39;solver&#39;: [&#39;sgd&#39;, &#39;adam&#39;],
+    &#39;alpha&#39;: [0.0001, 0.05],
+    &#39;learning_rate&#39;: [&#39;constant&#39;,&#39;adaptive&#39;],
+}</code></pre>
+<pre class="r"><code>grid = GridSearchCV(mlp_clf, param_grid, n_jobs= -1, cv=5)
+grid.fit(trainX_scaled, trainY)
+
+print(grid.best_params_) </code></pre>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z3.png" /></p>
+<pre class="r"><code>grid_predictions = grid.predict(testX_scaled) 
+
+print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions)))</code></pre>
+<p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z4.png" /></p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
