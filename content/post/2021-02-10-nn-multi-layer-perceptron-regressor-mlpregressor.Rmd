@@ -199,7 +199,7 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, grid
 
 
 In this post, I showed how to solve regression problems using the MLPRegressor. 
-In two subsequent posts, I will show how to perform classifications and regressions using the deep learning library [Keras](https://keras.io/) and then compare the results with those of the MLP models. 
+In subsequent posts, I will show how to perform classifications and regressions using the deep learning library [Keras](https://keras.io/).
 
 
 
