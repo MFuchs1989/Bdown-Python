@@ -1,0 +1,207 @@
+---
+title: NN - Multi-layer Perceptron Regressor (MLPRegressor)
+author: Michael Fuchs
+date: '2021-02-10'
+slug: nn-multi-layer-perceptron-regressor-mlpregressor
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+
+In my last post about Deep Learning with the [Multi-layer Perceptron](https://michael-fuchs-python.netlify.app/2021/02/03/nn-multi-layer-perceptron-classifier-mlpclassifier/), I showed how to make classifications with this type of neural network. 
+
+However, an MLP can also be used to solve regression problems. This will be the content of the following post.
+
+For this publication the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
+
+
+
+# 2 Loading the libraries and data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.neural_network import MLPRegressor
+
+from sklearn import metrics
+
+from sklearn.model_selection import GridSearchCV
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('house_prices.csv')
+df = df.drop(['id', 'date', 'yr_built', 'yr_renovated', 'zipcode', 'lat', 'long'], axis=1)
+df
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p1.png)
+
+
+# 3 Data pre-processing
+
+
+```{r, eval=F, echo=T}
+x = df.drop('price', axis=1)
+y = df['price']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)
+```
+
+
+
+# 4 MLPRegressor
+
+
+```{r, eval=F, echo=T}
+mlp_reg = MLPRegressor(hidden_layer_sizes=(150,100,50),
+                       max_iter = 300,activation = 'relu',
+                       solver = 'adam')
+
+mlp_reg.fit(trainX_scaled, trainY)
+```
+
+
+# 5 Model Evaluation
+
+
+```{r, eval=F, echo=T}
+y_pred = mlp_reg.predict(testX_scaled)
+```
+
+
+```{r, eval=F, echo=T}
+df_temp = pd.DataFrame({'Actual': testY, 'Predicted': y_pred})
+df_temp.head()
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p.png)
+
+
+
+```{r, eval=F, echo=T}
+df_temp = df_temp.head(30)
+df_temp.plot(kind='bar',figsize=(10,6))
+plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+plt.show()
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p2.png)
+
+
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY, y_pred))  
+print('Mean Squared Error:', metrics.mean_squared_error(testY, y_pred))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pred)))
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p3.png)
+
+
+```{r, eval=F, echo=T}
+plt.plot(mlp_reg.loss_curve_)
+plt.title("Loss Curve", fontsize=14)
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.show()
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p4.png)
+
+
+
+# 6 Hyper Parameter Tuning
+
+```{r, eval=F, echo=T}
+param_grid = {
+    'hidden_layer_sizes': [(150,100,50), (120,80,40), (100,50,30)],
+    'max_iter': [50, 100],
+    'activation': ['tanh', 'relu'],
+    'solver': ['sgd', 'adam'],
+    'alpha': [0.0001, 0.05],
+    'learning_rate': ['constant','adaptive'],
+}
+```
+
+
+```{r, eval=F, echo=T}
+grid = GridSearchCV(mlp_reg, param_grid, n_jobs= -1, cv=5)
+grid.fit(trainX_scaled, trainY)
+
+print(grid.best_params_) 
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p5.png)
+
+
+```{r, eval=F, echo=T}
+grid_predictions = grid.predict(testX_scaled) 
+```
+
+
+```{r, eval=F, echo=T}
+df_temp2 = pd.DataFrame({'Actual': testY, 'Predicted': grid_predictions})
+df_temp2.head()
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p6.png)
+
+
+```{r, eval=F, echo=T}
+df_temp2 = df_temp2.head(30)
+df_temp2.plot(kind='bar',figsize=(10,6))
+plt.grid(which='major', linestyle='-', linewidth='0.5', color='green')
+plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+plt.show()
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p7.png)
+
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY, grid_predictions))  
+print('Mean Squared Error:', metrics.mean_squared_error(testY, grid_predictions))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, grid_predictions)))
+```
+
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p8.png)
+
+
+
+# 7 Conclusion
+
+
+In this post, I showed how to solve regression problems using the MLPRegressor. 
+In two subsequent posts, I will show how to perform classifications and regressions using the deep learning library [Keras](https://keras.io/) and then compare the results with those of the MLP models. 
+
+
+
+
+

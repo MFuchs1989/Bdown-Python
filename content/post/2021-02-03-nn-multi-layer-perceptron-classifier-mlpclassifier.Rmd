@@ -23,7 +23,7 @@ After I already got into the topic of Deep Learning (Computer Vision) with my pa
 When one thinks of Deep Learning, the well-known libraries such as [Keras](https://keras.io/), [PyTorch](https://pytorch.org/) or [TensorFlow](https://www.tensorflow.org/) immediately come to mind. 
 Most of us may not know that the very popular machine learning library [Scikit-Learn](https://scikit-learn.org/stable/) is also capable of basic deep learning modeling. 
 
-How to create a neronal net with this library for classification I want to show in this post. 
+How to create a neural net with this library for classification I want to show in this post. 
 
 For this publication the datasets *Winequality* and *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com/c/santander-customer-satisfaction/data) were used. You can download them from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
