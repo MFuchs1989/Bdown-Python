@@ -1,0 +1,19 @@
+---
+title: NN – Artificial Neural Network for binary Classification
+author: Michael Fuchs
+date: '2021-02-16'
+slug: nn-artificial-neural-network-for-binary-classification
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+asdfgsd
