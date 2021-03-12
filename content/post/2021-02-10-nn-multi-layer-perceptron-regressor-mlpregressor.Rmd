@@ -100,7 +100,7 @@ df_temp = pd.DataFrame({'Actual': testY, 'Predicted': y_pred})
 df_temp.head()
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p2.png)
 
 
 
@@ -112,7 +112,7 @@ plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p2.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p3.png)
 
 
 
@@ -122,7 +122,7 @@ print('Mean Squared Error:', metrics.mean_squared_error(testY, y_pred))
 print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pred)))
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p3.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p4.png)
 
 
 ```{r, eval=F, echo=T}
@@ -133,7 +133,7 @@ plt.ylabel('Cost')
 plt.show()
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p4.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p5.png)
 
 
 
@@ -158,7 +158,7 @@ grid.fit(trainX_scaled, trainY)
 print(grid.best_params_) 
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p5.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p6.png)
 
 
 ```{r, eval=F, echo=T}
@@ -171,7 +171,7 @@ df_temp2 = pd.DataFrame({'Actual': testY, 'Predicted': grid_predictions})
 df_temp2.head()
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p6.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p7.png)
 
 
 ```{r, eval=F, echo=T}
@@ -182,7 +182,7 @@ plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
 plt.show()
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p7.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p8.png)
 
 
 ```{r, eval=F, echo=T}
@@ -191,7 +191,7 @@ print('Mean Squared Error:', metrics.mean_squared_error(testY, grid_predictions)
 print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, grid_predictions)))
 ```
 
-![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p8.png)
+![](/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p9.png)
 
 
 
