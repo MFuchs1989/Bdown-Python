@@ -60,7 +60,7 @@ The exact functionality of the code I have explained in this post: [Automate the
 
 Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the three files are stored. 
 
-For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
+For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds* and start your Jupyter notebook from here.
 
 
 ## 3.1 Train-Validation-Test Split
