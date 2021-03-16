@@ -132,6 +132,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 5 Some Python Stuff
 
++ [Handling long name spaces](https://michael-fuchs-python.netlify.app/2019/05/14/handling-long-name-spaces/)
 + [Safe tables and images to disc](https://michael-fuchs-python.netlify.app/2019/05/13/safe-tables-and-images-to-disc/)
 + [How to use Pandas set_option()](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
 + [How to suppress scientific notation in Pandas](https://michael-fuchs-python.netlify.app/2019/04/28/how-to-suppress-scientific-notation-in-pandas/)

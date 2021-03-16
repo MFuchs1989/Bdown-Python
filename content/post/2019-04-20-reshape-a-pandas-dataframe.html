@@ -1,0 +1,199 @@
+---
+title: Reshape a pandas DataFrame
+author: Michael Fuchs
+date: '2019-04-20'
+slug: reshape-a-pandas-dataframe
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#import-the-data">3 Import the data</a></li>
+<li><a href="#reshape-a-pandas-dataframe">4 Reshape a pandas DataFrame</a>
+<ul>
+<li><a href="#stack">4.1 stack()</a>
+<ul>
+<li><a href="#application-example">4.1.1 Application example</a></li>
+</ul></li>
+<li><a href="#melt">4.2 melt()</a>
+<ul>
+<li><a href="#application-example-1">4.2.1 Application example</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#comparison-of-stack-and-melt">5 Comparison of stack() and melt()</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>After merging data (data management), we now come to the topic of how to reshape DataFrames.</p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns</code></pre>
+</div>
+<div id="import-the-data" class="section level1">
+<h1>3 Import the data</h1>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Alice&#39;, &#39;Mike&#39;, &#39;Sven&#39;, &#39;Julia&#39;],
+                   &#39;Age&#39;: [25,35,22,24],
+                   &#39;Height&#39;: [160,175,180,165],
+                   &#39;Weight&#39;: [55,80,85,57],
+                   &#39;State&#39;: [&#39;Texas&#39;, &#39;Boston&#39;, &#39;Marquette&#39;, &#39;Alaska&#39;]})</code></pre>
+</div>
+<div id="reshape-a-pandas-dataframe" class="section level1">
+<h1>4 Reshape a pandas DataFrame</h1>
+<div id="stack" class="section level2">
+<h2>4.1 stack()</h2>
+<p>Stack method works with the MultiIndex objects in DataFrame, it returning a DataFrame with an index with a new inner-most level of row labels. It changes the wide table to a long table.</p>
+<p>In short: The stack function of pandas is used for stacking the levels from columns to index.</p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p1.png" /></p>
+<pre class="r"><code>df_stacked = df.stack()
+df_stacked = pd.DataFrame(df_stacked)
+df_stacked</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p2.png" /></p>
+<p>Of course, you can also undo this redesign.</p>
+<pre class="r"><code>df_unstacked = df_stacked.unstack()
+df_unstacked</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p3.png" /></p>
+<div id="application-example" class="section level3">
+<h3>4.1.1 Application example</h3>
+<p>How can you use this function meaningfully in real life?</p>
+<p><strong>Information from rows</strong></p>
+<p>For some analysis methods it is necessary to have the values per line in one column available separately. Have a look at this dataframe:</p>
+<pre class="r"><code>df_appl_1 = pd.DataFrame({&#39;title&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;],
+                          &#39;Runtime&#39;: [81,50,120],
+                          &#39;genres&#39;: [&#39;animation, comedy, family&#39;, &#39;romance, comedy&#39;, &#39;comedy&#39;]})
+df_appl_1</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p4.png" /></p>
+<p>The different genres that apply to each film are unfortunately summarized in one column. Now we want the genres to be listed per line. For example, if a film is attributed three genres, I want the film to be listed in three separate lines, each with one of the three genres attributed. I can achieve this in 4 steps:</p>
+<pre class="r"><code># Step 1
+# We start with creating a new dataframe from the series with title as the index
+new_df = pd.DataFrame(df_appl_1.genres.str.split(&#39;,&#39;).tolist(), index=df_appl_1.title).stack()
+new_df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p5.png" /></p>
+<pre class="r"><code># Step 2
+# We now want to get rid of the secondary index
+# To do this, we will make title as a column (it can&#39;t be an index since the values will be duplicate)
+new_df = new_df.reset_index([0, &#39;title&#39;])
+new_df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p6.png" /></p>
+<pre class="r"><code># Step 3
+# Now we have to set the column names as we want them
+new_df.columns = [&#39;title&#39;, &#39;genre&#39;]
+new_df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p7.png" /></p>
+<pre class="r"><code># Step 4
+# The final step is to add the remaining information from the original record to the newly created record
+final = pd.merge(new_df, df_appl_1[[&#39;title&#39;, &#39;Runtime&#39;]], on=&#39;title&#39;, how=&#39;left&#39;)
+final</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p8.png" /></p>
+<p>Here we go !</p>
+<p><strong>Information from columns</strong></p>
+<p>Just as often it can happen that the structure of the data (e.g. when joining datasets) does not fit. Have a look at this case:</p>
+<pre class="r"><code>df_appl_2 = pd.DataFrame({&#39;Year&#39;: [2019, 2019, 2020, 2020],
+                          &#39;Season&#39;: [&#39;Summer&#39;, &#39;Winter&#39;,&#39;Summer&#39;,&#39;Winter&#39;],
+                          &#39;Rainfall_mm&#39;: [185, 2500, 320, 1800],
+                          &#39;Sunshine_h&#39;: [800, 500, 900, 600]})
+
+df_appl_2 = df_appl_2.groupby([&#39;Year&#39;, &#39;Season&#39;]).sum()
+df_appl_2</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p9.png" /></p>
+<p>In such a case the stack function can also be used:</p>
+<pre class="r"><code>final2 = df_appl_2.stack().reset_index()
+final2.columns = [&#39;Year&#39;, &#39;Season&#39;,
+                  &#39;Weather_Information&#39;, 
+                  &#39;Value&#39;]
+final2</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p10.png" /></p>
+</div>
+</div>
+<div id="melt" class="section level2">
+<h2>4.2 melt()</h2>
+<p>Pandas melt() function is used for unpivoting a DataFrame from wide to long format.</p>
+<p>Melt in pandas reshape dataframe from wide format to long format. It uses the <strong>id_vars[‘Column_Name’]</strong> for melt the dataframe by column names.</p>
+<p>I will always show the original dataset so that you can better understand the melt commands.</p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p11.png" /></p>
+<pre class="r"><code>df_melt = df.melt()
+df_melt</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p12.png" /></p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p13.png" /></p>
+<pre class="r"><code>df_melt2 = df.melt(id_vars=[&#39;Name&#39;])
+df_melt2</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p14.png" /></p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p15.png" /></p>
+<pre class="r"><code>df_melt3 = df.melt(id_vars=[&#39;Name&#39;, &#39;State&#39;])
+df_melt3</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p16.png" /></p>
+<p>Use the <strong>id_vars[‘col_names’]</strong> for melt the dataframe by column names and <strong>id_value_vars[‘col_names’]</strong> as the value variable.</p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p17.png" /></p>
+<pre class="r"><code>df_melt4 = df.melt(id_vars=[&#39;Name&#39;], value_vars=[&#39;Age&#39;])
+df_melt4</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p18.png" /></p>
+<p>With var_name and value_name you also have the possibility to name the two generated columns accordingly:</p>
+<pre class="r"><code>df_melt4 = df.melt(id_vars=[&#39;Name&#39;], value_vars=[&#39;Age&#39;],
+                  var_name =&#39;Variable_column&#39;, value_name =&#39;Value_column&#39;)
+df_melt4</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p19.png" /></p>
+<div id="application-example-1" class="section level3">
+<h3>4.2.1 Application example</h3>
+<p>Here again an example how melt can be used in practice.
+We have the following data set:</p>
+<pre class="r"><code>df_appl_3 = pd.DataFrame({&#39;Age&#39;: [24,22,26],
+                          &#39;Work_Experience&#39;: [7, 5, 8]})
+df_appl_3</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p20.png" /></p>
+<p>Our goal is to create a boxplot with seaborn.</p>
+<pre class="r"><code>data_melt = pd.melt(df_appl_3)
+data_melt</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p21.png" /></p>
+<pre class="r"><code>sns.boxplot(x=&quot;variable&quot;, y=&quot;value&quot;, data=data_melt)
+plt.title(&quot;Boxplot&quot;,fontweight=&#39;bold&#39;)
+plt.xlabel(&quot;Columns&quot;,fontweight=&#39;bold&#39;)
+plt.ylabel(&quot;Years&quot;,fontweight=&#39;bold&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p22.png" /></p>
+<p>The two commands shown before do not have to be executed separately. It is also possible to write them together:</p>
+<pre class="r"><code>sns.boxplot(x=&quot;variable&quot;, y=&quot;value&quot;, data=pd.melt(df_appl_3))
+plt.title(&quot;Boxplot2&quot;,fontweight=&#39;bold&#39;)
+plt.xlabel(&quot;Columns&quot;,fontweight=&#39;bold&#39;)
+plt.ylabel(&quot;Years&quot;,fontweight=&#39;bold&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p23.png" /></p>
+</div>
+</div>
+</div>
+<div id="comparison-of-stack-and-melt" class="section level1">
+<h1>5 Comparison of stack() and melt()</h1>
+<p>To better understand the different functionality of the two functions stack() and melt() I have compared the two outputs again:</p>
+<pre class="r"><code>print(&#39;Original DataFrame:&#39;)
+df</code></pre>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p24.png" /></p>
+<p><img src="/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p25.png" /></p>
+</div>
