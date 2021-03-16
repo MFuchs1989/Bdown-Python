@@ -684,6 +684,12 @@ print('------------------------------------')
 As you can see, transfer learning and fine tuning can also be used to effectively solve multi-Class classification problems (especially since we had quite little training data available here as well).
 
 
+# 6 Link to the GitHub Repository
+
+Here is the link to my GitHub repository where I have listed all necessary steps: [CV-CNN-with-Transfer-Learning-and-Fine-Tuning-for-Multi-Class-Classification](https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-and-Fine-Tuning-for-Multi-Class-Classification)
+
+
+
 
 **References**
 
