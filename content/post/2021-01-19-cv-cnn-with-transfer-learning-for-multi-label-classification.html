@@ -1,5 +1,5 @@
 ---
-title: CV - CNN with Transfer Learning for Multi-Label Classification
+title: CV - CNN with Transfer Learning for Multi-Class Classification
 author: Michael Fuchs
 date: '2021-01-19'
 slug: cv-cnn-with-transfer-learning-for-multi-label-classification
@@ -57,7 +57,7 @@ output:
 <h1>1 Introduction</h1>
 <p>After showing how to build <a href="https://michael-fuchs-python.netlify.app/2021/01/17/computer-vision-cnn-with-transfer-learning/">binary classification models using transfer learning</a>, I would like to show this again for multiple classification problems.</p>
 <p>Once again, I used the <a href="https://keras.io/api/applications/">Keras Application</a> <a href="https://keras.io/api/applications/vgg/#vgg19-function">VGG19</a> for transfer learning.</p>
-<p>For this publication I used the images from the <em>Animal Faces</em> dataset from the statistics platform <a href="https://www.kaggle.com/andrewmvd/animal-faces">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification">“GitHub Repository”</a>.</p>
+<p>For this publication I used the images from the <em>Animal Faces</em> dataset from the statistics platform <a href="https://www.kaggle.com/andrewmvd/animal-faces">“Kaggle”</a>. You can download the used data from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification">“GitHub Repository”</a>.</p>
 </div>
 <div id="import-the-libraries" class="section level1">
 <h1>2 Import the libraries</h1>
@@ -85,10 +85,10 @@ from keras.applications import VGG19</code></pre>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data pre-processing</h1>
-<p>How the data for a CNN model training must be prepared I have already explained in this post: <a href="https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/">Computer Vision - CNN for Multi-Label Classification</a></p>
+<p>How the data for a CNN model training must be prepared I have already explained in this post: <a href="https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/">Computer Vision - CNN for Multi-Class Classification</a></p>
 <p>The exact functionality of the code I have explained in this post: <a href="https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split">Automate the Boring Stuff</a></p>
-<p>Please download the folders <em>cats</em>, <em>dogs</em> and <em>wilds</em> from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification">“GitHub Repository”</a> and navigate to the project’s root directory in the terminal. The notebook must be started from the location where the three files are stored.</p>
-<p>For this please download the preprocessing_multi_CNN.py file from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification">“GitHub Repository”</a> and place this file next to the folders <em>cats</em>, <em>dogs</em> and *wilds** and start your Jupyter notebook from here.</p>
+<p>Please download the folders <em>cats</em>, <em>dogs</em> and <em>wilds</em> from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification">“GitHub Repository”</a> and navigate to the project’s root directory in the terminal. The notebook must be started from the location where the three files are stored.</p>
+<p>For this please download the preprocessing_multi_CNN.py file from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification">“GitHub Repository”</a> and place this file next to the folders <em>cats</em>, <em>dogs</em> and *wilds** and start your Jupyter notebook from here.</p>
 <div id="train-validation-test-split" class="section level2">
 <h2>3.1 Train-Validation-Test Split</h2>
 <pre class="r"><code>c_train, d_train, w_train, \
@@ -539,7 +539,7 @@ print(&#39;------------------------------------&#39;)</code></pre>
 </div>
 <div id="link-to-the-github-repository" class="section level1">
 <h1>6 Link to the GitHub Repository</h1>
-<p>Here is the link to my GitHub repository where I have listed all necessary steps: <a href="https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification">CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification</a></p>
+<p>Here is the link to my GitHub repository where I have listed all necessary steps: <a href="https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-for-Multi-Class-Classification">CV-CNN-with-Transfer-Learning-for-Multi-Class-Classification</a></p>
 <p><strong>References</strong></p>
 <p>The content of the entire post was created using the following sources:</p>
 <p>Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.</p>

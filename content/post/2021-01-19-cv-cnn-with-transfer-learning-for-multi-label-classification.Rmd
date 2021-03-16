@@ -1,5 +1,5 @@
 ---
-title: CV - CNN with Transfer Learning for Multi-Label Classification
+title: CV - CNN with Transfer Learning for Multi-Class Classification
 author: Michael Fuchs
 date: '2021-01-19'
 slug: cv-cnn-with-transfer-learning-for-multi-label-classification
@@ -20,7 +20,7 @@ After showing how to build [binary classification models using transfer learning
 
 Once again, I used the [Keras Application](https://keras.io/api/applications/) [VGG19](https://keras.io/api/applications/vgg/#vgg19-function) for transfer learning. 
 
-For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification). 
 
 
 # 2 Import the libraries
@@ -53,14 +53,14 @@ from keras.applications import VGG19
 
 # 3 Data pre-processing
 
-How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - CNN for Multi-Label Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
+How the data for a CNN model training must be prepared I have already explained in this post: [Computer Vision - CNN for Multi-Class Classification](https://michael-fuchs-python.netlify.app/2021/01/15/computer-vision-cnn-for-multi-label-classification/)
 
 The exact functionality of the code I have explained in this post: [Automate the Boring Stuff](https://michael-fuchs-python.netlify.app/2021/01/01/computer-vision-automate-the-boring-stuff/#train-validation-test-split)
 
 
-Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the three files are stored. 
+Please download the folders *cats*, *dogs* and *wilds* from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification) and navigate to the project's root directory in the terminal. The notebook must be started from the location where the three files are stored. 
 
-For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
+For this please download the preprocessing_multi_CNN.py file from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification) and place this file next to the folders *cats*, *dogs* and *wilds** and start your Jupyter notebook from here.
 
 
 ## 3.1 Train-Validation-Test Split
@@ -692,7 +692,7 @@ In addition to my post [Computer Vision - CNN with Transfer Learning](https://mi
 
 # 6 Link to the GitHub Repository
 
-Here is the link to my GitHub repository where I have listed all necessary steps: [CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification](https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-for-Multi-Label-Classification)
+Here is the link to my GitHub repository where I have listed all necessary steps: [CV-CNN-with-Transfer-Learning-for-Multi-Class-Classification](https://github.com/MFuchs1989/CV-CNN-with-Transfer-Learning-for-Multi-Class-Classification)
 
 
 
