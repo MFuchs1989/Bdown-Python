@@ -43,6 +43,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 + [The Data Science Process (CRISP-DM)](https://michael-fuchs-python.netlify.app/2020/11/07/the-data-science-process-crisp-dm/)
 + [Randomized Search](https://michael-fuchs-python.netlify.app/2019/11/06/randomized-search/)
 + [Grid Search](https://michael-fuchs-python.netlify.app/2019/11/04/grid-search/)
++ [Reshape a pandas DataFrame](https://michael-fuchs-python.netlify.app/2019/04/20/reshape-a-pandas-dataframe/)
 + [Data Management](https://michael-fuchs-python.netlify.app/2019/04/16/data-management/)
 + [Data Manipulation](https://michael-fuchs-python.netlify.app/2019/03/12/data-manipulation/)
 + [Data type conversion](https://michael-fuchs-python.netlify.app/2019/03/10/data-type-conversion/)
