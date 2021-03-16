@@ -208,9 +208,9 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 
 
 
-# 4 MLPClassifier for Multi-Label Classification
+# 4 MLPClassifier for Multi-Class Classification
 
-With an MLP, multi-label classifications can of course also be carried out. 
+With an MLP, multi-class classifications can of course also be carried out. 
 
 ## 4.1 Loading the data
 
@@ -340,7 +340,7 @@ print('Accuracy: {:.2f}'.format(accuracy_score(testY, grid_predictions)))
 # 5 Conclusion
 
 
-In this post, I showed how to build an MLP model to solve binary and multi-label classification problems. 
+In this post, I showed how to build an MLP model to solve binary and multi-class classification problems. 
 
 
 

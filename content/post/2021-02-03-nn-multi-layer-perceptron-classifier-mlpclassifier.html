@@ -29,7 +29,7 @@ output:
 <li><a href="#model-evaluation">3.4 Model Evaluation</a></li>
 <li><a href="#hyper-parameter-tuning">3.5 Hyper Parameter Tuning</a></li>
 </ul></li>
-<li><a href="#mlpclassifier-for-multi-label-classification">4 MLPClassifier for Multi-Label Classification</a>
+<li><a href="#mlpclassifier-for-multi-class-classification">4 MLPClassifier for Multi-Class Classification</a>
 <ul>
 <li><a href="#loading-the-data-1">4.1 Loading the data</a></li>
 <li><a href="#data-pre-processing-1">4.2 Data pre-processing</a></li>
@@ -157,9 +157,9 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions))
 <p><img src="/post/2021-02-03-nn-multi-layer-perceptron-classifier-mlpclassifier_files/p110z2.png" /></p>
 </div>
 </div>
-<div id="mlpclassifier-for-multi-label-classification" class="section level1">
-<h1>4 MLPClassifier for Multi-Label Classification</h1>
-<p>With an MLP, multi-label classifications can of course also be carried out.</p>
+<div id="mlpclassifier-for-multi-class-classification" class="section level1">
+<h1>4 MLPClassifier for Multi-Class Classification</h1>
+<p>With an MLP, multi-class classifications can of course also be carried out.</p>
 <div id="loading-the-data-1" class="section level2">
 <h2>4.1 Loading the data</h2>
 <pre class="r"><code>df = pd.read_csv(&#39;Iris_Data.csv&#39;)
@@ -230,5 +230,5 @@ print(&#39;Accuracy: {:.2f}&#39;.format(accuracy_score(testY, grid_predictions))
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
-<p>In this post, I showed how to build an MLP model to solve binary and multi-label classification problems.</p>
+<p>In this post, I showed how to build an MLP model to solve binary and multi-class classification problems.</p>
 </div>
