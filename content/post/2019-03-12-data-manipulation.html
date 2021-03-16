@@ -41,8 +41,7 @@ output:
 <ul>
 <li><a href="#round-each-column">4.1 Round each column</a></li>
 <li><a href="#round-columns-differently-within-a-df">4.2 Round columns differently within a df</a></li>
-<li><a href="#add-rows-with-the-stack-function">4.3 Add rows with the stack() function</a></li>
-<li><a href="#drop-duplicates">4.4 Drop Duplicates</a></li>
+<li><a href="#drop-duplicates">4.3 Drop Duplicates</a></li>
 </ul></li>
 <li><a href="#replacing-values">5 Replacing Values</a>
 <ul>
@@ -249,62 +248,8 @@ df.head(5)</code></pre>
 df.round(decimals).head(2)</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3p31.png" /></p>
 </div>
-<div id="add-rows-with-the-stack-function" class="section level2">
-<h2>4.3 Add rows with the stack() function</h2>
-<p><code>information from rows</code></p>
-<p>For some analysis methods it is necessary to have the values per line in one column available separately.
-Have a look at this dataframe:</p>
-<pre class="r"><code>df = pd.DataFrame({&#39;title&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;],
-                   &#39;Runtime&#39;: [81,50,120],
-                   &#39;genres&#39;: [&#39;animation, comedy, family&#39;, &#39;romance, comedy&#39;, &#39;comedy&#39;]})
-df</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z1.png" /></p>
-<p>The different genres that apply to each film are unfortunately summarized in one column.
-Now we want the genres to be listed per line. For example, if a film is attributed three genres, I want the film to be listed in three separate lines, each with one of the three genres attributed.
-I can achieve this in 4 steps:</p>
-<pre class="r"><code># Step 1
-# We start with creating a new dataframe from the series with title as the index
-new_df = pd.DataFrame(df.genres.str.split(&#39;,&#39;).tolist(), index=df.title).stack()
-new_df</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z2.png" /></p>
-<pre class="r"><code># Step 2
-# We now want to get rid of the secondary index
-# To do this, we will make title as a column (it can&#39;t be an index since the values will be duplicate)
-new_df = new_df.reset_index([0, &#39;title&#39;])
-new_df</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z3.png" /></p>
-<pre class="r"><code># Step 3
-# Now we have to set the column names as we want them
-new_df.columns = [&#39;title&#39;, &#39;genre&#39;]
-new_df</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z4.png" /></p>
-<pre class="r"><code># Step 4
-# The final step is to add the remaining information from the original record to the newly created record
-final = pd.merge(new_df, df[[&#39;title&#39;, &#39;Runtime&#39;]], on=&#39;title&#39;, how=&#39;left&#39;)
-final</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z5.png" /></p>
-<p>Here we go !</p>
-<p><code>information from columns</code></p>
-<p>Just as often it can happen that the structure of the data (e.g. when joining datasets) does not fit.
-Have a look at this case:</p>
-<pre class="r"><code>df = pd.DataFrame({&#39;Year&#39;: [2019, 2019, 2020, 2020],
-                   &#39;Season&#39;: [&#39;Summer&#39;, &#39;Winter&#39;,&#39;Summer&#39;,&#39;Winter&#39;],
-                   &#39;Rainfall_mm&#39;: [185, 2500, 320, 1800],
-                   &#39;Sunshine_h&#39;: [800, 500, 900, 600]})
-
-df2 = df.groupby([&#39;Year&#39;, &#39;Season&#39;]).sum()
-df2</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z12.png" /></p>
-<p>In such a case the stack function can also be used:</p>
-<pre class="r"><code>df_stacked = df2.stack().reset_index()
-df_stacked.columns = [&#39;Year&#39;, &#39;Season&#39;, 
-                      &#39;Weather_Information&#39;, 
-                      &#39;Value&#39;]
-df_stacked</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z13.png" /></p>
-</div>
 <div id="drop-duplicates" class="section level2">
-<h2>4.4 Drop Duplicates</h2>
+<h2>4.3 Drop Duplicates</h2>
 <p>To get clean data it is often necessary to remove duplicates.
 We can do so with the drop_duplicates function.
 Have a look at this dataframe:</p>
