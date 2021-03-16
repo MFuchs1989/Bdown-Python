@@ -1,0 +1,92 @@
+---
+title: Handling long name spaces
+author: Michael Fuchs
+date: '2019-05-14'
+slug: handling-long-name-spaces
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#generate-a-customized-dataframe">3 Generate a customized DataFrame</a></li>
+<li><a href="#handling-long-name-spaces">4 Handling long name spaces</a></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>It happens that the provided data sets sometimes have very long names.
+Of course, you can rename the data sets and column names used, but sometimes it is necessary to keep meaningful names, even if they have more letters or characters.</p>
+<p>With Python, if a line of code gets too long, you usually have the option to jump to the next line. But this is not always the case. What you can do then I would like to introduce in this small post.</p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd</code></pre>
+</div>
+<div id="generate-a-customized-dataframe" class="section level1">
+<h1>3 Generate a customized DataFrame</h1>
+<pre class="r"><code>long_name_data_frame = pd.DataFrame({&#39;Col_Total&#39;: [1000,1000,1000],
+                                     &#39;Colum_1&#39;: [85,95,105],
+                                     &#39;Colum_2&#39;: [300,450,220],
+                                     &#39;Colum_3&#39;: [120,230,140]})
+long_name_data_frame</code></pre>
+<p><img src="/post/2019-05-14-handling-long-name-spaces_files/p116p1.png" /></p>
+</div>
+<div id="handling-long-name-spaces" class="section level1">
+<h1>4 Handling long name spaces</h1>
+<p>This data set does not look so tragic yet, but let’s imagine that we want to subtract the remaining column values from the Col_Total column.
+Normally we do this as follows:</p>
+<pre class="r"><code>long_name_data_frame[&#39;Result&#39;] = long_name_data_frame[&#39;Col_Total&#39;] - long_name_data_frame[&#39;Colum_1&#39;] - long_name_data_frame[&#39;Colum_2&#39;] - long_name_data_frame[&#39;Colum_3&#39;]
+long_name_data_frame</code></pre>
+<p><img src="/post/2019-05-14-handling-long-name-spaces_files/p116p2.png" /></p>
+<p>This approach quickly leads to a confusing line of code. If you don’t have the possibility to jump to the next line after a comma you need another character to tell Python to continue with the following lines.</p>
+<pre class="r"><code>long_name_data_frame[&#39;Result2&#39;] = long_name_data_frame[&#39;Col_Total&#39;] - \
+                                  long_name_data_frame[&#39;Colum_1&#39;] - \
+                                  long_name_data_frame[&#39;Colum_2&#39;] - \
+                                  long_name_data_frame[&#39;Colum_3&#39;]
+long_name_data_frame</code></pre>
+<p><img src="/post/2019-05-14-handling-long-name-spaces_files/p116p3.png" /></p>
+<p>The same works if we need more lines before an is-equal character.
+I have created a simple test-function that returns three values from a supplied data set.</p>
+<pre class="r"><code>def test_function(df):
+    number_of_columns = df.shape[0]
+    length_of_the_record = df.shape[1]
+    column_names = df.columns
+    
+    return number_of_columns, length_of_the_record, column_names</code></pre>
+<p>We can output the values as usual as follows:</p>
+<pre class="r"><code>number_of_columns, length_of_the_record, column_names = test_function(long_name_data_frame)
+
+print(number_of_columns)
+print(length_of_the_record)
+print(column_names)</code></pre>
+<p><img src="/post/2019-05-14-handling-long-name-spaces_files/p116p4.png" /></p>
+<p>But even that quickly becomes confusing and doesn’t look very good.
+Instead, you can proceed as follows:</p>
+<pre class="r"><code>number_of_columns, \
+length_of_the_record, \
+column_names = test_function(long_name_data_frame)
+
+print(number_of_columns)
+print(length_of_the_record)
+print(column_names)</code></pre>
+<p><img src="/post/2019-05-14-handling-long-name-spaces_files/p116p5.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this short post I showed how to deal with long name spaces.</p>
+</div>
