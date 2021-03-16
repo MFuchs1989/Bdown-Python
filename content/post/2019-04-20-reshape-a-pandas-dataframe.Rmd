@@ -322,10 +322,16 @@ df
 
 ![](/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p24.png)
 
-
-
+Comparison of stack() and melt():
 
 ![](/post/2019-04-20-reshape-a-pandas-dataframe_files/p117p25.png)
+
+
+# 6 Conclusion
+
+In this post I have shown how to use the stack() and melt() functions to reshape panda's DataFrame accordingly.
+
+
 
 
 
