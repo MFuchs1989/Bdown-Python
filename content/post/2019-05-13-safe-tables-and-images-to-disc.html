@@ -1,0 +1,152 @@
+---
+title: Safe tables and images to disc
+author: Michael Fuchs
+date: '2019-05-13'
+slug: safe-tables-and-images-to-disc
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the libraries</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required functions</a></li>
+<li><a href="#create-a-folder-and-a-customized-dataframe">4 Create a folder and a customized DataFrame</a></li>
+<li><a href="#safe-tables-and-images-to-disc">5 Safe tables and images to disc</a>
+<ul>
+<li><a href="#safe-tables-to-disc">5.1 Safe tables to disc</a></li>
+<li><a href="#safe-images-to-disc">5.2 Safe images to disc</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Often Python is used to create reports. Since most managers like to have the analysis results and graphics presented in Power Points or similar, it is important to know how to extract tables and images accordingly.</p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the libraries</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns</code></pre>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required functions</h1>
+<pre class="r"><code>def table_to_img_function(data, col_width=3.0, row_height=0.625, font_size=14,
+                          header_color=&#39;#40466e&#39;, row_colors=[&#39;#f1f1f2&#39;, &#39;w&#39;], edge_color=&#39;w&#39;,
+                          bbox=[0, 0, 1, 1], header_columns=0, ax=None, **kwargs):
+    &#39;&#39;&#39;
+    Converts a table to an image
+    
+    Args: 
+        data (string): Name that should be given to the created image
+        col_width (float64): Width of columns, float
+        row_height (float64): Height of rows, float
+        font_size (int): Size of the front, integer
+        header_color (string): Color of the header, string
+        row_colors (string): Color of the rows, string
+        edge_color (string): Color of the edges, string
+        bbox (int): Mutable bounding box, integers
+        header_columns (int): Colored marking of column names or entire additional columns, integers
+        
+    Returns:
+        Image of the supplied dataset
+    &#39;&#39;&#39;
+    if ax is None:
+        size = (np.array(data.shape[::-1]) + np.array([0, 1])) * np.array([col_width, row_height])
+        fig, ax = plt.subplots(figsize=size)
+        ax.axis(&#39;off&#39;)
+    mpl_table = ax.table(cellText=data.values, bbox=bbox, colLabels=data.columns, **kwargs)
+    mpl_table.auto_set_font_size(False)
+    mpl_table.set_fontsize(font_size)
+
+    for k, cell in mpl_table._cells.items():
+        cell.set_edgecolor(edge_color)
+        if k[0] == 0 or k[1] &lt; header_columns:
+            cell.set_text_props(weight=&#39;bold&#39;, color=&#39;w&#39;)
+            cell.set_facecolor(header_color)
+        else:
+            cell.set_facecolor(row_colors[k[0]%len(row_colors) ])
+    return ax.get_figure(), ax</code></pre>
+<pre class="r"><code>def createFolder(directory):
+    &#39;&#39;&#39;
+    Creates a folder in the place of the root directory
+    
+    Args: 
+        directory (string): Name that should be given to the created folder
+        
+    Returns:
+        New folder at the current directory
+    &#39;&#39;&#39;
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print (&#39;Error: Creating directory. &#39; +  directory)</code></pre>
+</div>
+<div id="create-a-folder-and-a-customized-dataframe" class="section level1">
+<h1>4 Create a folder and a customized DataFrame</h1>
+<p>In order to be able to save the following images in a suitable place, we will first create a separate folder for them.
+We call this folder ‘images’.</p>
+<pre class="r"><code>createFolder(&#39;./images/&#39;)</code></pre>
+<p>Now we create a corresponding data set.</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;],
+                   &#39;Age&#39;: [24,22,26],
+                   &#39;Work_Experience&#39;: [7, 5, 8],
+                   &#39;Gender&#39;: [&#39;female&#39;, &#39;male&#39;, &#39;female&#39;]})
+df</code></pre>
+<p><img src="/post/2019-05-13-safe-tables-and-images-to-disc_files/p115p1.png" /></p>
+</div>
+<div id="safe-tables-and-images-to-disc" class="section level1">
+<h1>5 Safe tables and images to disc</h1>
+<div id="safe-tables-to-disc" class="section level2">
+<h2>5.1 Safe tables to disc</h2>
+<p>Now we can use the function we created earlier (table_to_img_function) to save this record as an image.</p>
+<pre class="r"><code>fig,ax = table_to_img_function(df, col_width=3.0)
+fig.savefig(&#39;images/Student_Table.png&#39;)</code></pre>
+<p><img src="/post/2019-05-13-safe-tables-and-images-to-disc_files/p115p2.png" /></p>
+<p>If you want to automate/customize the naming of how the image should be saved you can do so as follows:</p>
+<pre class="r"><code>year = 2021
+
+fig.savefig(&#39;images/&#39; + str(year) + &#39;_&#39; + &#39;Student_Table.png&#39;)</code></pre>
+</div>
+<div id="safe-images-to-disc" class="section level2">
+<h2>5.2 Safe images to disc</h2>
+<p>Let’s use a portion of the data set to generate a boxplot.</p>
+<pre class="r"><code>df_boxplot = df[[&#39;Age&#39;, &#39;Work_Experience&#39;]]
+df_boxplot</code></pre>
+<p><img src="/post/2019-05-13-safe-tables-and-images-to-disc_files/p115p3.png" /></p>
+<p>Now we generate the boxplot and save it immediately.</p>
+<pre class="r"><code># Generate boxplot
+sns.boxplot(x=&quot;variable&quot;, y=&quot;value&quot;, data=pd.melt(df_boxplot))
+plt.title(&quot;Student Table&quot;,fontweight=&#39;bold&#39;)
+plt.xlabel(&quot;Columns&quot;,fontweight=&#39;bold&#39;)
+plt.ylabel(&quot;Years&quot;,fontweight=&#39;bold&#39;)
+
+# Safe Image to disc
+plt.savefig(&#39;images/Student_Table_Boxplot.png&#39;)
+
+plt.show()</code></pre>
+<p><img src="/post/2019-05-13-safe-tables-and-images-to-disc_files/p115p4.png" /></p>
+<p>It is important to use the plt.savefig command first and then plt.show() otherwise you will get an image without content.</p>
+<p>The final folder structure (and the included images we just created) looks like this:</p>
+<p><img src="/post/2019-05-13-safe-tables-and-images-to-disc_files/p115p5.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this short post, I showed how to convert tables to images and dump them. I did the same with generated graphics.</p>
+</div>
