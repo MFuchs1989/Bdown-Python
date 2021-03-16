@@ -1,5 +1,5 @@
 ---
-title: Computer Vision - CNN for Multi-Label Classification
+title: Computer Vision - CNN for Multi-Class Classification
 author: Michael Fuchs
 date: '2021-01-15'
 slug: computer-vision-cnn-for-multi-label-classification
@@ -17,7 +17,7 @@ output:
 # 1 Introduction
 
 
-In my last post, we saw how Convolutional Neural Networks can be used to make [binary classifications of image data](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/). Of course you also have the possibility to do multi-label classifications. This is what I will introduce in this post.
+In my last post, we saw how Convolutional Neural Networks can be used to make [binary classifications of image data](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/). Of course you also have the possibility to do multi-class classifications. This is what I will introduce in this post.
 
 
 ![](/post/2021-01-15-computer-vision-cnn-for-multi-label-classification_files/p105s1.png)
@@ -25,7 +25,7 @@ In my last post, we saw how Convolutional Neural Networks can be used to make [b
 Most of the steps are the same as for [binary classification](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/). If new ones are added, I will of course explain them in this post.
 
 
-For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+For this publication I used the images from the *Animal Faces* dataset from the statistics platform ["Kaggle"](https://www.kaggle.com/andrewmvd/animal-faces). You can download the used data from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification). 
 
 
 
@@ -72,7 +72,7 @@ I have chosen the percentage distribution as follows:
 + Validation Part: 20%
 + Testing Part: 20%
 
-You can also download the .py file mentioned before from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Label%20Classification). 
+You can also download the .py file mentioned before from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Computer%20Vision/CNN%20for%20Multi%20Class%20Classification). 
 
 Place this file (preprocessing_multi_CNN.py) next to the folders *cats*, *dogs* and *wilds* and start your Jupyter notebook from here.
 
@@ -270,7 +270,7 @@ model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(num_classes, activation='softmax'))
 ```
 
-This time I am not using the sigmoid function but the softmax, because this is a multi-label classification problem. 
+This time I am not using the sigmoid function but the softmax, because this is a multi-class classification problem. 
 Also the last dense layer is not set to 1, as it was the case with the binary classification, but now gets the number of possible classes to be learned during model training (here 3).
 
 ```{r, eval=F, echo=T}
@@ -690,12 +690,12 @@ print('------------------------------------')
 
 # 6 Conclusion
 
-In addition to my post [CNNs for binary Classification](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/), I have shown here how to make multi-label classifications using Convolutional Neural Networks. 
+In addition to my post [CNNs for binary Classification](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/), I have shown here how to make multi-class classifications using Convolutional Neural Networks. 
 
 
 # 7 Link to the GitHub Repository
 
-Here is the link to my GitHub repository where I have listed all necessary steps: [Computer Vision: CNN for Multi-Label Classification](https://github.com/MFuchs1989/CV-CNN-for-Multi-Label-Classification)
+Here is the link to my GitHub repository where I have listed all necessary steps: [Computer Vision: CNN for Multi-Class Classification](https://github.com/MFuchs1989/CV-CNN-for-Multi-Class-Classification)
 
 
 **References**
