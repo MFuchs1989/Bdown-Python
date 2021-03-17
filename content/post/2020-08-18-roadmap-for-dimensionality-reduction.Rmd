@@ -46,4 +46,4 @@ Here are the links to the individual topics.
 
 # 3 Conclusion
 
-Now we are finally at the end of the publications on the various topics in the field of data science. I will also give a graphic overview of the Machine Learning areas in a separate post.
+Now we are finally at the end of the publications on the various topics in the field of data science. I will also give a graphic overview of the [Machine Learning areas](https://michael-fuchs-python.netlify.app/2020/08/20/roadmap-for-the-machine-learning-fields/) in a separate post.

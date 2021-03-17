@@ -106,7 +106,7 @@ Here again are the links to the respective publications:
 
 The methods mentioned in the listed posts show how to improve regression models.
 
-The focus of the upcoming publications will be on algorithms for classification problems.
+The focus of the upcoming publications will be on algorithms for [classification](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/) problems.
 
 
 
