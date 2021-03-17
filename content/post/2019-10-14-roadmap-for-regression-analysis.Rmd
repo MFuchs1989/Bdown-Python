@@ -90,7 +90,7 @@ Embedded methods:
 + [Stacking Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
 
 
-#5 Regression with Neural Networks
+# 5 Regression with Neural Networks
 
 Of course, in addition to traditional regression algorithms, neural networks can be used to solve regression problems. 
 
@@ -102,7 +102,7 @@ Here again are the links to the respective publications:
 
 
 
-# 5 Conclusion
+# 6 Conclusion
 
 The methods mentioned in the listed posts show how to improve regression models.
 
