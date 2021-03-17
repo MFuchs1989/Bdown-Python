@@ -186,6 +186,8 @@ model.compile(loss='binary_crossentropy',
 
 ## 5.5 Callbacks
 
+If you want to know more about callbacks you can read about it here at [Keras](https://keras.io/api/callbacks/) or also in my post about [Convolutional Neural Networks](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks).
+
 
 ```{r, eval=F, echo=T}
 # Prepare a directory to store all the checkpoints.
@@ -243,7 +245,6 @@ values_of_best_model
 
 
 ## 5.8 Obtaining class assignments
-
 
 Similar to the [neural networks for computer vision](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#obtaining-class-assignments-1), I also save the class assignments for later reuse. 
 
