@@ -247,7 +247,7 @@ else :
 
 ```{r, eval=F, echo=T}
 checkpoint_no = 'ckpt_1_ANN'
-model_name = 'Bird_ANN_2FC_F32_32_epoch_15'
+model_name = 'Bird_ANN_2FC_F64_64_epoch_25'
 ```
 
 
