@@ -313,6 +313,7 @@ model.compile(loss='categorical_crossentropy',
 ```
 
 
+
 ## 5.5 Callbacks
 
 If you want to know more about callbacks you can read about it here at [Keras](https://keras.io/api/callbacks/) or also in my post about [Convolutional Neural Networks](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks). 
