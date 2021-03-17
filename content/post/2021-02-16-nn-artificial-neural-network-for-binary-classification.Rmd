@@ -125,7 +125,7 @@ My approach to using neural networks with Keras is described in detail in my pos
 
 ```{r, eval=F, echo=T}
 checkpoint_no = 'ckpt_1_ANN'
-model_name = 'Wine_ANN_2FC_F16_16_epoch_20'
+model_name = 'Wine_ANN_2FC_F16_16_epoch_25'
 ```
 
 
