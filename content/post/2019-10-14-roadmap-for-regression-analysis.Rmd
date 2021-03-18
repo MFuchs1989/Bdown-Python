@@ -97,6 +97,7 @@ Of course, in addition to traditional regression algorithms, neural networks can
 Here again are the links to the respective publications: 
 
 + [Multi-layer Perceptron Regressor (MLPRegressor)](https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/)
++ [Artificial Neural Network for Regression Analysis)](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/)
 
 
 # 6 Metrics for Regression Analysis

@@ -245,6 +245,8 @@ pk.dump(scaler, open(checkpoint_no + '/' + 'scaler.pkl', 'wb'))
 
 ## 5.9 Validation
 
+What the following metrics mean and how to interpret them I have described in the following post: [Metrics for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/)
+
 ### 5.9.1 Metrics from model training (history)
 
 ```{r, eval=F, echo=T}
