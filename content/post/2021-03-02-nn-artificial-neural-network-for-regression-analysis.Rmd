@@ -454,6 +454,8 @@ plt.show()
 
 ## 5.10 Load best model
 
+Again, reference to the [Computer Vision posts](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#load-best-model) where I explained why and how I cleaned up the Model Checkpoint folders.
+
 ```{r, eval=F, echo=T}
 # Loading the automatically saved model
 model_reloaded = load_model(checkpoint_no + '/' + model_name)
@@ -473,6 +475,11 @@ shutil.rmtree(folder_name_temp, ignore_errors=True)
 ```{r, eval=F, echo=T}
 best_model = load_model(model_name_temp)
 ```
+
+
+The overall folder structure should look like this:
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114s1.png)
 
 
 ## 5.11 Model Testing
@@ -531,40 +538,39 @@ print('Mean Absolute Percentage Error:', metrics.mean_absolute_percentage_error(
 ![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p20.png)
 
 
-Now why is this designated MAE (150875) larger than the test MAE (147006)?
+Now why is this designated MAE (150875) larger than the [test MAE](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#model-testing) (147006)?
+
+This is because when we test MAE with the .evaluate() function, we go through multiple steps (25 in this case) and a separate MAE is calculated for each. On average we get a MAE of 147006 with the .evaluate() function.
 
 
 
+# 6 Prevent Overfitting
+
+At this point I would like to remind you of the topic of overfitting. In my post ([Artificial Neural Network for binary Classification](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#prevent-overfitting)) I explained in more detail what can be done against overfitting. Here again a list with the corresponding links:
+
++ [Reduce the network’s size](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#reduce-the-networks-size)
++ [Adding weight regularization](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#adding-weight-regularization)
++ [Adding dropout](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#adding-dropout)
 
 
 
+# 7 Conclusion
 
 
+Again, as a reminder which metrics should be stored additionally when using neural networks in real life:  
+
++ Mean values of the individual predictors in order to be able to compensate for missing values later on.
++ Encoders for predictors, if categorical features are converted.
++ If variables would have been excluded, a list with the final features should have been stored.
+
+For what reason I give these recommendations can be well read in my [Data Science Post](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/). Here I have also created [best practice guidelines](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/#data-science-best-practice-guidlines-for-ml-model-development) on how to proceed with model training. 
 
 
+**References**
 
+The content of the entire post was created using the following sources:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
-
-
-
+Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
 
 
 

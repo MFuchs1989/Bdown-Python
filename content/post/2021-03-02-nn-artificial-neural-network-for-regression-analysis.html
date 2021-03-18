@@ -53,6 +53,8 @@ output:
 <li><a href="#predictions">5.12 Predictions</a></li>
 <li><a href="#evaluation">5.13 Evaluation</a></li>
 </ul></li>
+<li><a href="#prevent-overfitting">6 Prevent Overfitting</a></li>
+<li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
 </div>
 
@@ -358,6 +360,7 @@ plt.show()</code></pre>
 </div>
 <div id="load-best-model" class="section level2">
 <h2>5.10 Load best model</h2>
+<p>Again, reference to the <a href="https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#load-best-model">Computer Vision posts</a> where I explained why and how I cleaned up the Model Checkpoint folders.</p>
 <pre class="r"><code># Loading the automatically saved model
 model_reloaded = load_model(checkpoint_no + &#39;/&#39; + model_name)
 
@@ -371,6 +374,8 @@ model_reloaded.save(model_name_temp)
 folder_name_temp = os.path.join(checkpoint_dir, model_name)
 shutil.rmtree(folder_name_temp, ignore_errors=True)</code></pre>
 <pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
+<p>The overall folder structure should look like this:</p>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114s1.png" /></p>
 </div>
 <div id="model-testing" class="section level2">
 <h2>5.11 Model Testing</h2>
@@ -405,7 +410,29 @@ print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))
 print(&#39;Root Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred, squared=False))
 print(&#39;Mean Absolute Percentage Error:&#39;, metrics.mean_absolute_percentage_error(testY, y_pred))</code></pre>
 <p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p20.png" /></p>
-<p>Now why is this designated MAE (150875) larger than the test MAE (147006)?</p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
+<p>Now why is this designated MAE (150875) larger than the <a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#model-testing">test MAE</a> (147006)?</p>
+<p>This is because when we test MAE with the .evaluate() function, we go through multiple steps (25 in this case) and a separate MAE is calculated for each. On average we get a MAE of 147006 with the .evaluate() function.</p>
 </div>
+</div>
+<div id="prevent-overfitting" class="section level1">
+<h1>6 Prevent Overfitting</h1>
+<p>At this point I would like to remind you of the topic of overfitting. In my post (<a href="https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#prevent-overfitting">Artificial Neural Network for binary Classification</a>) I explained in more detail what can be done against overfitting. Here again a list with the corresponding links:</p>
+<ul>
+<li><a href="https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#reduce-the-networks-size">Reduce the network’s size</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#adding-weight-regularization">Adding weight regularization</a></li>
+<li><a href="https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/#adding-dropout">Adding dropout</a></li>
+</ul>
+</div>
+<div id="conclusion" class="section level1">
+<h1>7 Conclusion</h1>
+<p>Again, as a reminder which metrics should be stored additionally when using neural networks in real life:</p>
+<ul>
+<li>Mean values of the individual predictors in order to be able to compensate for missing values later on.</li>
+<li>Encoders for predictors, if categorical features are converted.</li>
+<li>If variables would have been excluded, a list with the final features should have been stored.</li>
+</ul>
+<p>For what reason I give these recommendations can be well read in my <a href="https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/">Data Science Post</a>. Here I have also created <a href="https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/#data-science-best-practice-guidlines-for-ml-model-development">best practice guidelines</a> on how to proceed with model training.</p>
+<p><strong>References</strong></p>
+<p>The content of the entire post was created using the following sources:</p>
+<p>Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.</p>
 </div>
