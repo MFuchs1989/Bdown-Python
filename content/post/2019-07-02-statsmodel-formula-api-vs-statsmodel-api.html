@@ -31,7 +31,7 @@ output:
 <h1>1 Introduction</h1>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28s1.png" /></p>
 <p>Image Source: <a href="https://www.statsmodels.org/stable/index.html">“Statsmodels.org”</a></p>
-<p>In my last post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a> I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).</p>
+<p>In my post <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a> I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).</p>
 <p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
@@ -57,8 +57,8 @@ mult_reg.head()</code></pre>
 <p>Let’s print the summary:</p>
 <pre class="r"><code>print(SMF_model.summary())</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png" /></p>
-<p>OK, as in <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a>, we get an R<sup>2</sup> of .54.</p>
-<pre class="r"><code>print(&#39;R2: &#39;, SMF_model.rsquared)</code></pre>
+<p>OK, as in <a href="https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/">“Introduction to regression analysis and predictions”</a>, we get an R² of .54.</p>
+<pre class="r"><code>print(&#39;R²: &#39;, SMF_model.rsquared)</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png" /></p>
 <p>But what is the difference between the statsmodel.formula.api and the statsmodel.api ??</p>
 </div>
@@ -72,8 +72,8 @@ SM_model = sm.OLS(y, x).fit()</code></pre>
 <p>Let’s print the summary again:</p>
 <pre class="r"><code>print(SM_model.summary())</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png" /></p>
-<p>Mh wait a minute … why do we get an R<sup>2</sup> of .84 this time??</p>
-<pre class="r"><code>print(&#39;R2: &#39;, SM_model.rsquared)</code></pre>
+<p>Mh wait a minute … why do we get an R² of .84 this time??</p>
+<pre class="r"><code>print(&#39;R²: &#39;, SM_model.rsquared)</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png" /></p>
 <p>The reason is that in statsmodel.formula.api a constant is automatically added to the data and an intercept in fitted. In statsmodels.api, you have to add a constant yourself! You can do that using the .add_constant() function.</p>
 <pre class="r"><code>x_new = sm.add_constant(x)
@@ -85,8 +85,8 @@ x_new.head()</code></pre>
 <p>..and print the results:</p>
 <pre class="r"><code>print(SM_model_2.summary())</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p7.png" /></p>
-<p>Perfect, we get an R<sup>2</sup> of .54 again.</p>
-<pre class="r"><code>print(&#39;R2: &#39;, SM_model_2.rsquared)</code></pre>
+<p>Perfect, we get an R² of .54 again.</p>
+<pre class="r"><code>print(&#39;R²: &#39;, SM_model_2.rsquared)</code></pre>
 <p><img src="/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p8.png" /></p>
 </div>
 <div id="conclusion" class="section level1">

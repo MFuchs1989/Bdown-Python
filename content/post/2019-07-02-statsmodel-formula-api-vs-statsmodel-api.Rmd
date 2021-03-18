@@ -24,7 +24,7 @@ Image Source: ["Statsmodels.org"](https://www.statsmodels.org/stable/index.html)
 
 
 
-In my last post ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/) I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).
+In my post ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/) I used the statsmodel library to identify significant features influencing the property price. In this publication I would like to show the difference of the statsmodel.formula.api (smf) and the statsmodel.api (sm).
 
 
 For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
@@ -82,10 +82,10 @@ print(SMF_model.summary())
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p2.png)
 
 
-OK, as in ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), we get an R^2^ of .54.
+OK, as in ["Introduction to regression analysis and predictions"](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/), we get an R² of .54.
 
 ```{r, eval=F, echo=T}
-print('R2: ', SMF_model.rsquared)
+print('R²: ', SMF_model.rsquared)
 ```
 
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p3.png)
@@ -117,10 +117,10 @@ print(SM_model.summary())
 
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p4.png)
 
-Mh wait a minute ... why do we get an R^2^ of .84 this time??
+Mh wait a minute ... why do we get an R² of .84 this time??
 
 ```{r, eval=F, echo=T}
-print('R2: ', SM_model.rsquared)
+print('R²: ', SM_model.rsquared)
 ```
 
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p5.png)
@@ -152,11 +152,11 @@ print(SM_model_2.summary())
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p7.png)
 
 
-Perfect, we get an R^2^ of .54 again.
+Perfect, we get an R² of .54 again.
 
 
 ```{r, eval=F, echo=T}
-print('R2: ', SM_model_2.rsquared)
+print('R²: ', SM_model_2.rsquared)
 ```
 
 ![](/post/2019-07-02-statsmodel-formula-api-vs-statsmodel-api_files/p28p8.png)
