@@ -38,6 +38,11 @@ output:
 <li><a href="#fitting-the-model">5.6 Fitting the model</a></li>
 <li><a href="#obtaining-the-best-model-values">5.7 Obtaining the best model values</a></li>
 <li><a href="#storing-all-necessary-metrics">5.8 Storing all necessary metrics</a></li>
+<li><a href="#validation">5.9 Validation</a>
+<ul>
+<li><a href="#metrics-from-model-training-history">5.9.1 Metrics from model training (history)</a></li>
+<li><a href="#k-fold-cross-validation">5.9.2 K-fold cross validation</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -191,10 +196,45 @@ values_of_best_model</code></pre>
 </div>
 <div id="storing-all-necessary-metrics" class="section level2">
 <h2>5.8 Storing all necessary metrics</h2>
+<p>After we have used the StandardScaler in <a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#scaling">chapter 4.3</a>, we should also save it for later use.</p>
+<pre class="r"><code>pk.dump(scaler, open(checkpoint_no + &#39;/&#39; + &#39;scaler.pkl&#39;, &#39;wb&#39;))</code></pre>
+</div>
+<div id="validation" class="section level2">
+<h2>5.9 Validation</h2>
+<div id="metrics-from-model-training-history" class="section level3">
+<h3>5.9.1 Metrics from model training (history)</h3>
+<pre class="r"><code>mae = history.history[&#39;mae&#39;]
+val_mae = history.history[&#39;val_mae&#39;]
+loss = history.history[&#39;loss&#39;]
+val_loss = history.history[&#39;val_loss&#39;]
+
+epochs = range(1, len(mae) + 1)
+
+plt.plot(epochs, mae, &#39;bo&#39;, label=&#39;Training MAE&#39;)
+plt.plot(epochs, val_mae, &#39;b&#39;, label=&#39;Validation MAE&#39;)
+plt.title(&#39;Training and validation MAE&#39;)
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
+plt.plot(epochs, val_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
+plt.title(&#39;Training and validation loss&#39;)
+plt.legend()
+
+plt.show()</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p8.png" /></p>
+</div>
+<div id="k-fold-cross-validation" class="section level3">
+<h3>5.9.2 K-fold cross validation</h3>
+<p>In the following, I will perform cross-validation for the selected layer structure (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a>) and the specified parameter (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a>). The cross-validation is performed on the trainX_scaled and trainY parts, since the metrics from the model training (chapter 5.9.1) were also created based only on these data and the test part remains untouched until the end.</p>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
+<p><a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a></p>
+<p><a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a></p>
 <p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
 <p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
 <p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
 <p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
+</div>
 </div>
 </div>

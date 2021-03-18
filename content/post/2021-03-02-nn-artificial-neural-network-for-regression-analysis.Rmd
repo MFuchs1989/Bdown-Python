@@ -236,19 +236,46 @@ values_of_best_model
 ## 5.8 Storing all necessary metrics
 
 
-```{r, eval=F, echo=T}
+After we have used the StandardScaler in [chapter 4.3](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#scaling), we should also save it for later use. 
 
+```{r, eval=F, echo=T}
+pk.dump(scaler, open(checkpoint_no + '/' + 'scaler.pkl', 'wb'))
 ```
 
 
+## 5.9 Validation
+
+### 5.9.1 Metrics from model training (history)
+
+```{r, eval=F, echo=T}
+mae = history.history['mae']
+val_mae = history.history['val_mae']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(mae) + 1)
+
+plt.plot(epochs, mae, 'bo', label='Training MAE')
+plt.plot(epochs, val_mae, 'b', label='Validation MAE')
+plt.title('Training and validation MAE')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p8.png)
 
 
+### 5.9.2  K-fold cross validation
 
-
-
-
-
-
+In the following, I will perform cross-validation for the selected layer structure ([chapter 5.3](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure)) and the specified parameter ([chapter 5.2](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings)). The cross-validation is performed on the trainX_scaled and trainY parts, since the metrics from the model training (chapter 5.9.1) were also created based only on these data and the test part remains untouched until the end. 
 
 
 ```{r, eval=F, echo=T}
@@ -262,9 +289,9 @@ values_of_best_model
 
 
 
+[chapter 5.2](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings)
 
-
-
+[chapter 5.3](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure)
 
 
 
