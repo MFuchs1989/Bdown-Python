@@ -41,8 +41,17 @@ output:
 <li><a href="#validation">5.9 Validation</a>
 <ul>
 <li><a href="#metrics-from-model-training-history">5.9.1 Metrics from model training (history)</a></li>
-<li><a href="#k-fold-cross-validation">5.9.2 K-fold cross validation</a></li>
+<li><a href="#k-fold-cross-validation">5.9.2 K-fold cross validation</a>
+<ul>
+<li><a href="#determination-of-the-layer-structure-as-well-as-the-number-of-cross-validations">5.9.2.1 Determination of the layer structure as well as the number of cross-validations</a></li>
+<li><a href="#obtaining-the-mae-for-each-fold">5.9.2.2 Obtaining the MAE for each fold</a></li>
+<li><a href="#obtaining-the-mae-for-each-epoch">5.9.2.3 Obtaining the MAE for each epoch</a></li>
 </ul></li>
+</ul></li>
+<li><a href="#load-best-model">5.10 Load best model</a></li>
+<li><a href="#model-testing">5.11 Model Testing</a></li>
+<li><a href="#predictions">5.12 Predictions</a></li>
+<li><a href="#evaluation">5.13 Evaluation</a></li>
 </ul></li>
 </ul>
 </div>
@@ -227,14 +236,176 @@ plt.show()</code></pre>
 </div>
 <div id="k-fold-cross-validation" class="section level3">
 <h3>5.9.2 K-fold cross validation</h3>
-<p>In the following, I will perform cross-validation for the selected layer structure (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a>) and the specified parameter (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a>). The cross-validation is performed on the trainX_scaled and trainY parts, since the metrics from the model training (chapter 5.9.1) were also created based only on these data and the test part remains untouched until the end.</p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
-<p><a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a></p>
-<p><a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a></p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
-<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
+<p>In the following, I will perform cross-validation for the selected layer structure (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a>) and the specified parameter (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a>). The cross-validation is performed on the trainX_scaled and trainY parts, since the metrics from the model training (<a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#metrics-from-model-training-history">chapter 5.9.1</a>) were also created based only on these data and the test part remains untouched until the end.</p>
+<div id="determination-of-the-layer-structure-as-well-as-the-number-of-cross-validations" class="section level4">
+<h4>5.9.2.1 Determination of the layer structure as well as the number of cross-validations</h4>
+<p>In order to be able to validate the layered structure defined in <a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure">chapter 5.3</a> in a meaningful way, the same structure must of course also be used here. The same applies to the parameters defined in <a href="https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings">chapter 5.2</a>.</p>
+<pre class="r"><code>def build_model():
+    model = models.Sequential()
+    model.add(layers.Dense(64, activation=&#39;relu&#39;,
+                           input_shape=(input_shape,)))
+    model.add(layers.Dense(64, activation=&#39;relu&#39;))
+    model.add(layers.Dense(1))
+    model.compile(loss=&#39;mse&#39;, optimizer=&#39;rmsprop&#39;, metrics=[&#39;mae&#39;])
+    return model</code></pre>
+<p>Here we only define the number of cross validations that should be performed.</p>
+<pre class="r"><code>k = 5
+num_val_samples = len(trainX) // k</code></pre>
 </div>
+<div id="obtaining-the-mae-for-each-fold" class="section level4">
+<h4>5.9.2.2 Obtaining the MAE for each fold</h4>
+<p>Here, each MAE for each fold is stored in <code>all_scores</code>.</p>
+<pre class="r"><code>all_scores = []
+for i in range(k):
+    print(&#39;Processing Fold&#39;, i)
+    val_data = trainX_scaled[i * num_val_samples: (i + 1) * num_val_samples]
+    val_targets = trainY[i * num_val_samples: (i + 1) * num_val_samples]
+
+    partial_train_data = np.concatenate(
+        [trainX_scaled[:i * num_val_samples],
+         trainX_scaled[(i + 1) * num_val_samples:]],
+        axis=0)
+    partial_train_targets = np.concatenate(
+        [trainY[:i * num_val_samples],
+         trainY[(i + 1) * num_val_samples:]],
+        axis=0)
+
+    model = build_model()
+    model.fit(partial_train_data, partial_train_targets,
+              epochs=n_epochs, batch_size=n_batch_size, verbose=0)
+    val_mse, val_mae = model.evaluate(val_data, val_targets, verbose=0)
+    all_scores.append(val_mae)
+    print(&#39;MAE: &#39; + str(val_mae))
+    print(&#39;----------------------&#39;)</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p9.png" /></p>
+<pre class="r"><code>for i, val in enumerate(all_scores):
+    print(&#39;Fold &#39; + str(i) +&#39;: &#39; + &#39;MAE of&#39;, val)</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p10.png" /></p>
+<pre class="r"><code>print(&#39;Mean MAE of all folds: &#39; + str(np.mean(all_scores)))</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p11.png" /></p>
+</div>
+<div id="obtaining-the-mae-for-each-epoch" class="section level4">
+<h4>5.9.2.3 Obtaining the MAE for each epoch</h4>
+<p>Here, each MAE of each step for each epoch for each epoch is stored in <code>all_mae_histories</code>.</p>
+<pre class="r"><code>all_mae_histories = []
+for i in range(k):
+    print(&#39;Processing Fold&#39;, i)
+    val_data = trainX_scaled[i * num_val_samples: (i + 1) * num_val_samples]
+    val_targets = trainY[i * num_val_samples: (i + 1) * num_val_samples]
+    partial_train_data = np.concatenate(
+        [trainX_scaled[:i * num_val_samples],
+         trainX_scaled[(i + 1) * num_val_samples:]],
+        axis=0)
+    partial_train_targets = np.concatenate(
+        [trainY[:i * num_val_samples],
+         trainY[(i + 1) * num_val_samples:]],
+        axis=0)
+
+    model = build_model()
+    history = model.fit(partial_train_data, partial_train_targets,
+                        validation_data=(val_data, val_targets),
+                        epochs=n_epochs, batch_size=n_batch_size, verbose=0)
+    mae_history = history.history[&#39;val_mae&#39;]
+    all_mae_histories.append(mae_history)</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p12.png" /></p>
+<p>Here we now calculate the average MAE achieved per epoch.</p>
+<pre class="r"><code>average_mae_history = [np.mean([x[i] for x in all_mae_histories]) for i in range(n_epochs)]
+
+len(average_mae_history)</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p13.png" /></p>
+<pre class="r"><code>plt.plot(range(1, len(average_mae_history) + 1), average_mae_history)
+plt.title(&#39;Validation MAE per Epoch&#39;)
+plt.xlabel(&#39;Epochs&#39;)
+plt.ylabel(&#39;Validation MAE&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p14.png" /></p>
+<p>With real-world data, we often get messy curves. Here the following function can help:</p>
+<pre class="r"><code>def smooth_curve(points, factor=0.9):
+      &#39;&#39;&#39;
+      Function for smoothing data points
+
+      Args:
+          points (float64): Array of floats to be smoothed, numpy array of floats
+
+      Returns:
+          Smoothed data points
+      &#39;&#39;&#39;  
+      smoothed_points = []
+      for point in points:
+        if smoothed_points:
+          previous = smoothed_points[-1]
+          smoothed_points.append(previous * factor + point * (1 - factor))
+        else:
+          smoothed_points.append(point)
+      return smoothed_points</code></pre>
+<p>Here we also have the option to exclude the first n values from the graph. So that the graphic does not become misleading with regard to the displayed epochs, I change the index accordingly before I create the plot.</p>
+<pre class="r"><code>n_first_observations_to_exclude = 30
+
+smooth_mae_history = smooth_curve(average_mae_history[n_first_observations_to_exclude:])
+
+smooth_mae_history = pd.DataFrame(smooth_mae_history)
+smooth_mae_history = smooth_mae_history.set_index(smooth_mae_history.index + n_first_observations_to_exclude)
+smooth_mae_history.head()</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p15.png" /></p>
+<pre class="r"><code>plt.plot(smooth_mae_history)
+plt.title(&#39;Validation MAE per Epoch&#39;)
+plt.xlabel(&#39;Epochs&#39;)
+plt.ylabel(&#39;Validation MAE&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p16.png" /></p>
+</div>
+</div>
+</div>
+<div id="load-best-model" class="section level2">
+<h2>5.10 Load best model</h2>
+<pre class="r"><code># Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + &#39;/&#39; + model_name)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + &#39;.h5&#39;)
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)</code></pre>
+<pre class="r"><code>best_model = load_model(model_name_temp)</code></pre>
+</div>
+<div id="model-testing" class="section level2">
+<h2>5.11 Model Testing</h2>
+<pre class="r"><code>test_loss, test_mae = best_model.evaluate(testX_scaled,
+                                          testY,
+                                          steps=n_test_steps)
+print()
+print(&#39;Test MAE:&#39;, test_mae)</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p17.png" /></p>
+</div>
+<div id="predictions" class="section level2">
+<h2>5.12 Predictions</h2>
+<pre class="r"><code>y_pred = model.predict(testX_scaled)
+y_pred[:5]</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p18.png" /></p>
+</div>
+<div id="evaluation" class="section level2">
+<h2>5.13 Evaluation</h2>
+<pre class="r"><code>df_testY = pd.DataFrame(testY)
+df_y_pred = pd.DataFrame(y_pred)
+
+df_testY.reset_index(drop=True, inplace=True)
+df_y_pred.reset_index(drop=True, inplace=True)
+
+df_results = pd.concat([df_testY, df_y_pred], axis=1)
+df_results.columns = [&#39;Actual&#39;, &#39;Predicted&#39;]
+
+df_results</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p19.png" /></p>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))
+print(&#39;Root Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred, squared=False))
+print(&#39;Mean Absolute Percentage Error:&#39;, metrics.mean_absolute_percentage_error(testY, y_pred))</code></pre>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p20.png" /></p>
+<p>Now why is this designated MAE (150875) larger than the test MAE (147006)?</p>
+<p><img src="/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png" /></p>
 </div>
 </div>
