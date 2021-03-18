@@ -288,7 +288,6 @@ In the following, I will perform cross-validation for the selected layer structu
 
 
 
-
 [chapter 5.2](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#parameter-settings)
 
 [chapter 5.3](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/#layer-structure)
