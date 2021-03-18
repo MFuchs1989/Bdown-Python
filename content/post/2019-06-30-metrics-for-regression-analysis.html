@@ -1,0 +1,122 @@
+---
+title: Metrics for Regression Analysis
+author: Michael Fuchs
+date: '2019-06-30'
+slug: metrics-for-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#data-pre-processing">3 Data pre-processing</a>
+<ul>
+<li><a href="#train-test-split">3.1 Train-Test Split</a></li>
+<li><a href="#scaling">3.2 Scaling</a></li>
+</ul></li>
+<li><a href="#model-fitting">4 Model fitting</a></li>
+<li><a href="#model-evaluation">5 Model Evaluation</a>
+<ul>
+<li><a href="#r²">5.1 R²</a></li>
+<li><a href="#mean-absolute-error-mae">5.2 Mean Absolute Error (MAE)</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my post <a href="https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/">Introduction to regression analysis and predictions</a> I showed how to build regression models and also used evaluation metrics under <a href="https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/#linear-regression-with-scikit-learn">chapter 4</a>.</p>
+<p>In this publication I would like to present metrics for regression analyses in more detail and show how they can be calculated.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">“GitHub Repository”</a>.</p>
+</div>
+<div id="loading-the-libraries-and-the-data" class="section level1">
+<h1>2 Loading the libraries and the data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.linear_model import LinearRegression
+
+from sklearn import metrics</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;house_prices.csv&#39;)
+df = df.drop([&#39;id&#39;, &#39;date&#39;, &#39;yr_built&#39;, &#39;yr_renovated&#39;, &#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;], axis=1)
+df.head()</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p1.png" /></p>
+<p>We will do the model training quick and dirty…</p>
+</div>
+<div id="data-pre-processing" class="section level1">
+<h1>3 Data pre-processing</h1>
+<div id="train-test-split" class="section level2">
+<h2>3.1 Train-Test Split</h2>
+<pre class="r"><code>x = df.drop(&#39;price&#39;, axis=1)
+y = df[&#39;price&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+<div id="scaling" class="section level2">
+<h2>3.2 Scaling</h2>
+<pre class="r"><code>sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)</code></pre>
+</div>
+</div>
+<div id="model-fitting" class="section level1">
+<h1>4 Model fitting</h1>
+<pre class="r"><code>lm = LinearRegression()
+lm.fit(trainX_scaled, trainY)</code></pre>
+</div>
+<div id="model-evaluation" class="section level1">
+<h1>5 Model Evaluation</h1>
+<pre class="r"><code>y_pred = lm.predict(testX_scaled)</code></pre>
+<p>Here are the prediction results:</p>
+<pre class="r"><code>df_results = pd.DataFrame({&#39;Actual&#39;: testY, &#39;Predicted&#39;: y_pred})
+df_results.head()</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p2.png" /></p>
+<div id="r²" class="section level2">
+<h2>5.1 R²</h2>
+<p>The value R² tells us how much variance in the outcome variable can be explained by the predictors. Here: 60.6 %.</p>
+<pre class="r"><code>print(&#39;R²: &#39; + str(lm.score(trainX_scaled, trainY)))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p1184p3.png" /></p>
+</div>
+<div id="mean-absolute-error-mae" class="section level2">
+<h2>5.2 Mean Absolute Error (MAE)</h2>
+<p>MAE stands for Mean Absolute Error and is probably the easiest regression error metric to understand. Here, each residual is calculated for each data point, taking only the absolute value of each point. This prevents positive and negative residuals from not canceling each other out. Then the average of all residuals is taken.</p>
+<p>Here is a simple example:</p>
+<p>We have the actual cost of different rooms.</p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118s1.png" /></p>
+<p>Now we contrast this with the Predicted Values.</p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118s2.png" /></p>
+<p>Now we calculate the error value as follows:</p>
+<p><code>Error = Actual Costs - Predicted Costs</code></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118s3.png" /></p>
+<p>The absolute values are now summed up.</p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118s4.png" /></p>
+<p>Now we calculate the mean value of the absolute error values.</p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118s5.png" /></p>
+<p>This is our measure of model quality. In this example, we can say that our model predictions are off by about €45.</p>
+<p>Simply the MAE can be calculated with the following function:</p>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p6.png" /></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
+</div>
+</div>

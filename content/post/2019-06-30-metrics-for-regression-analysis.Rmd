@@ -1,0 +1,222 @@
+---
+title: Metrics for Regression Analysis
+author: Michael Fuchs
+date: '2019-06-30'
+slug: metrics-for-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+In my post [Introduction to regression analysis and predictions](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/) I showed how to build regression models and also used evaluation metrics under [chapter 4](https://michael-fuchs-python.netlify.app/2019/06/28/introduction-to-regression-analysis-and-predictions/#linear-regression-with-scikit-learn). 
+
+In this publication I would like to present metrics for regression analyses in more detail and show how they can be calculated. 
+
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+
+
+# 2 Loading the libraries and the data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.linear_model import LinearRegression
+
+from sklearn import metrics
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('house_prices.csv')
+df = df.drop(['id', 'date', 'yr_built', 'yr_renovated', 'zipcode', 'lat', 'long'], axis=1)
+df.head()
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p1.png)
+
+We will do the model training quick and dirty...
+
+
+# 3 Data pre-processing
+
+## 3.1 Train-Test Split
+
+```{r, eval=F, echo=T}
+x = df.drop('price', axis=1)
+y = df['price']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+## 3.2 Scaling
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+
+trainX_scaled = scaler.transform(trainX)
+testX_scaled = scaler.transform(testX)
+```
+
+
+# 4 Model fitting
+
+```{r, eval=F, echo=T}
+lm = LinearRegression()
+lm.fit(trainX_scaled, trainY)
+```
+
+
+# 5 Model Evaluation
+
+```{r, eval=F, echo=T}
+y_pred = lm.predict(testX_scaled)
+```
+
+Here are the prediction results:
+
+```{r, eval=F, echo=T}
+df_results = pd.DataFrame({'Actual': testY, 'Predicted': y_pred})
+df_results.head()
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p2.png)
+
+
+## 5.1 R²
+
+The value R² tells us how much variance in the outcome variable can be explained by the predictors. Here: 60.6 %.
+
+
+```{r, eval=F, echo=T}
+print('R²: ' + str(lm.score(trainX_scaled, trainY)))
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p1184p3.png)
+
+
+## 5.2 Mean Absolute Error (MAE)
+
+MAE stands for Mean Absolute Error and is probably the easiest regression error metric to understand. Here, each residual is calculated for each data point, taking only the absolute value of each point. This prevents positive and negative residuals from not canceling each other out. Then the average of all residuals is taken.
+
+Here is a simple example:
+
+
+We have the actual cost of different rooms.
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118s1.png)
+
+
+Now we contrast this with the Predicted Values.
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118s2.png)
+
+
+Now we calculate the error value as follows:
+
+`Error = Actual Costs - Predicted Costs`
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118s3.png)
+
+
+The absolute values are now summed up.
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118s4.png)
+
+
+Now we calculate the mean value of the absolute error values. 
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118s5.png)
+
+This is our measure of model quality. In this example, we can say that our model predictions are off by about €45.
+
+
+Simply the MAE can be calculated with the following function:
+
+
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY, y_pred))
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p6.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
