@@ -1,0 +1,67 @@
+---
+title: NN - Artificial Neural Network for Regression Analysis
+author: Michael Fuchs
+date: '2021-03-02'
+slug: nn-artificial-neural-network-for-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+In my last post, I showed how to do [binary classification](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/) using the Keras deep learning library. Now I would like to show how to make multi-class classifications. 
+
+For this publication the dataset *bird* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+
+# 2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+import os
+import shutil
+import pickle as pk
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model
+```
+
+
+
+# 3 Loading the data
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('bird.csv').dropna()
+
+print()
+print('Shape of dataframe:')
+print(str(df.shape))
+print()
+print('Head of dataframe:')
+df.head()
+```
+
+
+
+
+
+
+
+
