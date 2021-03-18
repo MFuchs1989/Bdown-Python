@@ -415,6 +415,7 @@ Finally, here is an overview of the created models and their parameters:
 
 ![](/post/2019-07-14-non-linear-regression-analysis_files/p14p28.png)
 
+What these metrics mean and how to interpret them I have described in the following post: [Metrics for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/)
 
 
 # Source
