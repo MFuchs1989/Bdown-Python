@@ -91,6 +91,7 @@ plt.show()</code></pre>
 print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
 <p><img src="/post/2021-02-10-nn-multi-layer-perceptron-regressor-mlpregressor_files/p111p4.png" /></p>
+<p>What these metrics mean and how to interpret them I have described in the following post: <a href="https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/">Metrics for Regression Analysis</a></p>
 <pre class="r"><code>plt.plot(mlp_reg.loss_curve_)
 plt.title(&quot;Loss Curve&quot;, fontsize=14)
 plt.xlabel(&#39;Iterations&#39;)

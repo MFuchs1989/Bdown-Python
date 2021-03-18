@@ -400,7 +400,7 @@ coeff_df
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p23.png)
 
 
-Calculation of R^2^:
+Calculation of R²:
 ```{r, eval=F, echo=T}
 lm.score(trainX, trainY)
 ```
@@ -443,6 +443,9 @@ print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(testY, y_pr
 ```
 
 ![](/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p27.png)
+
+
+What these metrics mean and how to interpret them I have described in the following post: [Metrics for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/)
 
 
 

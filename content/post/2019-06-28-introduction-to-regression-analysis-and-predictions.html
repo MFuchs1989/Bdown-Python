@@ -214,7 +214,7 @@ price = 4.829.374,95 + 342,68 * sqft_living - 59.209,59 * bedrooms - 2.436,52 * 
 <pre class="r"><code>coeff_df = pd.DataFrame(lm.coef_, feature_cols, columns=[&#39;Coefficient&#39;])  
 coeff_df</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p23.png" /></p>
-<p>Calculation of R<sup>2</sup>:</p>
+<p>Calculation of R²:</p>
 <pre class="r"><code>lm.score(trainX, trainY)</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p24.png" /></p>
 <pre class="r"><code>y_pred = lm.predict(testX)</code></pre>
@@ -232,6 +232,7 @@ plt.show()</code></pre>
 print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))  
 print(&#39;Root Mean Squared Error:&#39;, np.sqrt(metrics.mean_squared_error(testY, y_pred)))</code></pre>
 <p><img src="/post/2019-06-28-introduction-to-regression-analysis-and-predictions_files/p13p27.png" /></p>
+<p>What these metrics mean and how to interpret them I have described in the following post: <a href="https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/">Metrics for Regression Analysis</a></p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
