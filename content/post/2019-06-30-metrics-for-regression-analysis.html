@@ -164,6 +164,10 @@ Both MAPE and MAE are accompanied by a clear interpretation, as percentages are 
 <div id="summary-of-the-metrics" class="section level2">
 <h2>5.6 Summary of the Metrics</h2>
 <p>Here is again a summary of the metrics presented:</p>
+<pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))
+print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))
+print(&#39;Root Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred, squared=False))
+print(&#39;Mean Absolute Percentage Error:&#39;, metrics.mean_absolute_percentage_error(testY, y_pred))</code></pre>
 <p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p13.png" /></p>
 <p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p14.png" /></p>
 </div>

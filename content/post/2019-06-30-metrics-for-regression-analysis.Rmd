@@ -256,6 +256,13 @@ print('Mean Absolute Percentage Error:', metrics.mean_absolute_percentage_error(
 Here is again a summary of the metrics presented:
 
 
+```{r, eval=F, echo=T}
+print('Mean Absolute Error:', metrics.mean_absolute_error(testY, y_pred))
+print('Mean Squared Error:', metrics.mean_squared_error(testY, y_pred))
+print('Root Mean Squared Error:', metrics.mean_squared_error(testY, y_pred, squared=False))
+print('Mean Absolute Percentage Error:', metrics.mean_absolute_percentage_error(testY, y_pred))
+```
+
 ![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p13.png)
 
 
