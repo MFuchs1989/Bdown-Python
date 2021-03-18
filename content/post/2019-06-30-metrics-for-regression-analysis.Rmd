@@ -156,67 +156,119 @@ Simply the MAE can be calculated with the following function:
 print('Mean Absolute Error:', metrics.mean_absolute_error(testY, y_pred))
 ```
 
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p4.png)
+
+
+Of course, you could also calculate this value manually as in our example above.
+
+
+```{r, eval=F, echo=T}
+df_results['error'] = df_results['Actual'] - df_results['Predicted']
+df_results.head()
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p5.png)
+
+
+```{r, eval=F, echo=T}
+df_results['error_abs'] = df_results['error'].abs()
+df_results.head()
+```
+
 ![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p6.png)
 
 
+```{r, eval=F, echo=T}
+sum_error_abs = df_results['error_abs'].sum()
+sum_error_abs
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p7.png)
 
 
+```{r, eval=F, echo=T}
+no_observations = len(df_results)
+no_observations
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p8.png)
 
 
+```{r, eval=F, echo=T}
+mae = sum_error_abs / no_observations
+mae
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p9.png)
+
+As we can see, this is the same value as above. 
 
 
+## 5.3 Mean Squared Error (MSE)
+
+MSE stands for Mean Squared Error and is just like the Mean Absolute Error, but differs from it in that it squares the difference before summing instead of just taking the absolute value. 
+
+Since the difference is squared, the MSE will almost always be greater than the MAE. For this reason, the MSE cannot be directly compared to the MAE. Only the error metric of our model can be compared to that of a competing model. The effect of the quadratic term in the MSE equation is most apparent when there are outliers in the data set. Whereas in MAE this residual contributes proportionally to the total error, in MSE the error grows quadratically. Thus, existing outliers contribute to a much higher total error in MSE than they would in MAE.
 
 
+```{r, eval=F, echo=T}
+print('Mean Squared Error:', metrics.mean_squared_error(testY, y_pred))
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p10.png)
 
 
+## 5.4 Root Mean Squared Error (RMSE)
+
+RMSE stands for Root Mean Squared Error and this is the square root of the MSE. 
+We know that the MSE is squared. Thus, its units do not match those of the original output. To convert the error metric back to similar units, the RMSE is used. This simplifies the interpretation again. Both MSE and RMSE are affected by outliers. Their common goal is to measure how large the residuals are distributed. Their values lie in the range between zero and positive infinity. 
 
 
+```{r, eval=F, echo=T}
+print('Root Mean Squared Error:', metrics.mean_squared_error(testY, y_pred, squared=False))
+```
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p11.png)
+
+
+## 5.5 Mean Absolute Percentage Error (MAPE)
+
+
+Another possible evaluation metric is the use of percentages. Here, each prediction is scaled against the value it is supposed to estimate. 
+MAPE stands for Mean Absolute Percentage Error and is the percentage equivalent of MAE. 
+
+MAPE indicates how far the predictions of the model used deviate on average from the corresponding outputs.
+Both MAPE and MAE are accompanied by a clear interpretation, as percentages are easier to conceptualize for most people.
+
+Both MAPE and MAE are robust to the effects of outliers. This is due to the use of absolute values. 
 
 
 
 ```{r, eval=F, echo=T}
-
+print('Mean Absolute Percentage Error:', metrics.mean_absolute_percentage_error(testY, y_pred))
 ```
 
-![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p12.png)
+
+
+## 5.6 Summary of the Metrics
+
+Here is again a summary of the metrics presented:
+
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p13.png)
+
+
+![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p14.png)
+
+
+# 6 Conclusion
+
+
+In this post, I showed which evaluation metrics you can use in a regression analysis and how to interpret and calculate them. 
 
 
 
 
 
 
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png)

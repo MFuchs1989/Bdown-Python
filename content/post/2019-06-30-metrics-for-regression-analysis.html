@@ -31,7 +31,12 @@ output:
 <ul>
 <li><a href="#r²">5.1 R²</a></li>
 <li><a href="#mean-absolute-error-mae">5.2 Mean Absolute Error (MAE)</a></li>
+<li><a href="#mean-squared-error-mse">5.3 Mean Squared Error (MSE)</a></li>
+<li><a href="#root-mean-squared-error-rmse">5.4 Root Mean Squared Error (RMSE)</a></li>
+<li><a href="#mean-absolute-percentage-error-mape">5.5 Mean Absolute Percentage Error (MAPE)</a></li>
+<li><a href="#summary-of-the-metrics">5.6 Summary of the Metrics</a></li>
 </ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -113,10 +118,57 @@ df_results.head()</code></pre>
 <p>This is our measure of model quality. In this example, we can say that our model predictions are off by about €45.</p>
 <p>Simply the MAE can be calculated with the following function:</p>
 <pre class="r"><code>print(&#39;Mean Absolute Error:&#39;, metrics.mean_absolute_error(testY, y_pred))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p4.png" /></p>
+<p>Of course, you could also calculate this value manually as in our example above.</p>
+<pre class="r"><code>df_results[&#39;error&#39;] = df_results[&#39;Actual&#39;] - df_results[&#39;Predicted&#39;]
+df_results.head()</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p5.png" /></p>
+<pre class="r"><code>df_results[&#39;error_abs&#39;] = df_results[&#39;error&#39;].abs()
+df_results.head()</code></pre>
 <p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p6.png" /></p>
-<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
-<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
-<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
-<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p.png" /></p>
+<pre class="r"><code>sum_error_abs = df_results[&#39;error_abs&#39;].sum()
+sum_error_abs</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p7.png" /></p>
+<pre class="r"><code>no_observations = len(df_results)
+no_observations</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p8.png" /></p>
+<pre class="r"><code>mae = sum_error_abs / no_observations
+mae</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p9.png" /></p>
+<p>As we can see, this is the same value as above.</p>
 </div>
+<div id="mean-squared-error-mse" class="section level2">
+<h2>5.3 Mean Squared Error (MSE)</h2>
+<p>MSE stands for Mean Squared Error and is just like the Mean Absolute Error, but differs from it in that it squares the difference before summing instead of just taking the absolute value.</p>
+<p>Since the difference is squared, the MSE will almost always be greater than the MAE. For this reason, the MSE cannot be directly compared to the MAE. Only the error metric of our model can be compared to that of a competing model. The effect of the quadratic term in the MSE equation is most apparent when there are outliers in the data set. Whereas in MAE this residual contributes proportionally to the total error, in MSE the error grows quadratically. Thus, existing outliers contribute to a much higher total error in MSE than they would in MAE.</p>
+<pre class="r"><code>print(&#39;Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p10.png" /></p>
+</div>
+<div id="root-mean-squared-error-rmse" class="section level2">
+<h2>5.4 Root Mean Squared Error (RMSE)</h2>
+<p>RMSE stands for Root Mean Squared Error and this is the square root of the MSE.
+We know that the MSE is squared. Thus, its units do not match those of the original output. To convert the error metric back to similar units, the RMSE is used. This simplifies the interpretation again. Both MSE and RMSE are affected by outliers. Their common goal is to measure how large the residuals are distributed. Their values lie in the range between zero and positive infinity.</p>
+<pre class="r"><code>print(&#39;Root Mean Squared Error:&#39;, metrics.mean_squared_error(testY, y_pred, squared=False))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p11.png" /></p>
+</div>
+<div id="mean-absolute-percentage-error-mape" class="section level2">
+<h2>5.5 Mean Absolute Percentage Error (MAPE)</h2>
+<p>Another possible evaluation metric is the use of percentages. Here, each prediction is scaled against the value it is supposed to estimate.
+MAPE stands for Mean Absolute Percentage Error and is the percentage equivalent of MAE.</p>
+<p>MAPE indicates how far the predictions of the model used deviate on average from the corresponding outputs.
+Both MAPE and MAE are accompanied by a clear interpretation, as percentages are easier to conceptualize for most people.</p>
+<p>Both MAPE and MAE are robust to the effects of outliers. This is due to the use of absolute values.</p>
+<pre class="r"><code>print(&#39;Mean Absolute Percentage Error:&#39;, metrics.mean_absolute_percentage_error(testY, y_pred))</code></pre>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p12.png" /></p>
+</div>
+<div id="summary-of-the-metrics" class="section level2">
+<h2>5.6 Summary of the Metrics</h2>
+<p>Here is again a summary of the metrics presented:</p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p13.png" /></p>
+<p><img src="/post/2019-06-30-metrics-for-regression-analysis_files/p118p14.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post, I showed which evaluation metrics you can use in a regression analysis and how to interpret and calculate them.</p>
 </div>
