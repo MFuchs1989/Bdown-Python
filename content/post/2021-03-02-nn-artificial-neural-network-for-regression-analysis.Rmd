@@ -17,22 +17,224 @@ output:
 
 # 1 Introduction
 
-
+Now that I have shown how to solve classification problems ([binary](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/) and [multi-class](https://michael-fuchs-python.netlify.app/2021/02/23/nn-artificial-neural-network-for-multi-class-classfication/)) with [Keras](https://keras.io/), I would like to show how to solve regression problems as well. 
 
 For this publication the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
 # 2 Loading the libraries
 
-
 ```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+import os
+import shutil
+import pickle as pk
+import matplotlib.pyplot as plt
 
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model
+
+from sklearn import metrics
 ```
-
 
 
 # 3 Loading the data
 
+```{r, eval=F, echo=T}
+df = pd.read_csv('house_prices.csv')
+df = df.drop(['id', 'date', 'yr_built', 'yr_renovated', 'zipcode', 'lat', 'long'], axis=1)
+df
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p1.png)
+
+
+# 4 Data pre-processing
+
+## 4.1 Determination of the predictors and the criterion
+
+```{r, eval=F, echo=T}
+x = df.drop('price', axis=1)
+y = df['price']
+```
+
+
+## 4.2 Train-Validation-Test Split
+
+In the following, I will randomly assign 70% of the data to the training part and 15% each to the validation and test part.
+
+```{r, eval=F, echo=T}
+train_ratio = 0.70
+validation_ratio = 0.15
+test_ratio = 0.15
+
+# Generate TrainX and TrainY
+trainX, testX, trainY, testY = train_test_split(x, y, test_size= 1 - train_ratio)
+# Genearate ValX, TestX, ValY and TestY
+valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(test_ratio + validation_ratio))
+```
+
+
+```{r, eval=F, echo=T}
+print(trainX.shape)
+print(valX.shape)
+print(testX.shape)
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p2.png)
+
+
+## 4.3 Scaling
+
+
+```{r, eval=F, echo=T}
+sc=StandardScaler()
+
+scaler = sc.fit(trainX)
+
+trainX_scaled = scaler.transform(trainX)
+valX_scaled = scaler.transform(valX)
+testX_scaled = scaler.transform(testX)
+```
+
+
+
+# 5 ANN for Regression
+
+
+## 5.1 Name Definitions
+
+```{r, eval=F, echo=T}
+checkpoint_no = 'ckpt_1_ANN'
+model_name = 'House_ANN_2FC_F64_64_epoch_120'
+```
+
+
+## 5.2 Parameter Settings
+
+```{r, eval=F, echo=T}
+input_shape = trainX.shape[1]
+
+n_batch_size = 128
+
+n_steps_per_epoch = int(trainX.shape[0] / n_batch_size)
+n_validation_steps = int(valX.shape[0] / n_batch_size)
+n_test_steps = int(testX.shape[0] / n_batch_size)
+
+n_epochs = 120
+
+
+print('Input Shape: ' + str(input_shape))
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p3.png)
+
+
+## 5.3 Layer Structure
+
+
+```{r, eval=F, echo=T}
+model = models.Sequential()
+model.add(layers.Dense(64, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(1))
+```
+
+```{r, eval=F, echo=T}
+model.summary()
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p4.png)
+
+
+## 5.4 Configuring the model for training
+
+
+```{r, eval=F, echo=T}
+model.compile(loss='mse',
+              optimizer='rmsprop',
+              metrics=['mae'])
+```
+
+
+## 5.5 Callbacks
+
+
+If you want to know more about callbacks you can read about it here at [Keras](https://keras.io/api/callbacks/) or also in my post about [Convolutional Neural Networks](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks). 
+
+
+```{r, eval=F, echo=T}
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = './'+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+```
+
+
+```{r, eval=F, echo=T}
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + '/' + model_name, 
+                                   monitor='val_loss', save_best_only=True, mode='auto')]
+```
+
+
+## 5.6 Fitting the model
+
+
+```{r, eval=F, echo=T}
+history = model.fit(trainX_scaled,
+                    trainY,
+                    steps_per_epoch=n_steps_per_epoch,
+                    epochs=n_epochs,
+                    batch_size=n_batch_size,
+                    validation_data=(valX_scaled, valY),
+                    validation_steps=n_validation_steps,
+                    callbacks=[keras_callbacks])
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p5.png)
+
+
+## 5.7 Obtaining the best model values
+
+
+```{r, eval=F, echo=T}
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p6.png)
+
+
+
+```{r, eval=F, echo=T}
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p7.png)
+
+
+## 5.8 Storing all necessary metrics
+
 
 ```{r, eval=F, echo=T}
 
@@ -41,10 +243,148 @@ For this publication the dataset *House Sales in King County, USA* from the stat
 
 
 
+
+
+
+
+
+
+
+
 ```{r, eval=F, echo=T}
+
 ```
 
 ![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-02-nn-artificial-neural-network-for-regression-analysis_files/p114p.png)
+
+
+
 
 
 
