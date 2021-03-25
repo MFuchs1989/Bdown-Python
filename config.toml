@@ -19,11 +19,11 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     name = "LinkedIn"
     url = "https://www.linkedin.com/in/michael-fuchs-139172131/"
 [[menu.main]]
-    name = "Twitter"
-    url = "https://twitter.com/Stat_Michael"
+    name = "R-Blog"
+    url = "https://michael-fuchs.netlify.app/"
 [[menu.main]]
-    name = "zum R-Blog"
-    url = "https://michael-fuchs.netlify.com/"
+    name = "SQL-Blog"
+    url = "https://michael-fuchs-sql.netlify.app/"
 [[menu.main]]
     name = "Tag Archive"
     url = "https://michael-fuchs-python.netlify.app/2019/01/01/tag-archive/"
@@ -41,7 +41,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     MathJaxVersion = "2.7.5"
 
     # path to the favicon, under "static"
-    favicon = "favicon.ico"
+    favicon = "MFuchs.ico"
 
     [params.logo]
     url = "MFuchs.png"
