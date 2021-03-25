@@ -41,7 +41,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     MathJaxVersion = "2.7.5"
 
     # path to the favicon, under "static"
-    favicon = "test.ico"
+    favicon = "MFuchs.ico"
 
     [params.logo]
     url = "MFuchs.png"
