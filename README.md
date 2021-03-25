@@ -4,7 +4,7 @@
   <img src="https://github.com/MFuchs1989/Bdown-Python/blob/master/static/images/Python.jpg?raw=true" alt="python"/>
 </p>
 
-This is a blog post using Python.
+This is a collection of blog posts written in Python.
 
 URL: https://michael-fuchs-python.netlify.com/
 
