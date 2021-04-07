@@ -18,20 +18,55 @@ output:
 
 
 Long time no hear. But I have not been idle. 
-I have dedicated myself to another project in between: SQL
+I have dedicated myself to another project in between: **SQL**
 
 
-testdsafdsf
-
-
-
+I have built a new homepage for this again. You can find it here: [Michael Fuchs SQL](https://michael-fuchs-sql.netlify.app/)
 
 
 
+# 2 Chapters covered
+
+At this point I link the topics covered with the respective posts.
+
+
+## 2.1 Theoretical Background
+
++ [Entity-Relationship-Diagram (ERD)](https://michael-fuchs-sql.netlify.app/2021/03/03/entity-relationship-diagram-erd/)
++ [Types of Databases](https://michael-fuchs-sql.netlify.app/2021/03/01/types-of-databases/)
+
+
+
+## 2.2 Setup and Relationships of Tables
+
+
++ [Create a m:m Relationship](https://michael-fuchs-sql.netlify.app/2021/03/16/create-a-m-m-relationship/)
++ [Create a 1:m Relationship](https://michael-fuchs-sql.netlify.app/2021/03/13/create-a-1-m-relationship/)
++ [Create a 1:1 Relationship](https://michael-fuchs-sql.netlify.app/2021/03/10/create-a-1-1-relationship/)
++ [Create a Database](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/)
+
+
+
+## 2.3 SQL Server specific Posts
+
++ [Read and write to files](https://michael-fuchs-sql.netlify.app/2021/03/20/read-and-write-to-files/)
++ [Aliases](https://michael-fuchs-sql.netlify.app/2021/03/19/aliases/)
+
+
+
+## 2.4 Data Science
+
+
++ [Data Wrangling](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/)
 
 
 
 
+
+# 3 Conclusion
+
+
+Here I have created an overview of the topics I have covered with the programming language SQL. 
 
 
 
