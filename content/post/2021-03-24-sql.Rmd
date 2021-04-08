@@ -56,7 +56,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.4 Data Science
 
-
++ [Data Aggregation](https://michael-fuchs-sql.netlify.app/2021/03/26/data-aggregation/)
 + [Data Wrangling](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/)
 
 
