@@ -1,0 +1,108 @@
+---
+title: Visualizations
+author: Michael Fuchs
+date: '2021-04-07'
+slug: visualizations
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+Visualizations are part of the bread and butter business for any Data Analyst or Scientist. 
+So far I have not dealt with this topic in any post. 
+
+
+This post is not imun to changes and additions. I will add more parts little by little.
+
+
+# 2 Loading the libraries
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+
+# 3 Line Chart
+
+## 3.1 Creating the Data
+
+```{r, eval=F, echo=T}
+df_line = pd.DataFrame({'Year': [2016,2017,2018,2019,2020,2021],
+                        'Value': [5,8,6,15,13,16]})
+df_line
+```
+
+![](/post/2021-04-07-visualizations_files/p120p1.png)
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-04-07-visualizations_files/p120p.png)
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-04-07-visualizations_files/p120p.png)
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-04-07-visualizations_files/p120p.png)
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-04-07-visualizations_files/p120p.png)
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-04-07-visualizations_files/p120p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
