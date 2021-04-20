@@ -1,0 +1,120 @@
+---
+title: Modified Print Statements
+author: Michael Fuchs
+date: '2021-04-20'
+slug: modified-print-statements
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-classes">2 Loading the libraries and classes</a></li>
+<li><a href="#modified-print-statements">3 Modified Print Statements</a>
+<ul>
+<li><a href="#print-statements-with-variables">3.1 Print Statements with Variables</a>
+<ul>
+<li><a href="#string-variables">3.1.1 String Variables</a></li>
+<li><a href="#nummeric-variables">3.1.2 Nummeric Variables</a></li>
+</ul></li>
+<li><a href="#print-statements-with-compound-paths">3.2 Print Statements with compound Paths</a></li>
+<li><a href="#color-print-statements">3.3 Color Print Statements</a></li>
+</ul></li>
+<li><a href="#conclusion">4 Conclusion</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>We often use print statements to get feedback on certain process steps or to present findigs.
+In this post, I want to show how to use print statements cleverly and make them more descriptive.</p>
+</div>
+<div id="loading-the-libraries-and-classes" class="section level1">
+<h1>2 Loading the libraries and classes</h1>
+<pre class="r"><code>import pandas as pd
+import os</code></pre>
+<pre class="r"><code>class Color:
+   PURPLE = &#39;\033[95m&#39;
+   CYAN = &#39;\033[96m&#39;
+   DARKCYAN = &#39;\033[36m&#39;
+   BLUE = &#39;\033[94m&#39;
+   GREEN = &#39;\033[92m&#39;
+   YELLOW = &#39;\033[93m&#39;
+   RED = &#39;\033[91m&#39;
+   BOLD = &#39;\033[1m&#39;
+   UNDERLINE = &#39;\033[4m&#39;
+   END = &#39;\033[0m&#39;</code></pre>
+</div>
+<div id="modified-print-statements" class="section level1">
+<h1>3 Modified Print Statements</h1>
+<div id="print-statements-with-variables" class="section level2">
+<h2>3.1 Print Statements with Variables</h2>
+<p>As we all know for sure, beyond the simple text output like</p>
+<p><code>print('My Text')</code></p>
+<p>you can also print the contents of variables.</p>
+<div id="string-variables" class="section level3">
+<h3>3.1.1 String Variables</h3>
+<p>This is still relatively easy and requires no modification:</p>
+<pre class="r"><code>today = pd.to_datetime(&#39;today&#39;).strftime(&#39;%Y-%m-%d&#39;)
+
+print(&#39;Current Date: &#39; + today)</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p1.png" /></p>
+</div>
+<div id="nummeric-variables" class="section level3">
+<h3>3.1.2 Nummeric Variables</h3>
+<p>Numeric variables cannot be used quite so easily in the print statement. We have to format them as string first.</p>
+<pre class="r"><code>my_calculation = 10 + 5 
+
+print(&#39;My Calculation: &#39; + str(my_calculation))</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p2.png" /></p>
+</div>
+</div>
+<div id="print-statements-with-compound-paths" class="section level2">
+<h2>3.2 Print Statements with compound Paths</h2>
+<p>Here we request the current working directory we are on:</p>
+<pre class="r"><code>root_directory = os.getcwd()
+root_directory</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p3.png" /></p>
+<p>Now we connect this to our destination folder:</p>
+<pre class="r"><code>new_path = root_directory + &#39;\\&#39; + &#39;Target_Folder&#39;
+print(new_path)</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p4.png" /></p>
+<p>Even simpler, this is how it works:</p>
+<pre class="r"><code>new_path = os.path.join(root_directory, &#39;Target_Folder&#39;)
+print(new_path)</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p4.png" /></p>
+</div>
+<div id="color-print-statements" class="section level2">
+<h2>3.3 Color Print Statements</h2>
+<p>To make print statements even more beautiful, we can have parts printed in color or bold.
+For this we use the Color-class created above.</p>
+<pre class="r"><code>print(&#39;Current Date: &#39; + Color.RED + today)</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p5.png" /></p>
+<pre class="r"><code>print(Color.BLUE + &#39;Current Date: &#39; + 
+      Color.BOLD + Color.RED + today)</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p6.png" /></p>
+<pre class="r"><code>print(Color.RED + &#39;My &#39; 
+      + Color.END + 
+      &#39;Calculation: &#39; + str(my_calculation))</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p7.png" /></p>
+<pre class="r"><code>print(Color.BLUE + &#39;My &#39; + Color.END + 
+      Color.UNDERLINE + Color.GREEN + &#39;Calculation:&#39; + Color.END +
+      &#39; &#39; + Color.BOLD + Color.RED + str(my_calculation))</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p8.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion</h1>
+<p>In this short post I showed how to modify Print Statements and have them output in color.</p>
+</div>
