@@ -40,10 +40,11 @@ output:
 <li><a href="#insert-a-new-column-to-pandas-dataframe">5.2 Insert a new column to pandas dataframe</a>
 <ul>
 <li><a href="#random-dates">5.2.1 Random Dates</a></li>
+<li><a href="#random-integers">5.2.1 Random Integers</a></li>
 </ul></li>
-<li><a href="#draw-data">2.3 Draw Data</a></li>
+<li><a href="#draw-data">5.3 Draw Data</a></li>
 </ul></li>
-<li><a href="#conclusion">3 Conclusion</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -214,17 +215,63 @@ df</code></pre>
 <div id="insert-a-new-column-to-pandas-dataframe" class="section level2">
 <h2>5.2 Insert a new column to pandas dataframe</h2>
 <p>Often you want to add more information to your artificially created dataset, such as randomly generated datetimes. This can be done as follows.</p>
+<p>For this purpose, we continue to use the data set created in the previous chapter and extend it.</p>
 <div id="random-dates" class="section level3">
 <h3>5.2.1 Random Dates</h3>
-<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p.png" /></p>
+<p>For this we use the function defined in <a href="https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/#definition-of-required-functions">chapter 3</a>.</p>
+<p>In the defined function we only have to enter the start and end date, as well as the length of the record (len(df)).</p>
+<pre class="r"><code>start = pd.to_datetime(&#39;2020-01-01&#39;)
+end = pd.to_datetime(&#39;2020-12-31&#39;)
+
+random_datetimes_list = random_datetimes(start, end, len(df))
+random_datetimes_list</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p17.png" /></p>
+<p>We can now add the list of generated datetimes to the dataset as a separate column.</p>
+<pre class="r"><code>df[&#39;date&#39;] = random_datetimes_list
+df</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p18.png" /></p>
+<p>Here we go!</p>
+</div>
+<div id="random-integers" class="section level3">
+<h3>5.2.1 Random Integers</h3>
+<p>Of course, you also have the option to randomly generate integers. In the following I will show an example how to output integers in a certain range with defined steps:</p>
+<pre class="r"><code>Start = 40000
+Stop = 120000
+Step = 10000
+Limit = len(df)
+
+# List of random integers with Step parameter
+rand_int_list = [random.randrange(Start, Stop, Step) for iter in range(Limit)]
+rand_int_list</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p19.png" /></p>
+<p>Just define Start, Stop and Step for your particular use.
+The Limit will be the length of the dataframe.</p>
+<pre class="r"><code>df[&#39;Salary&#39;] = rand_int_list
+df</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p20.png" /></p>
+<p>Now we also have a column for salary information in a range of 40k-120k with 10k steps.</p>
 </div>
 </div>
 <div id="draw-data" class="section level2">
-<h2>2.3 Draw Data</h2>
+<h2>5.3 Draw Data</h2>
+<p>Also a very useful thing is if you can draw the dataset yourself. Here the library ‘drawdata’ offers itself.</p>
+<pre class="r"><code>draw_scatter()</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p21.png" /></p>
+<p>If you execute the command shown above, a blank sheet appears first. Now you have the possibility to draw 4 categories (A, B, C and D). More is unfortunately not yet possible, but is normally sufficient.</p>
+<p>You only have to select one of the 4 categories and then you can draw your point clouds on the blank sheet.</p>
+<p>Afterwards you have the possibility to save the drawn data as .csv or .json file:</p>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p22.png" /></p>
+<p>If you want to proceed without saving the data separately, <strong>click once on ‘copy csv’</strong></p>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p23.png" /></p>
+<p>and execute the following command:</p>
+<pre class="r"><code>new_df = pd.read_clipboard(sep=&quot;,&quot;)
+new_df</code></pre>
+<p><img src="/post/2019-05-10-how-to-create-artificial-datasets_files/p62p24.png" /></p>
+<p>Now we can get started with the new data.</p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
-<h1>3 Conclusion</h1>
+<h1>6 Conclusion</h1>
 <p>As you can see, the way in which artificial data is created basically always works the same.
 Of course, you can change the parameters accordingly depending on the application. See the individual descriptions on scikit-learn:</p>
 <ul>

@@ -309,39 +309,110 @@ df
 
 Often you want to add more information to your artificially created dataset, such as randomly generated datetimes. This can be done as follows.
 
+For this purpose, we continue to use the data set created in the previous chapter and extend it. 
+
 ### 5.2.1 Random Dates
 
+For this we use the function defined in [chapter 3](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/#definition-of-required-functions).
 
-
-
-
-
+In the defined function we only have to enter the start and end date, as well as the length of the record (len(df)). 
 
 
 ```{r, eval=F, echo=T}
+start = pd.to_datetime('2020-01-01')
+end = pd.to_datetime('2020-12-31')
 
+random_datetimes_list = random_datetimes(start, end, len(df))
+random_datetimes_list
 ```
 
-![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p.png)
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p17.png)
+
+We can now add the list of generated datetimes to the dataset as a separate column. 
+
+```{r, eval=F, echo=T}
+df['date'] = random_datetimes_list
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p18.png)
+
+Here we go!
+
+
+### 5.2.1 Random Integers
+
+Of course, you also have the option to randomly generate integers. In the following I will show an example how to output integers in a certain range with defined steps:
+
+```{r, eval=F, echo=T}
+Start = 40000
+Stop = 120000
+Step = 10000
+Limit = len(df)
+
+# List of random integers with Step parameter
+rand_int_list = [random.randrange(Start, Stop, Step) for iter in range(Limit)]
+rand_int_list
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p19.png)
+
+Just define Start, Stop and Step for your particular use.
+The Limit will be the length of the dataframe.
+
+
+```{r, eval=F, echo=T}
+df['Salary'] = rand_int_list
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p20.png)
+
+
+Now we also have a column for salary information in a range of 40k-120k with 10k steps.
+
+
+
+## 5.3 Draw Data
+
+Also a very useful thing is if you can draw the dataset yourself. Here the library 'drawdata' offers itself. 
+
+
+```{r, eval=F, echo=T}
+draw_scatter()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p21.png)
+
+If you execute the command shown above, a blank sheet appears first. Now you have the possibility to draw 4 categories (A, B, C and D). More is unfortunately not yet possible, but is normally sufficient. 
+
+You only have to select one of the 4 categories and then you can draw your point clouds on the blank sheet. 
+
+
+Afterwards you have the possibility to save the drawn data as .csv or .json file:
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p22.png)
+
+If you want to proceed without saving the data separately, **click once on 'copy csv'**  
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p23.png)
+
+and execute the following command:
+
+
+```{r, eval=F, echo=T}
+new_df = pd.read_clipboard(sep=",")
+new_df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p24.png)
+
+Now we can get started with the new data.
 
 
 
 
-
-
-
-
-## 2.3 Draw Data
-
-
-
-
-
-
-
-
-
-# 3 Conclusion
+# 6 Conclusion
 
 As you can see, the way in which artificial data is created basically always works the same.
 Of course, you can change the parameters accordingly depending on the application. See the individual descriptions on scikit-learn:
