@@ -226,6 +226,30 @@ flight.head(200)
 
 ![](/post/2019-03-03-data-wrangling_files/p1p23.png)
 
+
+## 4.4 Exclude some columns with a defined list
+
+```{r, eval=F, echo=T}
+df = flight[['Year', 'Month', 'Day', 'DayOfWeek', 'Flight_Date']]
+df.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p27z1.png)
+
+
+
+```{r, eval=F, echo=T}
+col_to_exclude = ['DayOfWeek', 'Flight_Date']
+
+reduced_df = df.drop(col_to_exclude, axis=1)
+reduced_df.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p27z2.png)
+
+
+
+
 # 6 Filter
 
 ## 6.1 Normal filter
@@ -289,26 +313,6 @@ df
 
 ![](/post/2019-03-03-data-wrangling_files/p1p27.png)
 
-
-## 6.3 Exclude some columns with a defined list
-
-```{r, eval=F, echo=T}
-df = flight[['Year', 'Month', 'Day', 'DayOfWeek', 'Flight_Date']]
-df.head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p27z1.png)
-
-
-
-```{r, eval=F, echo=T}
-col_to_exclude = ['DayOfWeek', 'Flight_Date']
-
-reduced_df = df.drop(col_to_exclude, axis=1)
-reduced_df.head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p27z2.png)
 
 
 

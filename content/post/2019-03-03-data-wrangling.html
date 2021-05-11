@@ -29,12 +29,12 @@ output:
 <li><a href="#easy-selection">5.1 Easy selection</a></li>
 <li><a href="#conditional-selection">5.2 Conditional selection</a></li>
 <li><a href="#set-option">5.3 Set option</a></li>
+<li><a href="#exclude-some-columns-with-a-defined-list">4.4 Exclude some columns with a defined list</a></li>
 </ul></li>
 <li><a href="#filter">6 Filter</a>
 <ul>
 <li><a href="#normal-filter">6.1 Normal filter</a></li>
 <li><a href="#filter-with-a-defined-list">6.2 Filter with a defined list</a></li>
-<li><a href="#exclude-some-columns-with-a-defined-list">6.3 Exclude some columns with a defined list</a></li>
 </ul></li>
 <li><a href="#pandas-query">7 Panda’s query</a></li>
 <li><a href="#conclusion">8 Conclusion</a></li>
@@ -133,6 +133,17 @@ pd.set_option(&#39;display.max_columns&#39;, 2)
 flight.head(200)</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p23.png" /></p>
 </div>
+<div id="exclude-some-columns-with-a-defined-list" class="section level2">
+<h2>4.4 Exclude some columns with a defined list</h2>
+<pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
+df.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" /></p>
+<pre class="r"><code>col_to_exclude = [&#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]
+
+reduced_df = df.drop(col_to_exclude, axis=1)
+reduced_df.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" /></p>
+</div>
 </div>
 <div id="filter" class="section level1">
 <h1>6 Filter</h1>
@@ -172,17 +183,6 @@ df</code></pre>
 df = df.reset_index()
 df</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
-</div>
-<div id="exclude-some-columns-with-a-defined-list" class="section level2">
-<h2>6.3 Exclude some columns with a defined list</h2>
-<pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
-df.head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" /></p>
-<pre class="r"><code>col_to_exclude = [&#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]
-
-reduced_df = df.drop(col_to_exclude, axis=1)
-reduced_df.head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" /></p>
 </div>
 </div>
 <div id="pandas-query" class="section level1">
