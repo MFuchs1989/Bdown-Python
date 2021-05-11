@@ -56,6 +56,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.4 Data Science
 
++ [Generation of new Tables](https://michael-fuchs-sql.netlify.app/2021/05/06/generation-of-new-tables/)
 + [Views](https://michael-fuchs-sql.netlify.app/2021/05/03/views/)
 + [Union](https://michael-fuchs-sql.netlify.app/2021/04/29/union/)
 + [Joins](https://michael-fuchs-sql.netlify.app/2021/04/21/joins/)
