@@ -155,6 +155,25 @@ print(Color.BLUE + 'My ' + Color.END +
 ![](/post/2021-04-20-modified-print-statements_files/p119p8.png)
 
 
+## 3.4 Print Statements with if else
+
+
+
+```{r, eval=F, echo=T}
+num_list = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+threshold = 5
+
+for i in num_list:
+    if i < threshold:
+        print(Color.GREEN + Color.BOLD + 'Below Threshold ' + str([i]))
+    else:
+        print(Color.RED + Color.BOLD + 'Above Threshold ' + str([i]))
+```
+
+![](/post/2021-04-20-modified-print-statements_files/p119p9.png)
+
+
+
 # 4 Conclusion
 
 In this short post I showed how to modify Print Statements and have them output in color. 

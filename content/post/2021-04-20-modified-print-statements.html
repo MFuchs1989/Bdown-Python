@@ -30,6 +30,7 @@ output:
 </ul></li>
 <li><a href="#print-statements-with-compound-paths">3.2 Print Statements with compound Paths</a></li>
 <li><a href="#color-print-statements">3.3 Color Print Statements</a></li>
+<li><a href="#print-statements-with-if-else">3.4 Print Statements with if else</a></li>
 </ul></li>
 <li><a href="#conclusion">4 Conclusion</a></li>
 </ul>
@@ -112,6 +113,18 @@ For this we use the Color-class created above.</p>
       Color.UNDERLINE + Color.GREEN + &#39;Calculation:&#39; + Color.END +
       &#39; &#39; + Color.BOLD + Color.RED + str(my_calculation))</code></pre>
 <p><img src="/post/2021-04-20-modified-print-statements_files/p119p8.png" /></p>
+</div>
+<div id="print-statements-with-if-else" class="section level2">
+<h2>3.4 Print Statements with if else</h2>
+<pre class="r"><code>num_list = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+threshold = 5
+
+for i in num_list:
+    if i &lt; threshold:
+        print(Color.GREEN + Color.BOLD + &#39;Below Threshold &#39; + str([i]))
+    else:
+        print(Color.RED + Color.BOLD + &#39;Above Threshold &#39; + str([i]))</code></pre>
+<p><img src="/post/2021-04-20-modified-print-statements_files/p119p9.png" /></p>
 </div>
 </div>
 <div id="conclusion" class="section level1">
