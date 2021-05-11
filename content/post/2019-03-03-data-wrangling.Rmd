@@ -314,6 +314,50 @@ df
 ![](/post/2019-03-03-data-wrangling_files/p1p27.png)
 
 
+## 6.3 Exclude some rows with a defined list
+
+
+Have a look at this dataframe:
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia', 'Mike', 'Sarah', 
+                            'Sven', 'Mel', 'Alex', 'John', 'Marlene'],
+                   'Favorite_Fruit': ['Banana', 'Apple', 'Melon', 'Peach', 'Grape', 
+                                      'Melon', 'Orange', 'Banana', 'Melon', 'Apple']})
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z2.png)
+
+Previously, I showed how to select specific lines from a list of values. Now I would like to show how to exclude these specifically. 
+
+Here I will demonstrate both ways again.
+
+
+**Select specific rows:**
+
+```{r, eval=F, echo=T}
+value_list = ["Apple", "Melon"]
+
+boolean_value_list = df.Favorite_Fruit.isin(value_list)
+filtered_df = df[boolean_value_list]
+filtered_df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z3.png)
+
+
+**Exclude specific rows:**
+
+```{r, eval=F, echo=T}
+value_list = ["Apple", "Melon"]
+
+inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
+inverse_filtered_df = df[inverse_boolean_value_list]
+inverse_filtered_df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z4.png)
 
 
 

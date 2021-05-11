@@ -35,6 +35,7 @@ output:
 <ul>
 <li><a href="#normal-filter">6.1 Normal filter</a></li>
 <li><a href="#filter-with-a-defined-list">6.2 Filter with a defined list</a></li>
+<li><a href="#exclude-some-rows-with-a-defined-list">6.3 Exclude some rows with a defined list</a></li>
 </ul></li>
 <li><a href="#pandas-query">7 Panda’s query</a></li>
 <li><a href="#conclusion">8 Conclusion</a></li>
@@ -183,6 +184,32 @@ df</code></pre>
 df = df.reset_index()
 df</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
+</div>
+<div id="exclude-some-rows-with-a-defined-list" class="section level2">
+<h2>6.3 Exclude some rows with a defined list</h2>
+<p>Have a look at this dataframe:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;, &#39;Mike&#39;, &#39;Sarah&#39;, 
+                            &#39;Sven&#39;, &#39;Mel&#39;, &#39;Alex&#39;, &#39;John&#39;, &#39;Marlene&#39;],
+                   &#39;Favorite_Fruit&#39;: [&#39;Banana&#39;, &#39;Apple&#39;, &#39;Melon&#39;, &#39;Peach&#39;, &#39;Grape&#39;, 
+                                      &#39;Melon&#39;, &#39;Orange&#39;, &#39;Banana&#39;, &#39;Melon&#39;, &#39;Apple&#39;]})
+df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z2.png" /></p>
+<p>Previously, I showed how to select specific lines from a list of values. Now I would like to show how to exclude these specifically.</p>
+<p>Here I will demonstrate both ways again.</p>
+<p><strong>Select specific rows:</strong></p>
+<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
+
+boolean_value_list = df.Favorite_Fruit.isin(value_list)
+filtered_df = df[boolean_value_list]
+filtered_df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z3.png" /></p>
+<p><strong>Exclude specific rows:</strong></p>
+<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
+
+inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
+inverse_filtered_df = df[inverse_boolean_value_list]
+inverse_filtered_df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z4.png" /></p>
 </div>
 </div>
 <div id="pandas-query" class="section level1">
