@@ -56,6 +56,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.4 Data Science
 
++ [Local and Global Temp Tables](https://michael-fuchs-sql.netlify.app/2021/05/10/local-and-global-temp-tables/)
 + [Update a Table](https://michael-fuchs-sql.netlify.app/2021/05/08/update-a-table/)
 + [Generation of new Tables](https://michael-fuchs-sql.netlify.app/2021/05/06/generation-of-new-tables/)
 + [Views](https://michael-fuchs-sql.netlify.app/2021/05/03/views/)
