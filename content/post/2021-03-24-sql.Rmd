@@ -32,6 +32,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.1 Theoretical Background
 
++ [Types of SQL Commands](https://michael-fuchs-sql.netlify.app/2021/05/13/types-of-sql-commands/)
 + [Entity-Relationship-Diagram (ERD)](https://michael-fuchs-sql.netlify.app/2021/03/03/entity-relationship-diagram-erd/)
 + [Types of Databases](https://michael-fuchs-sql.netlify.app/2021/03/01/types-of-databases/)
 
@@ -49,6 +50,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.3 SQL Server specific Posts
 
++ [Local and Global Temp Tables](https://michael-fuchs-sql.netlify.app/2021/05/10/local-and-global-temp-tables/)
 + [Read and write to files](https://michael-fuchs-sql.netlify.app/2021/03/20/read-and-write-to-files/)
 + [Aliases](https://michael-fuchs-sql.netlify.app/2021/03/19/aliases/)
 
@@ -56,7 +58,6 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.4 Data Science
 
-+ [Local and Global Temp Tables](https://michael-fuchs-sql.netlify.app/2021/05/10/local-and-global-temp-tables/)
 + [Update a Table](https://michael-fuchs-sql.netlify.app/2021/05/08/update-a-table/)
 + [Generation of new Tables](https://michael-fuchs-sql.netlify.app/2021/05/06/generation-of-new-tables/)
 + [Views](https://michael-fuchs-sql.netlify.app/2021/05/03/views/)
