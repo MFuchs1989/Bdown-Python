@@ -32,6 +32,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.1 Theoretical Background
 
++ [Normalization of Databases](https://michael-fuchs-sql.netlify.app/2021/05/16/normalization-of-databases/)
 + [Types of SQL Commands](https://michael-fuchs-sql.netlify.app/2021/05/13/types-of-sql-commands/)
 + [Entity-Relationship-Diagram (ERD)](https://michael-fuchs-sql.netlify.app/2021/03/03/entity-relationship-diagram-erd/)
 + [Types of Databases](https://michael-fuchs-sql.netlify.app/2021/03/01/types-of-databases/)
@@ -69,8 +70,6 @@ At this point I link the topics covered with the respective posts.
 + [Data Manipulation](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/)
 + [Data Aggregation](https://michael-fuchs-sql.netlify.app/2021/03/26/data-aggregation/)
 + [Data Wrangling](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/)
-
-
 
 
 
