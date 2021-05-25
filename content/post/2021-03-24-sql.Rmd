@@ -65,6 +65,7 @@ At this point I link the topics covered with the respective posts.
 + [Union](https://michael-fuchs-sql.netlify.app/2021/04/29/union/)
 + [Joins](https://michael-fuchs-sql.netlify.app/2021/04/21/joins/)
 + [Window Functions](https://michael-fuchs-sql.netlify.app/2021/04/12/window-functions/)
++ [Working with Dates](https://michael-fuchs-sql.netlify.app/2021/04/07/working-with-dates/)
 + [String Functions](https://michael-fuchs-sql.netlify.app/2021/04/03/string-functions/)
 + [Subqueries](https://michael-fuchs-sql.netlify.app/2021/04/01/subqueries/)
 + [Data Manipulation](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/)
