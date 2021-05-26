@@ -174,7 +174,7 @@ OK, .75% not bad. Let's see if we can improve the result by choosing a different
 
 
 
-**Creation of the pipeline:**
+### 4.2.1 Creation of the Pipeline
 
 ```{r, eval=F, echo=T}
 pipe_lr_wo = Pipeline([
@@ -199,6 +199,115 @@ pipe_lr_rs = Pipeline([
 
 
 
+### 4.2.2 Creation of a Pipeline Dictionary
+
+To be able to present the later results better, I always create a suitable dictionary at this point. 
+
+```{r, eval=F, echo=T}
+pipe_dic = {
+    0: 'LogReg wo scaler',
+    1: 'LogReg with StandardScaler',
+    2: 'LogReg with MinMaxScaler',
+    3: 'LogReg with RobustScaler',
+    }
+
+pipe_dic
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p5.png)
+
+
+
+### 4.2.3 Fit the Pipeline
+
+To be able to fit the pipelines, I first need to group the pipelines into a list:
+
+```{r, eval=F, echo=T}
+pipelines = [pipe_lr_wo, pipe_lr_ss, pipe_lr_mms, pipe_lr_rs]
+```
+
+
+Now we are going to fit the created pipelines:
+
+```{r, eval=F, echo=T}
+for pipe in pipelines:
+    pipe.fit(trainX, trainY)
+```
+
+
+
+### 4.2.3 Evaluate the Pipeline
+
+
+```{r, eval=F, echo=T}
+for idx, val in enumerate(pipelines):
+    print('%s pipeline Test Accuracy: %.2f' % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p6.png)
+
+
+
+We can also use the .score function:
+
+```{r, eval=F, echo=T}
+for idx, val in enumerate(pipelines):
+    print('%s pipeline Test Accuracy: %.2f' % (pipe_dic[idx], val.score(testX, testY)))
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p7.png)
+
+
+I always like to have the results displayed in a dataframe so I can sort and filter:
+
+
+```{r, eval=F, echo=T}
+result = []
+
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = ['Idx','Estimator'])
+
+# Add Test Accuracy to result_df
+result_df['Test_Accuracy'] = result
+# print result_df
+result_df 
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p8.png)
+
+
+Let's take a look at our best model:
+
+
+```{r, eval=F, echo=T}
+best_model = result_df.sort_values(by='Test_Accuracy', ascending=False)
+best_model
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p9.png)
+
+
+
+```{r, eval=F, echo=T}
+print(best_model['Estimator'].iloc[0] +
+      ' Classifier has the best Test Accuracy of ' + 
+      str(round(best_model['Test_Accuracy'].iloc[0], 2)) + '%')
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p10.png)
+
+Or the print statement still a little bit spiffed up:
+
+```{r, eval=F, echo=T}
+print(Color.RED + best_model['Estimator'].iloc[0] + Color.END +
+      ' Classifier has the best Test Accuracy of ' + 
+      Color.GREEN + Color.BOLD + str(round(best_model['Test_Accuracy'].iloc[0], 2)) + '%')
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p11.png)
 
 
 
@@ -206,6 +315,22 @@ pipe_lr_rs = Pipeline([
 
 
 
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
 
 
 
@@ -225,6 +350,21 @@ pipe_lr_rs = Pipeline([
 
 
 
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
 
 
 

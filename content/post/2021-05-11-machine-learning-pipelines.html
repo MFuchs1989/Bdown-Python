@@ -23,7 +23,13 @@ output:
 <li><a href="#ml-pipelines">4 ML Pipelines</a>
 <ul>
 <li><a href="#a-simple-pipeline">4.1 A simple Pipeline</a></li>
-<li><a href="#determination-of-the-best-scaler">4.2 Determination of the best Scaler</a></li>
+<li><a href="#determination-of-the-best-scaler">4.2 Determination of the best Scaler</a>
+<ul>
+<li><a href="#creation-of-the-pipeline">4.2.1 Creation of the Pipeline</a></li>
+<li><a href="#creation-of-a-pipeline-dictionary">4.2.2 Creation of a Pipeline Dictionary</a></li>
+<li><a href="#fit-the-pipeline">4.2.3 Fit the Pipeline</a></li>
+<li><a href="#evaluate-the-pipeline">4.2.3 Evaluate the Pipeline</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -124,7 +130,8 @@ print(&#39;Test Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</co
 </div>
 <div id="determination-of-the-best-scaler" class="section level2">
 <h2>4.2 Determination of the best Scaler</h2>
-<p><strong>Creation of the pipeline:</strong></p>
+<div id="creation-of-the-pipeline" class="section level3">
+<h3>4.2.1 Creation of the Pipeline</h3>
 <pre class="r"><code>pipe_lr_wo = Pipeline([
     (&#39;lr&#39;, LogisticRegression())
     ])
@@ -143,6 +150,68 @@ pipe_lr_rs = Pipeline([
     (&#39;rs&#39;, RobustScaler()),
     (&#39;lr&#39;, LogisticRegression())
     ])</code></pre>
+</div>
+<div id="creation-of-a-pipeline-dictionary" class="section level3">
+<h3>4.2.2 Creation of a Pipeline Dictionary</h3>
+<p>To be able to present the later results better, I always create a suitable dictionary at this point.</p>
+<pre class="r"><code>pipe_dic = {
+    0: &#39;LogReg wo scaler&#39;,
+    1: &#39;LogReg with StandardScaler&#39;,
+    2: &#39;LogReg with MinMaxScaler&#39;,
+    3: &#39;LogReg with RobustScaler&#39;,
+    }
+
+pipe_dic</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p5.png" /></p>
+</div>
+<div id="fit-the-pipeline" class="section level3">
+<h3>4.2.3 Fit the Pipeline</h3>
+<p>To be able to fit the pipelines, I first need to group the pipelines into a list:</p>
+<pre class="r"><code>pipelines = [pipe_lr_wo, pipe_lr_ss, pipe_lr_mms, pipe_lr_rs]</code></pre>
+<p>Now we are going to fit the created pipelines:</p>
+<pre class="r"><code>for pipe in pipelines:
+    pipe.fit(trainX, trainY)</code></pre>
+</div>
+<div id="evaluate-the-pipeline" class="section level3">
+<h3>4.2.3 Evaluate the Pipeline</h3>
+<pre class="r"><code>for idx, val in enumerate(pipelines):
+    print(&#39;%s pipeline Test Accuracy: %.2f&#39; % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p6.png" /></p>
+<p>We can also use the .score function:</p>
+<pre class="r"><code>for idx, val in enumerate(pipelines):
+    print(&#39;%s pipeline Test Accuracy: %.2f&#39; % (pipe_dic[idx], val.score(testX, testY)))</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p7.png" /></p>
+<p>I always like to have the results displayed in a dataframe so I can sort and filter:</p>
+<pre class="r"><code>result = []
+
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = [&#39;Idx&#39;,&#39;Estimator&#39;])
+
+# Add Test Accuracy to result_df
+result_df[&#39;Test_Accuracy&#39;] = result
+# print result_df
+result_df </code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p8.png" /></p>
+<p>Let’s take a look at our best model:</p>
+<pre class="r"><code>best_model = result_df.sort_values(by=&#39;Test_Accuracy&#39;, ascending=False)
+best_model</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p9.png" /></p>
+<pre class="r"><code>print(best_model[&#39;Estimator&#39;].iloc[0] +
+      &#39; Classifier has the best Test Accuracy of &#39; + 
+      str(round(best_model[&#39;Test_Accuracy&#39;].iloc[0], 2)) + &#39;%&#39;)</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p10.png" /></p>
+<p>Or the print statement still a little bit spiffed up:</p>
+<pre class="r"><code>print(Color.RED + best_model[&#39;Estimator&#39;].iloc[0] + Color.END +
+      &#39; Classifier has the best Test Accuracy of &#39; + 
+      Color.GREEN + Color.BOLD + str(round(best_model[&#39;Test_Accuracy&#39;].iloc[0], 2)) + &#39;%&#39;)</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p11.png" /></p>
 <p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
+</div>
 </div>
 </div>
