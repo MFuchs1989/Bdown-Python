@@ -165,6 +165,52 @@ print('Test Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
 ![](/post/2021-05-11-machine-learning-pipelines_files/p121p4.png)
 
 
+OK, .75% not bad. Let's see if we can improve the result by choosing a different scaler. 
+
+
+
+
+## 4.2 Determination of the best Scaler
+
+
+
+**Creation of the pipeline:**
+
+```{r, eval=F, echo=T}
+pipe_lr_wo = Pipeline([
+    ('lr', LogisticRegression())
+    ])
+
+pipe_lr_ss = Pipeline([
+    ('ss', StandardScaler()),
+    ('lr', LogisticRegression())
+    ])
+
+pipe_lr_mms = Pipeline([
+    ('mms', MinMaxScaler()),
+    ('lr', LogisticRegression())
+    ])
+
+pipe_lr_rs = Pipeline([
+    ('rs', RobustScaler()),
+    ('lr', LogisticRegression())
+    ])
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

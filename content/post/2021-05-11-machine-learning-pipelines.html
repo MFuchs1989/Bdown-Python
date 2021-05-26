@@ -23,6 +23,7 @@ output:
 <li><a href="#ml-pipelines">4 ML Pipelines</a>
 <ul>
 <li><a href="#a-simple-pipeline">4.1 A simple Pipeline</a></li>
+<li><a href="#determination-of-the-best-scaler">4.2 Determination of the best Scaler</a></li>
 </ul></li>
 </ul>
 </div>
@@ -119,6 +120,29 @@ trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></p
 
 print(&#39;Test Accuracy: {:.2f}&#39;.format(accuracy_score(testY, y_pred)))</code></pre>
 <p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p4.png" /></p>
+<p>OK, .75% not bad. Let’s see if we can improve the result by choosing a different scaler.</p>
+</div>
+<div id="determination-of-the-best-scaler" class="section level2">
+<h2>4.2 Determination of the best Scaler</h2>
+<p><strong>Creation of the pipeline:</strong></p>
+<pre class="r"><code>pipe_lr_wo = Pipeline([
+    (&#39;lr&#39;, LogisticRegression())
+    ])
+
+pipe_lr_ss = Pipeline([
+    (&#39;ss&#39;, StandardScaler()),
+    (&#39;lr&#39;, LogisticRegression())
+    ])
+
+pipe_lr_mms = Pipeline([
+    (&#39;mms&#39;, MinMaxScaler()),
+    (&#39;lr&#39;, LogisticRegression())
+    ])
+
+pipe_lr_rs = Pipeline([
+    (&#39;rs&#39;, RobustScaler()),
+    (&#39;lr&#39;, LogisticRegression())
+    ])</code></pre>
 <p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
 </div>
 </div>
