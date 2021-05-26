@@ -1,0 +1,93 @@
+---
+title: Machine Learning Pipelines
+author: Michael Fuchs
+date: '2021-05-11'
+slug: machine-learning-pipelines
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121s1.png)
+
+
+Some time ago I had written the post [The Data Science Process (CRISP-DM)](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/), which was about the correct development of Machine Learning algorithms. As you have seen here, this is quite a time-consuming matter if done correctly.
+
+In order to quickly check which algorithm fits the data best, it is recommended to use machine learning pipelines. Once you have found a promising algorithm, you can start fine tuning with it and go through the process as described [here](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/#data-science-best-practice-guidlines-for-ml-model-development).  
+
+
+
+For this post the dataset *bird* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+
+
+# 2 Loading the libraries
+
+
+```{r, eval=F, echo=T}
+
+```
+
+
+
+# 3 Loading the data
+
+
+
+
+Description of predictors:
+
++ Length and Diameter of Humerus
++ Length and Diameter of Ulna
++ Length and Diameter of Femur
++ Length and Diameter of Tibiotarsus
++ Length and Diameter of Tarsometatarsus
+
+
+
+
+Description of the target variable:
+
++ SW: Swimming Birds
++ W: Wading Birds
++ T: Terrestrial Birds
++ R: Raptors
++ P: Scansorial Birds
++ SO: Singing Birds
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
