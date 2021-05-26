@@ -236,7 +236,7 @@ for pipe in pipelines:
 
 
 
-### 4.2.3 Evaluate the Pipeline
+### 4.2.4 Evaluate the Pipeline
 
 
 ```{r, eval=F, echo=T}
@@ -311,65 +311,250 @@ print(Color.RED + best_model['Estimator'].iloc[0] + Color.END +
 
 
 
+## 4.3 Determination of the best Estimator
 
+
+Let's try this time with different estimators to improve the result.
+
+
+### 4.3.1 Creation of the Pipeline
+
+
+```{r, eval=F, echo=T}
+pipe_lr = Pipeline([
+    ('ss1', StandardScaler()),
+    ('lr', LogisticRegression())
+    ])
+
+pipe_svm_lin = Pipeline([
+    ('ss2', StandardScaler()),
+    ('svm_lin', SVC(kernel='linear'))
+    ])
+
+pipe_svm_sig = Pipeline([
+    ('ss3', StandardScaler()),
+    ('svm_sig', SVC(kernel='sigmoid'))
+    ])
+
+
+pipe_knn = Pipeline([
+    ('ss4', StandardScaler()),
+    ('knn', KNeighborsClassifier(n_neighbors=7))
+    ])
+
+pipe_dt = Pipeline([
+    ('ss5', StandardScaler()),
+    ('dt', DecisionTreeClassifier())
+    ])
+
+pipe_rf = Pipeline([
+    ('ss6', StandardScaler()),
+    ('rf', RandomForestClassifier(n_estimators=100))
+    ])
+```
+
+
+### 4.3.2 Creation of a Pipeline Dictionary
+
+```{r, eval=F, echo=T}
+pipe_dic = {
+    0: 'lr',
+    1: 'svm_lin',
+    2: 'svm_sig',
+    3: 'knn',
+    4: 'dt',
+    5: 'rf'
+    }
+
+pipe_dic
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p12.png)
+
+
+### 4.3.3 Fit the Pipeline
+
+
+```{r, eval=F, echo=T}
+pipelines = [pipe_lr, pipe_svm_lin, pipe_svm_sig, pipe_knn, pipe_dt, pipe_rf]
+```
+
+
+```{r, eval=F, echo=T}
+for pipe in pipelines:
+    pipe.fit(trainX, trainY)
+```
+
+
+### 4.3.4 Evaluate the Pipeline
+
+
+```{r, eval=F, echo=T}
+for idx, val in enumerate(pipelines):
+    print('%s pipeline Test Accuracy: %.2f' % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p13.png)
 
 
 
 ```{r, eval=F, echo=T}
+result = []
 
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = ['Idx','Estimator'])
+
+# Add Test Accuracy to result_df
+result_df['Test_Accuracy'] = result
+# print result_df
+result_df 
 ```
 
-![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
-
-
-
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p14.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+best_model = result_df.sort_values(by='Test_Accuracy', ascending=False)
+best_model
 ```
 
-![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
-
-
-
-
-
-
-
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p15.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+print(Color.RED + best_model['Estimator'].iloc[0] + Color.END +
+      ' Classifier has the best Test Accuracy of ' + 
+      Color.GREEN + Color.BOLD + str(round(best_model['Test_Accuracy'].iloc[0], 2)) + '%')
 ```
 
-![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p16.png)
+
+Done. The linear support vector classifier has improved the accuracy. 
 
 
 
 
+## 4.4 ML Pipelines with further Components
 
 
+At this point you can now play wonderfully. You can add different scalers to the Estimators or even try including a [PCA](https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/). 
+
+I use the same pipeline as in the previous example and add a PCA with n_components=2 to the estimators.
+
+```{r, eval=F, echo=T}
+pipe_lr = Pipeline([
+    ('ss1', StandardScaler()),
+    ('pca1', PCA(n_components=2)),
+    ('lr', LogisticRegression())
+    ])
+
+pipe_svm_lin = Pipeline([
+    ('ss2', StandardScaler()),
+    ('pca2', PCA(n_components=2)),
+    ('svm_lin', SVC(kernel='linear'))
+    ])
+
+pipe_svm_sig = Pipeline([
+    ('ss3', StandardScaler()),
+    ('pca3', PCA(n_components=2)),
+    ('svm_sig', SVC(kernel='sigmoid'))
+    ])
 
 
+pipe_knn = Pipeline([
+    ('ss4', StandardScaler()),
+    ('pca4', PCA(n_components=2)),
+    ('knn', KNeighborsClassifier(n_neighbors=7))
+    ])
+
+pipe_dt = Pipeline([
+    ('ss5', StandardScaler()),
+    ('pca5', PCA(n_components=2)),
+    ('dt', DecisionTreeClassifier())
+    ])
+
+pipe_rf = Pipeline([
+    ('ss6', StandardScaler()),
+    ('pca6', PCA(n_components=2)),
+    ('rf', RandomForestClassifier(n_estimators=100))
+    ])
+```
+
+```{r, eval=F, echo=T}
+pipe_dic = {
+    0: 'lr',
+    1: 'svm_lin',
+    2: 'svm_sig',
+    3: 'knn',
+    4: 'dt',
+    5: 'rf'
+    }
+```
+
+```{r, eval=F, echo=T}
+pipelines = [pipe_lr, pipe_svm_lin, pipe_svm_sig, pipe_knn, pipe_dt, pipe_rf]
+```
+
+```{r, eval=F, echo=T}
+for pipe in pipelines:
+    pipe.fit(trainX, trainY)
+```
 
 
+```{r, eval=F, echo=T}
+for idx, val in enumerate(pipelines):
+    print('%s pipeline Test Accuracy: %.2f' % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))
+```
 
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p17.png)
+
+
+```{r, eval=F, echo=T}
+result = []
+
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = ['Idx','Estimator'])
+
+# Add Test Accuracy to result_df
+result_df['Test_Accuracy'] = result
+# print result_df
+result_df 
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p18.png)
+
+
+```{r, eval=F, echo=T}
+best_model = result_df.sort_values(by='Test_Accuracy', ascending=False)
+best_model
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p19.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+print(Color.RED + best_model['Estimator'].iloc[0] + Color.END +
+      ' Classifier has the best Test Accuracy of ' + 
+      Color.GREEN + Color.BOLD + str(round(best_model['Test_Accuracy'].iloc[0], 2)) + '%')
 ```
 
-![](/post/2021-05-11-machine-learning-pipelines_files/p121p.png)
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p20.png)
+
+The use of a PCA has not worked out any improvement. We can therefore fall back on the linear Support Vector Classifier at this point and try to improve the result again with Fine Tuning. 
 
 
+# 5 Conclusion
 
-
-
+In this post, I showed how to use machine learning pipelines to quickly and efficiently run different scenarios to get a first impression of which algorithm fits my data best. 
 
 
 

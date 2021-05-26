@@ -28,9 +28,18 @@ output:
 <li><a href="#creation-of-the-pipeline">4.2.1 Creation of the Pipeline</a></li>
 <li><a href="#creation-of-a-pipeline-dictionary">4.2.2 Creation of a Pipeline Dictionary</a></li>
 <li><a href="#fit-the-pipeline">4.2.3 Fit the Pipeline</a></li>
-<li><a href="#evaluate-the-pipeline">4.2.3 Evaluate the Pipeline</a></li>
+<li><a href="#evaluate-the-pipeline">4.2.4 Evaluate the Pipeline</a></li>
 </ul></li>
+<li><a href="#determination-of-the-best-estimator">4.3 Determination of the best Estimator</a>
+<ul>
+<li><a href="#creation-of-the-pipeline-1">4.3.1 Creation of the Pipeline</a></li>
+<li><a href="#creation-of-a-pipeline-dictionary-1">4.3.2 Creation of a Pipeline Dictionary</a></li>
+<li><a href="#fit-the-pipeline-1">4.3.3 Fit the Pipeline</a></li>
+<li><a href="#evaluate-the-pipeline-1">4.3.4 Evaluate the Pipeline</a></li>
 </ul></li>
+<li><a href="#ml-pipelines-with-further-components">4.4 ML Pipelines with further Components</a></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -173,7 +182,7 @@ pipe_dic</code></pre>
     pipe.fit(trainX, trainY)</code></pre>
 </div>
 <div id="evaluate-the-pipeline" class="section level3">
-<h3>4.2.3 Evaluate the Pipeline</h3>
+<h3>4.2.4 Evaluate the Pipeline</h3>
 <pre class="r"><code>for idx, val in enumerate(pipelines):
     print(&#39;%s pipeline Test Accuracy: %.2f&#39; % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))</code></pre>
 <p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p6.png" /></p>
@@ -208,10 +217,170 @@ best_model</code></pre>
       &#39; Classifier has the best Test Accuracy of &#39; + 
       Color.GREEN + Color.BOLD + str(round(best_model[&#39;Test_Accuracy&#39;].iloc[0], 2)) + &#39;%&#39;)</code></pre>
 <p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p11.png" /></p>
-<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
-<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
-<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
-<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p.png" /></p>
 </div>
 </div>
+<div id="determination-of-the-best-estimator" class="section level2">
+<h2>4.3 Determination of the best Estimator</h2>
+<p>Let’s try this time with different estimators to improve the result.</p>
+<div id="creation-of-the-pipeline-1" class="section level3">
+<h3>4.3.1 Creation of the Pipeline</h3>
+<pre class="r"><code>pipe_lr = Pipeline([
+    (&#39;ss1&#39;, StandardScaler()),
+    (&#39;lr&#39;, LogisticRegression())
+    ])
+
+pipe_svm_lin = Pipeline([
+    (&#39;ss2&#39;, StandardScaler()),
+    (&#39;svm_lin&#39;, SVC(kernel=&#39;linear&#39;))
+    ])
+
+pipe_svm_sig = Pipeline([
+    (&#39;ss3&#39;, StandardScaler()),
+    (&#39;svm_sig&#39;, SVC(kernel=&#39;sigmoid&#39;))
+    ])
+
+
+pipe_knn = Pipeline([
+    (&#39;ss4&#39;, StandardScaler()),
+    (&#39;knn&#39;, KNeighborsClassifier(n_neighbors=7))
+    ])
+
+pipe_dt = Pipeline([
+    (&#39;ss5&#39;, StandardScaler()),
+    (&#39;dt&#39;, DecisionTreeClassifier())
+    ])
+
+pipe_rf = Pipeline([
+    (&#39;ss6&#39;, StandardScaler()),
+    (&#39;rf&#39;, RandomForestClassifier(n_estimators=100))
+    ])</code></pre>
+</div>
+<div id="creation-of-a-pipeline-dictionary-1" class="section level3">
+<h3>4.3.2 Creation of a Pipeline Dictionary</h3>
+<pre class="r"><code>pipe_dic = {
+    0: &#39;lr&#39;,
+    1: &#39;svm_lin&#39;,
+    2: &#39;svm_sig&#39;,
+    3: &#39;knn&#39;,
+    4: &#39;dt&#39;,
+    5: &#39;rf&#39;
+    }
+
+pipe_dic</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p12.png" /></p>
+</div>
+<div id="fit-the-pipeline-1" class="section level3">
+<h3>4.3.3 Fit the Pipeline</h3>
+<pre class="r"><code>pipelines = [pipe_lr, pipe_svm_lin, pipe_svm_sig, pipe_knn, pipe_dt, pipe_rf]</code></pre>
+<pre class="r"><code>for pipe in pipelines:
+    pipe.fit(trainX, trainY)</code></pre>
+</div>
+<div id="evaluate-the-pipeline-1" class="section level3">
+<h3>4.3.4 Evaluate the Pipeline</h3>
+<pre class="r"><code>for idx, val in enumerate(pipelines):
+    print(&#39;%s pipeline Test Accuracy: %.2f&#39; % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p13.png" /></p>
+<pre class="r"><code>result = []
+
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = [&#39;Idx&#39;,&#39;Estimator&#39;])
+
+# Add Test Accuracy to result_df
+result_df[&#39;Test_Accuracy&#39;] = result
+# print result_df
+result_df </code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p14.png" /></p>
+<pre class="r"><code>best_model = result_df.sort_values(by=&#39;Test_Accuracy&#39;, ascending=False)
+best_model</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p15.png" /></p>
+<pre class="r"><code>print(Color.RED + best_model[&#39;Estimator&#39;].iloc[0] + Color.END +
+      &#39; Classifier has the best Test Accuracy of &#39; + 
+      Color.GREEN + Color.BOLD + str(round(best_model[&#39;Test_Accuracy&#39;].iloc[0], 2)) + &#39;%&#39;)</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p16.png" /></p>
+<p>Done. The linear support vector classifier has improved the accuracy.</p>
+</div>
+</div>
+<div id="ml-pipelines-with-further-components" class="section level2">
+<h2>4.4 ML Pipelines with further Components</h2>
+<p>At this point you can now play wonderfully. You can add different scalers to the Estimators or even try including a <a href="https://michael-fuchs-python.netlify.app/2020/07/22/principal-component-analysis-pca/">PCA</a>.</p>
+<p>I use the same pipeline as in the previous example and add a PCA with n_components=2 to the estimators.</p>
+<pre class="r"><code>pipe_lr = Pipeline([
+    (&#39;ss1&#39;, StandardScaler()),
+    (&#39;pca1&#39;, PCA(n_components=2)),
+    (&#39;lr&#39;, LogisticRegression())
+    ])
+
+pipe_svm_lin = Pipeline([
+    (&#39;ss2&#39;, StandardScaler()),
+    (&#39;pca2&#39;, PCA(n_components=2)),
+    (&#39;svm_lin&#39;, SVC(kernel=&#39;linear&#39;))
+    ])
+
+pipe_svm_sig = Pipeline([
+    (&#39;ss3&#39;, StandardScaler()),
+    (&#39;pca3&#39;, PCA(n_components=2)),
+    (&#39;svm_sig&#39;, SVC(kernel=&#39;sigmoid&#39;))
+    ])
+
+
+pipe_knn = Pipeline([
+    (&#39;ss4&#39;, StandardScaler()),
+    (&#39;pca4&#39;, PCA(n_components=2)),
+    (&#39;knn&#39;, KNeighborsClassifier(n_neighbors=7))
+    ])
+
+pipe_dt = Pipeline([
+    (&#39;ss5&#39;, StandardScaler()),
+    (&#39;pca5&#39;, PCA(n_components=2)),
+    (&#39;dt&#39;, DecisionTreeClassifier())
+    ])
+
+pipe_rf = Pipeline([
+    (&#39;ss6&#39;, StandardScaler()),
+    (&#39;pca6&#39;, PCA(n_components=2)),
+    (&#39;rf&#39;, RandomForestClassifier(n_estimators=100))
+    ])</code></pre>
+<pre class="r"><code>pipe_dic = {
+    0: &#39;lr&#39;,
+    1: &#39;svm_lin&#39;,
+    2: &#39;svm_sig&#39;,
+    3: &#39;knn&#39;,
+    4: &#39;dt&#39;,
+    5: &#39;rf&#39;
+    }</code></pre>
+<pre class="r"><code>pipelines = [pipe_lr, pipe_svm_lin, pipe_svm_sig, pipe_knn, pipe_dt, pipe_rf]</code></pre>
+<pre class="r"><code>for pipe in pipelines:
+    pipe.fit(trainX, trainY)</code></pre>
+<pre class="r"><code>for idx, val in enumerate(pipelines):
+    print(&#39;%s pipeline Test Accuracy: %.2f&#39; % (pipe_dic[idx], accuracy_score(testY, val.predict(testX))))</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p17.png" /></p>
+<pre class="r"><code>result = []
+
+for idx, val in enumerate(pipelines):
+    result.append(accuracy_score(testY, val.predict(testX)))
+
+    
+result_df = pd.DataFrame(list(pipe_dic.items()),columns = [&#39;Idx&#39;,&#39;Estimator&#39;])
+
+# Add Test Accuracy to result_df
+result_df[&#39;Test_Accuracy&#39;] = result
+# print result_df
+result_df </code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p18.png" /></p>
+<pre class="r"><code>best_model = result_df.sort_values(by=&#39;Test_Accuracy&#39;, ascending=False)
+best_model</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p19.png" /></p>
+<pre class="r"><code>print(Color.RED + best_model[&#39;Estimator&#39;].iloc[0] + Color.END +
+      &#39; Classifier has the best Test Accuracy of &#39; + 
+      Color.GREEN + Color.BOLD + str(round(best_model[&#39;Test_Accuracy&#39;].iloc[0], 2)) + &#39;%&#39;)</code></pre>
+<p><img src="/post/2021-05-11-machine-learning-pipelines_files/p121p20.png" /></p>
+<p>The use of a PCA has not worked out any improvement. We can therefore fall back on the linear Support Vector Classifier at this point and try to improve the result again with Fine Tuning.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post, I showed how to use machine learning pipelines to quickly and efficiently run different scenarios to get a first impression of which algorithm fits my data best.</p>
 </div>
