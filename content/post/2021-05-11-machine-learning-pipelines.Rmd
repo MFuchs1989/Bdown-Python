@@ -28,11 +28,47 @@ For this post the dataset *bird* from the statistic platform ["Kaggle"](https://
 
 
 
-# 2 Loading the libraries
+# 2 Loading the libraries and classes
 
 
 ```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
 
+from sklearn.model_selection import train_test_split
+
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import RobustScaler
+
+from sklearn.decomposition import PCA
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.pipeline import Pipeline
+
+from sklearn.metrics import accuracy_score
+```
+
+
+```{r, eval=F, echo=T}
+class Color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
 ```
 
 
@@ -40,6 +76,12 @@ For this post the dataset *bird* from the statistic platform ["Kaggle"](https://
 # 3 Loading the data
 
 
+```{r, eval=F, echo=T}
+bird_df = pd.read_csv('bird.csv').dropna()
+bird_df
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p1.png)
 
 
 Description of predictors:
@@ -51,6 +93,11 @@ Description of predictors:
 + Length and Diameter of Tarsometatarsus
 
 
+```{r, eval=F, echo=T}
+bird_df['type'].value_counts()
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p2.png)
 
 
 Description of the target variable:
@@ -62,6 +109,60 @@ Description of the target variable:
 + P: Scansorial Birds
 + SO: Singing Birds
 
+
+```{r, eval=F, echo=T}
+bird_df['type'].nunique()
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p3.png)
+
+
+
+```{r, eval=F, echo=T}
+x = bird_df.drop(['type', 'id'], axis=1)
+y = bird_df['type']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+
+
+# 4 ML Pipelines
+
+
+## 4.1 A simple Pipeline
+
+
+Let's start with a simple pipeline.
+
+In the following, I would like to perform a classification of bird species using [Logistic Regression](https://michael-fuchs-python.netlify.app/2019/10/31/introduction-to-logistic-regression/). For this purpose, the data should be scaled beforehand using the StandardScaler of scikit-learn.
+
+
+**Creation of the pipeline:**
+
+```{r, eval=F, echo=T}
+pipe_lr = Pipeline([
+    ('ss', StandardScaler()),
+    ('lr', LogisticRegression())
+    ])
+```
+
+**Fit and Evaluate the Pipeline:**
+
+```{r, eval=F, echo=T}
+pipe_lr.fit(trainX, trainY)
+```
+
+
+```{r, eval=F, echo=T}
+y_pred = pipe_lr.predict(testX)
+
+
+print('Test Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2021-05-11-machine-learning-pipelines_files/p121p4.png)
 
 
 
