@@ -73,6 +73,14 @@ output:
 <pre class="r"><code>#List unique values in the flight[&#39;Origin_Airport&#39;] column
 flight.Origin_Airport.unique()</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1z1.png" /></p>
+<p>Now let’s take a look at the unique values of several columns. For this purpose, I will select 4 categorical columns from the data set as an example:</p>
+<pre class="r"><code>flight_subset = flight[[&#39;UniqueCarrier&#39;,&#39;Tai_lNum&#39;,&#39;Origin_Airport&#39;,&#39;Origin_City_Name&#39;]]
+flight_subset</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z5.png" /></p>
+<p>Now I can use a for loop to display the number of contained labels:</p>
+<pre class="r"><code>for feature in flight_subset.columns[:]:
+    print(feature, &#39;:&#39;, len(flight_subset[feature].unique()), &#39;labels&#39;)</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1z6.png" /></p>
 </div>
 <div id="get-some-statistics" class="section level1">
 <h1>4 Get some statistics</h1>

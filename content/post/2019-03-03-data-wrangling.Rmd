@@ -94,6 +94,29 @@ flight.Origin_Airport.unique()
 ![](/post/2019-03-03-data-wrangling_files/p1z1.png)
 
 
+Now let's take a look at the unique values of several columns. For this purpose, I will select 4 categorical columns from the data set as an example:
+
+
+
+```{r, eval=F, echo=T}
+flight_subset = flight[['UniqueCarrier','Tai_lNum','Origin_Airport','Origin_City_Name']]
+flight_subset
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z5.png)
+
+Now I can use a for loop to display the number of contained labels:
+
+
+```{r, eval=F, echo=T}
+for feature in flight_subset.columns[:]:
+    print(feature, ':', len(flight_subset[feature].unique()), 'labels')
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1z6.png)
+
+
+
 # 4 Get some statistics
 
 
