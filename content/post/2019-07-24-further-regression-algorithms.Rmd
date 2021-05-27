@@ -379,7 +379,7 @@ r_grid_knn_reg = grid_knn_reg.score(trainX, trainY)
 
 # 8 Ensemble Modeling
 
-I'll define a function that returns the cross-validation rmse error so we can evaluate our models and pick the best tuning par.
+I'll define a function that returns the cross-validation rmse error so we can evaluate our models and pick the best tuning part.
 
 ```{r, eval=F, echo=T}
 def rmse_cv(model):

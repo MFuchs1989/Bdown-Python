@@ -234,7 +234,7 @@ r_grid_knn_reg = grid_knn_reg.score(trainX, trainY)</code></pre>
 </div>
 <div id="ensemble-modeling" class="section level1">
 <h1>8 Ensemble Modeling</h1>
-<p>I’ll define a function that returns the cross-validation rmse error so we can evaluate our models and pick the best tuning par.</p>
+<p>I’ll define a function that returns the cross-validation rmse error so we can evaluate our models and pick the best tuning part.</p>
 <pre class="r"><code>def rmse_cv(model):
     rmse= np.sqrt(-cross_val_score(model, trainX, trainY, scoring=&quot;neg_mean_squared_error&quot;, cv = 5))
     return(rmse)</code></pre>
