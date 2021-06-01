@@ -63,7 +63,7 @@ show_map
 **Background info how *.split* works:**
 
 ```{r, eval=F, echo=T}
-x = 'ich.bin.ein.test'
+x = 'I.am.a.test'
 y = x.split('.')
 print (y)
 ```
