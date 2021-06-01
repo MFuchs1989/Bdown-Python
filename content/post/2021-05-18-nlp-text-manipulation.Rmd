@@ -55,6 +55,214 @@ I will start here with the basics and then from post to post cover more and deep
 
 
 
+# 2 Text Manipulation
+
+
+Before we can take the first steps towards NLP, we should know the basics of text manipulation. 
+They are basics but they are essential to take further steps towards model training. 
+
+
+
+## 2.1 String Variables
+
+First of all, we assign a sample string to an object. 
+
+```{r, eval=F, echo=T}
+word = "Hello World!"
+
+print(word)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p1.png)
+
+
+## 2.2 Use of Quotation Marks
+
+If you want to use quotation marks within a string, you should choose one of the following two options and stick to the chosen variant for the sake of consistency to avoid problems later on. 
+
+
+```{r, eval=F, echo=T}
+quotation_marks_var1 = 'Hi, my name is "Alice"'
+print(quotation_marks_var1)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p2.png)
+
+
+```{r, eval=F, echo=T}
+quotation_marks_var2 = "Hi, my name is 'Alice'"
+print(quotation_marks_var2)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p3.png)
+
+
+## 2.3 Obtaining specific Information from a String
+
+
+Access the first character of a string:
+
+```{r, eval=F, echo=T}
+word[0]
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p4.png)
+
+
+Access specific characters of a string via slicing:
+
+```{r, eval=F, echo=T}
+word[6:12]
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p5.png)
+
+
+```{r, eval=F, echo=T}
+word[:5]
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p6.png)
+
+
+Obtaining the length of a string:
+
+```{r, eval=F, echo=T}
+len(word)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p7.png)
+
+Counting the number of specific letters (here 'l') within a string:
+
+
+```{r, eval=F, echo=T}
+word.count('l')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p8.png)
+
+Find the index of a specific letter:
+
+```{r, eval=F, echo=T}
+word.find('W')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p9.png)
+
+That's right, the letter W of the word World is at index position 6 of our string. We do not only have to search for certain letters (there can be several identical letters in a string, in this case the index value of the first letter found would be output) but we can also output the index at which a certain word starts:
+
+
+```{r, eval=F, echo=T}
+word.index('World')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p10.png)
+
+
+
+## 2.4 String Manipulation
+
+For the following examples, let's take a look at this kind of example string:
+
+
+```{r, eval=F, echo=T}
+word2 = "tHiS Is aN uNstRucTured sEnTencE"
+
+print(word2)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p11.png)
+
+
+Convert all characters to uppercase:
+
+```{r, eval=F, echo=T}
+word2.upper()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p12.png)
+
+
+Convert all characters to lowercase:
+
+
+```{r, eval=F, echo=T}
+word2.lower()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p13.png)
+
+
+Capitalize the first letter of each word:
+
+
+```{r, eval=F, echo=T}
+word2.title()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p14.png
+
+
+Capitalize only the first letter of a sentence:
+
+```{r, eval=F, echo=T}
+word2.capitalize()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p15.png)
+
+
+You also have the possibility to reverse the upper and lower case of a string. Let's take this example sentence for this:
+
+
+```{r, eval=F, echo=T}
+word3 = "another FUNNY sentence"
+
+print(word3)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p16.png)
+
+```{r, eval=F, echo=T}
+word3.swapcase()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p17.png)
+
+
+## 2.5 Arithmetic Operations
+
+Mathematical operations are just as well possible with strings. See the following examples:
+
+Addition of another string part:
+
+```{r, eval=F, echo=T}
+print(word)
+print()
+print(word + ' What a sunny day!')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p18.png)
+
+
+Have a string played back multiple times:
+
+```{r, eval=F, echo=T}
+print(word * 5)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p19.png)
+
+
+
+
+
+
+Admittedly not very often profitable in the real world but I wanted to give you the following function how to output a string in reverse order. Let's take this example sentence for this:
+
+
+
 
 
 
@@ -65,6 +273,135 @@ I will start here with the basics and then from post to post cover more and deep
 
 ![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
 
 
 
