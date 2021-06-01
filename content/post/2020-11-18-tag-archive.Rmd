@@ -222,7 +222,9 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 
 
+# 12 Natural Language Processing (NLP)
 
++ [Text Manipulation](https://michael-fuchs-python.netlify.app/2021/05/18/nlp-text-manipulation/)
 
 
 
