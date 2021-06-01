@@ -16,7 +16,7 @@ output:
 
 ![](/post/2021-05-18-nlp-text-manipulation_files/p122s1.png)
 
-Let's now move on to another large but very interesting topic area from the field of Data Science: Natural Language Processing
+Let's now move on to another large but very interesting topic area from the field of Data Science: **Natural Language Processing**
 
 
 
@@ -201,7 +201,7 @@ Capitalize the first letter of each word:
 word2.title()
 ```
 
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p14.png
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p14.png)
 
 
 Capitalize only the first letter of a sentence:
