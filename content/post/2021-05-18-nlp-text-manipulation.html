@@ -30,7 +30,11 @@ output:
 <li><a href="#obtaining-specific-information-from-a-string">2.3 Obtaining specific Information from a String</a></li>
 <li><a href="#string-manipulation">2.4 String Manipulation</a></li>
 <li><a href="#arithmetic-operations">2.5 Arithmetic Operations</a></li>
+<li><a href="#check-string-properties">2.6 Check String Properties</a></li>
+<li><a href="#replace-certain-characters-in-strings">2.7 Replace certain Characters in Strings</a></li>
+<li><a href="#for-loops-with-strings">2.8 For Loops with Strings</a></li>
 </ul></li>
+<li><a href="#conclusion">3 Conclusion</a></li>
 </ul>
 </div>
 
@@ -149,13 +153,72 @@ print(word + &#39; What a sunny day!&#39;)</code></pre>
 <p>Have a string played back multiple times:</p>
 <pre class="r"><code>print(word * 5)</code></pre>
 <p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p19.png" /></p>
-<p>Admittedly not very often profitable in the real world but I wanted to give you the following function how to output a string in reverse order. Let’s take this example sentence for this:</p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
-<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p.png" /></p>
+<p>Or so a little prettier:</p>
+<pre class="r"><code>print((word + &#39; &#39;)* 5)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p20.png" /></p>
+<p>With join we can insert a space between the individual letters</p>
+<pre class="r"><code>print(&#39; &#39;.join(word))</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p21.png" /></p>
+<p>or reverse the order of the sting:</p>
+<pre class="r"><code>print(&#39;&#39;.join(reversed(word)))</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p22.png" /></p>
 </div>
+<div id="check-string-properties" class="section level2">
+<h2>2.6 Check String Properties</h2>
+<p>In the following I will check some properties of the string.</p>
+<p>Here again the string:</p>
+<pre class="r"><code>print(word)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p23.png" /></p>
+<p>Check if all characters of the sting are alphanumeric:</p>
+<pre class="r"><code>word.isalnum()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p24.png" /></p>
+<p>Check if all characters of the sting are alphabetic:</p>
+<pre class="r"><code>word.isalpha()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p25.png" /></p>
+<p>Check if string contains digits:</p>
+<pre class="r"><code>word.isdigit()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p26.png" /></p>
+<p>Check if string contains title words:</p>
+<pre class="r"><code>word.istitle()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p27.png" /></p>
+<p>Check if the complete string is in upper case:</p>
+<pre class="r"><code>word.isupper()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p28.png" /></p>
+<p>Check if the complete string is in lower case:</p>
+<pre class="r"><code>word.islower()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p29.png" /></p>
+<p>Check if the string consists of spaces:</p>
+<pre class="r"><code>word.isspace()</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p30.png" /></p>
+<p>Check whether the string ends with a !:</p>
+<pre class="r"><code>word.endswith(&#39;!&#39;)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p31.png" /></p>
+<p>Check whether the string starts with an ‘H’:</p>
+<pre class="r"><code>word.startswith(&#39;H&#39;)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p32.png" /></p>
+</div>
+<div id="replace-certain-characters-in-strings" class="section level2">
+<h2>2.7 Replace certain Characters in Strings</h2>
+<p>Very often used in practice in the replacement of string parts:</p>
+<pre class="r"><code>print(word)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p33.png" /></p>
+<pre class="r"><code>word.replace(&#39;World&#39;, &#39;Germany&#39;)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p34.png" /></p>
+<pre class="r"><code>word.replace(word[:5], &#39;Good Morning&#39;)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p35.png" /></p>
+</div>
+<div id="for-loops-with-strings" class="section level2">
+<h2>2.8 For Loops with Strings</h2>
+<p>Finally, two examples of how to use for loops in combination with strings:</p>
+<pre class="r"><code>for char in word:
+    print(char)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p36.png" /></p>
+<pre class="r"><code>for char in word:
+    print(str(word.index(char)) + &#39;: &#39; + char)</code></pre>
+<p><img src="/post/2021-05-18-nlp-text-manipulation_files/p122p37.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>3 Conclusion</h1>
+<p>In this post I introduced the topic of NLP and showed the basics of text manipulation. In the following I will start with the topic of text pre-processing.</p>
 </div>

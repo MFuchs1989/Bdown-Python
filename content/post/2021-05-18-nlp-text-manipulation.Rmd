@@ -254,173 +254,175 @@ print(word * 5)
 
 ![](/post/2021-05-18-nlp-text-manipulation_files/p122p19.png)
 
+Or so a little prettier:
+
+```{r, eval=F, echo=T}
+print((word + ' ')* 5)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p20.png)
 
 
+With join we can insert a space between the individual letters
+
+```{r, eval=F, echo=T}
+print(' '.join(word))
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p21.png)
+
+or reverse the order of the sting:
+
+```{r, eval=F, echo=T}
+print(''.join(reversed(word)))
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p22.png)
 
 
+## 2.6 Check String Properties
 
-Admittedly not very often profitable in the real world but I wanted to give you the following function how to output a string in reverse order. Let's take this example sentence for this:
+In the following I will check some properties of the string.
 
 
+Here again the string:
+
+```{r, eval=F, echo=T}
+print(word)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p23.png)
 
 
+Check if all characters of the sting are alphanumeric:
+
+```{r, eval=F, echo=T}
+word.isalnum()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p24.png)
+
+Check if all characters of the sting are alphabetic:
+
+```{r, eval=F, echo=T}
+word.isalpha()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p25.png)
+
+Check if string contains digits:
+
+```{r, eval=F, echo=T}
+word.isdigit()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p26.png)
+
+Check if string contains title words:
+
+
+```{r, eval=F, echo=T}
+word.istitle()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p27.png)
+
+Check if the complete string is in upper case:
+
+
+```{r, eval=F, echo=T}
+word.isupper()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p28.png)
+
+
+Check if the complete string is in lower case:
+
+```{r, eval=F, echo=T}
+word.islower()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p29.png)
+
+Check if the string consists of spaces:
+
+```{r, eval=F, echo=T}
+word.isspace()
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p30.png)
+
+
+Check whether the string ends with a !:
+
+```{r, eval=F, echo=T}
+word.endswith('!')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p31.png)
+
+
+Check whether the string starts with an 'H':
+
+```{r, eval=F, echo=T}
+word.startswith('H')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p32.png)
+
+
+## 2.7 Replace certain Characters in Strings
+
+Very often used in practice in the replacement of string parts:
+
+
+```{r, eval=F, echo=T}
+print(word)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p33.png)
+
+```{r, eval=F, echo=T}
+word.replace('World', 'Germany')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p34.png)
+
+
+```{r, eval=F, echo=T}
+word.replace(word[:5], 'Good Morning')
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p35.png)
+
+
+## 2.8 For Loops with Strings
+
+Finally, two examples of how to use for loops in combination with strings: 
+
+
+```{r, eval=F, echo=T}
+for char in word:
+    print(char)
+```
+
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p36.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+for char in word:
+    print(str(word.index(char)) + ': ' + char)
 ```
 
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
+![](/post/2021-05-18-nlp-text-manipulation_files/p122p37.png)
 
 
 
+# 3 Conclusion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-18-nlp-text-manipulation_files/p122p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In this post I introduced the topic of NLP and showed the basics of text manipulation. In the following I will start with the topic of text pre-processing. 
 
 
 
