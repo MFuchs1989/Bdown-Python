@@ -18,6 +18,13 @@ output:
 
 Let's now move on to another large but very interesting topic area from the field of Data Science: **Natural Language Processing**
 
+I already covered the topic of [String Manipulation](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/) once at the beginning of my blog series on Data Science with Python. That was more about handling text columns with functions like: 
+
++ [Separate](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/#separate)
++ [Unite](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/#unite) and
++ [Prefixes](https://michael-fuchs-python.netlify.app/2019/03/27/string-manipulation-an-intuition/#add_prefix)
+
+In the following, we will delve deeper into the topic of text processing in order to be able to extract valuable insights from text variables using machine learning. 
 
 
 ## 1.1 What is NLP?
