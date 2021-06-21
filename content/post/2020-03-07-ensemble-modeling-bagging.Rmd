@@ -22,6 +22,7 @@ So far we have dealt very intensively with the use of different classification a
 Ensemble learning is a machine learning paradigm where multiple models (often called “weak learners”) are trained to solve the same problem and combined to get better results.
 
 There are three most common types of ensembles:
+
 + Bagging
 + Boosting
 + Stacking
