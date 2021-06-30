@@ -242,40 +242,325 @@ messy_text
 ![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p5.png)
 
 
+In the following I will perform the individual steps for text cleaning and always use parts of the messy_text string. 
 
 
+### 4.1.1 Conversion to Lower Case
 
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In general, it is advisable to format the text completely in lower case.
 
 
 
 ```{r, eval=F, echo=T}
-
+messy_text_lower_case = \
+"I HIGHLY RECOMMEND THIS PRDUCT !!\
+"
+messy_text_lower_case
 ```
 
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p6.png)
+
+
+```{r, eval=F, echo=T}
+messy_text_lower_case.lower()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p7.png)
+
+
+### 4.1.2 Removing HTML-Tags
+
+
+```{r, eval=F, echo=T}
+messy_text_html = \
+"Here the HTML-Tag as well:  <a href='https://www.amazon.com/'> …</a>.\
+"
+messy_text_html
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p8.png)
+
+
+```{r, eval=F, echo=T}
+def remove_html_tags_func(text):
+    '''
+    Removes HTML-Tags from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without HTML-Tags
+    ''' 
+    return BeautifulSoup(text, 'html.parser').get_text()
+```
+
+
+```{r, eval=F, echo=T}
+remove_html_tags_func(messy_text_html)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p9.png)
+
+
+### 4.1.3 Removing URLs
+
+
+```{r, eval=F, echo=T}
+messy_text_url = \
+"Bought this product here: https://www.amazon.com/. Another link: www.amazon.com/\
+"
+messy_text_url
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p10.png)
+
+
+```{r, eval=F, echo=T}
+def remove_url_func(text):
+    '''
+    Removes URL addresses from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without URL addresses
+    ''' 
+    return re.sub(r'https?://\S+|www\.\S+', '', text)
+```
+
+```{r, eval=F, echo=T}
+remove_url_func(messy_text_url)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p11.png)
+
+
+### 4.1.4 Removing Accented Characters
+
+
+```{r, eval=F, echo=T}
+messy_text_accented_chars = \
+"Sómě Áccěntěd těxt and words like résumé, café or exposé.\
+"
+messy_text_accented_chars
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p12.png)
+
+
+```{r, eval=F, echo=T}
+def remove_accented_chars_func(text):
+    '''
+    Removes all accented characters from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without accented characters
+    '''
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
+```
+
+```{r, eval=F, echo=T}
+remove_accented_chars_func(messy_text_accented_chars)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p13.png)
+
+
+### 4.1.5 Removing Punctuation
+
+Punctuation is essentially the following set of symbols: [!”#$%&’()*+,-./:;<=>?@[]^_`{|}~]
+
+
+```{r, eval=F, echo=T}
+messy_text_remove_punctuation = \
+"Furthermore, I found the support really great. Paid about 180$ for it (5.7inch version, 4.8'' screen).\
+"
+messy_text_remove_punctuation
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p14.png)
+
+
+```{r, eval=F, echo=T}
+def remove_punctuation_func(text):
+    '''
+    Removes all punctuation from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without punctuations
+    '''
+    return re.sub(r'[^a-zA-Z0-9]', ' ', text)
+```
+
+```{r, eval=F, echo=T}
+remove_punctuation_func(messy_text_remove_punctuation)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p15.png)
+
+
+### 4.1.6 Removing irrelevant Characters (Numbers and Punctuation)
+
+```{r, eval=F, echo=T}
+messy_text_irr_char = \
+"Furthermore, I found the support really great. Paid about 180$ for it (5.7inch version, 4.8'' screen).\
+"
+messy_text_irr_char
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p16.png)
+
+
+I am aware that this is the same example sentence as in the previous example, but here the difference between this and the previous function is made clear.
+
+```{r, eval=F, echo=T}
+def remove_irr_char_func(text):
+    '''
+    Removes all irrelevant characters (numbers and punctuation) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without irrelevant characters
+    '''
+    return re.sub(r'[^a-zA-Z]', ' ', text)
+```
+
+```{r, eval=F, echo=T}
+remove_irr_char_func(messy_text_irr_char)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p17.png)
+
+
+### 4.1.7 Removing extra Whitespaces
+
+
+```{r, eval=F, echo=T}
+messy_text_extra_whitespaces = \
+"I  am   a  text    with  many   whitespaces.\
+"
+messy_text_extra_whitespaces
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p18.png)
+
+
+```{r, eval=F, echo=T}
+def remove_extra_whitespaces_func(text):
+    '''
+    Removes extra whitespaces from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without extra whitespaces
+    ''' 
+    return re.sub(r'^\s*|\s\s*', ' ', text).strip()
+```
+
+```{r, eval=F, echo=T}
+remove_extra_whitespaces_func(messy_text_extra_whitespaces)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p19.png)
+
+I always like to use this function in between, for example, when you have removed stop words, certain words or individual characters from the string(s). From time to time, this creates new whitespaces that I always like to remove for the sake of order.
+
+
+### 4.1.8 Extra: Count Words
+
+It is worthwhile to display the number of existing words, especially for validation of the pre-proessing steps. We will use this function again and again in later steps.
+
+```{r, eval=F, echo=T}
+messy_text_word_count = \
+"How many words do you think I will contain?\
+"
+messy_text_word_count
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p20.png)
+
+
+```{r, eval=F, echo=T}
+def word_count_func(text):
+    '''
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    ''' 
+    return len(text.split())
+```
+
+```{r, eval=F, echo=T}
+word_count_func(messy_text_word_count)
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p21.png)
+
+
+
+### 4.1.9 Extra: Expanding Contractions
+
+You can do expanding contractions but you don't have to. For the sake of completeness, I list the necessary functions, but do not use them in our following example with the Example String and DataFrame. I will give the reason for this in a later chapter.
+
+```{r, eval=F, echo=T}
+from contractions import CONTRACTION_MAP 
+import re 
+
+def expand_contractions(text, map=CONTRACTION_MAP):
+    pattern = re.compile('({})'.format('|'.join(map.keys())), flags=re.IGNORECASE|re.DOTALL)
+    def get_match(contraction):
+        match = contraction.group(0)
+        first_char = match[0]
+        expanded = map.get(match) if map.get(match) else map.get(match.lower())
+        expanded = first_char+expanded[1:]
+        return expanded     
+    new_text = pattern.sub(get_match, text)
+    new_text = re.sub("'", "", new_text)
+    return new_text
+```
+
+With the help of this function, this sentence:
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p22.png)
+
+
+becomes the following:
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p23.png)
+
+This function should also work for this:
+
+```{r, eval=F, echo=T}
+from pycontractions import Contractions
+cont = Contractions(kv_model=model)
+cont.load_models()# 
+
+def expand_contractions(text):
+    text = list(cont.expand_texts([text], precise=True))[0]
+    return text
+```
+
+
+
+
+
+
 
 
 
