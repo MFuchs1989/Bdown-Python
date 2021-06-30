@@ -15,12 +15,237 @@ output:
 # 1 Introduction
 
 
+In my last post (NLP - Text Manipulation) I got into the topic of Natural Language Processing. 
 
-
-
-
+However, before we can start with Machine Learning algorithms some preprocessing steps are needed.
+I will introduce these in this and the following posts. Since this is a coherent post series and will build on each other I recommend to start with reading this post. 
 
 For this publication the dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20I%20(Text%20Cleaning)).
+
+
+
+# 2 Import the Libraries and the Data
+
+
+If you are using the nltk library for the first time, you should import and download the following:
+
+
+```{r, eval=F, echo=T}
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+```
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small.csv')
+df.head()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p1.png)
+
+
+However, we will only work with the following part of the data set:
+
+```{r, eval=F, echo=T}
+df = df[['Rating', 'Reviews']]
+df.head()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p2.png)
+
+Let's take a closer look at the first set of reviews:
+
+```{r, eval=F, echo=T}
+df['Reviews'].iloc[0]
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p3.png)
+
+```{r, eval=F, echo=T}
+df.dtypes
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p4.png)
+
+To be on the safe side, I convert the reviews as strings to be able to work with them correctly. 
+
+```{r, eval=F, echo=T}
+df['Reviews'] = df['Reviews'].astype(str)
+```
+
+
+
+# 3 Definition of required Functions
+
+
+All functions are summarized here. I will show them again in the course of this post at the place where they are used. 
+
+
+```{r, eval=F, echo=T}
+def remove_html_tags_func(text):
+    '''
+    Removes HTML-Tags from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without HTML-Tags
+    ''' 
+    return BeautifulSoup(text, 'html.parser').get_text()
+```
+
+```{r, eval=F, echo=T}
+def remove_url_func(text):
+    '''
+    Removes URL addresses from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without URL addresses
+    ''' 
+    return re.sub(r'https?://\S+|www\.\S+', '', text)
+```
+
+```{r, eval=F, echo=T}
+def remove_accented_chars_func(text):
+    '''
+    Removes all accented characters from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without accented characters
+    '''
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
+```
+
+```{r, eval=F, echo=T}
+def remove_punctuation_func(text):
+    '''
+    Removes all punctuation from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without punctuations
+    '''
+    return re.sub(r'[^a-zA-Z0-9]', ' ', text)
+```
+
+```{r, eval=F, echo=T}
+def remove_irr_char_func(text):
+    '''
+    Removes all irrelevant characters (numbers and punctuation) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without irrelevant characters
+    '''
+    return re.sub(r'[^a-zA-Z]', ' ', text)
+```
+
+```{r, eval=F, echo=T}
+def remove_extra_whitespaces_func(text):
+    '''
+    Removes extra whitespaces from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without extra whitespaces
+    ''' 
+    return re.sub(r'^\s*|\s\s*', ' ', text).strip()
+```
+
+```{r, eval=F, echo=T}
+def word_count_func(text):
+    '''
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    ''' 
+    return len(text.split())
+```
+
+
+# 4  Text Pre-Processing
+
+There are some text pre-processing steps to consider and a few more you can do. In this post I will talk about text cleaning.
+
+## 4.1  Text Cleaning
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -36,7 +261,135 @@ For this publication the dataset *Amazon Unlocked Mobile* from the statistic pla
 
 ```
 
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p1.png)
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
+
+
 
 
 
