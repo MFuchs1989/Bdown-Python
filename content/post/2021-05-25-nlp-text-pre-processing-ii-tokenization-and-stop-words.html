@@ -241,6 +241,34 @@ print(tokens_text_for_stop_words)</code></pre>
 <p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p22.png" /></p>
 <div id="application-to-the-example-string-1" class="section level3">
 <h3>4.3.1 <strong>Application</strong> to the Example String</h3>
+<pre class="r"><code>print(tokens_clean_text)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p23.png" /></p>
+<pre class="r"><code>print(&#39;Number of tokens found: &#39; + str(len(tokens_clean_text)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p24.png" /></p>
+<pre class="r"><code>stop_words_within_tokens_clean_text = [w for w in tokens_clean_text if w in stopwords.words(&quot;english&quot;)]
+
+print()
+print(&#39;These Stop Words were found in our example string:&#39;)
+print()
+print(stop_words_within_tokens_clean_text)
+print()
+print(&#39;Number of Stop Words found: &#39; + str(len(stop_words_within_tokens_clean_text)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p25.png" /></p>
+<pre class="r"><code>clean_text_wo_stop_words = [w for w in tokens_clean_text if w not in stopwords.words(&quot;english&quot;)]
+
+print()
+print(&#39;These words would remain after Stop Words removal:&#39;)
+print()
+print(clean_text_wo_stop_words)
+print()
+print(&#39;Number of remaining words: &#39; + str(len(clean_text_wo_stop_words)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p26.png" /></p>
+<pre class="r"><code>clean_text_wo_stop_words = remove_english_stopwords_func(tokens_clean_text)
+clean_text_wo_stop_words</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p27.png" /></p>
+<p>Note: After removing the stop words we need the word_count function again for counting, because they are no tokens anymore.</p>
+<pre class="r"><code>print(&#39;Number of words: &#39; + str(word_count_func(clean_text_wo_stop_words)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p28.png" /></p>
 </div>
 <div id="application-to-the-dataframe-1" class="section level3">
 <h3>4.3.2 <strong>Application</strong> to the DataFrame</h3>

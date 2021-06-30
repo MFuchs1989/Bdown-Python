@@ -361,17 +361,64 @@ remove_english_stopwords_func(tokens_text_for_stop_words)
 ![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p22.png)
 
 
-
-
-
-
-
-
-
-
 ### 4.3.1 **Application** to the Example String
 
+```{r, eval=F, echo=T}
+print(tokens_clean_text)
+```
 
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p23.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of tokens found: ' + str(len(tokens_clean_text)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p24.png)
+
+
+```{r, eval=F, echo=T}
+stop_words_within_tokens_clean_text = [w for w in tokens_clean_text if w in stopwords.words("english")]
+
+print()
+print('These Stop Words were found in our example string:')
+print()
+print(stop_words_within_tokens_clean_text)
+print()
+print('Number of Stop Words found: ' + str(len(stop_words_within_tokens_clean_text)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p25.png)
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_stop_words = [w for w in tokens_clean_text if w not in stopwords.words("english")]
+
+print()
+print('These words would remain after Stop Words removal:')
+print()
+print(clean_text_wo_stop_words)
+print()
+print('Number of remaining words: ' + str(len(clean_text_wo_stop_words)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p26.png)
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_stop_words = remove_english_stopwords_func(tokens_clean_text)
+clean_text_wo_stop_words
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p27.png)
+
+Note: After removing the stop words we need the word_count function again for counting, because they are no tokens anymore.
+
+```{r, eval=F, echo=T}
+print('Number of words: ' + str(word_count_func(clean_text_wo_stop_words)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p28.png)
 
 
 
