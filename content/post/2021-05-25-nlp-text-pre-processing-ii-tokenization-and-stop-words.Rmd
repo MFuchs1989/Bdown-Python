@@ -319,21 +319,46 @@ print(stopwords.words("english"))
 ![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p19.png)
 
 
+```{r, eval=F, echo=T}
+text_for_stop_words = "Hi my name is Michael. I am an enthusiastic Data Scientist."
+text_for_stop_words
+```
 
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p20.png)
 
+Stop Words can be removed well with the following function. However, the sentences must be converted into word tokens for this. I have explained in detail how to do this in the previous chapter. 
 
+```{r, eval=F, echo=T}
+tokens_text_for_stop_words = word_tokenize(text_for_stop_words)
+print(tokens_text_for_stop_words)
+```
 
-
-
-
-
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p21.png)
 
 
 ```{r, eval=F, echo=T}
-
+def remove_english_stopwords_func(text):
+    '''
+    Removes Stop Words (also capitalized) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without Stop Words
+    ''' 
+    # check in lowercase 
+    t = [token for token in text if token.lower() not in stopwords.words("english")]
+    text = ' '.join(t)    
+    return text
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+```{r, eval=F, echo=T}
+remove_english_stopwords_func(tokens_text_for_stop_words)
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p22.png)
 
 
 

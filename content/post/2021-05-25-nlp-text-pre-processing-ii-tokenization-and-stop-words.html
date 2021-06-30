@@ -216,7 +216,29 @@ df_subset.sort_values(by=&#39;Diff&#39;, ascending=False)</code></pre>
 <p>Here are the defined stop words for the English language:</p>
 <pre class="r"><code>print(stopwords.words(&quot;english&quot;))</code></pre>
 <p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p19.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<pre class="r"><code>text_for_stop_words = &quot;Hi my name is Michael. I am an enthusiastic Data Scientist.&quot;
+text_for_stop_words</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p20.png" /></p>
+<p>Stop Words can be removed well with the following function. However, the sentences must be converted into word tokens for this. I have explained in detail how to do this in the previous chapter.</p>
+<pre class="r"><code>tokens_text_for_stop_words = word_tokenize(text_for_stop_words)
+print(tokens_text_for_stop_words)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p21.png" /></p>
+<pre class="r"><code>def remove_english_stopwords_func(text):
+    &#39;&#39;&#39;
+    Removes Stop Words (also capitalized) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without Stop Words
+    &#39;&#39;&#39; 
+    # check in lowercase 
+    t = [token for token in text if token.lower() not in stopwords.words(&quot;english&quot;)]
+    text = &#39; &#39;.join(t)    
+    return text</code></pre>
+<pre class="r"><code>remove_english_stopwords_func(tokens_text_for_stop_words)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p22.png" /></p>
 <div id="application-to-the-example-string-1" class="section level3">
 <h3>4.3.1 <strong>Application</strong> to the Example String</h3>
 </div>
