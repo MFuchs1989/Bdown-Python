@@ -425,86 +425,44 @@ print('Number of words: ' + str(word_count_func(clean_text_wo_stop_words)))
 ### 4.3.2 **Application** to the DataFrame
 
 
+```{r, eval=F, echo=T}
+df.head()
+```
 
-
-
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p29.png)
 
 
 ```{r, eval=F, echo=T}
+df['Reviews_wo_Stop_Words'] = df['Reviews_Tokenized'].apply(remove_english_stopwords_func)
 
+df.head()
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p30.png)
 
 
 ```{r, eval=F, echo=T}
+df['Word_Count_wo_Stop_Words'] = df['Reviews_wo_Stop_Words'].apply(word_count_func)
 
+df.head().T
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p31.png)
 
 
 
+# 5 Conclusion
 
+In this part of the Text Pre-Processing series, I explained how tokenization works, how to use it, and showed how to remove Stop Words. 
 
-
-
-
-
-
-
-
-
-
-
+I save the edited DataFrame and Example String again for subsequent use. 
 
 
 ```{r, eval=F, echo=T}
+pk.dump(clean_text_wo_stop_words, open('clean_text_wo_stop_words.pkl', 'wb'))
 
+df.to_csv('Amazon_Unlocked_Mobile_small_Part_II.csv', index = False)
 ```
-
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
-
-
-
-
-
-
 
 
 

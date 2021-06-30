@@ -36,6 +36,7 @@ output:
 <li><a href="#application-to-the-dataframe-1">4.3.2 <strong>Application</strong> to the DataFrame</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -272,10 +273,24 @@ clean_text_wo_stop_words</code></pre>
 </div>
 <div id="application-to-the-dataframe-1" class="section level3">
 <h3>4.3.2 <strong>Application</strong> to the DataFrame</h3>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<pre class="r"><code>df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p29.png" /></p>
+<pre class="r"><code>df[&#39;Reviews_wo_Stop_Words&#39;] = df[&#39;Reviews_Tokenized&#39;].apply(remove_english_stopwords_func)
+
+df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p30.png" /></p>
+<pre class="r"><code>df[&#39;Word_Count_wo_Stop_Words&#39;] = df[&#39;Reviews_wo_Stop_Words&#39;].apply(word_count_func)
+
+df.head().T</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p31.png" /></p>
 </div>
 </div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this part of the Text Pre-Processing series, I explained how tokenization works, how to use it, and showed how to remove Stop Words.</p>
+<p>I save the edited DataFrame and Example String again for subsequent use.</p>
+<pre class="r"><code>pk.dump(clean_text_wo_stop_words, open(&#39;clean_text_wo_stop_words.pkl&#39;, &#39;wb&#39;))
+
+df.to_csv(&#39;Amazon_Unlocked_Mobile_small_Part_II.csv&#39;, index = False)</code></pre>
 </div>
