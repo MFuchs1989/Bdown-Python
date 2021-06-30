@@ -21,10 +21,10 @@ output:
 <li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
 <li><a href="#definition-of-required-functions">3 Definition of required Functions</a>
 <ul>
-<li><a href="#text-pre-processing">4 Text Pre-Processing</a>
-<ul>
+<li><a href="#text-pre-processing">4 Text Pre-Processing</a></li>
 <li><a href="#text-cleaning">4.1 (Text Cleaning)</a></li>
-<li><a href="#tokenization">4.2 Tokenization</a></li>
+<li><a href="#tokenization">4.2 Tokenization</a>
+<ul>
 <li><a href="#word-tokenizer">4.2.1 Word Tokenizer</a></li>
 <li><a href="#sentence-tokenizer">4.2.2 Sentence Tokenizer</a></li>
 <li><a href="#application-to-the-example-string">4.2.3 <strong>Application</strong> to the Example String</a></li>
@@ -115,12 +115,13 @@ clean_text</code></pre>
     return text</code></pre>
 <div id="text-pre-processing" class="section level2">
 <h2>4 Text Pre-Processing</h2>
-<div id="text-cleaning" class="section level3">
-<h3>4.1 (Text Cleaning)</h3>
+</div>
+<div id="text-cleaning" class="section level2">
+<h2>4.1 (Text Cleaning)</h2>
 <p>I have already described this part in the previous post. See here: <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a></p>
 </div>
-<div id="tokenization" class="section level3">
-<h3>4.2 Tokenization</h3>
+<div id="tokenization" class="section level2">
+<h2>4.2 Tokenization</h2>
 <p>Tokenisation is a technique for breaking down a piece of text into small units, called tokens. A token may be a word, part of a word or just characters like punctuation.</p>
 <p>Tokenisation can therefore be roughly divided into three groups:</p>
 <ul>
@@ -141,7 +142,6 @@ Currently I am working on a post about NLP, more specifically about the Pre-Proc
 
 text_for_tokenization</code></pre>
 <p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p3.png" /></p>
-</div>
 <div id="word-tokenizer" class="section level3">
 <h3>4.2.1 Word Tokenizer</h3>
 <p>To break a sentence into words, the word_tokenize() function can be used. Based on this, further text cleaning steps can be taken such as removing stop words or normalising text blocks. In addition, machine learning models need numerical data to be trained and make predictions. Again, tokenisation of words is a crucial part of converting text into numerical data.</p>

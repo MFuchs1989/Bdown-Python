@@ -114,12 +114,12 @@ def remove_english_stopwords_func(text):
 
 ## 4 Text Pre-Processing
 
-### 4.1 (Text Cleaning)
+## 4.1 (Text Cleaning)
 
 I have already described this part in the previous post. See here: [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
 
 
-### 4.2 Tokenization
+## 4.2 Tokenization
 
 Tokenisation is a technique for breaking down a piece of text into small units, called tokens. A token may be a word, part of a word or just characters like punctuation.
 
