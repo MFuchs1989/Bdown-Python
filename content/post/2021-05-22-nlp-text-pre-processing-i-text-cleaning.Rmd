@@ -557,15 +557,137 @@ def expand_contractions(text):
 ```
 
 
+### 4.1.10 **Application** to the Example String
+
+Before that, I used individual text modules to show how all the text cleaning steps work. Now it is time to apply these functions to Example String (and subsequently to the DataFrame) one after the other.
 
 
+```{r, eval=F, echo=T}
+messy_text
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p24.png)
 
 
+```{r, eval=F, echo=T}
+messy_text_lower = messy_text.lower()
+messy_text_lower
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p25.png)
 
 
+```{r, eval=F, echo=T}
+messy_text_wo_html = remove_html_tags_func(messy_text_lower)
+messy_text_wo_html
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p26.png)
 
 
+```{r, eval=F, echo=T}
+messy_text_wo_url = remove_url_func(messy_text_wo_html)
+messy_text_wo_url
+```
 
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p27.png)
+
+
+```{r, eval=F, echo=T}
+messy_text_wo_acc_chars = remove_accented_chars_func(messy_text_wo_url)
+messy_text_wo_acc_chars
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p28.png)
+
+
+```{r, eval=F, echo=T}
+messy_text_wo_punct = remove_punctuation_func(messy_text_wo_acc_chars)
+messy_text_wo_punct
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p29.png)
+
+
+```{r, eval=F, echo=T}
+messy_text_wo_irr_char = remove_irr_char_func(messy_text_wo_punct)
+messy_text_wo_irr_char
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p30.png)
+
+```{r, eval=F, echo=T}
+clean_text = remove_extra_whitespaces_func(messy_text_wo_irr_char)
+clean_text
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p31.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of words: ' + str(word_count_func(clean_text)))
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p32.png)
+
+
+### 4.1.11 **Application** to the DataFrame
+
+Now we apply the Text Cleaning Steps shown above to the DataFrame:
+
+```{r, eval=F, echo=T}
+df.head()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p33.png)
+
+
+```{r, eval=F, echo=T}
+df['Clean_Reviews'] = df['Reviews'].str.lower()
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_html_tags_func)
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_url_func)
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_accented_chars_func)
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_punctuation_func)
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_irr_char_func)
+df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_extra_whitespaces_func)
+
+df.head()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p34.png)
+
+Let's now compare the sentences from line 1 with the ones we have now edited:
+
+```{r, eval=F, echo=T}
+df['Reviews'].iloc[0]
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p35.png)
+
+
+```{r, eval=F, echo=T}
+df['Clean_Reviews'].iloc[0]
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p36.png)
+
+Finally, we output the number of words and store them in a separate column. In this way, we can see whether and to what extent the number of words has changed in further steps.
+
+```{r, eval=F, echo=T}
+df['Word_Count'] = df['Clean_Reviews'].apply(word_count_func)
+
+df[['Clean_Reviews', 'Word_Count']].head()
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p37.png)
+
+Here is the average number of words:
+
+```{r, eval=F, echo=T}
+print('Average of words counted: ' + str(df['Word_Count'].mean()))
+```
+
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p38.png)
 
 
 
