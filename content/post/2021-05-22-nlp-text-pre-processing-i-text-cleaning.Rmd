@@ -17,6 +17,21 @@ output:
 
 
 
+
+
+
+For this publication the dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20I%20(Text%20Cleaning)).
+
+
+
+
+
+
+
+
+
+
+
 ```{r, eval=F, echo=T}
 
 ```
