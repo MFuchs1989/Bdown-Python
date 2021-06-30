@@ -1,0 +1,400 @@
+---
+title: NLP - Text Pre-Processing II (Tokenization and Stop Words)
+author: Michael Fuchs
+date: '2021-05-25'
+slug: nlp-text-pre-processing-ii-tokenization-and-stop-words
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+In my [last publication](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/), I started the post series on the topic of text pre-processing. In it, I first covered all the possible applications of [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning). 
+
+Now I will continue with the topics Tokenization and Stop Words. 
+
+
+For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as the created Example String. You can download both files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20II%20(Tokenization%20and%20Stop%20Words)).
+
+
+
+# 2 Import the Libraries and the Data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+```
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small_Part_I.csv')
+df.head()
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p1.png)
+
+```{r, eval=F, echo=T}
+df['Clean_Reviews'] = df['Clean_Reviews'].astype(str)
+```
+
+```{r, eval=F, echo=T}
+clean_text = pk.load(open("clean_text.pkl",'rb'))
+clean_text
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p2.png)
+
+
+# 3 Definition of required Functions
+
+All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.
+
+```{r, eval=F, echo=T}
+def word_count_func(text):
+    '''
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    ''' 
+    return len(text.split())
+```
+
+```{r, eval=F, echo=T}
+def remove_english_stopwords_func(text):
+    '''
+    Removes Stop Words (also capitalized) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without Stop Words
+    ''' 
+    # check in lowercase 
+    t = [token for token in text if token.lower() not in stopwords.words("english")]
+    text = ' '.join(t)    
+    return text
+```
+
+
+## 4 Text Pre-Processing
+
+### 4.1 (Text Cleaning)
+
+I have already described this part in the previous post. See here: [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
+
+
+### 4.2 Tokenization
+
+Tokenisation is a technique for breaking down a piece of text into small units, called tokens. A token may be a word, part of a word or just characters like punctuation.
+
+Tokenisation can therefore be roughly divided into three groups:
+
++ Word Tokenization 
++ Character Tokenization and 
++ Partial Word Tokenization (n-gram characters)
+
+
+
+In the following I will present two tokenizers:
+
++ Word Tokenizer
++ Sentence Tokenizer
+
+Of course there are some more. Find the one on the [NLTK Homepage](https://www.nltk.org/api/nltk.tokenize.html#module-nltk.tokenize) which fits best to your data or to your problem solution.
+
+
+
+```{r, eval=F, echo=T}
+text_for_tokenization = \
+"Hi my name is Michael. \
+I am an enthusiastic Data Scientist. \
+Currently I am working on a post about NLP, more specifically about the Pre-Processing Steps."
+
+text_for_tokenization
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p3.png)
+
+
+### 4.2.1 Word Tokenizer
+
+To break a sentence into words, the word_tokenize() function can be used. Based on this, further text cleaning steps can be taken such as removing stop words or normalising text blocks. In addition, machine learning models need numerical data to be trained and make predictions. Again, tokenisation of words is a crucial part of converting text into numerical data.
+
+
+```{r, eval=F, echo=T}
+words = word_tokenize(text_for_tokenization)
+print(words)
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p4.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of tokens found: ' + str(len(words)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p5.png)
+
+
+### 4.2.2 Sentence Tokenizer
+
+Now the question arises, why do I actually need to tokenise sentences when I can tokenise individual words?
+
+An example of use would be if you want to count the average number of words per sentence. How can I do that with the Word Tokenizer alone? I can't, I need both the sent_tokenize() function and the word_tokenize() function to calculate the ratio.
+
+```{r, eval=F, echo=T}
+sentences = sent_tokenize(text_for_tokenization)
+print(sentences)
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p6.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of sentences found: ' + str(len(sentences)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p7.png)
+
+
+```{r, eval=F, echo=T}
+for each_sentence in sentences:
+    n_words=word_tokenize(each_sentence)
+    print(each_sentence)   
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p8.png)
+
+
+```{r, eval=F, echo=T}
+for each_sentence in sentences:
+    n_words=word_tokenize(each_sentence)
+    print(len(n_words))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p9.png)
+
+
+### 4.2.3 **Application** to the Example String
+
+```{r, eval=F, echo=T}
+tokens_clean_text = word_tokenize(clean_text)
+print(tokens_clean_text)
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p10.png)
+
+
+```{r, eval=F, echo=T}
+print('Number of tokens found: ' + str(len(tokens_clean_text)))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p11.png)
+
+
+
+
+
+### 4.2.4 **Application** to the DataFrame
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+### 4.3.1 **Application** to the Example String
+
+
+
+
+
+### 4.3.2 **Application** to the DataFrame
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,194 @@
+---
+title: NLP - Text Pre-Processing II (Tokenization and Stop Words)
+author: Michael Fuchs
+date: '2021-05-25'
+slug: nlp-text-pre-processing-ii-tokenization-and-stop-words
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required Functions</a>
+<ul>
+<li><a href="#text-pre-processing">4 Text Pre-Processing</a>
+<ul>
+<li><a href="#text-cleaning">4.1 (Text Cleaning)</a></li>
+<li><a href="#tokenization">4.2 Tokenization</a></li>
+<li><a href="#word-tokenizer">4.2.1 Word Tokenizer</a></li>
+<li><a href="#sentence-tokenizer">4.2.2 Sentence Tokenizer</a></li>
+<li><a href="#application-to-the-example-string">4.2.3 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe">4.2.4 <strong>Application</strong> to the DataFrame</a></li>
+<li><a href="#application-to-the-example-string-1">4.3.1 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe-1">4.3.2 <strong>Application</strong> to the DataFrame</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>In my <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/">last publication</a>, I started the post series on the topic of text pre-processing. In it, I first covered all the possible applications of <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a>.</p>
+<p>Now I will continue with the topics Tokenization and Stop Words.</p>
+<p>For this publication the processed dataset <em>Amazon Unlocked Mobile</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used as well as the created Example String. You can download both files from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20II%20(Tokenization%20and%20Stop%20Words)">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the Libraries and the Data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;Amazon_Unlocked_Mobile_small_Part_I.csv&#39;)
+df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p1.png" /></p>
+<pre class="r"><code>df[&#39;Clean_Reviews&#39;] = df[&#39;Clean_Reviews&#39;].astype(str)</code></pre>
+<pre class="r"><code>clean_text = pk.load(open(&quot;clean_text.pkl&quot;,&#39;rb&#39;))
+clean_text</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p2.png" /></p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required Functions</h1>
+<p>All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.</p>
+<pre class="r"><code>def word_count_func(text):
+    &#39;&#39;&#39;
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    &#39;&#39;&#39; 
+    return len(text.split())</code></pre>
+<pre class="r"><code>def remove_english_stopwords_func(text):
+    &#39;&#39;&#39;
+    Removes Stop Words (also capitalized) from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without Stop Words
+    &#39;&#39;&#39; 
+    # check in lowercase 
+    t = [token for token in text if token.lower() not in stopwords.words(&quot;english&quot;)]
+    text = &#39; &#39;.join(t)    
+    return text</code></pre>
+<div id="text-pre-processing" class="section level2">
+<h2>4 Text Pre-Processing</h2>
+<div id="text-cleaning" class="section level3">
+<h3>4.1 (Text Cleaning)</h3>
+<p>I have already described this part in the previous post. See here: <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a></p>
+</div>
+<div id="tokenization" class="section level3">
+<h3>4.2 Tokenization</h3>
+<p>Tokenisation is a technique for breaking down a piece of text into small units, called tokens. A token may be a word, part of a word or just characters like punctuation.</p>
+<p>Tokenisation can therefore be roughly divided into three groups:</p>
+<ul>
+<li>Word Tokenization</li>
+<li>Character Tokenization and</li>
+<li>Partial Word Tokenization (n-gram characters)</li>
+</ul>
+<p>In the following I will present two tokenizers:</p>
+<ul>
+<li>Word Tokenizer</li>
+<li>Sentence Tokenizer</li>
+</ul>
+<p>Of course there are some more. Find the one on the <a href="https://www.nltk.org/api/nltk.tokenize.html#module-nltk.tokenize">NLTK Homepage</a> which fits best to your data or to your problem solution.</p>
+<pre class="r"><code>text_for_tokenization = \
+&quot;Hi my name is Michael. \
+I am an enthusiastic Data Scientist. \
+Currently I am working on a post about NLP, more specifically about the Pre-Processing Steps.&quot;
+
+text_for_tokenization</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p3.png" /></p>
+</div>
+<div id="word-tokenizer" class="section level3">
+<h3>4.2.1 Word Tokenizer</h3>
+<p>To break a sentence into words, the word_tokenize() function can be used. Based on this, further text cleaning steps can be taken such as removing stop words or normalising text blocks. In addition, machine learning models need numerical data to be trained and make predictions. Again, tokenisation of words is a crucial part of converting text into numerical data.</p>
+<pre class="r"><code>words = word_tokenize(text_for_tokenization)
+print(words)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p4.png" /></p>
+<pre class="r"><code>print(&#39;Number of tokens found: &#39; + str(len(words)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p5.png" /></p>
+</div>
+<div id="sentence-tokenizer" class="section level3">
+<h3>4.2.2 Sentence Tokenizer</h3>
+<p>Now the question arises, why do I actually need to tokenise sentences when I can tokenise individual words?</p>
+<p>An example of use would be if you want to count the average number of words per sentence. How can I do that with the Word Tokenizer alone? I can’t, I need both the sent_tokenize() function and the word_tokenize() function to calculate the ratio.</p>
+<pre class="r"><code>sentences = sent_tokenize(text_for_tokenization)
+print(sentences)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p6.png" /></p>
+<pre class="r"><code>print(&#39;Number of sentences found: &#39; + str(len(sentences)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p7.png" /></p>
+<pre class="r"><code>for each_sentence in sentences:
+    n_words=word_tokenize(each_sentence)
+    print(each_sentence)   </code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p8.png" /></p>
+<pre class="r"><code>for each_sentence in sentences:
+    n_words=word_tokenize(each_sentence)
+    print(len(n_words))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p9.png" /></p>
+</div>
+<div id="application-to-the-example-string" class="section level3">
+<h3>4.2.3 <strong>Application</strong> to the Example String</h3>
+<pre class="r"><code>tokens_clean_text = word_tokenize(clean_text)
+print(tokens_clean_text)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p10.png" /></p>
+<pre class="r"><code>print(&#39;Number of tokens found: &#39; + str(len(tokens_clean_text)))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p11.png" /></p>
+</div>
+<div id="application-to-the-dataframe" class="section level3">
+<h3>4.2.4 <strong>Application</strong> to the DataFrame</h3>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+</div>
+<div id="application-to-the-example-string-1" class="section level3">
+<h3>4.3.1 <strong>Application</strong> to the Example String</h3>
+</div>
+<div id="application-to-the-dataframe-1" class="section level3">
+<h3>4.3.2 <strong>Application</strong> to the DataFrame</h3>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+</div>
+</div>
+</div>
