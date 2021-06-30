@@ -228,55 +228,95 @@ print('Number of tokens found: ' + str(len(tokens_clean_text)))
 ![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p11.png)
 
 
-
-
-
 ### 4.2.4 **Application** to the DataFrame
 
 
+```{r, eval=F, echo=T}
+df.head()
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p12.png)
+
+Here I set a limit for the column width so that it remains clear. This setting should be reset at the end, otherwise it will remain. 
+
+```{r, eval=F, echo=T}
+pd.set_option('display.max_colwidth', 30)
+```
 
 
 ```{r, eval=F, echo=T}
+df['Reviews_Tokenized'] = df['Clean_Reviews'].apply(word_tokenize)
 
+df.head()
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p13.png)
 
 
 ```{r, eval=F, echo=T}
+df['Token_Count'] = df['Reviews_Tokenized'].str.len()
 
+df.head()
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p14.png)
 
-
-
-
-
-
-
-
-
-
-
-
+It is always worthwhile (I have made a habit of doing this) to have the number of remaining words or tokens displayed and also to store them in the data record. The advantage of this is that (especially in later process steps) it is very quick and easy to see what influence the operation has had on the quality of my information. Of course, this can only be done on a random basis, but it is easy to see whether the function applied had negative effects that were not intended. Or you look at a case difference if you don't know which type of algorithm (for example, in normalisation) fits my data better.
 
 
 ```{r, eval=F, echo=T}
-
+print('Average of words counted: ' + str(df['Word_Count'].mean()))
+print('Average of tokens counted: ' + str(df['Token_Count'].mean()))
 ```
 
-![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png)
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p15.png)
+
+Ok interesting, the average number of words has increased slightly. Let's take a look at what caused that:
+
+
+```{r, eval=F, echo=T}
+df_subset = df[['Clean_Reviews', 'Word_Count', 'Reviews_Tokenized', 'Token_Count']]
+df_subset['Diff'] = df_subset['Token_Count'] - df_subset['Word_Count']
+
+
+df_subset = df_subset[(df_subset["Diff"] != 0)]
+df_subset.sort_values(by='Diff', ascending=False)
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p16.png)
+
+Note: In the following I do not take the first row from the sorted dataset, but from the created dataset df_subset.
+
+
+```{r, eval=F, echo=T}
+df_subset['Clean_Reviews'].iloc[0]
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p17.png)
+
+
+```{r, eval=F, echo=T}
+df_subset['Reviews_Tokenized'].iloc[0]
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p18.png)
+
+
+Here we see the reason: The tokenizer has turned 'cannot' into 'can not'. 
+
+
+## 4.3  Stop Words
+
+Stop words are frequently used words such as I, a, an, in etc. They do not contribute significantly to the information content of a sentence, so it is advisable to remove them by storing a list of words that we consider stop words. The library nltk has such lists for 16 different languages that we can refer to.
+
+Here are the defined stop words for the English language:
+
+
+```{r, eval=F, echo=T}
+print(stopwords.words("english"))
+```
+
+![](/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p19.png)
 
 
 

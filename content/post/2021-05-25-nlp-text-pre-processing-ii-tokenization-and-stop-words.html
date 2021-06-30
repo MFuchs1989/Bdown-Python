@@ -29,6 +29,9 @@ output:
 <li><a href="#sentence-tokenizer">4.2.2 Sentence Tokenizer</a></li>
 <li><a href="#application-to-the-example-string">4.2.3 <strong>Application</strong> to the Example String</a></li>
 <li><a href="#application-to-the-dataframe">4.2.4 <strong>Application</strong> to the DataFrame</a></li>
+</ul></li>
+<li><a href="#stop-words">4.3 Stop Words</a>
+<ul>
 <li><a href="#application-to-the-example-string-1">4.3.1 <strong>Application</strong> to the Example String</a></li>
 <li><a href="#application-to-the-dataframe-1">4.3.2 <strong>Application</strong> to the DataFrame</a></li>
 </ul></li>
@@ -175,11 +178,45 @@ print(tokens_clean_text)</code></pre>
 </div>
 <div id="application-to-the-dataframe" class="section level3">
 <h3>4.2.4 <strong>Application</strong> to the DataFrame</h3>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
-<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
+<pre class="r"><code>df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p12.png" /></p>
+<p>Here I set a limit for the column width so that it remains clear. This setting should be reset at the end, otherwise it will remain.</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_colwidth&#39;, 30)</code></pre>
+<pre class="r"><code>df[&#39;Reviews_Tokenized&#39;] = df[&#39;Clean_Reviews&#39;].apply(word_tokenize)
+
+df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p13.png" /></p>
+<pre class="r"><code>df[&#39;Token_Count&#39;] = df[&#39;Reviews_Tokenized&#39;].str.len()
+
+df.head()</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p14.png" /></p>
+<p>It is always worthwhile (I have made a habit of doing this) to have the number of remaining words or tokens displayed and also to store them in the data record. The advantage of this is that (especially in later process steps) it is very quick and easy to see what influence the operation has had on the quality of my information. Of course, this can only be done on a random basis, but it is easy to see whether the function applied had negative effects that were not intended. Or you look at a case difference if you don’t know which type of algorithm (for example, in normalisation) fits my data better.</p>
+<pre class="r"><code>print(&#39;Average of words counted: &#39; + str(df[&#39;Word_Count&#39;].mean()))
+print(&#39;Average of tokens counted: &#39; + str(df[&#39;Token_Count&#39;].mean()))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p15.png" /></p>
+<p>Ok interesting, the average number of words has increased slightly. Let’s take a look at what caused that:</p>
+<pre class="r"><code>df_subset = df[[&#39;Clean_Reviews&#39;, &#39;Word_Count&#39;, &#39;Reviews_Tokenized&#39;, &#39;Token_Count&#39;]]
+df_subset[&#39;Diff&#39;] = df_subset[&#39;Token_Count&#39;] - df_subset[&#39;Word_Count&#39;]
+
+
+df_subset = df_subset[(df_subset[&quot;Diff&quot;] != 0)]
+df_subset.sort_values(by=&#39;Diff&#39;, ascending=False)</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p16.png" /></p>
+<p>Note: In the following I do not take the first row from the sorted dataset, but from the created dataset df_subset.</p>
+<pre class="r"><code>df_subset[&#39;Clean_Reviews&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p17.png" /></p>
+<pre class="r"><code>df_subset[&#39;Reviews_Tokenized&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p18.png" /></p>
+<p>Here we see the reason: The tokenizer has turned ‘cannot’ into ‘can not’.</p>
 </div>
+</div>
+<div id="stop-words" class="section level2">
+<h2>4.3 Stop Words</h2>
+<p>Stop words are frequently used words such as I, a, an, in etc. They do not contribute significantly to the information content of a sentence, so it is advisable to remove them by storing a list of words that we consider stop words. The library nltk has such lists for 16 different languages that we can refer to.</p>
+<p>Here are the defined stop words for the English language:</p>
+<pre class="r"><code>print(stopwords.words(&quot;english&quot;))</code></pre>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p19.png" /></p>
+<p><img src="/post/2021-05-25-nlp-text-pre-processing-ii-tokenization-and-stop-words_files/p124p.png" /></p>
 <div id="application-to-the-example-string-1" class="section level3">
 <h3>4.3.1 <strong>Application</strong> to the Example String</h3>
 </div>
