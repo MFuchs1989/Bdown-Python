@@ -223,9 +223,23 @@ There are some text pre-processing steps to consider and a few more you can do. 
 
 ## 4.1  Text Cleaning
 
+Here I have created an example string, where you can understand the following steps very well.
 
+```{r, eval=F, echo=T}
+messy_text = \
+"Hi e-v-e-r-y-o-n-e !!!@@@!!! I gave a 5-star rating. \
+Bought this special product here: https://www.amazon.com/. Another link: www.amazon.com/ \
+Here the HTML-Tag as well:  <a href='https://www.amazon.com/'> …</a>. \
+I HIGHLY RECOMMEND THIS PRDUCT !! \
+I @ (love) [it] <for> {all} ~it's* |/ #special / ^^characters;! \
+I am currently investigating the special device and am excited about the features. Love it! \
+Furthermore, I found the support really great. Paid about 180$ for it (5.7inch version, 4.8'' screen). \
+Sómě special Áccěntěd těxt and words like résumé, café or exposé.\
+"
+messy_text
+```
 
-
+![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p5.png)
 
 
 

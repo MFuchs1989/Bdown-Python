@@ -173,6 +173,19 @@ df.head()</code></pre>
 <p>There are some text pre-processing steps to consider and a few more you can do. In this post I will talk about text cleaning.</p>
 <div id="text-cleaning" class="section level2">
 <h2>4.1 Text Cleaning</h2>
+<p>Here I have created an example string, where you can understand the following steps very well.</p>
+<pre class="r"><code>messy_text = \
+&quot;Hi e-v-e-r-y-o-n-e !!!@@@!!! I gave a 5-star rating. \
+Bought this special product here: https://www.amazon.com/. Another link: www.amazon.com/ \
+Here the HTML-Tag as well:  &lt;a href=&#39;https://www.amazon.com/&#39;&gt; …&lt;/a&gt;. \
+I HIGHLY RECOMMEND THIS PRDUCT !! \
+I @ (love) [it] &lt;for&gt; {all} ~it&#39;s* |/ #special / ^^characters;! \
+I am currently investigating the special device and am excited about the features. Love it! \
+Furthermore, I found the support really great. Paid about 180$ for it (5.7inch version, 4.8&#39;&#39; screen). \
+Sómě special Áccěntěd těxt and words like résumé, café or exposé.\
+&quot;
+messy_text</code></pre>
+<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p5.png" /></p>
 <p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
 <p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
 <p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
