@@ -690,131 +690,22 @@ print('Average of words counted: ' + str(df['Word_Count'].mean()))
 ![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p38.png)
 
 
+# 5 Conclusion
 
+This was the first post in my series about text pre-processing. 
+In it I have listed all the necessary steps that should always be followed (except in exceptional cases). 
 
-
-
-
-
-
-
-
-
-
+To be able to proceed with the edited record in the next post, I save it and the Example String.
 
 ```{r, eval=F, echo=T}
+pk.dump(clean_text, open('clean_text.pkl', 'wb'))
 
+df.to_csv('Amazon_Unlocked_Mobile_small_Part_I.csv', index = False)
 ```
 
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png)
-
-
-
-
-
-
+In the following post I will link where you can find these two files. 
+Stay tuned to learn more about Text Pre-Processing.
 
 
 

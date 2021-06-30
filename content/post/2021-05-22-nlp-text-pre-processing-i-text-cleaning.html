@@ -37,6 +37,7 @@ output:
 <li><a href="#application-to-the-dataframe">4.1.11 <strong>Application</strong> to the DataFrame</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -449,11 +450,17 @@ df[[&#39;Clean_Reviews&#39;, &#39;Word_Count&#39;]].head()</code></pre>
 <p>Here is the average number of words:</p>
 <pre class="r"><code>print(&#39;Average of words counted: &#39; + str(df[&#39;Word_Count&#39;].mean()))</code></pre>
 <p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p38.png" /></p>
-<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
-<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
-<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
-<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
-<p><img src="/post/2021-05-22-nlp-text-pre-processing-i-text-cleaning_files/p123p.png" /></p>
 </div>
 </div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>This was the first post in my series about text pre-processing.
+In it I have listed all the necessary steps that should always be followed (except in exceptional cases).</p>
+<p>To be able to proceed with the edited record in the next post, I save it and the Example String.</p>
+<pre class="r"><code>pk.dump(clean_text, open(&#39;clean_text.pkl&#39;, &#39;wb&#39;))
+
+df.to_csv(&#39;Amazon_Unlocked_Mobile_small_Part_I.csv&#39;, index = False)</code></pre>
+<p>In the following post I will link where you can find these two files.
+Stay tuned to learn more about Text Pre-Processing.</p>
 </div>
