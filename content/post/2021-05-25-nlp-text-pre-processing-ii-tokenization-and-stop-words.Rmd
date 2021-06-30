@@ -112,7 +112,7 @@ def remove_english_stopwords_func(text):
 ```
 
 
-## 4 Text Pre-Processing
+# 4 Text Pre-Processing
 
 ## 4.1 (Text Cleaning)
 

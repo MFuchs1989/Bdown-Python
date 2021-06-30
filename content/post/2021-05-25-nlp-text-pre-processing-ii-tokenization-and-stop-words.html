@@ -19,9 +19,9 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
-<li><a href="#definition-of-required-functions">3 Definition of required Functions</a>
+<li><a href="#definition-of-required-functions">3 Definition of required Functions</a></li>
+<li><a href="#text-pre-processing">4 Text Pre-Processing</a>
 <ul>
-<li><a href="#text-pre-processing">4 Text Pre-Processing</a></li>
 <li><a href="#text-cleaning">4.1 (Text Cleaning)</a></li>
 <li><a href="#tokenization">4.2 Tokenization</a>
 <ul>
@@ -113,9 +113,9 @@ clean_text</code></pre>
     t = [token for token in text if token.lower() not in stopwords.words(&quot;english&quot;)]
     text = &#39; &#39;.join(t)    
     return text</code></pre>
-<div id="text-pre-processing" class="section level2">
-<h2>4 Text Pre-Processing</h2>
 </div>
+<div id="text-pre-processing" class="section level1">
+<h1>4 Text Pre-Processing</h1>
 <div id="text-cleaning" class="section level2">
 <h2>4.1 (Text Cleaning)</h2>
 <p>I have already described this part in the previous post. See here: <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a></p>
