@@ -36,6 +36,8 @@ output:
 <li><a href="#lemmatization">4.5.2 Lemmatization</a>
 <ul>
 <li><a href="#wordnet-lemmatizer-with-specific-pos-tag">4.5.2.1 Wordnet Lemmatizer with specific POS tag</a></li>
+<li><a href="#wordnet-lemmatizer-with-appropriate-pos-tag">4.5.2.2 Wordnet Lemmatizer with appropriate POS tag</a></li>
+<li><a href="#multiple-specific-wordnet-lemmatizer">4.5.2.3 Multiple specific Wordnet Lemmatizer</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
@@ -385,7 +387,8 @@ text_for_normalization</code></pre>
     return text</code></pre>
 <pre class="r"><code>norm_lemm_v_func(text_for_normalization)</code></pre>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p10.png" /></p>
-<p>Perfect, now it’s almost the way we want it (‘are’ became ‘be’ and ‘eating’ and ‘swimming’ became ‘eat’ and ‘swim’). One exception is ‘saw’. One would have expected that this word would be changed to ‘see’. Why this is a strange exception can be read <a href="https://stackoverflow.com/questions/33594721/why-nltk-lemmatization-has-wrong-output-even-if-verb-exc-has-added-right-value">here</a>. Let’s take a look at the phrase ‘I want better dog’. Instead of ‘better’ I would like to have ‘good’ or ‘well’. But since this is not a verb but an adjective we would have to use the WordNetLemmatizer with the POS tag = ‘a’ for adjective. Also for this I wrote a function that does exactly that:</p>
+<p>Perfect, now it’s almost the way we want it (‘are’ became ‘be’ and ‘eating’ and ‘swimming’ became ‘eat’ and ‘swim’). One exception is ‘saw’. One would have expected that this word would be changed to ‘see’. Why this is a strange exception can be read <a href="https://stackoverflow.com/questions/33594721/why-nltk-lemmatization-has-wrong-output-even-if-verb-exc-has-added-right-value">here</a>.</p>
+<p>Let’s take a look at the phrase ‘I want better dog’. Instead of ‘better’ I would like to have ‘good’ or ‘well’. But since this is not a verb but an adjective we would have to use the WordNetLemmatizer with the POS tag = ‘a’ for adjective. Also for this I wrote a function that does exactly that:</p>
 <pre class="r"><code>def norm_lemm_a_func(text):
     &#39;&#39;&#39;
     Lemmatize tokens from string
@@ -407,7 +410,89 @@ text_for_normalization</code></pre>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p11.png" /></p>
 <p>Has worked but unfortunately now again the verbs were not taken into account.</p>
 <p>For this problem there are two ways which I would like to introduce in the following two chapters.</p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+</div>
+<div id="wordnet-lemmatizer-with-appropriate-pos-tag" class="section level4">
+<h4>4.5.2.2 Wordnet Lemmatizer with appropriate POS tag</h4>
+<p>One possibility would be to write a function that determines the respective POS tag of a word and passes it to the lemmatization function for the respective token.</p>
+<p>Here are the Part-of-speech constants:</p>
+<ul>
+<li>ADJ = ‘a’</li>
+<li>ADJ_SAT = ‘s’</li>
+<li>ADV = ‘r’</li>
+<li>NOUN = ‘n’</li>
+<li>VERB = ‘v’</li>
+</ul>
+<pre class="r"><code>def get_wordnet_pos_func(word):
+    &#39;&#39;&#39;
+    Maps the respective POS tag of a word to the format accepted by the lemmatizer of wordnet
+    
+    Args:
+        word (str): Word to which the function is to be applied, string
+    
+    Returns:
+        POS tag, readable for the lemmatizer of wordnet
+    &#39;&#39;&#39;     
+    tag = pos_tag([word])[0][1][0].upper()
+    tag_dict = {&quot;J&quot;: wordnet.ADJ,
+                &quot;N&quot;: wordnet.NOUN,
+                &quot;V&quot;: wordnet.VERB,
+                &quot;R&quot;: wordnet.ADV}
+
+    return tag_dict.get(tag, wordnet.NOUN)</code></pre>
+<pre class="r"><code>def norm_lemm_POS_tag_func(text):
+    &#39;&#39;&#39;
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is determined with the help of function get_wordnet_pos()
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    &#39;&#39;&#39; 
+    words = word_tokenize(text)
+    text = &#39; &#39;.join([WordNetLemmatizer().lemmatize(word, get_wordnet_pos_func(word)) for word in words])
+    return text</code></pre>
+<pre class="r"><code>print(&#39;POS tag for the word &quot;dog&quot;: &#39; + str(get_wordnet_pos_func(&quot;dog&quot;)))
+print(&#39;POS tag for the word &quot;going&quot;: &#39; + str(get_wordnet_pos_func(&quot;going&quot;)))
+print(&#39;POS tag for the word &quot;good&quot;: &#39; + str(get_wordnet_pos_func(&quot;good&quot;)))</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p12.png" /></p>
+<pre class="r"><code>norm_lemm_POS_tag_func(text_for_normalization)</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p13.png" /></p>
+</div>
+<div id="multiple-specific-wordnet-lemmatizer" class="section level4">
+<h4>4.5.2.3 Multiple specific Wordnet Lemmatizer</h4>
+<p>Another alternative is to run two lemmatization algorithms with different specific POS tags one after the other:</p>
+<pre class="r"><code>text_for_norm_v_lemmatized = norm_lemm_v_func(text_for_normalization)
+text_for_norm_n_lemmatized = norm_lemm_a_func(text_for_norm_v_lemmatized)
+text_for_norm_n_lemmatized</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p14.png" /></p>
+<p>Personally, I find it easier to write this back into a function:</p>
+<pre class="r"><code>def norm_lemm_v_a_func(text):
+    &#39;&#39;&#39;
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() with POS tag &#39;v&#39; to lemmatize the created tokens
+    Step 3: Use word_tokenize() to get tokens from generated string        
+    Step 4: Use WordNetLemmatizer() with POS tag &#39;a&#39; to lemmatize the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    &#39;&#39;&#39;
+    words1 = word_tokenize(text)
+    text1 = &#39; &#39;.join([WordNetLemmatizer().lemmatize(word, pos=&#39;v&#39;) for word in words1])
+    words2 = word_tokenize(text1)
+    text2 = &#39; &#39;.join([WordNetLemmatizer().lemmatize(word, pos=&#39;a&#39;) for word in words2])
+    return text2</code></pre>
+<pre class="r"><code>norm_lemm_v_a_func(text_for_normalization)</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p15.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
