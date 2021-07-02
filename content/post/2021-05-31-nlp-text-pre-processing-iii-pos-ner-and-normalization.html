@@ -39,8 +39,11 @@ output:
 <li><a href="#wordnet-lemmatizer-with-appropriate-pos-tag">4.5.2.2 Wordnet Lemmatizer with appropriate POS tag</a></li>
 <li><a href="#multiple-specific-wordnet-lemmatizer">4.5.2.3 Multiple specific Wordnet Lemmatizer</a></li>
 </ul></li>
+<li><a href="#application-to-the-example-string">4.5.3 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe">4.5.4 <strong>Application</strong> to the DataFrame</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -493,12 +496,47 @@ text_for_norm_n_lemmatized</code></pre>
     return text2</code></pre>
 <pre class="r"><code>norm_lemm_v_a_func(text_for_normalization)</code></pre>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p15.png" /></p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
-<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+</div>
+</div>
+<div id="application-to-the-example-string" class="section level3">
+<h3>4.5.3 <strong>Application</strong> to the Example String</h3>
+<pre class="r"><code>clean_text_wo_stop_words</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p16.png" /></p>
+<p><strong>with norm_lemm_v_a_func</strong></p>
+<pre class="r"><code>clean_text_lemmatized_v_a = norm_lemm_v_a_func(clean_text_wo_stop_words)
+clean_text_lemmatized_v_a</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p17.png" /></p>
+<p><strong>with norm_lemm_POS_tag_func</strong></p>
+<pre class="r"><code>clean_text_lemmatized_pos_tag = norm_lemm_POS_tag_func(clean_text_wo_stop_words)
+clean_text_lemmatized_pos_tag</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p18.png" /></p>
+<p>This example shows the advantages and disadvantages of the two variants.
+With the v_a_func, ‘bought’ became ‘buy’ and ‘paid’ became ‘pay’. On the other hand, ‘rating’ became ‘rat’.</p>
+<p>With the pos_tag function, on the other hand, the past tense remained, but ‘rating’ was not reformatted to the word rat.</p>
+<p>This is the well-known <a href="https://www.kdnuggets.com/2019/09/no-free-lunch-data-science.html">No Free Lunch Theorem</a> where we have to weigh up which variant with which advantages and disadvantages we want to take.</p>
+<p><strong>In this example, I will continue to work with the norm_lemm_v_a function for the Example String and the DataFrame.</strong></p>
+</div>
+<div id="application-to-the-dataframe" class="section level3">
+<h3>4.5.4 <strong>Application</strong> to the DataFrame</h3>
+<pre class="r"><code>df.head(3).T</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p19.png" /></p>
+<pre class="r"><code>df[&#39;Reviews_lemmatized&#39;] = df[&#39;Reviews_wo_Stop_Words&#39;].apply(norm_lemm_v_a_func)
+
+df[&#39;Word_Count_lemmatized_Reviews&#39;] = df[&#39;Reviews_lemmatized&#39;].apply(word_count_func)
+
+df.head(3).T</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p20.png" /></p>
 </div>
 </div>
 </div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this part of the Text Pre-Processing series, I have given a brief example explanation of what POS and NER are and what these two techniques are to be used for.</p>
+<p>Furthermore, I went into detail about normalization techniques for text data.</p>
+<p>I save the edited DataFrame and Example String again for subsequent use.</p>
+<pre class="r"><code>pk.dump(clean_text_lemmatized_v_a, open(&#39;clean_text_lemmatized_v_a.pkl&#39;, &#39;wb&#39;))
+
+df.to_csv(&#39;Amazon_Unlocked_Mobile_small_Part_III.csv&#39;, index = False)</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 </div>

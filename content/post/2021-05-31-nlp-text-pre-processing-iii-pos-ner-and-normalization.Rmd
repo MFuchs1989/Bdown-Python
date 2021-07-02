@@ -668,81 +668,87 @@ norm_lemm_v_a_func(text_for_normalization)
 ![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p15.png)
 
 
+### 4.5.3  **Application** to the Example String
+
+```{r, eval=F, echo=T}
+clean_text_wo_stop_words
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p16.png)
 
 
+**with norm_lemm_v_a_func**
+
+
+```{r, eval=F, echo=T}
+clean_text_lemmatized_v_a = norm_lemm_v_a_func(clean_text_wo_stop_words)
+clean_text_lemmatized_v_a
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p17.png)
+
+
+**with norm_lemm_POS_tag_func**
+
+
+```{r, eval=F, echo=T}
+clean_text_lemmatized_pos_tag = norm_lemm_POS_tag_func(clean_text_wo_stop_words)
+clean_text_lemmatized_pos_tag
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p18.png)
+
+
+This example shows the advantages and disadvantages of the two variants. 
+With the v_a_func, 'bought' became 'buy' and 'paid' became 'pay'. On the other hand, 'rating' became 'rat'.
+
+With the pos_tag function, on the other hand, the past tense remained, but 'rating' was not reformatted to the word rat. 
+
+
+This is the well-known [No Free Lunch Theorem](https://www.kdnuggets.com/2019/09/no-free-lunch-data-science.html) where we have to weigh up which variant with which advantages and disadvantages we want to take. 
+
+**In this example, I will continue to work with the norm_lemm_v_a function for the Example String and the DataFrame.**
+
+
+
+### 4.5.4 **Application** to the DataFrame
+
+
+```{r, eval=F, echo=T}
+df.head(3).T
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p19.png)
 
 
 
 
 ```{r, eval=F, echo=T}
+df['Reviews_lemmatized'] = df['Reviews_wo_Stop_Words'].apply(norm_lemm_v_a_func)
 
+df['Word_Count_lemmatized_Reviews'] = df['Reviews_lemmatized'].apply(word_count_func)
+
+df.head(3).T
 ```
 
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p20.png)
 
 
+# 5 Conclusion
 
 
+In this part of the Text Pre-Processing series, I have given a brief example explanation of what POS and NER are and what these two techniques are to be used for. 
+
+Furthermore, I went into detail about normalization techniques for text data. 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+I save the edited DataFrame and Example String again for subsequent use. 
 
 ```{r, eval=F, echo=T}
+pk.dump(clean_text_lemmatized_v_a, open('clean_text_lemmatized_v_a.pkl', 'wb'))
 
+df.to_csv('Amazon_Unlocked_Mobile_small_Part_III.csv', index = False)
 ```
-
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
-
-
-
-
-
-
-
-
-
-
 
 
 
