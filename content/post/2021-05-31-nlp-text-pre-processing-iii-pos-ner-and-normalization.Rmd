@@ -16,13 +16,300 @@ output:
 
 # 1 Introduction
 
-hI
+
+Let's continue in our post series about Text Pre-Processing.
+
+In this post I will cover the following topics:
+
++ POS
++ NER and
++ Normalization
+
+
+For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as the created Example String. You can download both files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20III%20(POS%2C%20NER%20and%20Normalization)).
+
+
+
+# 2 Import the Libraries and the Data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+```
+
+
+```{r, eval=F, echo=T}
+pd.set_option('display.max_colwidth', 30)
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small_Part_II.csv')
+df.head()
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p1.png)
+
+
+```{r, eval=F, echo=T}
+df['Reviews_wo_Stop_Words'] = df['Reviews_wo_Stop_Words'].astype(str)
+```
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_stop_words = pk.load(open("clean_text_wo_stop_words.pkl",'rb'))
+clean_text_wo_stop_words
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p2.png)
+
+
+# 3 Definition of required Functions
+
+All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.
+
 
 ```{r, eval=F, echo=T}
 
 ```
 
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+
+
+
+
+
+
+
+
+
+
 
 
 

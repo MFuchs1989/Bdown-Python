@@ -18,11 +18,72 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required Functions</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>hI</p>
+<p>Let’s continue in our post series about Text Pre-Processing.</p>
+<p>In this post I will cover the following topics:</p>
+<ul>
+<li>POS</li>
+<li>NER and</li>
+<li>Normalization</li>
+</ul>
+<p>For this publication the processed dataset <em>Amazon Unlocked Mobile</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used as well as the created Example String. You can download both files from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20III%20(POS%2C%20NER%20and%20Normalization)">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the Libraries and the Data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud</code></pre>
+<pre class="r"><code>pd.set_option(&#39;display.max_colwidth&#39;, 30)</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;Amazon_Unlocked_Mobile_small_Part_II.csv&#39;)
+df.head()</code></pre>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p1.png" /></p>
+<pre class="r"><code>df[&#39;Reviews_wo_Stop_Words&#39;] = df[&#39;Reviews_wo_Stop_Words&#39;].astype(str)</code></pre>
+<pre class="r"><code>clean_text_wo_stop_words = pk.load(open(&quot;clean_text_wo_stop_words.pkl&quot;,&#39;rb&#39;))
+clean_text_wo_stop_words</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p2.png" /></p>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required Functions</h1>
+<p>All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.</p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 </div>
