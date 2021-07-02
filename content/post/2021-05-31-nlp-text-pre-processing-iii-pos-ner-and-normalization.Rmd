@@ -97,63 +97,381 @@ All functions are summarized here. I will show them again where they are used du
 
 
 ```{r, eval=F, echo=T}
+def word_count_func(text):
+    '''
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    ''' 
+    return len(text.split())
+```
 
+
+```{r, eval=F, echo=T}
+def norm_stemming_func(text):
+    '''
+    Stemming tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use PorterStemmer() to stem the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with stemmed words
+    '''  
+    words = word_tokenize(text)
+    text = ' '.join([PorterStemmer().stem(word) for word in words])
+    return text
+```
+
+
+```{r, eval=F, echo=T}
+def norm_lemm_func(text):
+    '''
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    '''  
+    words = word_tokenize(text)
+    text = ' '.join([WordNetLemmatizer().lemmatize(word) for word in words])
+    return text
+```
+
+
+```{r, eval=F, echo=T}
+def norm_lemm_v_func(text):
+    '''
+    Lemmatize tokens from string 
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is set to 'v' for verb
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    '''  
+    words = word_tokenize(text)
+    text = ' '.join([WordNetLemmatizer().lemmatize(word, pos='v') for word in words])
+    return text
+```
+
+
+```{r, eval=F, echo=T}
+def norm_lemm_a_func(text):
+    '''
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is set to 'a' for adjective
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    ''' 
+    words = word_tokenize(text)
+    text = ' '.join([WordNetLemmatizer().lemmatize(word, pos='a') for word in words])
+    return text
+```
+
+
+```{r, eval=F, echo=T}
+def get_wordnet_pos_func(word):
+    '''
+    Maps the respective POS tag of a word to the format accepted by the lemmatizer of wordnet
+    
+    Args:
+        word (str): Word to which the function is to be applied, string
+    
+    Returns:
+        POS tag, readable for the lemmatizer of wordnet
+    '''     
+    tag = pos_tag([word])[0][1][0].upper()
+    tag_dict = {"J": wordnet.ADJ,
+                "N": wordnet.NOUN,
+                "V": wordnet.VERB,
+                "R": wordnet.ADV}
+
+    return tag_dict.get(tag, wordnet.NOUN)
+```
+
+
+```{r, eval=F, echo=T}
+def norm_lemm_POS_tag_func(text):
+    '''
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is determined with the help of function get_wordnet_pos()
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    ''' 
+    words = word_tokenize(text)
+    text = ' '.join([WordNetLemmatizer().lemmatize(word, get_wordnet_pos_func(word)) for word in words])
+    return text
+```
+
+
+```{r, eval=F, echo=T}
+def norm_lemm_v_a_func(text):
+    '''
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() with POS tag 'v' to lemmatize the created tokens
+    Step 3: Use word_tokenize() to get tokens from generated string        
+    Step 4: Use WordNetLemmatizer() with POS tag 'a' to lemmatize the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    '''
+    words1 = word_tokenize(text)
+    text1 = ' '.join([WordNetLemmatizer().lemmatize(word, pos='v') for word in words1])
+    words2 = word_tokenize(text1)
+    text2 = ' '.join([WordNetLemmatizer().lemmatize(word, pos='a') for word in words2])
+    return text2
 ```
 
 
 
+# 4 Text Pre-Processing
+
+## 4.1 (Text Cleaning)
+
+I have already described this part in an earlier post. See here: [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
+
+
+## 4.2 (Tokenization)
+
+I have already described this part in the previous post. See here: [Text Pre-Processing II-Tokenization](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#tokenization)
+
+
+## 4.3  (Stop Words)
+
+I have already described this part in the previous post. See here: [Text Pre-Processing II-Stop Words](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#stop-words)
 
 
 
+## 4.4 Digression: POS & NER
+
+In the following I will briefly explain what Part of Speech Tagging (POS) and Named Entity Recognition (NER) is and what we will need it for in the context of text pre-processing. 
+
+
+```{r, eval=F, echo=T}
+pos_ner_text = "Bill Gates founded Microsoft Corp. together with Paul Allen in 1975."
+pos_ner_text
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p3.png)
+
+
+### 4.4.1 Part of Speech Tagging (POS)
+
+
+Part-of-speech tagging (POS tagging) aims to identify which grammatical group a word belongs to, i.e. whether it is a noun, adjective, verb, adverb, etc., based on the context. 
+
+
+Relationships within the sentence are searched for and each word in a sentence is tagged with the appropriate tag.
+
+Here is a [list of Part of Speech tags](https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html).
+
+
+```{r, eval=F, echo=T}
+POS_tag = pos_tag(word_tokenize(pos_ner_text))
+POS_tag
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p4.png)
+
+
+As we can see, Bill Gates and Paul Allen are correctly recognized as NNP (Proper noun, singular) and tagged accordingly. The same applies to Microsoft. Now let's see what comes out of NER.
 
 
 
+### 4.4.2 Named Entity Recognition (NER)
 
+Named Entity Recognition (NER) tries to find out whether a word is a named entity or not. Named entities are places, organisations, people, time expressions, etc.
 
+POS is more of a global problem, as there can be relationships between the first and last word of a sentence.
 
-
+In contrast, NER is more of a local problem, since named entities are not distributed in a sentence and mostly consist of uni-, bi- or trigrams.
 
 
 
 ```{r, eval=F, echo=T}
-
+NER_tree = ne_chunk(pos_tag(word_tokenize(pos_ner_text)))
+print(NER_tree)
 ```
 
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p5.png)
 
 
+Again, Bill Gates and Paul Allen are recognised as NNP. In addition, however, we still receive the information here that they are (correctly) persons. If we look at Microsoft, we see that it was not only tagged as an NNP but also recognised as an organisation.
+
+But what do we need all this for in our project?
+
+There are many other things you can do with POS and NER and I will explain these two topics in more detail in separate posts, but for now it is sufficient to know what these two methods basically do.
+
+The following chapter will be about normalising texts. The aim here is to bring the words into their basic form in order to make them even more meaningful for further analysis. The algorithms used for this partly use POS and NER, so it is useful to know roughly what is happening here.
+
+
+
+## 4.5  Normalization
+
+
+Text normalisation tries to reduce the randomness in text and bring it closer to a predefined standard. 
+This has the effect of reducing the amount of different information (that the further algorithms have to work with) and thus improving efficiency. 
+
+There are two methods for this:
+
++ Stemming and
++ Lemmatization
+
+The aim of these normalisation techniques is to reduce inflectional forms and sometimes derivationally related forms of a word to a common base form. 
+
+
+**Stemming** is the process of reducing words to their root or root form.
+Here, stemming algorithms work by cutting off the beginning or end of a word, taking into account a list of common prefixes and suffixes. 
+However, this random cutting does not always work. Therefore, this approach has some limitations. 
+
+In **lemmatization**, words are reduced to their base word.
+The lemmatization algorithms try to reduce the inflected words correctly so that the affiliation of the base word to the language is guaranteed.
+
+
+
+The **difference between stemming and lemmatization** is that a stemming algorithm works with a single word without knowing the context of the whole sentence and therefore cannot distinguish between words that have different meanings depending on the type of word. One advantage of stemming algorithms is that they are easier to implement and run faster. If accuracy is not so important for the application, stemming algorithms are the right choice. What increases the working time of lemmatization algorithms is that the part of speech of a word has to be determined first and in this process the normalisation rules will be different for different parts of speech. 
+
+
+```{r, eval=F, echo=T}
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+print("Original Word: 'studies' ")
+print()
+print('With Stemming: ' + str(stemmer.stem("studies")))
+print('with Lemmatization: ' + str(lemmatizer.lemmatize("studies")))
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p6.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+text_for_normalization = "\
+I saw an amazing thing and ran. \
+It took too long. \
+We are eating and swimming. \
+I want better dog.\
+"
+text_for_normalization
 ```
 
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p7.png)
 
 
+### 4.5.1 Stemming
 
+[PorterStemmer](https://www.nltk.org/_modules/nltk/stem/porter.html) (which we will also use in the following for this task) is probably the best known stemming algorithm. 
 
+But there are several others that can be used:
 
-
-
++ [Lovin’s Stemmer](https://www.hashcollision.org/hkn/python/py_lovins/)
++ [Dawson’s Stemmer](http://algorithmtraining.com/stemming-words/)
++ [Krovetz Stemmer](https://pypi.org/project/krovetz/)
++ [Xerox Stemmer](http://algorithmtraining.com/stemming-words/)
++ [Snowball Stemmer](https://pypi.org/project/snowballstemmer/)
 
 
 
 ```{r, eval=F, echo=T}
-
+def norm_stemming_func(text):
+    '''
+    Stemming tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use PorterStemmer() to stem the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with stemmed words
+    '''  
+    words = word_tokenize(text)
+    text = ' '.join([PorterStemmer().stem(word) for word in words])
+    return text
 ```
 
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
+```{r, eval=F, echo=T}
+norm_stemming_func(text_for_normalization)
+```
+
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p8.png)
 
 
 
+### 4.5.2 Lemmatization
+
+As with stemming, there are several algorithms that can be used for lemmatization: 
+
++ [spaCy Lemmatizer](https://spacy.io/api/lemmatizer)
++ [TextBlob Lemmatizer](https://textblob.readthedocs.io/en/dev/)
++ [Stanford CoreNLP Lemmatization](https://stanfordnlp.github.io/CoreNLP/lemma.html)
++ [Gensim Lemmatize](https://tedboy.github.io/nlps/generated/generated/gensim.utils.lemmatize.html)
+
+We use the [WordNetLemmatizer](https://www.nltk.org/_modules/nltk/stem/wordnet.html) from [nltk](https://www.nltk.org/) for the following examples. 
 
 
+```{r, eval=F, echo=T}
+def norm_lemm_func(text):
+    '''
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    '''  
+    words = word_tokenize(text)
+    text = ' '.join([WordNetLemmatizer().lemmatize(word) for word in words])
+    return text
+```
 
+```{r, eval=F, echo=T}
+norm_lemm_func(text_for_normalization)
+```
 
-
-
+![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p9.png)
 
 
 
