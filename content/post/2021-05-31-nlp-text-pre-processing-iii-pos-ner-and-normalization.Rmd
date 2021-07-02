@@ -707,7 +707,7 @@ With the pos_tag function, on the other hand, the past tense remained, but 'rati
 
 This is the well-known [No Free Lunch Theorem](https://www.kdnuggets.com/2019/09/no-free-lunch-data-science.html) where we have to weigh up which variant with which advantages and disadvantages we want to take. 
 
-**In this example, I will continue to work with the norm_lemm_v_a function for the Example String and the DataFrame.**
+In this post series **I will continue** to work **with the norm_lemm_v_a function** for the Example String and the DataFrame.
 
 
 
@@ -749,54 +749,6 @@ pk.dump(clean_text_lemmatized_v_a, open('clean_text_lemmatized_v_a.pkl', 'wb'))
 
 df.to_csv('Amazon_Unlocked_Mobile_small_Part_III.csv', index = False)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png)
-
-
-
-
-
-
 
 
 
