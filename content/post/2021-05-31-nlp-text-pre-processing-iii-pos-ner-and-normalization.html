@@ -33,7 +33,10 @@ output:
 <li><a href="#normalization">4.5 Normalization</a>
 <ul>
 <li><a href="#stemming">4.5.1 Stemming</a></li>
-<li><a href="#lemmatization">4.5.2 Lemmatization</a></li>
+<li><a href="#lemmatization">4.5.2 Lemmatization</a>
+<ul>
+<li><a href="#wordnet-lemmatizer-with-specific-pos-tag">4.5.2.1 Wordnet Lemmatizer with specific POS tag</a></li>
+</ul></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -359,12 +362,58 @@ text_for_normalization</code></pre>
     return text</code></pre>
 <pre class="r"><code>norm_lemm_func(text_for_normalization)</code></pre>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p9.png" /></p>
+<p>Notice the WordNetLemmatizer function didn’t do a good job. Because, ‘are’ is not converted to ‘be’ and ‘swimming’ is not converted to ‘swim’ as expected.</p>
+<div id="wordnet-lemmatizer-with-specific-pos-tag" class="section level4">
+<h4>4.5.2.1 Wordnet Lemmatizer with specific POS tag</h4>
+<p>With the Wordnet Lemmatizer you have the possibility to set a specific POS tag. Let’s set this to pos=‘v’ where ‘v’ stands for ‘verb’. Usually this POS tag is used.</p>
+<pre class="r"><code>def norm_lemm_v_func(text):
+    &#39;&#39;&#39;
+    Lemmatize tokens from string 
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is set to &#39;v&#39; for verb
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    &#39;&#39;&#39;  
+    words = word_tokenize(text)
+    text = &#39; &#39;.join([WordNetLemmatizer().lemmatize(word, pos=&#39;v&#39;) for word in words])
+    return text</code></pre>
+<pre class="r"><code>norm_lemm_v_func(text_for_normalization)</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p10.png" /></p>
+<p>Perfect, now it’s almost the way we want it (‘are’ became ‘be’ and ‘eating’ and ‘swimming’ became ‘eat’ and ‘swim’). One exception is ‘saw’. One would have expected that this word would be changed to ‘see’. Why this is a strange exception can be read <a href="https://stackoverflow.com/questions/33594721/why-nltk-lemmatization-has-wrong-output-even-if-verb-exc-has-added-right-value">here</a>. Let’s take a look at the phrase ‘I want better dog’. Instead of ‘better’ I would like to have ‘good’ or ‘well’. But since this is not a verb but an adjective we would have to use the WordNetLemmatizer with the POS tag = ‘a’ for adjective. Also for this I wrote a function that does exactly that:</p>
+<pre class="r"><code>def norm_lemm_a_func(text):
+    &#39;&#39;&#39;
+    Lemmatize tokens from string
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Use WordNetLemmatizer() to lemmatize the created tokens
+            POS tag is set to &#39;a&#39; for adjective
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with lemmatized words
+    &#39;&#39;&#39; 
+    words = word_tokenize(text)
+    text = &#39; &#39;.join([WordNetLemmatizer().lemmatize(word, pos=&#39;a&#39;) for word in words])
+    return text</code></pre>
+<pre class="r"><code>norm_lemm_a_func(text_for_normalization)</code></pre>
+<p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p11.png" /></p>
+<p>Has worked but unfortunately now again the verbs were not taken into account.</p>
+<p>For this problem there are two ways which I would like to introduce in the following two chapters.</p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
 <p><img src="/post/2021-05-31-nlp-text-pre-processing-iii-pos-ner-and-normalization_files/p125p.png" /></p>
+</div>
 </div>
 </div>
 </div>
