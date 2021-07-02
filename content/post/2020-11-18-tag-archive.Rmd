@@ -224,6 +224,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 12 Natural Language Processing (NLP)
 
++ [Text Pre-Processing III (POS, NER and Normalization)](https://michael-fuchs-python.netlify.app/2021/05/31/nlp-text-pre-processing-iii-pos-ner-and-normalization/)
 + [Text Pre-Processing II (Tokenization and Stop Words)](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/)
 + [Text Pre-Processing I (Text Cleaning)](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/)
 + [Text Manipulation](https://michael-fuchs-python.netlify.app/2021/05/18/nlp-text-manipulation/)
