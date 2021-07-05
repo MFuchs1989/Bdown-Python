@@ -40,6 +40,19 @@ output:
 <li><a href="#via-bar-charts">4.7.2.1 via Bar Charts</a></li>
 <li><a href="#via-word-clouds">4.7.2.2 via Word Clouds</a></li>
 </ul></li>
+<li><a href="#application-to-the-example-string">4.7.3 <strong>Application</strong> to the Example String</a>
+<ul>
+<li><a href="#most-common-words-1">4.7.3.1 Most common Words</a></li>
+<li><a href="#least-common-words-1">4.7.3.2 Least common Words</a></li>
+</ul></li>
+<li><a href="#application-to-the-dataframe">4.7.4 <strong>Application</strong> to the DataFrame</a>
+<ul>
+<li><a href="#to-the-whole-df">4.7.4.1 to the whole DF</a>
+<ul>
+<li><a href="#most-common-words-2">4.7.4.1.1 Most common Words</a></li>
+<li><a href="#least-common-words-2">4.7.4.1.2 Least common Words</a></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -305,9 +318,106 @@ plt.axis(&quot;off&quot;)
   
 plt.show()</code></pre>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p9.png" /></p>
+</div>
+</div>
+<div id="application-to-the-example-string" class="section level3">
+<h3>4.7.3 <strong>Application</strong> to the Example String</h3>
+<pre class="r"><code>clean_text_wo_single_char</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p10.png" /></p>
+<pre class="r"><code>token_and_unique_word_count_func(clean_text_wo_single_char)</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p11.png" /></p>
+<div id="most-common-words-1" class="section level4">
+<h4>4.7.3.1 Most common Words</h4>
+<pre class="r"><code>df_most_common_words = most_common_word_func(clean_text_wo_single_char)
+
+df_most_common_words.head(10)</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p12.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words[&#39;Word&#39;], 
+        df_most_common_words[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p13.png" /></p>
+</div>
+<div id="least-common-words-1" class="section level4">
+<h4>4.7.3.2 Least common Words</h4>
+<pre class="r"><code>df_least_common_words = least_common_word_func(clean_text_wo_single_char, n_words=10)
+
+df_least_common_words</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p14.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words[&#39;Word&#39;], 
+        df_least_common_words[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Least common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p15.png" /></p>
+</div>
+</div>
+<div id="application-to-the-dataframe" class="section level3">
+<h3>4.7.4 <strong>Application</strong> to the DataFrame</h3>
+<div id="to-the-whole-df" class="section level4">
+<h4>4.7.4.1 to the whole DF</h4>
+<p>As mentioned at the end of the last chapter (<a href="https://michael-fuchs-python.netlify.app/2021/06/05/nlp-text-pre-processing-iv-single-character-removal/#application-to-the-dataframe">Removing Single Characters</a>), I will continue to work with the ‘Reviews_cleaned_wo_single_char’ column. Here we have removed only characters with a length of 1 from the text.</p>
+<p>In order for me to apply the functions written for this chapter, I first need to create a text corpus of all the rows from the ‘Reviews_cleaned_wo_single_char’ column.</p>
+<pre class="r"><code>text_corpus = df[&#39;Reviews_cleaned_wo_single_char&#39;].str.cat(sep=&#39; &#39;)
+
+text_corpus</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p16.png" /></p>
+<pre class="r"><code>token_and_unique_word_count_func(text_corpus)</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p17.png" /></p>
+<div id="most-common-words-2" class="section level5">
+<h5>4.7.4.1.1 Most common Words</h5>
+<pre class="r"><code>df_most_common_words_text_corpus = most_common_word_func(text_corpus)
+
+df_most_common_words_text_corpus.head(10)</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p18.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_text_corpus[&#39;Word&#39;], 
+        df_most_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p19.png" /></p>
+<p>As we can see, the word ‘phone’ is by far the most common.</p>
+<p>However, this approach is very one-sided if one considers that the comments refer to different ratings. So let’s take a closer look at them in the next step.</p>
+</div>
+<div id="least-common-words-2" class="section level5">
+<h5>4.7.4.1.2 Least common Words</h5>
+<pre class="r"><code>df_least_common_words_text_corpus = least_common_word_func(text_corpus, n_words=10)
+
+df_least_common_words_text_corpus</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p20.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words_text_corpus[&#39;Word&#39;], 
+        df_least_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Least common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p21.png" /></p>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
-<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
-<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
+</div>
 </div>
 </div>
 </div>

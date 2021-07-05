@@ -380,69 +380,173 @@ plt.show()
 
 
 
+### 4.7.3 **Application** to the Example String
+
+```{r, eval=F, echo=T}
+clean_text_wo_single_char
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p10.png)
+
+
+```{r, eval=F, echo=T}
+token_and_unique_word_count_func(clean_text_wo_single_char)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p11.png)
+
+
+#### 4.7.3.1  Most common Words
+
+
+```{r, eval=F, echo=T}
+df_most_common_words = most_common_word_func(clean_text_wo_single_char)
+
+df_most_common_words.head(10)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p12.png)
 
 
 
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words['Word'], 
+        df_most_common_words['Frequency'])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel('Most common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 25 most common words")
+
+plt.show()
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p13.png)
+
+
+#### 4.7.3.2 Least common Words
 
 
 
+```{r, eval=F, echo=T}
+df_least_common_words = least_common_word_func(clean_text_wo_single_char, n_words=10)
+
+df_least_common_words
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p14.png)
 
 
 
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words['Word'], 
+        df_least_common_words['Frequency'])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel('Least common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 10 least common words")
+
+plt.show()
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p15.png)
 
 
+### 4.7.4 **Application** to the DataFrame
 
+
+#### 4.7.4.1  to the whole DF
+
+
+As mentioned at the end of the last chapter ([Removing Single Characters](https://michael-fuchs-python.netlify.app/2021/06/05/nlp-text-pre-processing-iv-single-character-removal/#application-to-the-dataframe)), I will continue to work with the 'Reviews_cleaned_wo_single_char' column. Here we have removed only characters with a length of 1 from the text.
+
+In order for me to apply the functions written for this chapter, I first need to create a text corpus of all the rows from the 'Reviews_cleaned_wo_single_char' column.
+
+
+```{r, eval=F, echo=T}
+text_corpus = df['Reviews_cleaned_wo_single_char'].str.cat(sep=' ')
+
+text_corpus
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p16.png)
+
+```{r, eval=F, echo=T}
+token_and_unique_word_count_func(text_corpus)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p17.png)
+
+
+##### 4.7.4.1.1  Most common Words
+
+
+```{r, eval=F, echo=T}
+df_most_common_words_text_corpus = most_common_word_func(text_corpus)
+
+df_most_common_words_text_corpus.head(10)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p18.png)
+
+
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_text_corpus['Word'], 
+        df_most_common_words_text_corpus['Frequency'])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel('Most common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 25 most common words")
+
+plt.show()
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p19.png)
+
+
+As we can see, the word 'phone' is by far the most common.
+
+However, this approach is very one-sided if one considers that the comments refer to different ratings. So let's take a closer look at them in the next step.
+
+
+##### 4.7.4.1.2  Least common Words
 
 
 
 
 ```{r, eval=F, echo=T}
+df_least_common_words_text_corpus = least_common_word_func(text_corpus, n_words=10)
 
+df_least_common_words_text_corpus
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p20.png)
 
 
 
 ```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words_text_corpus['Word'], 
+        df_least_common_words_text_corpus['Frequency'])
 
+plt.xticks(rotation = 45)
+
+plt.xlabel('Least common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 10 least common words")
+
+plt.show()
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
-
-
-
-
-
-
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p21.png)
 
 
 
