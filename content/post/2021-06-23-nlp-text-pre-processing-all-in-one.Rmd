@@ -1,0 +1,103 @@
+---
+title: NLP - Text Pre-Processing - All in One
+author: Michael Fuchs
+date: '2021-06-23'
+slug: nlp-text-pre-processing-all-in-one
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+
+I have focused heavily on the topic of Text Pre-Processing in my past publications. At this point, I would like to summarize all the important steps in one post. 
+Here I will not go into the theoretical background. For that, please read my earlier posts, where I explained in detail what I did and why. 
+
+
+For this publication the dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One).
+
+
+
+# 2 Import the Libraries and the Data
+
+As you have seen in my past posts, I have written some useful functions for text pre-processing.
+Since my notebook would look pretty cluttered if I listed all the functions here, I created a [separate .py file](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/blob/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One/text_pre_processing.py) that contains all the featured functions. Feel free to download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One). 
+
+Below I will call some of these functions from the [.py file](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/blob/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One/text_pre_processing.py) and use them in this post. 
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+
+import warnings
+warnings.filterwarnings("ignore")
+
+import matplotlib.pyplot as plt
+
+from text_pre_processing import remove_html_tags_func
+from text_pre_processing import remove_url_func
+from text_pre_processing import remove_accented_chars_func
+from text_pre_processing import remove_punctuation_func
+from text_pre_processing import remove_irr_char_func
+from text_pre_processing import remove_extra_whitespaces_func
+from text_pre_processing import word_count_func
+from text_pre_processing import word_tokenize
+from text_pre_processing import remove_english_stopwords_func
+from text_pre_processing import norm_lemm_v_a_func
+from text_pre_processing import remove_single_char_func
+from text_pre_processing import most_common_word_func
+from text_pre_processing import least_common_word_func
+from text_pre_processing import single_word_remove_func
+from text_pre_processing import multiple_word_remove_func
+from text_pre_processing import most_rare_word_func
+
+
+pd.set_option('display.max_colwidth', 30)
+```
+
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small.csv')
+df = df[['Rating', 'Reviews']]
+df['Reviews'] = df['Reviews'].astype(str)
+df.head()
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p1.png)
+
+
+
+# 3 Text Pre-Processing
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p.png)
+
+
+
+
+
+
+
+
+
+

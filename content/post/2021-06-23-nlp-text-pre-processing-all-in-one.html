@@ -1,0 +1,72 @@
+---
+title: NLP - Text Pre-Processing - All in One
+author: Michael Fuchs
+date: '2021-06-23'
+slug: nlp-text-pre-processing-all-in-one
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#text-pre-processing">3 Text Pre-Processing</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>I have focused heavily on the topic of Text Pre-Processing in my past publications. At this point, I would like to summarize all the important steps in one post.
+Here I will not go into the theoretical background. For that, please read my earlier posts, where I explained in detail what I did and why.</p>
+<p>For this publication the dataset <em>Amazon Unlocked Mobile</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One">“GitHub Repository”</a>.</p>
+</div>
+<div id="import-the-libraries-and-the-data" class="section level1">
+<h1>2 Import the Libraries and the Data</h1>
+<p>As you have seen in my past posts, I have written some useful functions for text pre-processing.
+Since my notebook would look pretty cluttered if I listed all the functions here, I created a <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/blob/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One/text_pre_processing.py">separate .py file</a> that contains all the featured functions. Feel free to download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One">“GitHub Repository”</a>.</p>
+<p>Below I will call some of these functions from the <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/blob/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One/text_pre_processing.py">.py file</a> and use them in this post.</p>
+<pre class="r"><code>import pandas as pd
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+
+import matplotlib.pyplot as plt
+
+from text_pre_processing import remove_html_tags_func
+from text_pre_processing import remove_url_func
+from text_pre_processing import remove_accented_chars_func
+from text_pre_processing import remove_punctuation_func
+from text_pre_processing import remove_irr_char_func
+from text_pre_processing import remove_extra_whitespaces_func
+from text_pre_processing import word_count_func
+from text_pre_processing import word_tokenize
+from text_pre_processing import remove_english_stopwords_func
+from text_pre_processing import norm_lemm_v_a_func
+from text_pre_processing import remove_single_char_func
+from text_pre_processing import most_common_word_func
+from text_pre_processing import least_common_word_func
+from text_pre_processing import single_word_remove_func
+from text_pre_processing import multiple_word_remove_func
+from text_pre_processing import most_rare_word_func
+
+
+pd.set_option(&#39;display.max_colwidth&#39;, 30)</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;Amazon_Unlocked_Mobile_small.csv&#39;)
+df = df[[&#39;Rating&#39;, &#39;Reviews&#39;]]
+df[&#39;Reviews&#39;] = df[&#39;Reviews&#39;].astype(str)
+df.head()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p1.png" /></p>
+</div>
+<div id="text-pre-processing" class="section level1">
+<h1>3 Text Pre-Processing</h1>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p.png" /></p>
+</div>
