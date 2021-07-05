@@ -247,7 +247,7 @@ df[&quot;Reviews_cleaned_wo_rare_words&quot;] = df.apply(lambda x: multiple_word
 <p>Here we generated three columns that presumably have different information densities.</p>
 <p>On the one hand we have the column ‘Reviews_cleaned_wo_single_char’ where we have only applied all necessary pre-processing steps.</p>
 <p>Then we have another column (‘Reviews_cleaned_wo_specific_word’) where we excluded the word ‘phone’.</p>
-<p>Finally, we generated the column ‘Reviews_cleaned_wo_rare_words’, where we excluded the word ‘phone’ and 2500 other words that occurred only once in the entire text corpus.</p>
+<p>Finally, we generated the column ‘Reviews_cleaned_wo_rare_words’, where we excluded the word ‘phone’ and 2,500 other words that occurred only once in the entire text corpus.</p>
 <p>Now we need to vectorize the individual text columns to make them usable for machine learning algorithms.
 The validation of the model performance of the individual algorithms will then reveal which text column is most profitable for the analysis.
 It may be necessary to further adjust the columns if, for example, it turns out that the removal of rare words was very profitable.</p>

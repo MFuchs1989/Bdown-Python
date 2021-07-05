@@ -326,7 +326,7 @@ On the one hand we have the column 'Reviews_cleaned_wo_single_char' where we hav
 
 Then we have another column ('Reviews_cleaned_wo_specific_word') where we excluded the word 'phone'.
 
-Finally, we generated the column 'Reviews_cleaned_wo_rare_words', where we excluded the word 'phone' and 2500 other words that occurred only once in the entire text corpus. 
+Finally, we generated the column 'Reviews_cleaned_wo_rare_words', where we excluded the word 'phone' and 2,500 other words that occurred only once in the entire text corpus. 
 
 Now we need to vectorize the individual text columns to make them usable for machine learning algorithms. 
 The validation of the model performance of the individual algorithms will then reveal which text column is most profitable for the analysis. 
