@@ -52,9 +52,11 @@ output:
 <li><a href="#most-common-words-2">4.7.4.1.1 Most common Words</a></li>
 <li><a href="#least-common-words-2">4.7.4.1.2 Least common Words</a></li>
 </ul></li>
+<li><a href="#divided-by-rating">4.7.4.2 divided by Rating</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -416,9 +418,85 @@ plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
 
 plt.show()</code></pre>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p21.png" /></p>
-<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
+</div>
+</div>
+<div id="divided-by-rating" class="section level4">
+<h4>4.7.4.2 divided by Rating</h4>
+<p>As we can see from the output below, users were given the option to give 5 different ratings. The 1 stands for a bad rating and the 5 for a very good one.</p>
+<pre class="r"><code>df[&#39;Rating&#39;].value_counts()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p22.png" /></p>
+<p>For further analysis, I will assign corresponding lables to the different ratings:</p>
+<ul>
+<li>Rating 1-2: negative</li>
+<li>Rating 3: neutral</li>
+<li>Rating 4-5: positive</li>
+</ul>
+<p>I can do this using the following function:</p>
+<pre class="r"><code>def label_func(rating):
+    if rating &lt;= 2:
+        return &#39;negative&#39;
+    if rating &gt;= 4:
+        return &#39;positive&#39;
+    else:
+        return &#39;neutral&#39;
+
+df[&#39;Label&#39;] = df[&#39;Rating&#39;].apply(label_func)    </code></pre>
+<p>I personally prefer to have the ‘Rating’ and ‘Label’ columns together. So far, the ‘Label’ column is at the end of the record because it was just newly created. However, the order can be changed with the following command.</p>
+<p>Do this column reordering only once, otherwise more and more columns will be put in first place.</p>
+<pre class="r"><code>cols = list(df.columns)
+cols = [cols[-1]] + cols[:-1]
+df = df[cols]</code></pre>
+<p>As you can see from the partial output shown below, the labels were assigned correctly.</p>
+<pre class="r"><code>df.T</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p23.png" /></p>
+<p>Now I divide the data set according to their labels (‘positive’, ‘neutral’ and ‘negative’).</p>
+<pre class="r"><code>positive_review = df[(df[&quot;Label&quot;] == &#39;positive&#39;)][&#39;Reviews_cleaned_wo_single_char&#39;]
+neutral_review = df[(df[&quot;Label&quot;] == &#39;neutral&#39;)][&#39;Reviews_cleaned_wo_single_char&#39;]
+negative_review = df[(df[&quot;Label&quot;] == &#39;negative&#39;)][&#39;Reviews_cleaned_wo_single_char&#39;]</code></pre>
+<p>According to the division, I create a separate text corpus for each.</p>
+<pre class="r"><code>text_corpus_positive_review = positive_review.str.cat(sep=&#39; &#39;)
+text_corpus_neutral_review = neutral_review.str.cat(sep=&#39; &#39;)
+text_corpus_negative_review = negative_review.str.cat(sep=&#39; &#39;)</code></pre>
+<p>Then I can use the most_common_word function again and save the results in a separate data set.</p>
+<pre class="r"><code>df_most_common_words_text_corpus_positive_review = most_common_word_func(text_corpus_positive_review)
+df_most_common_words_text_corpus_neutral_review = most_common_word_func(text_corpus_neutral_review)
+df_most_common_words_text_corpus_negative_review = most_common_word_func(text_corpus_negative_review)</code></pre>
+<p>Now I can use a for-loop to visually display the 25 most frequently occurring words in each of the partial data sets.</p>
+<pre class="r"><code>splited_data = [df_most_common_words_text_corpus_positive_review,
+                df_most_common_words_text_corpus_neutral_review,
+                df_most_common_words_text_corpus_negative_review]
+
+color_list = [&#39;green&#39;, &#39;red&#39;, &#39;cyan&#39;]
+title_list = [&#39;Positive Review&#39;, &#39;Neutral Review&#39;, &#39;Negative Review&#39;]
+
+
+for item in range(3):
+    plt.figure(figsize=(11,7))
+    plt.bar(splited_data[item][&#39;Word&#39;], 
+            splited_data[item][&#39;Frequency&#39;],
+            color=color_list[item])
+    plt.xticks(rotation = 45)
+    plt.xlabel(&#39;Most common Words&#39;)
+    plt.ylabel(&quot;Frequency&quot;)
+    plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+    plt.suptitle(title_list[item], fontsize=15)
+    plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p24.png" /></p>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p25.png" /></p>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p26.png" /></p>
+<p>Note: I omit the same implementation for the least frequent words at this point. It would follow the same principle as I showed before.</p>
 </div>
 </div>
 </div>
 </div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post I showed how to explore and visualize text blocks easily and quickly. Based on these insights, our next steps will emerge, which I will present in the following post.</p>
+<p>Here we only need to save the DataFrame, since we have made changes. This was not the case with the Example String.</p>
+<pre class="r"><code>df.to_csv(&#39;Amazon_Unlocked_Mobile_small_Part_V.csv&#39;, index = False)</code></pre>
+<p>Furthermore, we have created some frequency tables, which we will need again in the following post. Therefore they will be saved as well.</p>
+<pre class="r"><code>df_most_common_words.to_csv(&#39;df_most_common_words.csv&#39;, index = False)
+df_least_common_words.to_csv(&#39;df_least_common_words.csv&#39;, index = False)
+df_most_common_words_text_corpus.to_csv(&#39;df_most_common_words_text_corpus.csv&#39;, index = False)
+df_least_common_words_text_corpus.to_csv(&#39;df_least_common_words_text_corpus.csv&#39;, index = False)</code></pre>
 </div>

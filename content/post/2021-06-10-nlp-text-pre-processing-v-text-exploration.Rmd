@@ -550,33 +550,145 @@ plt.show()
 
 
 
+#### 4.7.4.2  divided by Rating
 
-
-
-
-
-
-
-
-
-
-
-
-
+As we can see from the output below, users were given the option to give 5 different ratings. The 1 stands for a bad rating and the 5 for a very good one. 
 
 
 ```{r, eval=F, echo=T}
-
+df['Rating'].value_counts()
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p22.png)
+
+For further analysis, I will assign corresponding lables to the different ratings:
+
++ Rating 1-2: negative
++ Rating 3: neutral
++ Rating 4-5: positive
+
+
+I can do this using the following function:
+
+```{r, eval=F, echo=T}
+def label_func(rating):
+    if rating <= 2:
+        return 'negative'
+    if rating >= 4:
+        return 'positive'
+    else:
+        return 'neutral'
+
+df['Label'] = df['Rating'].apply(label_func)    
+```
+
+
+I personally prefer to have the 'Rating' and 'Label' columns together. So far, the 'Label' column is at the end of the record because it was just newly created. However, the order can be changed with the following command.
+
+Do this column reordering only once, otherwise more and more columns will be put in first place. 
+
+
+```{r, eval=F, echo=T}
+cols = list(df.columns)
+cols = [cols[-1]] + cols[:-1]
+df = df[cols]
+```
+
+
+As you can see from the partial output shown below, the labels were assigned correctly.
+
+
+```{r, eval=F, echo=T}
+df.T
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p23.png)
+
+
+Now I divide the data set according to their labels ('positive', 'neutral' and 'negative'). 
+
+
+```{r, eval=F, echo=T}
+positive_review = df[(df["Label"] == 'positive')]['Reviews_cleaned_wo_single_char']
+neutral_review = df[(df["Label"] == 'neutral')]['Reviews_cleaned_wo_single_char']
+negative_review = df[(df["Label"] == 'negative')]['Reviews_cleaned_wo_single_char']
+```
+
+According to the division, I create a separate text corpus for each. 
+
+```{r, eval=F, echo=T}
+text_corpus_positive_review = positive_review.str.cat(sep=' ')
+text_corpus_neutral_review = neutral_review.str.cat(sep=' ')
+text_corpus_negative_review = negative_review.str.cat(sep=' ')
+```
+
+
+Then I can use the most_common_word function again and save the results in a separate data set. 
+
+```{r, eval=F, echo=T}
+df_most_common_words_text_corpus_positive_review = most_common_word_func(text_corpus_positive_review)
+df_most_common_words_text_corpus_neutral_review = most_common_word_func(text_corpus_neutral_review)
+df_most_common_words_text_corpus_negative_review = most_common_word_func(text_corpus_negative_review)
+```
+
+
+Now I can use a for-loop to visually display the 25 most frequently occurring words in each of the partial data sets. 
+
+
+```{r, eval=F, echo=T}
+splited_data = [df_most_common_words_text_corpus_positive_review,
+                df_most_common_words_text_corpus_neutral_review,
+                df_most_common_words_text_corpus_negative_review]
+
+color_list = ['green', 'red', 'cyan']
+title_list = ['Positive Review', 'Neutral Review', 'Negative Review']
+
+
+for item in range(3):
+    plt.figure(figsize=(11,7))
+    plt.bar(splited_data[item]['Word'], 
+            splited_data[item]['Frequency'],
+            color=color_list[item])
+    plt.xticks(rotation = 45)
+    plt.xlabel('Most common Words')
+    plt.ylabel("Frequency")
+    plt.title("Frequency distribution of the 25 most common words")
+    plt.suptitle(title_list[item], fontsize=15)
+    plt.show()
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p24.png)
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p25.png)
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p26.png)
+
+
+Note: I omit the same implementation for the least frequent words at this point. It would follow the same principle as I showed before. 
 
 
 
+# 5 Conclusion
+
+
+In this post I showed how to explore and visualize text blocks easily and quickly. Based on these insights, our next steps will emerge, which I will present in the following post. 
 
 
 
+Here we only need to save the DataFrame, since we have made changes. This was not the case with the Example String.
 
+```{r, eval=F, echo=T}
+df.to_csv('Amazon_Unlocked_Mobile_small_Part_V.csv', index = False)
+```
+
+Furthermore, we have created some frequency tables, which we will need again in the following post. Therefore they will be saved as well.
+
+```{r, eval=F, echo=T}
+df_most_common_words.to_csv('df_most_common_words.csv', index = False)
+df_least_common_words.to_csv('df_least_common_words.csv', index = False)
+df_most_common_words_text_corpus.to_csv('df_most_common_words_text_corpus.csv', index = False)
+df_least_common_words_text_corpus.to_csv('df_least_common_words_text_corpus.csv', index = False)
+```
 
 
 
