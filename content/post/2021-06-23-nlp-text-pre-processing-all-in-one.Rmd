@@ -344,7 +344,7 @@ In order to be able to continue working with the edited data set at a later poin
 
 
 ```{r, eval=F, echo=T}
-df.to_csv('Amazon_Unlocked_Mobile_small_pre_processed.csv')
+df.to_csv('Amazon_Unlocked_Mobile_small_pre_processed.csv', index = False)
 ```
 
 

@@ -198,6 +198,11 @@ Let's do so with our previously created dataframe:
 df.to_csv('NewDataFrame.csv')
 ```
 
+If you do not want to save the index as a new separate column, you can use the following addition:
+
+```{r, eval=F, echo=T}
+df.to_csv('NewDataFrame.csv', index = False)
+```
 
 
 This data set is now saved to the previously set path or any one that can be integrated in this command.

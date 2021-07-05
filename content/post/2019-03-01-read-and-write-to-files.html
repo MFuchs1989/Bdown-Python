@@ -148,6 +148,8 @@ df.head()</code></pre>
 Almost every “read_from” has a “write_to” command.
 Let’s do so with our previously created dataframe:</p>
 <pre class="r"><code>df.to_csv(&#39;NewDataFrame.csv&#39;)</code></pre>
+<p>If you do not want to save the index as a new separate column, you can use the following addition:</p>
+<pre class="r"><code>df.to_csv(&#39;NewDataFrame.csv&#39;, index = False)</code></pre>
 <p>This data set is now saved to the previously set path or any one that can be integrated in this command.</p>
 </div>
 <div id="write-to-excel" class="section level1">
