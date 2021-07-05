@@ -254,7 +254,7 @@ df_subset.head().T</code></pre>
 df[(df.index == 3)][&#39;Reviews&#39;].iloc[0]</code></pre>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p20.png" /></p>
 <p>Conclusion: The average number of words could be reduced again with a threshold of 2, which would definitely help our later model training in terms of complexity and training speed. However, words like ‘go’ that might be profitable are also deleted. A possibility here would be to use another lemmatizer (for example the one in the norm_lemm_POS_tag function), where the verbs are not converted into their base form. So ‘went’ or ‘gone’ would not become ‘go’, which in turn would not be removed by the remove_single_char function with a threshold of 2.</p>
-<p>In the following I will continue to work with the column ‘Reviews_cleaned_wo_single_char’, where we only removed single characters with a length of 1.</p>
+<p>In the following <strong>I will continue to work with the column ‘Reviews_cleaned_wo_single_char’</strong>, where we only removed single characters with a length of 1.</p>
 </div>
 </div>
 </div>
