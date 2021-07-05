@@ -36,7 +36,17 @@ output:
 <li><a href="#application-to-the-example-string">4.8.3 <strong>Application</strong> to the Example String</a>
 <ul>
 <li><a href="#with-single-word-removal">4.8.3.1 with Single Word Removal</a></li>
+<li><a href="#with-multiple-word-removal">4.8.3.2 with Multiple Word Removal</a></li>
 </ul></li>
+<li><a href="#application-to-the-dataframe">4.8.4 <strong>Application</strong> to the DataFrame</a>
+<ul>
+<li><a href="#with-single-word-removal-1">4.8.4.1 with Single Word Removal</a></li>
+<li><a href="#with-multiple-word-removal-1">4.8.4.2 with Multiple Word Removal</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#removing-frequent-words">4.9 Removing Frequent words</a>
+<ul>
+<li><a href="#application-to-the-example-string-1">4.9.1 <strong>Application</strong> to the Example String</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -328,10 +338,152 @@ plt.show()</code></pre>
 <p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p12.png" /></p>
 <div id="with-single-word-removal" class="section level4">
 <h4>4.8.3.1 with Single Word Removal</h4>
-<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
-<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
-<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
+<p>In the following I would like to remove the word ‘special’, because it appears too often in the example string.</p>
+<pre class="r"><code>clean_text_wo_specific_word = single_word_remove_func(clean_text_wo_single_char, &quot;special&quot;)
+clean_text_wo_specific_word</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p13.png" /></p>
+<pre class="r"><code>print(&#39;Number of words (bevore single word removal): &#39; + str(word_count_func(clean_text_wo_single_char)))
+print(&#39;Number of words (after single word removal): &#39; + str(word_count_func(clean_text_wo_specific_word)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p14.png" /></p>
+<p>Worked wonderfully. Since the word ‘special’ appears 4 times, this difference can also be seen in the print statement shown above.</p>
 </div>
+<div id="with-multiple-word-removal" class="section level4">
+<h4>4.8.3.2 with Multiple Word Removal</h4>
+<p>Now, <strong>in addition</strong>, I would like to remove more words, which I think are not profitable.</p>
+<pre class="r"><code>clean_text_wo_specific_words = multiple_word_remove_func(clean_text_wo_specific_word, 
+                                                       [&quot;expose&quot;, &quot;currently&quot;, &quot;character&quot;])
+clean_text_wo_specific_words</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p15.png" /></p>
+<pre class="r"><code>print(&#39;Number of words (bevore multiple word removal): &#39; + str(word_count_func(clean_text_wo_specific_word)))
+print(&#39;Number of words (after multiple word removal): &#39; + str(word_count_func(clean_text_wo_specific_words)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p16.png" /></p>
+<p>This operation also worked the way we wanted it to. The three words we removed each appeared only once in the text. Hence the difference of 3.</p>
+</div>
+</div>
+<div id="application-to-the-dataframe" class="section level3">
+<h3>4.8.4 <strong>Application</strong> to the DataFrame</h3>
+<p>Here again we take a look at the frequency distribution of the words from the column ‘Reviews_cleaned_wo_single_char’. This is the column I decided to work on in the <a href="https://michael-fuchs-python.netlify.app/2021/06/05/nlp-text-pre-processing-iv-single-character-removal/#application-to-the-dataframe">Removing Single Characters’</a> chapter.</p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_text_corpus[&#39;Word&#39;], 
+        df_most_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p17.png" /></p>
+<pre class="r"><code>df_most_common_words_text_corpus.head()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p18.png" /></p>
+<p>In the last chapter <a href="https://michael-fuchs-python.netlify.app/2021/06/10/nlp-text-pre-processing-v-text-exploration/#divided-by-rating">Text Exploration</a> I split this column again according to the evaluation type (‘positive’, ‘neutral’ and ‘negative’) and made separate visualizations of the word frequency for each. The result was that the word ‘phone’ occurs disproportionately often in all three sub-sets compared to the other words. I can therefore assume that this word is not particularly profitable for a later classification and would therefore like to remove it.</p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words_text_corpus[&#39;Word&#39;], 
+        df_least_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Least common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p19.png" /></p>
+<pre class="r"><code>df_least_common_words_text_corpus.tail()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p20.png" /></p>
+<div id="with-single-word-removal-1" class="section level4">
+<h4>4.8.4.1 with Single Word Removal</h4>
+<p>In the following, I will now remove the word ‘phone’ from all rows in the ‘Reviews_cleaned_wo_single_char’ column.</p>
+<pre class="r"><code>df[&quot;Reviews_cleaned_wo_specific_word&quot;] = df.apply(lambda x: single_word_remove_func(x[&quot;Reviews_cleaned_wo_single_char&quot;], 
+                                                            &quot;phone&quot;), axis = 1)</code></pre>
+<p>Calculating the number of words per line and saving it in a separate column as I have done in the past chapters is in my opinion not useful at this point.</p>
+<p>To check that the word ‘phone’ has been deleted from all lines, it is useful to create a new text corpus and compare the number of words. I had already created the first text corpus in the last chapter, but for the sake of completeness I will do it again here.</p>
+<pre class="r"><code>text_corpus_original = df[&#39;Reviews_cleaned_wo_single_char&#39;].str.cat(sep=&#39; &#39;)
+text_corpus_wo_specific_word = df[&#39;Reviews_cleaned_wo_specific_word&#39;].str.cat(sep=&#39; &#39;)
+
+print(&#39;Number of words (bevore single word removal): &#39; + str(word_count_func(text_corpus_original)))
+print(&#39;Number of words (after single word removal): &#39; + str(word_count_func(text_corpus_wo_specific_word)))
+print()
+print(&#39;Diff: &#39; + str(word_count_func(text_corpus_original) - word_count_func(text_corpus_wo_specific_word)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p21.png" /></p>
+<p>The operation also worked well on the data set. If you compare the calculated difference with the word frequency table above (df_most_common_words_text_corpus), you can see that the word ‘phone’ has been completely removed from all lines.</p>
+</div>
+<div id="with-multiple-word-removal-1" class="section level4">
+<h4>4.8.4.2 with Multiple Word Removal</h4>
+<p>Also at this point I will now remove other words <strong>from the newly generated</strong> ‘Reviews_cleaned_wo_specific_word’ column that I feel are not profitable. To do this I will take the 3 words that are at the very end of the frequency table (df_least_common_words_text_corpus).</p>
+<pre class="r"><code>df[&quot;Reviews_cleaned_wo_specific_words&quot;] = df.apply(lambda x: multiple_word_remove_func(x[&quot;Reviews_cleaned_wo_specific_word&quot;], 
+                                                         [&quot;stabalize&quot;, &quot;dazzle&quot;, &quot;vague&quot;]), axis = 1)</code></pre>
+<p>Now we compare the text corpuses with each other again.</p>
+<pre class="r"><code>text_corpus_wo_specific_words = df[&#39;Reviews_cleaned_wo_specific_words&#39;].str.cat(sep=&#39; &#39;)
+
+print(&#39;Number of words (bevore multiple word removal): &#39; + str(word_count_func(text_corpus_wo_specific_word)))
+print(&#39;Number of words (after multiple word removal): &#39; + str(word_count_func(text_corpus_wo_specific_words)))
+print()
+print(&#39;Diff: &#39; + str(word_count_func(text_corpus_wo_specific_word) - word_count_func(text_corpus_wo_specific_words)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p22.png" /></p>
+<p>This result also suggests a positive implementation of the operation. If we add the frequency values of the last three words in the frequency table (df_least_common_words_text_corpus) above, we get the sum of 3, which is congruent with the difference shown above.</p>
+</div>
+</div>
+</div>
+<div id="removing-frequent-words" class="section level2">
+<h2>4.9 Removing Frequent words</h2>
+<p>In the previously shown chapter, I showed how to remove certain words from a text corpus or from all rows in a column. However, it is often the case that you have far too many of them for me to want to name them individually in the single_word_remove function or the multiple_word_remove function.</p>
+<p>For this reason I have written functions for this and the following chapter, which give me a list of common or rare words, which I can then remove from my text.</p>
+<p>But be careful when removing such words. They can nevertheless (even if one would not suspect it at first) be profitable for the later algorithm. I therefore recommend to always save the new text modules in a separate column or object and to check later with the help of the validation of the algorithm whether the opearation was useful or not.</p>
+<pre class="r"><code>text_for_freq_word_removal = \
+&quot;Peter Pepper picked a pack of pickled peppers. How many pickled peppers did Peter Pepper pick?&quot;
+text_for_freq_word_removal</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p23.png" /></p>
+<pre class="r"><code>def most_freq_word_func(text, n_words=5):
+    &#39;&#39;&#39;
+    Returns the most frequently used words from a text
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        List of the most frequently occurring words (by default = 5)
+    &#39;&#39;&#39; 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    df_fdist = pd.DataFrame({&#39;Word&#39;: fdist.keys(),
+                             &#39;Frequency&#39;: fdist.values()})
+    df_fdist = df_fdist.sort_values(by=&#39;Frequency&#39;, ascending=False)
+    
+    n_words = n_words
+    most_freq_words_list = list(df_fdist[&#39;Word&#39;][0:n_words])
+    
+    return most_freq_words_list</code></pre>
+<pre class="r"><code>most_freq_words_list = most_freq_word_func(text_for_freq_word_removal, n_words=2)
+most_freq_words_list</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p24.png" /></p>
+<pre class="r"><code>multiple_word_remove_func(text_for_freq_word_removal, most_freq_words_list)</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p25.png" /></p>
+<div id="application-to-the-example-string-1" class="section level3">
+<h3>4.9.1 <strong>Application</strong> to the Example String</h3>
+<p>(!) Important to note here: I use again the same state of the example string as at the beginning of the chapter Removing specific Words where I have not yet removed the specific words!</p>
+<pre class="r"><code>clean_text_wo_single_char</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p26.png" /></p>
+<p>Here again the frequency distribution in visual and tabular version:</p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words[&#39;Word&#39;], 
+        df_most_common_words[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p27.png" /></p>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
 </div>
 </div>
 </div>
