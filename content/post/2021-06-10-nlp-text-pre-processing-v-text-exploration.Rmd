@@ -334,29 +334,49 @@ least_common_word_func(text_for_exploration, 3)
 
 ### 4.7.2 Text Visualization
 
+Note: I apply the visualization only once to the most common words for now.
 
 
 
+#### 4.7.2.1  via Bar Charts
+
+
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_10['Word'], 
+        df_most_common_words_10['Frequency'])
+
+plt.xlabel('Most common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 10 most common words")
+
+plt.show()
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p8.png)
 
 
 
+#### 4.7.2.2  via Word Clouds
+
+With the WordCloud function, you can also have the most frequently occurring words displayed visually. The advantage is that by default all stop words or irrelevant characters are removed from the display. 
+The parameters that can still be set can be read [here](https://amueller.github.io/word_cloud/generated/wordcloud.WordCloud.html).
 
 
 
 ```{r, eval=F, echo=T}
+wordcloud = WordCloud(width = 800, height = 800,
+                background_color ='white',
+                min_font_size = 10).generate(text_for_exploration)
 
+plt.figure(figsize = (8, 8), facecolor = None)
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+  
+plt.show()
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
-
-
-
-
-
-
-
-
-
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p9.png)
 
 
 

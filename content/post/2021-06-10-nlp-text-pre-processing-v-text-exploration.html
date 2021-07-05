@@ -35,7 +35,11 @@ output:
 <li><a href="#most-common-words">4.7.1.1 Most common Words</a></li>
 <li><a href="#least-common-words">4.7.1.2 Least common Words</a></li>
 </ul></li>
-<li><a href="#text-visualization">4.7.2 Text Visualization</a></li>
+<li><a href="#text-visualization">4.7.2 Text Visualization</a>
+<ul>
+<li><a href="#via-bar-charts">4.7.2.1 via Bar Charts</a></li>
+<li><a href="#via-word-clouds">4.7.2.2 via Word Clouds</a></li>
+</ul></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -273,10 +277,38 @@ df_most_common_words_10</code></pre>
 </div>
 <div id="text-visualization" class="section level3">
 <h3>4.7.2 Text Visualization</h3>
+<p>Note: I apply the visualization only once to the most common words for now.</p>
+<div id="via-bar-charts" class="section level4">
+<h4>4.7.2.1 via Bar Charts</h4>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_10[&#39;Word&#39;], 
+        df_most_common_words_10[&#39;Frequency&#39;])
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p8.png" /></p>
+</div>
+<div id="via-word-clouds" class="section level4">
+<h4>4.7.2.2 via Word Clouds</h4>
+<p>With the WordCloud function, you can also have the most frequently occurring words displayed visually. The advantage is that by default all stop words or irrelevant characters are removed from the display.
+The parameters that can still be set can be read <a href="https://amueller.github.io/word_cloud/generated/wordcloud.WordCloud.html">here</a>.</p>
+<pre class="r"><code>wordcloud = WordCloud(width = 800, height = 800,
+                background_color =&#39;white&#39;,
+                min_font_size = 10).generate(text_for_exploration)
+
+plt.figure(figsize = (8, 8), facecolor = None)
+plt.imshow(wordcloud, interpolation=&#39;bilinear&#39;)
+plt.axis(&quot;off&quot;)
+  
+plt.show()</code></pre>
+<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p9.png" /></p>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
 <p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
-<p><img src="/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png" /></p>
+</div>
 </div>
 </div>
 </div>
