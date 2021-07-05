@@ -340,6 +340,13 @@ I will describe this in detail in further posts.
 
 In this post I have presented all possible text pre-processing steps, most of which I had also described in more detail in my post series on text pre-processing. 
 
+In order to be able to continue working with the edited data set at a later point in time, I now save it:
 
 
+```{r, eval=F, echo=T}
+df.to_csv('Amazon_Unlocked_Mobile_small_pre_processed.csv')
+```
+
+
+You can also download this edited dataset from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One) 
 
