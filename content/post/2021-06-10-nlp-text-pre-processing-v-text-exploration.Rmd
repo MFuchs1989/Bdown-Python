@@ -17,12 +17,217 @@ output:
 # 1 Introduction
 
 
-HI there
-
-
+Now that we have completed some pre-processing steps, I always like to start with text exploration and visualization. 
 
 
 For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as the created Example String. You can download both files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20V%20(Text%20Exploration)).
+
+
+# 2 Import the Libraries and the Data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+```
+
+
+```{r, eval=F, echo=T}
+pd.set_option('display.max_colwidth', 30)
+```
+
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small_Part_IV.csv')
+df.head(3).T
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p1.png)
+
+
+```{r, eval=F, echo=T}
+df['Reviews_cleaned_wo_single_char'] = df['Reviews_cleaned_wo_single_char'].astype(str)
+```
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_single_char = pk.load(open("clean_text_wo_single_char.pkl",'rb'))
+clean_text_wo_single_char
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p2.png)
+
+
+# 3 Definition of required Functions
+
+All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.
+
+
+```{r, eval=F, echo=T}
+def token_and_unique_word_count_func(text):
+    '''
+    Outputs the number of words and unique words
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to count unique words
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Prints:
+        Number of existing tokens and number of unique words
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    print('Number of tokens: ' + str(len(words))) 
+    print('Number of unique words: ' + str(len(fdist)))
+```
+
+
+```{r, eval=F, echo=T}
+def most_common_word_func(text, n_words=25):
+    '''
+    Returns a DataFrame with the most commonly used words from a text with their frequencies
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        A DataFrame with the most commonly occurring words (by default = 25) with their frequencies
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    n_words = n_words
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False).head(n_words)
+    
+    return df_fdist
+```
+
+
+```{r, eval=F, echo=T}
+def least_common_word_func(text, n_words=25):
+    '''
+    Returns a DataFrame with the least commonly used words from a text with their frequencies
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        A DataFrame with the least commonly occurring words (by default = 25) with their frequencies
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    n_words = n_words
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False).tail(n_words)
+    
+    return df_fdist
+```
+
+
+# 4 Text Pre-Processing
+
+## 4.1 (Text Cleaning)
+
+I have already described this part in an earlier post. See here: [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
+
+## 4.2 (Tokenization)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing II-Tokenization](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#tokenization)
+
+
+## 4.3  (Stop Words)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing II-Stop Words](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#stop-words)
+
+
+
+## 4.4 (Digression: POS & NER)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing III-POS & NER](https://michael-fuchs-python.netlify.app/2021/05/31/nlp-text-pre-processing-iii-pos-ner-and-normalization/#digression-pos-ner)
+
+
+## 4.5  (Normalization)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing III-Normalization](https://michael-fuchs-python.netlify.app/2021/05/31/nlp-text-pre-processing-iii-pos-ner-and-normalization/#normalization)
+
+
+## 4.6 (Removing Single Characters)
+
+I have already described this part in the previous post. See here: [Text Pre-Processing IV-Removing Single Characters](https://michael-fuchs-python.netlify.app/2021/06/05/nlp-text-pre-processing-iv-single-character-removal/#removing-single-characters)
+
+
+## 4.7 Text Exploration
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -35,7 +240,107 @@ For this publication the processed dataset *Amazon Unlocked Mobile* from the sta
 
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p1.png)
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+
+
 
 
 
