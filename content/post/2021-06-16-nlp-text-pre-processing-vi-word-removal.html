@@ -47,8 +47,16 @@ output:
 <li><a href="#removing-frequent-words">4.9 Removing Frequent words</a>
 <ul>
 <li><a href="#application-to-the-example-string-1">4.9.1 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe-1">4.9.2 <strong>Application</strong> to the DataFrame</a></li>
+</ul></li>
+<li><a href="#removing-rare-words">4.10 Removing Rare words</a>
+<ul>
+<li><a href="#application-to-the-example-string-2">4.10.1 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe-2">4.10.2 <strong>Application</strong> to the DataFrame</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#final-words">5 Final Words</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -466,7 +474,7 @@ most_freq_words_list</code></pre>
 <p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p25.png" /></p>
 <div id="application-to-the-example-string-1" class="section level3">
 <h3>4.9.1 <strong>Application</strong> to the Example String</h3>
-<p>(!) Important to note here: I use again the same state of the example string as at the beginning of the chapter Removing specific Words where I have not yet removed the specific words!</p>
+<p>(!) Important to note here: I use again the same state of the example string as at the beginning of the chapter <a href="https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/#application-to-the-example-string">Removing specific Words</a> where I have not yet removed the specific words!</p>
 <pre class="r"><code>clean_text_wo_single_char</code></pre>
 <p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p26.png" /></p>
 <p>Here again the frequency distribution in visual and tabular version:</p>
@@ -482,8 +490,152 @@ plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
 
 plt.show()</code></pre>
 <p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p27.png" /></p>
-<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
-<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png" /></p>
+<pre class="r"><code>df_most_common_words.head()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p28.png" /></p>
+<pre class="r"><code>most_freq_words_list_Example_String = most_freq_word_func(clean_text_wo_single_char, n_words=2)
+most_freq_words_list_Example_String</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p29.png" /></p>
+<pre class="r"><code>clean_text_wo_freq_words = multiple_word_remove_func(clean_text_wo_single_char, 
+                                                     most_freq_words_list_Example_String)
+
+clean_text_wo_freq_words</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p30.png" /></p>
+</div>
+<div id="application-to-the-dataframe-1" class="section level3">
+<h3>4.9.2 <strong>Application</strong> to the DataFrame</h3>
+<p>(!) Important to note here: I use the column ‘Reviews_cleaned_wo_single_char’ as in the chapter <a href="https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/#application-to-the-dataframe">Removing specific Words</a> because at this point I don’t want specific words are already removed from the text.</p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words_text_corpus[&#39;Word&#39;], 
+        df_most_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Most common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 25 most common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p31.png" /></p>
+<pre class="r"><code>df_most_common_words_text_corpus.head(10)</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p32.png" /></p>
+<pre class="r"><code>most_freq_words_list_DataFrame = most_freq_word_func(text_corpus_original, n_words=2)
+most_freq_words_list_DataFrame</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p33.png" /></p>
+<pre class="r"><code>df[&quot;Reviews_cleaned_wo_freq_words&quot;] = df.apply(lambda x: multiple_word_remove_func(x[&quot;Reviews_cleaned_wo_single_char&quot;], 
+                                                         most_freq_words_list_DataFrame), axis = 1)</code></pre>
+<pre class="r"><code>text_corpus_wo_freq_words = df[&#39;Reviews_cleaned_wo_freq_words&#39;].str.cat(sep=&#39; &#39;)
+
+print(&#39;Number of words (bevore freq word removal): &#39; + str(word_count_func(text_corpus_original)))
+print(&#39;Number of words (after freq word removal): &#39; + str(word_count_func(text_corpus_wo_freq_words)))
+print()
+print(&#39;Diff: &#39; + str(word_count_func(text_corpus_original) - word_count_func(text_corpus_wo_freq_words)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p34.png" /></p>
 </div>
 </div>
+<div id="removing-rare-words" class="section level2">
+<h2>4.10 Removing Rare words</h2>
+<p>We will probably use this function more often, which allows us to identify rarely occurring words in a text and then remove them.</p>
+<pre class="r"><code>text_for_rare_word_removal = \
+&quot;Sue sells seashells by the seashore. The seashells Sue sells are seashells Sue is sure.&quot;
+text_for_rare_word_removal</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p35.png" /></p>
+<pre class="r"><code>def most_rare_word_func(text, n_words=5):
+    &#39;&#39;&#39;
+    Returns the most rarely used words from a text
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        List of the most rarely occurring words (by default = 5)
+    &#39;&#39;&#39; 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    df_fdist = pd.DataFrame({&#39;Word&#39;: fdist.keys(),
+                             &#39;Frequency&#39;: fdist.values()})
+    df_fdist = df_fdist.sort_values(by=&#39;Frequency&#39;, ascending=False)
+    
+    n_words = n_words
+    most_rare_words_list = list(df_fdist[&#39;Word&#39;][-n_words:])
+    
+    return most_rare_words_list</code></pre>
+<pre class="r"><code>most_rare_words_list = most_rare_word_func(text_for_rare_word_removal, n_words=3)
+most_rare_words_list</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p36.png" /></p>
+<pre class="r"><code>multiple_word_remove_func(text_for_rare_word_removal, most_rare_words_list)</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p37.png" /></p>
+<div id="application-to-the-example-string-2" class="section level3">
+<h3>4.10.1 <strong>Application</strong> to the Example String</h3>
+<p>(!) Important to note here: I use again the same state of the example string as at the beginning of the chapter <a href="https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/#application-to-the-example-string">Removing specific Words</a> where I have not yet removed the specific words!</p>
+<pre class="r"><code>clean_text_wo_single_char</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p38.png" /></p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words[&#39;Word&#39;], 
+        df_least_common_words[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Least common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p39.png" /></p>
+<pre class="r"><code>df_least_common_words.tail()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p40.png" /></p>
+<pre class="r"><code>most_rare_words_list_Example_String = most_rare_word_func(clean_text_wo_single_char, n_words=4)
+most_rare_words_list_Example_String</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p41.png" /></p>
+<pre class="r"><code>clean_text_wo_rare_words = multiple_word_remove_func(clean_text_wo_single_char, 
+                                                     most_rare_words_list_Example_String)
+
+clean_text_wo_rare_words</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p42.png" /></p>
+</div>
+<div id="application-to-the-dataframe-2" class="section level3">
+<h3>4.10.2 <strong>Application</strong> to the DataFrame</h3>
+<p>(!) Important to note here: I use the column ‘Reviews_cleaned_wo_single_char’ as in the chapter <a href="https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/#application-to-the-dataframe">Removing specific Words</a> because at this point I don’t want specific words are already removed from the text.</p>
+<pre class="r"><code>plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words_text_corpus[&#39;Word&#39;], 
+        df_least_common_words_text_corpus[&#39;Frequency&#39;])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel(&#39;Least common Words&#39;)
+plt.ylabel(&quot;Frequency&quot;)
+plt.title(&quot;Frequency distribution of the 10 least common words&quot;)
+
+plt.show()</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p43.png" /></p>
+<pre class="r"><code>df_least_common_words_text_corpus</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p44.png" /></p>
+<pre class="r"><code>most_rare_words_list_DataFrame = most_rare_word_func(text_corpus_original, n_words=4)
+most_rare_words_list_DataFrame</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p45.png" /></p>
+<pre class="r"><code>df[&quot;Reviews_cleaned_wo_rare_words&quot;] = df.apply(lambda x: multiple_word_remove_func(x[&quot;Reviews_cleaned_wo_single_char&quot;], 
+                                                         most_rare_words_list_DataFrame), axis = 1)</code></pre>
+<pre class="r"><code>text_corpus_wo_rare_words = df[&#39;Reviews_cleaned_wo_rare_words&#39;].str.cat(sep=&#39; &#39;)
+
+print(&#39;Number of words (bevore rare word removal): &#39; + str(word_count_func(text_corpus_original)))
+print(&#39;Number of words (after rare word removal): &#39; + str(word_count_func(text_corpus_wo_rare_words)))
+print()
+print(&#39;Diff: &#39; + str(word_count_func(text_corpus_original) - word_count_func(text_corpus_wo_rare_words)))</code></pre>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p46.png" /></p>
+</div>
+</div>
+</div>
+<div id="final-words" class="section level1">
+<h1>5 Final Words</h1>
+<p><img src="/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p47.png" /></p>
+<p>When removing certain words, I applied the operation to the previously created column. Otherwise, I always used our original column ‘Reviews_cleaned_wo_single_char’ as the basis for the functions.</p>
+<p>What I didn’t do in this post was generate a separate column where I removed both the frequented words and the rarely occurring words. My tip at this point would be to create different columns where you have removed different types and different number of words and then see which data base the algorithm performs best on.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>Now I’m at the end of my post series on text pre-processing.
+In this last section I have shown how to remove certain, highly frequent or rare words from text modules.</p>
 </div>
