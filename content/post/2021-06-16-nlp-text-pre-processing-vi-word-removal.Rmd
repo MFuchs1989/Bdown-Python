@@ -255,7 +255,7 @@ I have already described this part in the previous post. See here: [Text Pre-Pro
 
 Sometimes it is helpful or even necessary to specifically remove certain words.
 
-In this and the two following chapters, I will refer to the frequency tables from the Text Exploration chapter and will always recall them so that it is clear to the reader to which processing stage of each text I am referring. All operations from this and the following two chapters will be performed on the example string 'clean_text_wo_single_char' and the column 'Reviews_cleaned_wo_single_char'. Furthermore, at the end of this post, I will again give an overview of which operations I applied to which source column and what happened in the process, so that there is no confusion for the reader.
+In this and the two following chapters, I will refer to the frequency tables from the Text Exploration chapter and will always recall them so that it is clear to the reader to which processing stage of each text I am referring. All operations from this and the following two chapters will be performed on the example string 'clean_text_wo_single_char' and the column 'Reviews_cleaned_wo_single_char'. Furthermore, [at the end of this post](https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/#final-words), I will again give an overview of which operations I applied to which source column and what happened in the process, so that there is no confusion for the reader.
 
 But now let's take a look at this tongue twister as an example:
 
