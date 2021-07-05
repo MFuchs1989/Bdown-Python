@@ -1,0 +1,46 @@
+---
+title: NLP - Text Pre-Processing V (Text Exploration)
+author: Michael Fuchs
+date: '2021-07-10'
+slug: nlp-text-pre-processing-v-text-exploration
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+
+
+
+
+
+
+For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as the created Example String. You can download both files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20V%20(Text%20Exploration)).
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-07-10-nlp-text-pre-processing-v-text-exploration_files/p127p1.png)
+
+
+
+
+
+
+
+
