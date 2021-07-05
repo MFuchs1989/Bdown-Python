@@ -17,7 +17,7 @@ output:
 # 1 Introduction
 
 
-
+HI there
 
 
 
@@ -35,7 +35,7 @@ For this publication the processed dataset *Amazon Unlocked Mobile* from the sta
 
 ```
 
-![](/post/2021-07-10-nlp-text-pre-processing-v-text-exploration_files/p127p1.png)
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p1.png)
 
 
 
