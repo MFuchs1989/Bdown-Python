@@ -271,7 +271,7 @@ df_least_common_words_text_corpus
 
 ![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p12.png)
 
-
+Let's see if the 2,500 different words actually occur only once in the entire text corpus. 
 
 
 ```{r, eval=F, echo=T}
