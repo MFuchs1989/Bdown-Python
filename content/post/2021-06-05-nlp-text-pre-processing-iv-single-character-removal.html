@@ -27,7 +27,14 @@ output:
 <li><a href="#stop-words">4.3 (Stop Words)</a></li>
 <li><a href="#digression-pos-ner">4.4 (Digression: POS &amp; NER)</a></li>
 <li><a href="#normalization">4.5 (Normalization)</a></li>
-<li><a href="#removing-single-characters">4.6 Removing Single Characters</a></li>
+<li><a href="#removing-single-characters">4.6 Removing Single Characters</a>
+<ul>
+<li><a href="#application-to-the-example-string">4.6.1 <strong>Application</strong> to the Example String</a></li>
+<li><a href="#application-to-the-dataframe">4.6.2 <strong>Application</strong> to the DataFrame</a>
+<ul>
+<li><a href="#with-character-length-1-default-settings">4.6.2.1 With Character Length = 1 (default settings)</a></li>
+</ul></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -134,14 +141,56 @@ clean_text_lemmatized_v_a</code></pre>
 </div>
 <div id="removing-single-characters" class="section level2">
 <h2>4.6 Removing Single Characters</h2>
+<p>In some cases (as is the case with the Example String), single characters may still be present in a string (after using Stop Word Removal etc.).</p>
+<p>Let’s look at the following example sentence where I am aware that some characters would no longer be there after our previous steps. This example is just to show how the function works.</p>
+<pre class="r"><code>text_for_remove_single_char = \
+&quot;This is an example string with numbers like 5 or 10 and single characters like a, b and c.&quot;
+text_for_remove_single_char</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p3.png" /></p>
+<pre class="r"><code>def remove_single_char_func(text, threshold=1):
+    &#39;&#39;&#39;
+    Removes single characters from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes words whose length falls below the threshold (by default = 1)
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with removed words whose length was below the threshold (by default = 1)
+    &#39;&#39;&#39; 
+    threshold = threshold
+    
+    words = word_tokenize(text)
+    text = &#39; &#39;.join([word for word in words if len(word) &gt; threshold])
+    return text</code></pre>
+<p>Now we apply the function to our example sentence (text_for_remove_single_char) with the default settings (threshold=1).</p>
+<pre class="r"><code>remove_single_char_func(text_for_remove_single_char)</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p4.png" /></p>
+<p>Depending on the case, the threshold can also be set high (for example, to 2 characters).</p>
+<pre class="r"><code>remove_single_char_func(text_for_remove_single_char, threshold=2)</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p5.png" /></p>
+<div id="application-to-the-example-string" class="section level3">
+<h3>4.6.1 <strong>Application</strong> to the Example String</h3>
+<p>I will continue at this point with the edited example string ‘clean_text_lemmatized_v_a’ from the last blog, which we already loaded at the beginning of this post.</p>
+<pre class="r"><code>clean_text_lemmatized_v_a</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p6.png" /></p>
+<pre class="r"><code>clean_text_wo_single_char = remove_single_char_func(clean_text_lemmatized_v_a)
+clean_text_wo_single_char</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p7.png" /></p>
+</div>
+<div id="application-to-the-dataframe" class="section level3">
+<h3>4.6.2 <strong>Application</strong> to the DataFrame</h3>
+<pre class="r"><code>df.head(3).T</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p8.png" /></p>
+<div id="with-character-length-1-default-settings" class="section level4">
+<h4>4.6.2.1 With Character Length = 1 (default settings)</h4>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><strong>Application</strong> to the Example String</p>
-<p><strong>Application</strong> to the DataFrame</p>
+</div>
+</div>
 </div>
 </div>

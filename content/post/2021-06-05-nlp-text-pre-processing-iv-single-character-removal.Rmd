@@ -154,6 +154,146 @@ I have already described this part in the previous post. See here: [Text Pre-Pro
 
 ## 4.6 Removing Single Characters
 
+In some cases (as is the case with the Example String), single characters may still be present in a string (after using Stop Word Removal etc.).
+
+Let's look at the following example sentence where I am aware that some characters would no longer be there after our previous steps. This example is just to show how the function works.
+
+```{r, eval=F, echo=T}
+text_for_remove_single_char = \
+"This is an example string with numbers like 5 or 10 and single characters like a, b and c."
+text_for_remove_single_char
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p3.png)
+
+
+```{r, eval=F, echo=T}
+def remove_single_char_func(text, threshold=1):
+    '''
+    Removes single characters from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes words whose length falls below the threshold (by default = 1)
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with removed words whose length was below the threshold (by default = 1)
+    ''' 
+    threshold = threshold
+    
+    words = word_tokenize(text)
+    text = ' '.join([word for word in words if len(word) > threshold])
+    return text
+```
+
+Now we apply the function to our example sentence (text_for_remove_single_char) with the default settings (threshold=1). 
+
+
+
+```{r, eval=F, echo=T}
+remove_single_char_func(text_for_remove_single_char)
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p4.png)
+
+
+Depending on the case, the threshold can also be set high (for example, to 2 characters). 
+
+
+```{r, eval=F, echo=T}
+remove_single_char_func(text_for_remove_single_char, threshold=2)
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p5.png)
+
+
+### 4.6.1 **Application** to the Example String
+
+I will continue at this point with the edited example string 'clean_text_lemmatized_v_a' from the last blog, which we already loaded at the beginning of this post. 
+
+
+```{r, eval=F, echo=T}
+clean_text_lemmatized_v_a
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p6.png)
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_single_char = remove_single_char_func(clean_text_lemmatized_v_a)
+clean_text_wo_single_char
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p7.png)
+
+
+
+### 4.6.2 **Application** to the DataFrame
+
+
+```{r, eval=F, echo=T}
+df.head(3).T
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p8.png)
+
+
+#### 4.6.2.1  With Character Length = 1 (default settings)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
+
+
+
+
+
+
+
 
 
 
@@ -199,119 +339,4 @@ I have already described this part in the previous post. See here: [Text Pre-Pro
 
 
 
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-**Application** to the Example String
-
-**Application** to the DataFrame
 
