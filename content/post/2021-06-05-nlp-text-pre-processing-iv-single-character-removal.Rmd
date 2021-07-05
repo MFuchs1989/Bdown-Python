@@ -243,95 +243,163 @@ df.head(3).T
 #### 4.6.2.1  With Character Length = 1 (default settings)
 
 
+```{r, eval=F, echo=T}
+df['Reviews_cleaned_wo_single_char'] = df['Reviews_lemmatized'].apply(remove_single_char_func)
 
+df['Word_Count_cleaned_Reviews_wo_single_char'] = df['Reviews_cleaned_wo_single_char'].apply(word_count_func)
 
+df.head(3).T
+```
 
-
-
-
-
-
-
-
-
-
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p9.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+print('Average of lemmatized words counted: ' + str(df['Word_Count_lemmatized_Reviews'].mean()))
+print('Average of cleaned words wo single char counted: ' + str(df['Word_Count_cleaned_Reviews_wo_single_char'].mean()))
 ```
 
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p10.png)
+
+Again, we see that some words have been removed. Let's have a look and see what they are. 
 
 
+```{r, eval=F, echo=T}
+df_subset = df[['Reviews_lemmatized', 'Word_Count_lemmatized_Reviews', 
+                'Reviews_cleaned_wo_single_char', 'Word_Count_cleaned_Reviews_wo_single_char']]
+
+df_subset['Diff'] = df_subset['Word_Count_lemmatized_Reviews'] - \
+                    df_subset['Word_Count_cleaned_Reviews_wo_single_char']
 
 
+df_subset = df_subset[(df_subset["Diff"] != 0)]
+df_subset = df_subset.sort_values(by='Diff', ascending=False)
+df_subset.head().T
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p11.png)
 
 
+```{r, eval=F, echo=T}
+df_subset['Reviews_lemmatized'].iloc[0]
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p12.png)
 
 
+```{r, eval=F, echo=T}
+df_subset['Reviews_cleaned_wo_single_char'].iloc[0]
+```
 
-
-
-
-
-
-
-
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p13.png)
 
 
 
 ```{r, eval=F, echo=T}
+# Original text:
 
+df[(df.index == 7479)]['Reviews'].iloc[0]
 ```
 
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p14.png)
+
+
+Conclusion: By removing single characters you do not necessarily run the risk of losing valuable information from the text. Now, of course, the question arises whether you need information like millimeters (mm) or whether you also remove them with the remove_single_char function if you set the threshold to 2.
+
+Let's try it out.
 
 
 
+#### 4.6.2.2  With Character Length = 2
+
+Now let's try it with a higher threshold (here 2) and see if valuable information would be lost or not. 
+
+```{r, eval=F, echo=T}
+df["Reviews_cleaned_wo_char_length_2"] = df.apply(lambda x: remove_single_char_func(x["Reviews_lemmatized"], 
+                                                            threshold=2), axis = 1)
+
+df['Word_Count_cleaned_Reviews_wo_char_length_2'] = df['Reviews_cleaned_wo_char_length_2'].apply(word_count_func)
+
+df.head(3).T
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p15.png)
 
 
+```{r, eval=F, echo=T}
+print('Average of lemmatized words counted: ' + str(df['Word_Count_lemmatized_Reviews'].mean()))
+print('Average of cleaned words wo single char counted: ' + str(df['Word_Count_cleaned_Reviews_wo_single_char'].mean()))
+print('Average of cleaned words wo char length 2 counted: ' + str(df['Word_Count_cleaned_Reviews_wo_char_length_2'].mean()))
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p16.png)
 
 
+```{r, eval=F, echo=T}
+df_subset = df[['Reviews_lemmatized', 'Word_Count_lemmatized_Reviews', 
+                'Reviews_cleaned_wo_char_length_2', 'Word_Count_cleaned_Reviews_wo_char_length_2']]
+
+df_subset['Diff'] = df_subset['Word_Count_lemmatized_Reviews'] - \
+                    df_subset['Word_Count_cleaned_Reviews_wo_char_length_2']
 
 
+df_subset = df_subset[(df_subset["Diff"] != 0)]
+#df_subset = df_subset.sort_values(by='Diff', ascending=False)
+df_subset.head().T
+```
 
-
-
-
-
-
-
-
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p17.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+df_subset['Reviews_lemmatized'].iloc[1]
 ```
 
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p18.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+df_subset['Reviews_cleaned_wo_char_length_2'].iloc[1]
 ```
 
-![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png)
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p19.png)
 
 
+```{r, eval=F, echo=T}
+# Original text:
+
+df[(df.index == 3)]['Reviews'].iloc[0]
+```
+
+![](/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p20.png)
+
+
+Conclusion: The average number of words could be reduced again with a threshold of 2, which would definitely help our later model training in terms of complexity and training speed. However, words like 'go' that might be profitable are also deleted. A possibility here would be to use another lemmatizer (for example the one in the norm_lemm_POS_tag function), where the verbs are not converted into their base form. So 'went' or 'gone' would not become 'go', which in turn would not be removed by the remove_single_char function with a threshold of 2. 
+
+In the following I will continue to work with the column 'Reviews_cleaned_wo_single_char', where we only removed single characters with a length of 1. 
+
+
+
+
+# 5 Conclusion
+
+In this post, I showed how to remove single characters from texts and spot check the generated results.
+
+
+
+I save the edited DataFrame and Example String again for subsequent use. 
+
+```{r, eval=F, echo=T}
+pk.dump(clean_text_wo_single_char, open('clean_text_wo_single_char.pkl', 'wb'))
+
+df.to_csv('Amazon_Unlocked_Mobile_small_Part_IV.csv', index = False)
+```
+
+
+Next, I will continue with the topic of text exploration. 
 
 
 

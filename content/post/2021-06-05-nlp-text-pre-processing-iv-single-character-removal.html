@@ -33,9 +33,11 @@ output:
 <li><a href="#application-to-the-dataframe">4.6.2 <strong>Application</strong> to the DataFrame</a>
 <ul>
 <li><a href="#with-character-length-1-default-settings">4.6.2.1 With Character Length = 1 (default settings)</a></li>
+<li><a href="#with-character-length-2">4.6.2.2 With Character Length = 2</a></li>
 </ul></li>
 </ul></li>
 </ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -186,11 +188,83 @@ clean_text_wo_single_char</code></pre>
 <p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p8.png" /></p>
 <div id="with-character-length-1-default-settings" class="section level4">
 <h4>4.6.2.1 With Character Length = 1 (default settings)</h4>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
-<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p.png" /></p>
+<pre class="r"><code>df[&#39;Reviews_cleaned_wo_single_char&#39;] = df[&#39;Reviews_lemmatized&#39;].apply(remove_single_char_func)
+
+df[&#39;Word_Count_cleaned_Reviews_wo_single_char&#39;] = df[&#39;Reviews_cleaned_wo_single_char&#39;].apply(word_count_func)
+
+df.head(3).T</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p9.png" /></p>
+<pre class="r"><code>print(&#39;Average of lemmatized words counted: &#39; + str(df[&#39;Word_Count_lemmatized_Reviews&#39;].mean()))
+print(&#39;Average of cleaned words wo single char counted: &#39; + str(df[&#39;Word_Count_cleaned_Reviews_wo_single_char&#39;].mean()))</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p10.png" /></p>
+<p>Again, we see that some words have been removed. Let’s have a look and see what they are.</p>
+<pre class="r"><code>df_subset = df[[&#39;Reviews_lemmatized&#39;, &#39;Word_Count_lemmatized_Reviews&#39;, 
+                &#39;Reviews_cleaned_wo_single_char&#39;, &#39;Word_Count_cleaned_Reviews_wo_single_char&#39;]]
+
+df_subset[&#39;Diff&#39;] = df_subset[&#39;Word_Count_lemmatized_Reviews&#39;] - \
+                    df_subset[&#39;Word_Count_cleaned_Reviews_wo_single_char&#39;]
+
+
+df_subset = df_subset[(df_subset[&quot;Diff&quot;] != 0)]
+df_subset = df_subset.sort_values(by=&#39;Diff&#39;, ascending=False)
+df_subset.head().T</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p11.png" /></p>
+<pre class="r"><code>df_subset[&#39;Reviews_lemmatized&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p12.png" /></p>
+<pre class="r"><code>df_subset[&#39;Reviews_cleaned_wo_single_char&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p13.png" /></p>
+<pre class="r"><code># Original text:
+
+df[(df.index == 7479)][&#39;Reviews&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p14.png" /></p>
+<p>Conclusion: By removing single characters you do not necessarily run the risk of losing valuable information from the text. Now, of course, the question arises whether you need information like millimeters (mm) or whether you also remove them with the remove_single_char function if you set the threshold to 2.</p>
+<p>Let’s try it out.</p>
+</div>
+<div id="with-character-length-2" class="section level4">
+<h4>4.6.2.2 With Character Length = 2</h4>
+<p>Now let’s try it with a higher threshold (here 2) and see if valuable information would be lost or not.</p>
+<pre class="r"><code>df[&quot;Reviews_cleaned_wo_char_length_2&quot;] = df.apply(lambda x: remove_single_char_func(x[&quot;Reviews_lemmatized&quot;], 
+                                                            threshold=2), axis = 1)
+
+df[&#39;Word_Count_cleaned_Reviews_wo_char_length_2&#39;] = df[&#39;Reviews_cleaned_wo_char_length_2&#39;].apply(word_count_func)
+
+df.head(3).T</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p15.png" /></p>
+<pre class="r"><code>print(&#39;Average of lemmatized words counted: &#39; + str(df[&#39;Word_Count_lemmatized_Reviews&#39;].mean()))
+print(&#39;Average of cleaned words wo single char counted: &#39; + str(df[&#39;Word_Count_cleaned_Reviews_wo_single_char&#39;].mean()))
+print(&#39;Average of cleaned words wo char length 2 counted: &#39; + str(df[&#39;Word_Count_cleaned_Reviews_wo_char_length_2&#39;].mean()))</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p16.png" /></p>
+<pre class="r"><code>df_subset = df[[&#39;Reviews_lemmatized&#39;, &#39;Word_Count_lemmatized_Reviews&#39;, 
+                &#39;Reviews_cleaned_wo_char_length_2&#39;, &#39;Word_Count_cleaned_Reviews_wo_char_length_2&#39;]]
+
+df_subset[&#39;Diff&#39;] = df_subset[&#39;Word_Count_lemmatized_Reviews&#39;] - \
+                    df_subset[&#39;Word_Count_cleaned_Reviews_wo_char_length_2&#39;]
+
+
+df_subset = df_subset[(df_subset[&quot;Diff&quot;] != 0)]
+#df_subset = df_subset.sort_values(by=&#39;Diff&#39;, ascending=False)
+df_subset.head().T</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p17.png" /></p>
+<pre class="r"><code>df_subset[&#39;Reviews_lemmatized&#39;].iloc[1]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p18.png" /></p>
+<pre class="r"><code>df_subset[&#39;Reviews_cleaned_wo_char_length_2&#39;].iloc[1]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p19.png" /></p>
+<pre class="r"><code># Original text:
+
+df[(df.index == 3)][&#39;Reviews&#39;].iloc[0]</code></pre>
+<p><img src="/post/2021-06-05-nlp-text-pre-processing-iv-single-character-removal_files/p126p20.png" /></p>
+<p>Conclusion: The average number of words could be reduced again with a threshold of 2, which would definitely help our later model training in terms of complexity and training speed. However, words like ‘go’ that might be profitable are also deleted. A possibility here would be to use another lemmatizer (for example the one in the norm_lemm_POS_tag function), where the verbs are not converted into their base form. So ‘went’ or ‘gone’ would not become ‘go’, which in turn would not be removed by the remove_single_char function with a threshold of 2.</p>
+<p>In the following I will continue to work with the column ‘Reviews_cleaned_wo_single_char’, where we only removed single characters with a length of 1.</p>
 </div>
 </div>
 </div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
+<p>In this post, I showed how to remove single characters from texts and spot check the generated results.</p>
+<p>I save the edited DataFrame and Example String again for subsequent use.</p>
+<pre class="r"><code>pk.dump(clean_text_wo_single_char, open(&#39;clean_text_wo_single_char.pkl&#39;, &#39;wb&#39;))
+
+df.to_csv(&#39;Amazon_Unlocked_Mobile_small_Part_IV.csv&#39;, index = False)</code></pre>
+<p>Next, I will continue with the topic of text exploration.</p>
 </div>
