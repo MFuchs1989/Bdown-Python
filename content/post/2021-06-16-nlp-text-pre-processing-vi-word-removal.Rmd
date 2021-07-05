@@ -1,0 +1,411 @@
+---
+title: NLP - Text Pre-Processing VI (Word Removal)
+author: Michael Fuchs
+date: '2021-06-16'
+slug: nlp-text-pre-processing-vi-word-removal
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+Let's move on to the final part of the post series on Pre-Processing Steps in NLP: Word Removal
+
+
+For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. Furthermore I will use the last state of the example string and the saved frequency tables I created in my last post. You can download all files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VI%20(Word%20Removal)).
+
+
+
+# 2 Import the Libraries and the Data
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pickle as pk
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+from bs4 import BeautifulSoup
+import unicodedata
+import re
+
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
+
+from nltk.corpus import stopwords
+
+
+from nltk.corpus import wordnet
+from nltk import pos_tag
+from nltk import ne_chunk
+
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+```
+
+
+```{r, eval=F, echo=T}
+pd.set_option('display.max_colwidth', 30)
+```
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('Amazon_Unlocked_Mobile_small_Part_V.csv')
+df.head(3).T
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p1.png)
+
+```{r, eval=F, echo=T}
+df['Reviews_cleaned_wo_single_char'] = df['Reviews_cleaned_wo_single_char'].astype(str)
+```
+
+
+
+```{r, eval=F, echo=T}
+clean_text_wo_single_char = pk.load(open("clean_text_wo_single_char.pkl",'rb'))
+clean_text_wo_single_char
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p2.png)
+
+In addition to the DataFrame and the Example String, we load the previously saved frequency tables from the post NLP - Text Pre-Processing V (Text Exploration) at this point.
+
+
+```{r, eval=F, echo=T}
+df_most_common_words = pd.read_csv('df_most_common_words.csv')
+df_least_common_words = pd.read_csv('df_least_common_words.csv')
+df_most_common_words_text_corpus = pd.read_csv('df_most_common_words_text_corpus.csv')
+df_least_common_words_text_corpus = pd.read_csv('df_least_common_words_text_corpus.csv')
+```
+
+
+
+# 3 Definition of required Functions
+
+All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.
+
+```{r, eval=F, echo=T}
+def word_count_func(text):
+    '''
+    Counts words within a string
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Number of words within a string, integer
+    ''' 
+    return len(text.split())
+```
+
+```{r, eval=F, echo=T}
+def single_word_remove_func(text, word_2_remove):
+    '''
+    Removes a specific word from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes the defined word from the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+        word_2_remove (str): Word to be removed from the text, string
+    
+    Returns:
+        String with removed words
+    '''    
+    word_to_remove = word_2_remove
+    
+    words = word_tokenize(text)
+    text = ' '.join([word for word in words if word != word_to_remove])
+    return text
+```
+
+```{r, eval=F, echo=T}
+def multiple_word_remove_func(text, words_2_remove_list):
+    '''
+    Removes certain words from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes the defined words from the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+        words_2_remove_list (list): Words to be removed from the text, list of strings
+    
+    Returns:
+        String with removed words
+    '''     
+    words_to_remove_list = words_2_remove_list
+    
+    words = word_tokenize(text)
+    text = ' '.join([word for word in words if word not in words_to_remove_list])
+    return text
+```
+
+```{r, eval=F, echo=T}
+def most_freq_word_func(text, n_words=5):
+    '''
+    Returns the most frequently used words from a text
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        List of the most frequently occurring words (by default = 5)
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False)
+    
+    n_words = n_words
+    most_freq_words_list = list(df_fdist['Word'][0:n_words])
+    
+    return most_freq_words_list
+```
+
+```{r, eval=F, echo=T}
+def most_rare_word_func(text, n_words=5):
+    '''
+    Returns the most rarely used words from a text
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        List of the most rarely occurring words (by default = 5)
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False)
+    
+    n_words = n_words
+    most_rare_words_list = list(df_fdist['Word'][-n_words:])
+    
+    return most_rare_words_list
+```
+
+
+
+# 4 Text Pre-Processing
+
+## 4.1 (Text Cleaning)
+
+I have already described this part in an earlier post. See here: [Text Cleaning](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
+
+## 4.2 (Tokenization)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing II-Tokenization](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#tokenization)
+
+
+## 4.3  (Stop Words)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing II-Stop Words](https://michael-fuchs-python.netlify.app/2021/05/25/nlp-text-pre-processing-ii-tokenization-and-stop-words/#stop-words)
+
+
+## 4.4 (Digression: POS & NER)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing III-POS & NER](https://michael-fuchs-python.netlify.app/2021/05/31/nlp-text-pre-processing-iii-pos-ner-and-normalization/#digression-pos-ner)
+
+
+## 4.5  (Normalization)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing III-Normalization](https://michael-fuchs-python.netlify.app/2021/05/31/nlp-text-pre-processing-iii-pos-ner-and-normalization/#normalization)
+
+
+## 4.6 (Removing Single Characters)
+
+I have already described this part in an earlier post. See here: [Text Pre-Processing IV-Removing Single Characters](https://michael-fuchs-python.netlify.app/2021/06/05/nlp-text-pre-processing-iv-single-character-removal/#removing-single-characters)
+
+
+## 4.7 (Text Exploration)
+
+I have already described this part in the previous post. See here: [Text Pre-Processing V-Text Exploration](https://michael-fuchs-python.netlify.app/2021/06/10/nlp-text-pre-processing-v-text-exploration/#text-exploration)
+
+
+
+## 4.8 Removing specific Words
+
+
+Sometimes it is helpful or even necessary to specifically remove certain words.
+
+In this and the two following chapters, I will refer to the frequency tables from the Text Exploration chapter and will always recall them so that it is clear to the reader to which processing stage of each text I am referring. All operations from this and the following two chapters will be performed on the example string 'clean_text_wo_single_char' and the column 'Reviews_cleaned_wo_single_char'. Furthermore, at the end of this post, I will again give an overview of which operations I applied to which source column and what happened in the process, so that there is no confusion for the reader.
+
+But now let's take a look at this tongue twister as an example:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
