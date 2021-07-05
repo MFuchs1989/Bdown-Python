@@ -17,7 +17,7 @@ output:
 # 1 Introduction
 
 
-Now that we have completed some pre-processing steps, I always like to start with text exploration and visualization. 
+Now that we have completed some pre-processing steps, I always like to start text exploration and visualization at this point. 
 
 
 For this publication the processed dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used as well as the created Example String. You can download both files from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20V%20(Text%20Exploration)).
@@ -200,32 +200,139 @@ I have already described this part in the previous post. See here: [Text Pre-Pro
 
 ## 4.7 Text Exploration
 
+### 4.7.1 Descriptive Statistics
 
+For better readability, I have added punctuation to the following example sentence. At this point in the text preprocessing, these would no longer be present, nor would stop words or other words with little or no information content.
 
-
+But that doesn't matter. You can use this analysis in different places, you just have to keep in mind how clean your text already is and whether punctuation marks or similar are counted.
 
 
 
 ```{r, eval=F, echo=T}
-
+text_for_exploration = \
+"To begin to toboggan first buy a toboggan, but do not buy too big a toboggan. \
+Too big a toboggan is too big a toboggan to buy to begin to toboggan."
+text_for_exploration
 ```
 
-![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p.png)
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p3.png)
 
 
 
+```{r, eval=F, echo=T}
+def token_and_unique_word_count_func(text):
+    '''
+    Outputs the number of words and unique words
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to count unique words
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Prints:
+        Number of existing tokens and number of unique words
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    print('Number of tokens: ' + str(len(words))) 
+    print('Number of unique words: ' + str(len(fdist)))
+```
+
+
+```{r, eval=F, echo=T}
+token_and_unique_word_count_func(text_for_exploration)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p4.png)
 
 
 
+#### 4.7.1.1  Most common Words
+
+```{r, eval=F, echo=T}
+def most_common_word_func(text, n_words=25):
+    '''
+    Returns a DataFrame with the most commonly used words from a text with their frequencies
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        A DataFrame with the most commonly occurring words (by default = 25) with their frequencies
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    n_words = n_words
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False).head(n_words)
+    
+    return df_fdist
+```
+
+
+```{r, eval=F, echo=T}
+most_common_word_func(text_for_exploration)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p5.png)
 
 
 
+```{r, eval=F, echo=T}
+df_most_common_words_10 = most_common_word_func(text_for_exploration, n_words=10)
+df_most_common_words_10
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p6.png)
+
+
+#### 4.7.1.2  Least common Words
+
+
+```{r, eval=F, echo=T}
+def least_common_word_func(text, n_words=25):
+    '''
+    Returns a DataFrame with the least commonly used words from a text with their frequencies
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Uses the FreqDist function to determine the word frequency
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        A DataFrame with the least commonly occurring words (by default = 25) with their frequencies
+    ''' 
+    words = word_tokenize(text)
+    fdist = FreqDist(words) 
+    
+    n_words = n_words
+    
+    df_fdist = pd.DataFrame({'Word': fdist.keys(),
+                             'Frequency': fdist.values()})
+    df_fdist = df_fdist.sort_values(by='Frequency', ascending=False).tail(n_words)
+    
+    return df_fdist
+```
+
+
+```{r, eval=F, echo=T}
+least_common_word_func(text_for_exploration, 3)
+```
+
+![](/post/2021-06-10-nlp-text-pre-processing-v-text-exploration_files/p127p7.png)
 
 
 
-
-
-
+### 4.7.2 Text Visualization
 
 
 
