@@ -260,74 +260,169 @@ In this and the two following chapters, I will refer to the frequency tables fro
 But now let's take a look at this tongue twister as an example:
 
 
+```{r, eval=F, echo=T}
+text_for_word_removal = \
+"Give papa a cup of proper coffe in a copper coffe cup."
+text_for_word_removal
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p3.png)
 
 
+### 4.8.1 Single Word Removal
 
+The removal of individual words can be done with the help of this function:
 
-
-
-
-
-
-
-
+```{r, eval=F, echo=T}
+def single_word_remove_func(text, word_2_remove):
+    '''
+    Removes a specific word from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes the defined word from the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+        word_2_remove (str): Word to be removed from the text, string
+    
+    Returns:
+        String with removed words
+    '''    
+    word_to_remove = word_2_remove
+    
+    words = word_tokenize(text)
+    text = ' '.join([word for word in words if word != word_to_remove])
+    return text
+```
 
 
 
 ```{r, eval=F, echo=T}
-
+single_word_remove_func(text_for_word_removal, "coffe")
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p4.png)
 
 
+### 4.8.2 Multiple Word Removal
+
+But often you have the problem of having to remove several words. To use the function shown above each time would be tedious. Therefore, here is a function that can remove multiple words from a sentence:
 
 
+```{r, eval=F, echo=T}
+def multiple_word_remove_func(text, words_2_remove_list):
+    '''
+    Removes certain words from string, if present
+    
+    Step 1: Use word_tokenize() to get tokens from string
+    Step 2: Removes the defined words from the created tokens
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+        words_2_remove_list (list): Words to be removed from the text, list of strings
+    
+    Returns:
+        String with removed words
+    '''     
+    words_to_remove_list = words_2_remove_list
+    
+    words = word_tokenize(text)
+    text = ' '.join([word for word in words if word not in words_to_remove_list])
+    return text
+```
+
+The application of this function can be done in several ways. Below are three examples of how to do this:
 
 
+```{r, eval=F, echo=T}
+multiple_word_remove_func(text_for_word_removal, ["coffe", "cup"])
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p5.png)
 
 
+```{r, eval=F, echo=T}
+list_with_words = ["coffe", "cup"]
+
+multiple_word_remove_func(text_for_word_removal, list_with_words)
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p6.png)
 
 
+```{r, eval=F, echo=T}
+params= [text_for_word_removal,
+         ["coffe", "cup"]]
+
+multiple_word_remove_func(*params)
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p7.png)
 
 
+### 4.8.3 **Application** to the Example String
+
+For this, let's look at our last state with the String example:
+
+```{r, eval=F, echo=T}
+clean_text_wo_single_char
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p8.png)
+
+For this purpose, we also take a look at the frequency distribution of the words:
 
 
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_most_common_words['Word'], 
+        df_most_common_words['Frequency'])
+
+plt.xticks(rotation = 45)
+
+plt.xlabel('Most common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 25 most common words")
+
+plt.show()
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p9.png)
 
 
+```{r, eval=F, echo=T}
+df_most_common_words.head()
+```
+
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p10.png)
 
 
+```{r, eval=F, echo=T}
+plt.figure(figsize=(11,7))
+plt.bar(df_least_common_words['Word'], 
+        df_least_common_words['Frequency'])
 
+plt.xticks(rotation = 45)
 
+plt.xlabel('Least common Words')
+plt.ylabel("Frequency")
+plt.title("Frequency distribution of the 10 least common words")
 
+plt.show()
+```
 
-
-
-
-
-
-
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p11.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+df_least_common_words.tail()
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p.png)
+![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p128p12.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
+#### 4.8.3.1  with Single Word Removal
 
 
 
