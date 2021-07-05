@@ -75,6 +75,35 @@ flight2.head()</code></pre>
 flight2[&#39;new_Delay_detailed&#39;] = flight2.apply(new_Delay_detailed, axis = 1)
 flight2.head()</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2p4.png" /></p>
+<p>The function can also be written even more simply like this:</p>
+<pre class="r"><code>def new_Delay_detailed2(new_Delay):
+
+    if new_Delay &gt;= 45:
+        return &#39;over time&#39;
+
+    if new_Delay &lt; 45 and new_Delay &gt; 0:
+        return &#39;in time&#39;
+    
+    if new_Delay &lt;= 0:
+        return &#39;delayed&#39;
+
+
+flight2[&#39;new_Delay_detailed2&#39;] = flight2[&#39;new_Delay&#39;].apply(new_Delay_detailed2)</code></pre>
+<p>or even simpler:</p>
+<pre class="r"><code>def new_Delay_detailed3(new_Delay):
+
+    if new_Delay &gt;= 45:
+        return &#39;over time&#39;
+    
+    if new_Delay &lt;= 0:
+        return &#39;delayed&#39;
+    
+    else:
+        return &#39;in time&#39;
+
+
+flight2[&#39;new_Delay_detailed3&#39;] = flight2[&#39;new_Delay&#39;].apply(new_Delay_detailed3)</code></pre>
+<p>I did not execute the last two commands in this notebook, otherwise it would become too confusing.</p>
 </div>
 <div id="with-conditional-calculation" class="section level2">
 <h2>4.2 with conditional calculation</h2>
@@ -87,9 +116,9 @@ The following example shows how a calculated value is output (depending on the c
 df</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2z1.png" /></p>
 <p>Now we want to convert the CHF to EUR with a certain exchange rate so that we have a column with the same currency (here EUR).</p>
-<pre class="r"><code>Umrechnungskurs_CHF_EUR = 0.94</code></pre>
+<pre class="r"><code>exchange_rate_CHF_EUR = 0.94</code></pre>
 <pre class="r"><code>EUR = df[&#39;Amount&#39;]
-CHF_in_EUR = df[&#39;Amount&#39;]*Umrechnungskurs_CHF_EUR
+CHF_in_EUR = df[&#39;Amount&#39;]*exchange_rate_CHF_EUR
 df[&#39;Amount_converted_into_EUR&#39;] = np.where(df[&#39;Currancy&#39;]== &#39;EUR&#39;, EUR, CHF_in_EUR)
 df</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2z2.png" /></p>
@@ -100,18 +129,18 @@ df</code></pre>
                    &#39;Currancy&#39;: [&#39;EUR&#39;, &#39;CHF&#39;, &#39;THB&#39;]})
 df</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2z3.png" /></p>
-<pre class="r"><code>Umrechnungskurs_CHF_EUR = 0.94
-Umrechnungskurs_THB_EUR = 0.5</code></pre>
+<pre class="r"><code>exchange_rate_CHF_EUR = 0.94
+exchange_rate_THB_EUR = 0.5</code></pre>
 <pre class="r"><code>def converter(df):
 
     if (df[&#39;Currancy&#39;] == &#39;EUR&#39;):
         return df[&#39;Amount&#39;]
     
     elif (df[&#39;Currancy&#39;] == &#39;CHF&#39;):
-        return df[&#39;Amount&#39;]*Umrechnungskurs_CHF_EUR
+        return df[&#39;Amount&#39;]*exchange_rate_CHF_EUR
               
     elif (df[&#39;Currancy&#39;] == &#39;THB&#39;):
-        return df[&#39;Amount&#39;]*Umrechnungskurs_THB_EUR</code></pre>
+        return df[&#39;Amount&#39;]*exchange_rate_THB_EUR</code></pre>
 <pre class="r"><code>df[&#39;Amount_converted_into_EUR&#39;] = df.apply(converter, axis = 1)
 df.head()</code></pre>
 <p><img src="/post/2019-03-06-add-new-columns_files/p2z4.png" /></p>

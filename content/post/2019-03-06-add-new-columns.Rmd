@@ -89,6 +89,44 @@ flight2.head()
 
 ![](/post/2019-03-06-add-new-columns_files/p2p4.png)
 
+The function can also be written even more simply like this:
+
+```{r, eval=F, echo=T}
+def new_Delay_detailed2(new_Delay):
+
+    if new_Delay >= 45:
+        return 'over time'
+
+    if new_Delay < 45 and new_Delay > 0:
+        return 'in time'
+    
+    if new_Delay <= 0:
+        return 'delayed'
+
+
+flight2['new_Delay_detailed2'] = flight2['new_Delay'].apply(new_Delay_detailed2)
+```
+
+
+or even simpler:
+
+```{r, eval=F, echo=T}
+def new_Delay_detailed3(new_Delay):
+
+    if new_Delay >= 45:
+        return 'over time'
+    
+    if new_Delay <= 0:
+        return 'delayed'
+    
+    else:
+        return 'in time'
+
+
+flight2['new_Delay_detailed3'] = flight2['new_Delay'].apply(new_Delay_detailed3)
+```
+
+I did not execute the last two commands in this notebook, otherwise it would become too confusing.
 
 
 ## 4.2 with conditional calculation
@@ -111,12 +149,12 @@ Now we want to convert the CHF to EUR with a certain exchange rate so that we ha
 
 
 ```{r, eval=F, echo=T}
-Umrechnungskurs_CHF_EUR = 0.94
+exchange_rate_CHF_EUR = 0.94
 ```
 
 ```{r, eval=F, echo=T}
 EUR = df['Amount']
-CHF_in_EUR = df['Amount']*Umrechnungskurs_CHF_EUR
+CHF_in_EUR = df['Amount']*exchange_rate_CHF_EUR
 df['Amount_converted_into_EUR'] = np.where(df['Currancy']== 'EUR', EUR, CHF_in_EUR)
 df
 ```
@@ -137,8 +175,8 @@ df
 ![](/post/2019-03-06-add-new-columns_files/p2z3.png)
 
 ```{r, eval=F, echo=T}
-Umrechnungskurs_CHF_EUR = 0.94
-Umrechnungskurs_THB_EUR = 0.5
+exchange_rate_CHF_EUR = 0.94
+exchange_rate_THB_EUR = 0.5
 ```
 
 ```{r, eval=F, echo=T}
@@ -148,10 +186,10 @@ def converter(df):
         return df['Amount']
     
     elif (df['Currancy'] == 'CHF'):
-        return df['Amount']*Umrechnungskurs_CHF_EUR
+        return df['Amount']*exchange_rate_CHF_EUR
               
     elif (df['Currancy'] == 'THB'):
-        return df['Amount']*Umrechnungskurs_THB_EUR
+        return df['Amount']*exchange_rate_THB_EUR
 ```
 
 
