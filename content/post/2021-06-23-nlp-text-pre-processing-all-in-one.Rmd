@@ -71,7 +71,7 @@ df['Reviews'] = df['Reviews'].astype(str)
 df.head()
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p1.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p1.png)
 
 
 
@@ -102,7 +102,7 @@ df['Clean_Reviews'] = df['Clean_Reviews'].apply(remove_extra_whitespaces_func)
 df
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p2.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p2.png)
 
 
 ## 3.2  Tokenization
@@ -114,7 +114,7 @@ df['Reviews_Tokenized'] = df['Clean_Reviews'].apply(word_tokenize)
 df
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p3.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p3.png)
 
 
 
@@ -126,7 +126,7 @@ df['Reviews_wo_Stop_Words'] = df['Reviews_Tokenized'].apply(remove_english_stopw
 df
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p4.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p4.png)
 
 
 
@@ -139,7 +139,7 @@ df['Reviews_lemmatized'] = df['Reviews_wo_Stop_Words'].apply(norm_lemm_v_a_func)
 df.head(3).T
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p5.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p5.png)
 
 
 ## 3.5  Removing Single Characters
@@ -150,7 +150,7 @@ df['Reviews_cleaned_wo_single_char'] = df['Reviews_lemmatized'].apply(remove_sin
 df.head(3).T
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p6.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p6.png)
 
 
 ## 3.6  Text Exploration
@@ -169,7 +169,7 @@ df_most_common_words_text_corpus = most_common_word_func(text_corpus)
 df_most_common_words_text_corpus.head(10)
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p7.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p7.png)
 
 
 ```{r, eval=F, echo=T}
@@ -186,7 +186,7 @@ plt.title("Frequency distribution of the 25 most common words")
 plt.show()
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p8.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p8.png)
 
 
 #### 3.6.1.2  for parts of the DF
@@ -252,12 +252,12 @@ for item in range(3):
     plt.show()
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p9.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p9.png)
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p10.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p10.png)
 
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p11.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p11.png)
 
 
 ### 3.6.2 Least common Words
@@ -269,7 +269,7 @@ df_least_common_words_text_corpus = least_common_word_func(text_corpus, n_words=
 df_least_common_words_text_corpus
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p12.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p12.png)
 
 
 
@@ -278,7 +278,7 @@ df_least_common_words_text_corpus
 df_least_common_words_text_corpus[(df_least_common_words_text_corpus["Frequency"] > 1)].shape[0] 
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p13.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p13.png)
 
 
 
@@ -294,7 +294,7 @@ df["Reviews_cleaned_wo_specific_word"] = df.apply(lambda x: single_word_remove_f
 df.head(3).T
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p14.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p14.png)
 
 
 ## 3.8  Removing Rare words
@@ -318,7 +318,7 @@ The final data set looks like this:
 df.head(3).T
 ```
 
-![](/post/2021-06-16-nlp-text-pre-processing-vi-word-removal_files/p129p15.png)
+![](/post/2021-06-23-nlp-text-pre-processing-all-in-one_files/p129p15.png)
 
 Here we generated three columns that presumably have different information densities.
 On the one hand we have the column 'Reviews_cleaned_wo_single_char' where we have only applied all necessary pre-processing steps.
@@ -328,4 +328,13 @@ The validation of the model performance of the individual algorithms will then r
 It may be necessary to further adjust the columns if, for example, it turns out that the removal of rare words was very profitable. 
 
 I will describe this in detail in further posts. 
+
+
+
+# 4 Conclusion
+
+In this post I have presented all possible text pre-processing steps, most of which I had also described in more detail in my post series on text pre-processing. 
+
+
+
 
