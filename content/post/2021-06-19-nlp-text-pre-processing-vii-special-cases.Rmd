@@ -479,7 +479,7 @@ messy_text_numbers_to_words4_wo_punct
 num_to_words(messy_text_numbers_to_words4_wo_punct)
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p25.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p24z1.png)
 
 
 
@@ -512,7 +512,7 @@ df = pd.read_csv('df_text_pre_processing_special_cases.csv')
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p26.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p25.png)
 
 For text pre-processing, I'll stick to the guideline I created in this post: [NLP - Text Pre-Processing I (Text Cleaning)](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning)
 
@@ -522,7 +522,7 @@ df['Comments_lower'] = df['Comments'].str.lower()
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p27.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p26.png)
 
 
 At this point, we skip the following points as they are not relevant to the problem at hand:
@@ -543,7 +543,7 @@ df['Comments_emos_converted'] = df['Comments_lower'].apply(emoticons_to_words_fu
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p28.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p27.png)
 
 
 As we can see on line 2 and 4 (here visually represented as a column) this worked. The emoticons were converted even if punctuation marks were directly before or after them. 
@@ -561,7 +561,7 @@ df['Comments_wo_punct'] = df['Comments_emos_converted'].apply(remove_punctuation
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p29.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p28.png)
 
 
 ## 5.4 Step 2: Converting chat words into real words
@@ -572,7 +572,7 @@ df['Comments_chat_words_converted'] = df['Comments_wo_punct'].apply(chat_words_t
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p30.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p29.png)
 
 
 
@@ -587,7 +587,7 @@ df['Comments_separated'] = df['Comments_chat_words_converted'].apply(sep_num_wor
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p31.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p30.png)
 
 
 ### 5.5.2  Numbers2Words
@@ -598,7 +598,7 @@ df['Comments_num_to_words'] = df['Comments_separated'].apply(num_to_words)
 df.T
 ```
 
-![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p32.png)
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p31.png)
 
 
 Wonderful, the maximum of information has now been extracted. 
@@ -610,9 +610,9 @@ Now the [function to remove unnecessary spaces](https://michael-fuchs-python.net
 
 # 6 Conclusion¶
 
+In this post I showed how to translate emoticons and chat words into real language as well as how to convert numbers into words.
 
-
-
+Concluding my post series on text pre-processing, in the [next post](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/) I would like to give a summary of all the pre-processing steps that fit and can be applied to the dataset. 
 
 
 

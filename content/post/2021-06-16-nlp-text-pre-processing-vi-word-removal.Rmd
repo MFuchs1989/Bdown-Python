@@ -956,8 +956,8 @@ What I didn't do in this post was generate a separate column where I removed bot
 
 # 6 Conclusion
 
-Now I'm at the end of my post series on text pre-processing.
-In this last section I have shown how to remove certain, highly frequent or rare words from text modules. 
+This almost brings me to the end of my series of posts on text preprocessing.
+In this section I have shown how to remove certain, highly frequent or rare words from text modules. 
 
 
 
