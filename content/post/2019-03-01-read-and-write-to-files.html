@@ -21,7 +21,11 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
-<li><a href="#reading-csv-files">3 Reading csv-files</a></li>
+<li><a href="#reading-csv-files">3 Reading csv-files</a>
+<ul>
+<li><a href="#from-a-local-source">3.1 From a Local Source</a></li>
+<li><a href="#from-github-directly">3.2 From GitHub directly</a></li>
+</ul></li>
 <li><a href="#reading-json-files">4 Reading json files</a></li>
 <li><a href="#read-text-files">5 Read text files</a>
 <ul>
@@ -52,6 +56,8 @@ import datetime</code></pre>
 </div>
 <div id="reading-csv-files" class="section level1">
 <h1>3 Reading csv-files</h1>
+<div id="from-a-local-source" class="section level2">
+<h2>3.1 From a Local Source</h2>
 <p>Probably the most used file format is the <strong>csv</strong>-file.
 We can simply load csv files with the following syntax:</p>
 <pre class="r"><code>df = pd.read_csv(&quot;df.csv&quot;)</code></pre>
@@ -73,6 +79,19 @@ However, there are always situations in which the csv file is stored with, for e
 </ul>
 <p>…</p>
 <p>For a detailed description have a look at this pandas read_csv documentation <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">“here”</a></p>
+</div>
+<div id="from-github-directly" class="section level2">
+<h2>3.2 From GitHub directly</h2>
+<p>However, with csv files you have the option to load them directly from GitHub.</p>
+<p>To do this, <strong>click on the corresponding file</strong> in GitHub and select <strong>Raw</strong> (see screenshot below).</p>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z11.png" /></p>
+<p>The address can then be copied and pasted into the code below.</p>
+<pre class="r"><code>url = &quot;https://raw.githubusercontent.com/MFuchs1989/Datasets-and-Miscellaneous/main/datasets/Iris_Data.csv&quot; 
+
+df_iris = pd.read_csv(url, error_bad_lines=False)
+df_iris.head()</code></pre>
+<p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z12.png" /></p>
+</div>
 </div>
 <div id="reading-json-files" class="section level1">
 <h1>4 Reading json files</h1>

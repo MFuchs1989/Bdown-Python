@@ -36,6 +36,7 @@ import datetime
 
 # 3 Reading csv-files
 
+## 3.1 From a Local Source
 
 Probably the most used file format is the **csv**-file.
 We can simply load csv files with the following syntax: 
@@ -75,6 +76,27 @@ There are a couple of other ways to read csv files with pandas read_csv-function
 
 
 For a detailed description have a look at this pandas read_csv documentation ["here"](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
+
+
+
+## 3.2 From GitHub directly
+
+However, with csv files you have the option to load them directly from GitHub. 
+
+To do this, **click on the corresponding file** in GitHub and select **Raw** (see screenshot below).
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z11.png)
+
+The address can then be copied and pasted into the code below.
+
+```{r, eval=F, echo=T}
+url = "https://raw.githubusercontent.com/MFuchs1989/Datasets-and-Miscellaneous/main/datasets/Iris_Data.csv" 
+
+df_iris = pd.read_csv(url, error_bad_lines=False)
+df_iris.head()
+```
+
+![](/post/2019-03-01-read-and-write-to-files_files/p23z12.png)
 
 
 
