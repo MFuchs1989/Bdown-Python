@@ -60,6 +60,15 @@ def remove_punctuation_func(text):
 from emo_dictonary import EMOTICONS
 
 def emoticons_to_words_func(text):
+    '''
+    Convert Emoticons to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Emoticons to Words
+    ''' 
     for emot in EMOTICONS:
         emoticon_pattern = r'('+emot+')'
         # replace
@@ -102,8 +111,15 @@ def sep_num_words_func(text):
 
 ```{r, eval=F, echo=T}
 def num_to_words(text):
-
-
+    '''
+    Convert Numbers to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Numbers to Words
+    ''' 
     after_spliting = text.split()
 
     for index in range(len(after_spliting)):
@@ -136,6 +152,15 @@ I found the dictionary of emoticons and emojis (emo_dictonary.py) as well as the
 from emo_dictonary import EMOTICONS
 
 def emoticons_to_words_func(text):
+    '''
+    Convert Emoticons to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Emoticons to Words
+    ''' 
     for emot in EMOTICONS:
         emoticon_pattern = r'('+emot+')'
         # replace
@@ -322,8 +347,15 @@ The following function can be used after the emoticons and chat words have been 
 
 ```{r, eval=F, echo=T}
 def num_to_words(text):
-
-
+    '''
+    Convert Numbers to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Numbers to Words
+    ''' 
     after_spliting = text.split()
 
     for index in range(len(after_spliting)):

@@ -78,6 +78,15 @@ import re</code></pre>
 <pre class="r"><code>from emo_dictonary import EMOTICONS
 
 def emoticons_to_words_func(text):
+    &#39;&#39;&#39;
+    Convert Emoticons to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Emoticons to Words
+    &#39;&#39;&#39; 
     for emot in EMOTICONS:
         emoticon_pattern = r&#39;(&#39;+emot+&#39;)&#39;
         # replace
@@ -111,7 +120,15 @@ def emoticons_to_words_func(text):
     &#39;&#39;&#39; 
     return re.sub(r&quot;([0-9]+(\.[0-9]+)?)&quot;,r&quot; \1 &quot;, text).strip() </code></pre>
 <pre class="r"><code>def num_to_words(text):
-
+    &#39;&#39;&#39;
+    Convert Numbers to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Numbers to Words
+    &#39;&#39;&#39; 
     after_spliting = text.split()
 
     for index in range(len(after_spliting)):
@@ -132,6 +149,15 @@ def emoticons_to_words_func(text):
 <pre class="r"><code>from emo_dictonary import EMOTICONS
 
 def emoticons_to_words_func(text):
+    &#39;&#39;&#39;
+    Convert Emoticons to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Emoticons to Words
+    &#39;&#39;&#39; 
     for emot in EMOTICONS:
         emoticon_pattern = r&#39;(&#39;+emot+&#39;)&#39;
         # replace
@@ -221,7 +247,15 @@ chat_words_to_norm_words_func(messy_text_chat_words2_wo_punct)</code></pre>
 <h2>4.3 Converting Numbers to Words</h2>
 <p>The following function can be used after the emoticons and chat words have been converted (since they may contain numbers and thus lose their meaning) but before <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-irrelevant-characters-numbers-and-punctuation">irrelevant characters (Numbers and Punctuation)</a> have been removed from the text.</p>
 <pre class="r"><code>def num_to_words(text):
-
+    &#39;&#39;&#39;
+    Convert Numbers to Words
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with converted Numbers to Words
+    &#39;&#39;&#39; 
     after_spliting = text.split()
 
     for index in range(len(after_spliting)):
