@@ -34,11 +34,11 @@ import datetime
 ```
 
 
-+ 3 Reading Files
+# 3 Reading Files
 
-# 3.1 Reading csv-files
+## 3.1 Reading csv-files
 
-## 3.1.1 From a Local Source
+### 3.1.1 From a Local Source
 
 Probably the most used file format is the **csv**-file.
 We can simply load csv files with the following syntax: 
@@ -81,7 +81,7 @@ For a detailed description have a look at this pandas read_csv documentation ["h
 
 
 
-## 3.1.2 From GitHub directly
+### 3.1.2 From GitHub directly
 
 However, with csv files you have the option to load them directly from GitHub. 
 
@@ -102,7 +102,7 @@ df_iris.head()
 
 
 
-# 3.2 Reading json files
+## 3.2 Reading json files
 
 Another very popular format is json. This usually looks like this:
 
@@ -123,7 +123,7 @@ df = pd.read_csv("df.csv", sep=";")
 
 
 
-# 3.3 Read text files
+## 3.3 Read text files
 
 From time to time it also happens that files are made available to you as text files as the below picture shows. 
 
@@ -133,7 +133,7 @@ From time to time it also happens that files are made available to you as text f
 Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn't matter. We can read this file in two ways.
 
 
-## 3.3.1 with a for loop
+### 3.3.1 with a for loop
 
 Here you have to know which column names are contained in the file.
 
@@ -163,7 +163,7 @@ If the data set is too large, the processing time could increase dramatically.
 
 
 
-## 3.3.2 with read_csv
+### 3.3.2 with read_csv
 
 Alternatively you can use the read_csv function.
 In this case, you have to note that you still give the other file format (here json).
@@ -188,7 +188,7 @@ Hereby I used the map function in combination with lambda function to bring the 
 
 
 
-### 3.3.2.1 Convert epoch time to DateTime
+#### 3.3.2.1 Convert epoch time to DateTime
 
 
 As you may have noticed, the column timestamp_epoch contains an epoch notation, which is not necessarily readable for everyone. Therefore, it is worth to reshape them accordingly.
@@ -214,7 +214,7 @@ Voilà !
 
 # 4 Writing files
 
-# 4.1 Write to csv
+## 4.1 Write to csv
 
 At this point, the question arises how the newly prepared data record can be easily stored.
 Almost every "read_from" has a "write_to" command.
@@ -234,7 +234,7 @@ df.to_csv('NewDataFrame.csv', index = False)
 This data set is now saved to the previously set path or any one that can be integrated in this command.
 
 
-# 4.2 Write to excel
+## 4.2 Write to excel
 
 The CSV format is the most common format in which data is saved, but it is still necessary / desired to save the data in Excel from time to time.
 
