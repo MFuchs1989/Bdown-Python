@@ -21,24 +21,25 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#loading-the-libraries">2 Loading the libraries</a></li>
-<li><a href="#reading-csv-files">3 Reading csv-files</a>
+<li><a href="#reading-csv-files">3.1 Reading csv-files</a>
 <ul>
-<li><a href="#from-a-local-source">3.1 From a Local Source</a></li>
-<li><a href="#from-github-directly">3.2 From GitHub directly</a></li>
+<li><a href="#from-a-local-source">3.1.1 From a Local Source</a></li>
+<li><a href="#from-github-directly">3.1.2 From GitHub directly</a></li>
 </ul></li>
-<li><a href="#reading-json-files">4 Reading json files</a></li>
-<li><a href="#read-text-files">5 Read text files</a>
+<li><a href="#reading-json-files">3.2 Reading json files</a></li>
+<li><a href="#read-text-files">3.3 Read text files</a>
 <ul>
-<li><a href="#with-a-for-loop">5.1 with a for loop</a></li>
-<li><a href="#with-read_csv">5.2 with read_csv</a>
+<li><a href="#with-a-for-loop">3.3.1 with a for loop</a></li>
+<li><a href="#with-read_csv">3.3.2 with read_csv</a>
 <ul>
-<li><a href="#convert-epoch-time-to-datetime">5.2.1 Convert epoch time to DateTime</a></li>
+<li><a href="#convert-epoch-time-to-datetime">3.3.2.1 Convert epoch time to DateTime</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#write-to-csv">6 Write to csv</a></li>
-<li><a href="#write-to-excel">7 Write to excel</a></li>
-<li><a href="#how-to-read-further-data-types">8 How to read further data types</a></li>
-<li><a href="#conclusion">9 Conclusion</a></li>
+<li><a href="#writing-files">4 Writing files</a></li>
+<li><a href="#write-to-csv">4.1 Write to csv</a></li>
+<li><a href="#write-to-excel">4.2 Write to excel</a></li>
+<li><a href="#how-to-read-further-data-types">5 How to read further data types</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -53,11 +54,14 @@ This publication will show how to load data from different data types for furthe
 <pre class="r"><code>import pandas as pd
 import json
 import datetime</code></pre>
+<ul>
+<li>3 Reading Files</li>
+</ul>
 </div>
 <div id="reading-csv-files" class="section level1">
-<h1>3 Reading csv-files</h1>
+<h1>3.1 Reading csv-files</h1>
 <div id="from-a-local-source" class="section level2">
-<h2>3.1 From a Local Source</h2>
+<h2>3.1.1 From a Local Source</h2>
 <p>Probably the most used file format is the <strong>csv</strong>-file.
 We can simply load csv files with the following syntax:</p>
 <pre class="r"><code>df = pd.read_csv(&quot;df.csv&quot;)</code></pre>
@@ -81,7 +85,7 @@ However, there are always situations in which the csv file is stored with, for e
 <p>For a detailed description have a look at this pandas read_csv documentation <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">“here”</a></p>
 </div>
 <div id="from-github-directly" class="section level2">
-<h2>3.2 From GitHub directly</h2>
+<h2>3.1.2 From GitHub directly</h2>
 <p>However, with csv files you have the option to load them directly from GitHub.</p>
 <p>To do this, <strong>click on the corresponding file</strong> in GitHub and select <strong>Raw</strong> (see screenshot below).</p>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z11.png" /></p>
@@ -94,7 +98,7 @@ df_iris.head()</code></pre>
 </div>
 </div>
 <div id="reading-json-files" class="section level1">
-<h1>4 Reading json files</h1>
+<h1>3.2 Reading json files</h1>
 <p>Another very popular format is json. This usually looks like this:</p>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23s1.png" /></p>
 <p>Also for this pandas offers a quite simple possibility.
@@ -103,12 +107,12 @@ To illustrate this example, we use a kaggle record of data from twitter.</p>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23p1.png" /></p>
 </div>
 <div id="read-text-files" class="section level1">
-<h1>5 Read text files</h1>
+<h1>3.3 Read text files</h1>
 <p>From time to time it also happens that files are made available to you as text files as the below picture shows.</p>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23s2.png" /></p>
 <p>Looks a bit tricky at first (especially since this file was named as json format but really is not a real json). But this doesn’t matter. We can read this file in two ways.</p>
 <div id="with-a-for-loop" class="section level2">
-<h2>5.1 with a for loop</h2>
+<h2>3.3.1 with a for loop</h2>
 <p>Here you have to know which column names are contained in the file.</p>
 <pre class="r"><code>f = open(&quot;some_TEXT_data_as_JSON.json&quot;, &quot;r&quot;)
 firstLine = 1
@@ -130,7 +134,7 @@ df.head()</code></pre>
 If the data set is too large, the processing time could increase dramatically.</p>
 </div>
 <div id="with-read_csv" class="section level2">
-<h2>5.2 with read_csv</h2>
+<h2>3.3.2 with read_csv</h2>
 <p>Alternatively you can use the read_csv function.
 In this case, you have to note that you still give the other file format (here json).</p>
 <pre class="r"><code>df = pd.read_csv(&#39;some_TEXT_data_as_JSON.json&#39;, sep=&quot;:&quot;, header=None)
@@ -145,7 +149,7 @@ df.head()</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23p3.png" /></p>
 <p>Hereby I used the map function in combination with lambda function to bring the data in the correct shape. How map works and can be used exactly see in this publication <a href="https://michael-fuchs-python.netlify.com/2019/03/27/string-manipulation-an-intuition/">“publication (String Manipulation. An intuition.)”</a> of mine</p>
 <div id="convert-epoch-time-to-datetime" class="section level3">
-<h3>5.2.1 Convert epoch time to DateTime</h3>
+<h3>3.3.2.1 Convert epoch time to DateTime</h3>
 <p>As you may have noticed, the column timestamp_epoch contains an epoch notation, which is not necessarily readable for everyone. Therefore, it is worth to reshape them accordingly.</p>
 <pre class="r"><code>df[&#39;timestamp_epoch2&#39;] = df.timestamp_epoch.astype(float)
 df[&#39;new_timestamp_epoch&#39;] = df.timestamp_epoch2 / 1000
@@ -161,8 +165,11 @@ df.head()</code></pre>
 </div>
 </div>
 </div>
+<div id="writing-files" class="section level1">
+<h1>4 Writing files</h1>
+</div>
 <div id="write-to-csv" class="section level1">
-<h1>6 Write to csv</h1>
+<h1>4.1 Write to csv</h1>
 <p>At this point, the question arises how the newly prepared data record can be easily stored.
 Almost every “read_from” has a “write_to” command.
 Let’s do so with our previously created dataframe:</p>
@@ -172,7 +179,7 @@ Let’s do so with our previously created dataframe:</p>
 <p>This data set is now saved to the previously set path or any one that can be integrated in this command.</p>
 </div>
 <div id="write-to-excel" class="section level1">
-<h1>7 Write to excel</h1>
+<h1>4.2 Write to excel</h1>
 <p>The CSV format is the most common format in which data is saved, but it is still necessary / desired to save the data in Excel from time to time.</p>
 <p>To do so I use the <em>.to_excel function</em> in combination with the <em>xlsxwriter-engine</em>.
 This is pretty much the same simple process as saving in a csv format.
@@ -238,7 +245,7 @@ now_date</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z10.png" /></p>
 </div>
 <div id="how-to-read-further-data-types" class="section level1">
-<h1>8 How to read further data types</h1>
+<h1>5 How to read further data types</h1>
 <p>In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:</p>
 <ul>
 <li>Excel (pd.read_excel())</li>
@@ -253,6 +260,6 @@ now_date</code></pre>
 </ul>
 </div>
 <div id="conclusion" class="section level1">
-<h1>9 Conclusion</h1>
+<h1>6 Conclusion</h1>
 <p>In this post various ways and possibilities were shown to read different data formats in python.</p>
 </div>
