@@ -23,8 +23,28 @@ output:
 <li><a href="#text-pre-processing---special-cases">4 Text Pre-Processing - Special Cases</a>
 <ul>
 <li><a href="#converting-emoticons-to-words">4.1 Converting Emoticons to Words</a></li>
+<li><a href="#converting-chat-conversion-words-to-normal-words">4.2 Converting Chat Conversion Words to normal Words</a></li>
+<li><a href="#converting-numbers-to-words">4.3 Converting Numbers to Words</a>
+<ul>
+<li><a href="#small-numbers">4.3.1 Small Numbers</a></li>
+<li><a href="#larger-numbers">4.3.2 Larger Numbers</a></li>
+<li><a href="#numbers-combined-with-words-and-punctuation">4.3.3 Numbers combined with Words and Punctuation</a></li>
+<li><a href="#limitations">4.3.4 Limitations</a></li>
 </ul></li>
-<li><a href="#application-to-a-dataframe">5 <strong>Application</strong> to a DataFrame</a></li>
+</ul></li>
+<li><a href="#application-to-a-dataframe">5 <strong>Application</strong> to a DataFrame</a>
+<ul>
+<li><a href="#loading-the-data-set">5.1 Loading the Data Set</a></li>
+<li><a href="#step-1-converting-emoticons-into-words">5.2 Step 1: Converting emoticons into words</a></li>
+<li><a href="#intermediate-step-removal-of-punctuation-marks">5.3 Intermediate Step: Removal of punctuation marks</a></li>
+<li><a href="#step-2-converting-chat-words-into-real-words">5.4 Step 2: Converting chat words into real words</a></li>
+<li><a href="#step-3-converting-numbers-into-words">5.5 Step 3: Converting numbers into words</a>
+<ul>
+<li><a href="#separation-of-numbers-and-words">5.5.1 Separation of numbers and words</a></li>
+<li><a href="#numbers2words">5.5.2 Numbers2Words</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion¶</a></li>
 </ul>
 </div>
 
@@ -104,20 +124,257 @@ def emoticons_to_words_func(text):
 <h1>4 Text Pre-Processing - Special Cases</h1>
 <p>As you may recall, in my first <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/">Text Pre-Processing post</a>, I created a guideline for <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a>. The following three sections are about special cases that can be applied in text cleaning (for example, because the analysis requirements demand it).</p>
 <p><strong>However, it is of essential importance at which point the operations are performed!</strong></p>
-<p>Of course I have listed this in each section and summarized it in the last chapter ‘Application to a DataFrame’.</p>
+<p>Of course I have listed this in each section and summarized it in the last <a href="https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/#application-to-a-dataframe">chapter ‘Application to a DataFrame’</a>.</p>
 <div id="converting-emoticons-to-words" class="section level2">
 <h2>4.1 Converting Emoticons to Words</h2>
-<p>This operation should be performed in any case before <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation">Removing Punctuation</a>.
-I will explain why in chapter 5 Application to a DataFrame.</p>
+<p>This operation should be performed in any case before <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation">Removing Punctuation</a>. I will explain why in [chapter 5 Application to a DataFrame}(<a href="https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/#application-to-a-dataframe" class="uri">https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/#application-to-a-dataframe</a>).</p>
 <p>I found the dictionary of emoticons and emojis (emo_dictonary.py) as well as the following function in this <a href="https://github.com/NeelShah18/emot">GitHub</a> Repository.</p>
+<pre class="r"><code>from emo_dictonary import EMOTICONS
+
+def emoticons_to_words_func(text):
+    for emot in EMOTICONS:
+        emoticon_pattern = r&#39;(&#39;+emot+&#39;)&#39;
+        # replace
+        emoticon_words = EMOTICONS[emot]
+        replace_text = emoticon_words.replace(&quot;,&quot;,&quot;&quot;)
+        replace_text = replace_text.replace(&quot;:&quot;,&quot;&quot;)
+        replace_text_list = replace_text.split()
+        emoticon_name = &#39;_&#39;.join(replace_text_list)
+        text = re.sub(emoticon_pattern, emoticon_name, text)
+    return text</code></pre>
+<pre class="r"><code>messy_text_conv_emo = \
+&quot;You really did a great job :)!\
+&quot;
+messy_text_conv_emo</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p1.png" /></p>
+<pre class="r"><code>emoticons_to_words_func(messy_text_conv_emo)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p2.png" /></p>
+<p>As we can see, the function does not interfere with punctuation marks, even if they directly follow emoticons.</p>
+<pre class="r"><code>messy_text_conv_emo2 = \
+&quot;You really did a great job :( !\
+&quot;
+messy_text_conv_emo2</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p3.png" /></p>
+<pre class="r"><code>emoticons_to_words_func(messy_text_conv_emo2)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p4.png" /></p>
+<pre class="r"><code>messy_text_conv_emo3 = \
+&quot;Great! 8‑D\
+&quot;
+messy_text_conv_emo3</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p5.png" /></p>
+<pre class="r"><code>emoticons_to_words_func(messy_text_conv_emo3)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p6.png" /></p>
+</div>
+<div id="converting-chat-conversion-words-to-normal-words" class="section level2">
+<h2>4.2 Converting Chat Conversion Words to normal Words</h2>
+<p>This operation should be performed before we <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-irrelevant-characters-numbers-and-punctuation">remove irrelevant characters (Numbers and Punctuation)</a> from a text.</p>
+<p>First we need to load the following data set.</p>
+<p>This can be done in two ways. Either you download the file from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)">GitHub Repository</a> and load it in the usual way in the Jupyter notebook.</p>
+<pre class="r"><code>chat_expressions = pd.read_csv(&#39;chat_expressions.csv&#39;, sep=&#39;,&#39;)
+chat_expressions</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p7.png" /></p>
+<p>Or you can download it directly from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)">GitHub Repository</a>:</p>
+<pre class="r"><code># use raw view for this
+url = &quot;https://raw.githubusercontent.com/MFuchs1989/Datasets-and-Miscellaneous/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)/chat_expressions.csv&quot; 
+
+chat_expressions = pd.read_csv(url, error_bad_lines=False)
+chat_expressions</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p7.png" /></p>
+<p>Now we create a dictionary from it:</p>
+<pre class="r"><code>chat_expressions_dict = dict(zip(chat_expressions.Chat_Words, chat_expressions.Chat_Words_Extended))</code></pre>
+<p>Here is the function we are about to use:</p>
+<pre class="r"><code>def chat_words_to_norm_words_func(text):
+    &#39;&#39;&#39;
+    Replaces common chat expressions with their spelled out form
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with replaced chat expressions
+    &#39;&#39;&#39; 
+    return re.sub(r&#39;\S+&#39;, lambda m: chat_expressions_dict.get(m.group().upper(), m.group()) , text)</code></pre>
+<pre class="r"><code>messy_text_chat_words = \
+&quot;I&#39;m afk for a moment\
+&quot;
+messy_text_chat_words </code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p8.png" /></p>
+<pre class="r"><code>chat_words_to_norm_words_func(messy_text_chat_words)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p9.png" /></p>
+<p>This has worked well before. But be careful, punctuation interferes with the function, see here:</p>
+<pre class="r"><code>messy_text_chat_words2 = \
+&quot;OMG, that&#39;s great news.\
+&quot;
+messy_text_chat_words2</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p10.png" /></p>
+<pre class="r"><code>chat_words_to_norm_words_func(messy_text_chat_words2)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p11.png" /></p>
+<p>It is therefore <strong>recommended to remove punctuation marks at this point</strong>. We have already learned about this function in the post about <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation">text cleaning</a>.</p>
+<pre class="r"><code># Remove Punctuation from text
+messy_text_chat_words2_wo_punct = remove_punctuation_func(messy_text_chat_words2)
+
+# Convert chat words to normal words
+chat_words_to_norm_words_func(messy_text_chat_words2_wo_punct)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p12.png" /></p>
+</div>
+<div id="converting-numbers-to-words" class="section level2">
+<h2>4.3 Converting Numbers to Words</h2>
+<p>The following function can be used after the emoticons and chat words have been converted (since they may contain numbers and thus lose their meaning) but before <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-irrelevant-characters-numbers-and-punctuation">irrelevant characters (Numbers and Punctuation)</a> have been removed from the text.</p>
+<pre class="r"><code>def num_to_words(text):
+
+    after_spliting = text.split()
+
+    for index in range(len(after_spliting)):
+        if after_spliting[index].isdigit():
+            after_spliting[index] = num2words(after_spliting[index])
+    numbers_to_words = &#39; &#39;.join(after_spliting)
+    return numbers_to_words</code></pre>
+<div id="small-numbers" class="section level3">
+<h3>4.3.1 Small Numbers</h3>
+<pre class="r"><code>messy_text_numbers_to_words = \
+&quot;I paid 6 dollars for it.\
+&quot;
+messy_text_numbers_to_words</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p13.png" /></p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p14.png" /></p>
+</div>
+<div id="larger-numbers" class="section level3">
+<h3>4.3.2 Larger Numbers</h3>
+<pre class="r"><code>messy_text_numbers_to_words2 = \
+&quot;I give 42 points which results in a 4 star rating. \
+&quot;
+messy_text_numbers_to_words2</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p15.png" /></p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words2)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p16.png" /></p>
+</div>
+<div id="numbers-combined-with-words-and-punctuation" class="section level3">
+<h3>4.3.3 Numbers combined with Words and Punctuation</h3>
+<p>Often we have the case that numbers appear combined with other words or special characters in the text.</p>
+<pre class="r"><code>messy_text_numbers_to_words3 = \
+&quot;Over 50% of today&#39;s smartphones have a 6inch screen.\
+&quot;
+messy_text_numbers_to_words3</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p17.png" /></p>
+<p>Our function <strong>will not work</strong> on this:</p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words3)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p18.png" /></p>
+<p>Ok the problem with the special character we can solve with the <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation">remove_punctuation function</a>.</p>
+<pre class="r"><code>messy_text_numbers_to_words3_wo_punct = remove_punctuation_func(messy_text_numbers_to_words3)
+messy_text_numbers_to_words3_wo_punct</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p19.png" /></p>
+<p>But now we still have the problem that the 6inch are written together.
+To solve such problems I have written the following function:</p>
+<pre class="r"><code>def sep_num_words_func(text):
+    &#39;&#39;&#39;
+    Separates numbers from words or other characters
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with separated numbers from words or other characters
+    &#39;&#39;&#39; 
+    return re.sub(r&quot;([0-9]+(\.[0-9]+)?)&quot;,r&quot; \1 &quot;, text).strip()</code></pre>
+<pre class="r"><code>messy_text_numbers_to_words3_separated = sep_num_words_func(messy_text_numbers_to_words3_wo_punct)
+messy_text_numbers_to_words3_separated</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p20.png" /></p>
+<p>Now I can use the num_to_words function:</p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words3_separated)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p21.png" /></p>
+</div>
+<div id="limitations" class="section level3">
+<h3>4.3.4 Limitations</h3>
+<p>Of course the function I wrote is not omnipotent and also has its limitations e.g. this one with floats:</p>
+<pre class="r"><code>messy_text_numbers_to_words4 = \
+&quot;I paid 4.50 for this.\
+&quot;
+messy_text_numbers_to_words4</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p22.png" /></p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words4)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p23.png" /></p>
+<pre class="r"><code>messy_text_numbers_to_words4_wo_punct = remove_punctuation_func(messy_text_numbers_to_words4)
+messy_text_numbers_to_words4_wo_punct</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p24.png" /></p>
+<pre class="r"><code>num_to_words(messy_text_numbers_to_words4_wo_punct)</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p25.png" /></p>
+</div>
 </div>
 </div>
 <div id="application-to-a-dataframe" class="section level1">
 <h1>5 <strong>Application</strong> to a DataFrame</h1>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p>Note the order in which I will perform the operations.
+If I would bypass this, for example emoticons could no longer be recognized, because they no longer exist due to the removal of special characters.
+However, in order to extract the maximum information content from a text, one must consider exactly in which order the functions should be applied.</p>
+<ul>
+<li>Step 1: Converting emoticons into words</li>
+<li>Intermediate Step: Removal of punctuation marks</li>
+<li>Step 2: Converting chat words into real words</li>
+<li>Step 3: Converting numbers into words</li>
+</ul>
+<p>The function for emoticons is not affected by punctuation marks.
+The conversion of chat words (for example if they are placed just before a punctuation mark without a space) is. The function would not work then. In some chat words there are also numbers. Converting them beforehand with our function would therefore make some chat words unusable.
+Therefore always follow the order as I described it above.</p>
+<div id="loading-the-data-set" class="section level2">
+<h2>5.1 Loading the Data Set</h2>
+<p>This dataset is an artificially created dataset by me, which fits well to the just described topics from this post.</p>
+<pre class="r"><code>pd.set_option(&#39;display.max_colwidth&#39;, 1000)
+
+df = pd.read_csv(&#39;df_text_pre_processing_special_cases.csv&#39;)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p26.png" /></p>
+<p>For text pre-processing, I’ll stick to the guideline I created in this post: <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">NLP - Text Pre-Processing I (Text Cleaning)</a></p>
+<pre class="r"><code>df[&#39;Comments_lower&#39;] = df[&#39;Comments&#39;].str.lower()
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p27.png" /></p>
+<p>At this point, we skip the following points as they are not relevant to the problem at hand:</p>
+<ul>
+<li>Removing HTML tags</li>
+<li>Removing URLs</li>
+<li>Removing Accented Characters</li>
+</ul>
+</div>
+<div id="step-1-converting-emoticons-into-words" class="section level2">
+<h2>5.2 Step 1: Converting emoticons into words</h2>
+<p>However, before we get to removing special characters or numbers (or converting them to words) we should still convert emoticons words.</p>
+<pre class="r"><code>df[&#39;Comments_emos_converted&#39;] = df[&#39;Comments_lower&#39;].apply(emoticons_to_words_func)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p28.png" /></p>
+<p>As we can see on line 2 and 4 (here visually represented as a column) this worked. The emoticons were converted even if punctuation marks were directly before or after them.</p>
+</div>
+<div id="intermediate-step-removal-of-punctuation-marks" class="section level2">
+<h2>5.3 Intermediate Step: Removal of punctuation marks</h2>
+<p>So that all chat words can now be recognized correctly, we remove all punctuation marks at this point.</p>
+<pre class="r"><code>df[&#39;Comments_wo_punct&#39;] = df[&#39;Comments_emos_converted&#39;].apply(remove_punctuation_func)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p29.png" /></p>
+</div>
+<div id="step-2-converting-chat-words-into-real-words" class="section level2">
+<h2>5.4 Step 2: Converting chat words into real words</h2>
+<pre class="r"><code>df[&#39;Comments_chat_words_converted&#39;] = df[&#39;Comments_wo_punct&#39;].apply(chat_words_to_norm_words_func)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p30.png" /></p>
+</div>
+<div id="step-3-converting-numbers-into-words" class="section level2">
+<h2>5.5 Step 3: Converting numbers into words</h2>
+<div id="separation-of-numbers-and-words" class="section level3">
+<h3>5.5.1 Separation of numbers and words</h3>
+<p>So that now also all numbers can be converted into words, I separate all numbers from words, if these are written together.</p>
+<pre class="r"><code>df[&#39;Comments_separated&#39;] = df[&#39;Comments_chat_words_converted&#39;].apply(sep_num_words_func)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p31.png" /></p>
+</div>
+<div id="numbers2words" class="section level3">
+<h3>5.5.2 Numbers2Words</h3>
+<pre class="r"><code>df[&#39;Comments_num_to_words&#39;] = df[&#39;Comments_separated&#39;].apply(num_to_words)
+df.T</code></pre>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p32.png" /></p>
+<p>Wonderful, the maximum of information has now been extracted.</p>
+<p>Now the <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-extra-whitespaces">function to remove unnecessary spaces</a> could be used.</p>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion¶</h1>
 </div>
