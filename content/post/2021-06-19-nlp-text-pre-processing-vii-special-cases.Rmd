@@ -1,0 +1,38 @@
+---
+title: NLP - Text Pre-Processing VII (Special Cases)
+author: Michael Fuchs
+date: '2021-06-19'
+slug: nlp-text-pre-processing-vii-special-cases
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p1.png)
+
+
+
+
+
+
+
+
