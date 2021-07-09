@@ -143,7 +143,7 @@ Of course I have listed this in each section and summarized it in the last [chap
 ## 4.1  Converting Emoticons to Words
 
 
-This operation should be performed in any case before [Removing Punctuation](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation). I will explain why in [chapter 5 Application to a DataFrame}(https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/#application-to-a-dataframe).
+This operation should be performed in any case before [Removing Punctuation](https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation). I will explain why in [chapter 5 Application to a DataFrame](https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/#application-to-a-dataframe).
 
 
 I found the dictionary of emoticons and emojis (emo_dictonary.py) as well as the following function in this [GitHub](https://github.com/NeelShah18/emot) Repository.
@@ -238,7 +238,7 @@ This operation should be performed before we [remove irrelevant characters (Numb
 
 First we need to load the following data set. 
 
-This can be done in two ways. Either you download the file from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)) and load it in the usual way in the Jupyter notebook.
+This can be done in two ways. Either you download the file from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)) and load it in the usual way in the Jupyter Notebook.
 
 ```{r, eval=F, echo=T}
 chat_expressions = pd.read_csv('chat_expressions.csv', sep=',')
@@ -305,7 +305,7 @@ chat_words_to_norm_words_func(messy_text_chat_words)
 ![](/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p9.png)
 
 
-This has worked well before. But be careful, punctuation interferes with the function, see here:
+This has worked well before. But **be careful**, **punctuation interferes** with the function, see here:
 
 ```{r, eval=F, echo=T}
 messy_text_chat_words2 = \
@@ -566,7 +566,7 @@ At this point, we skip the following points as they are not relevant to the prob
 
 ## 5.2  Step 1: Converting emoticons into words
 
-However, before we get to removing special characters or numbers (or converting them to words) we should still convert emoticons words. 
+However, before we get to removing special characters or numbers (or converting them to words) we should still convert emoticons to words. 
 
 
 
