@@ -367,6 +367,13 @@ The result looks like this:
 ![](/post/2019-03-01-read-and-write-to-files_files/p23z10.png)
 
 
+Or you simply assign a name of your choice:
+
+```{r, eval=F, echo=T}
+df.to_excel('My_DataFrame.xlsx', sheet_name='Sheet1', engine='xlsxwriter')
+```
+
+
 
 # 5 How to read further data types
 
