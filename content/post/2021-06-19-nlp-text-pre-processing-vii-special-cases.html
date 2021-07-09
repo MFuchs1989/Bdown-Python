@@ -18,10 +18,106 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries">2 Import the Libraries</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required Functions</a></li>
+<li><a href="#text-pre-processing---special-cases">4 Text Pre-Processing - Special Cases</a>
+<ul>
+<li><a href="#converting-emoticons-to-words">4.1 Converting Emoticons to Words</a></li>
+</ul></li>
+<li><a href="#application-to-a-dataframe">5 <strong>Application</strong> to a DataFrame</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p1.png" /></p>
+<p>I have already described the most common and most used Text Cleaning Steps in this post here: <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Pre-Processing I (Text Cleaning)</a></p>
+<p>However, it may happen that the analysis request requires other processing of the text, for example, if numbers are not to be removed but converted into text and analyzed as well.</p>
+<p>This post is about such special cases.</p>
+<p>Feel free to download the files I used from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20VII%20(Special%20Cases)">GitHub Repository</a>.</p>
+</div>
+<div id="import-the-libraries" class="section level1">
+<h1>2 Import the Libraries</h1>
+<pre class="r"><code>import pandas as pd
+from num2words import num2words
+import re</code></pre>
+</div>
+<div id="definition-of-required-functions" class="section level1">
+<h1>3 Definition of required Functions</h1>
+<p>All functions are summarized here. I will show them again where they are used during this post if they are new and have not been explained yet.</p>
+<pre class="r"><code>def remove_punctuation_func(text):
+    &#39;&#39;&#39;
+    Removes all punctuation from a string, if present
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string without punctuations
+    &#39;&#39;&#39;
+    return re.sub(r&#39;[^a-zA-Z0-9]&#39;, &#39; &#39;, text)</code></pre>
+<pre class="r"><code>from emo_dictonary import EMOTICONS
+
+def emoticons_to_words_func(text):
+    for emot in EMOTICONS:
+        emoticon_pattern = r&#39;(&#39;+emot+&#39;)&#39;
+        # replace
+        emoticon_words = EMOTICONS[emot]
+        replace_text = emoticon_words.replace(&quot;,&quot;,&quot;&quot;)
+        replace_text = replace_text.replace(&quot;:&quot;,&quot;&quot;)
+        replace_text_list = replace_text.split()
+        emoticon_name = &#39;_&#39;.join(replace_text_list)
+        text = re.sub(emoticon_pattern, emoticon_name, text)
+    return text</code></pre>
+<pre class="r"><code>def chat_words_to_norm_words_func(text):
+    &#39;&#39;&#39;
+    Replaces common chat expressions with their spelled out form
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with replaced chat expressions
+    &#39;&#39;&#39; 
+    return re.sub(r&#39;\S+&#39;, lambda m: chat_expressions_dict.get(m.group().upper(), m.group()) , text)</code></pre>
+<pre class="r"><code>def sep_num_words_func(text):
+    &#39;&#39;&#39;
+    Separates numbers from words or other characters
+    
+    Args:
+        text (str): String to which the function is to be applied, string
+    
+    Returns:
+        Clean string with separated numbers from words or other characters
+    &#39;&#39;&#39; 
+    return re.sub(r&quot;([0-9]+(\.[0-9]+)?)&quot;,r&quot; \1 &quot;, text).strip() </code></pre>
+<pre class="r"><code>def num_to_words(text):
+
+    after_spliting = text.split()
+
+    for index in range(len(after_spliting)):
+        if after_spliting[index].isdigit():
+            after_spliting[index] = num2words(after_spliting[index])
+    numbers_to_words = &#39; &#39;.join(after_spliting)
+    return numbers_to_words</code></pre>
+</div>
+<div id="text-pre-processing---special-cases" class="section level1">
+<h1>4 Text Pre-Processing - Special Cases</h1>
+<p>As you may recall, in my first <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/">Text Pre-Processing post</a>, I created a guideline for <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#text-cleaning">Text Cleaning</a>. The following three sections are about special cases that can be applied in text cleaning (for example, because the analysis requirements demand it).</p>
+<p><strong>However, it is of essential importance at which point the operations are performed!</strong></p>
+<p>Of course I have listed this in each section and summarized it in the last chapter ‘Application to a DataFrame’.</p>
+<div id="converting-emoticons-to-words" class="section level2">
+<h2>4.1 Converting Emoticons to Words</h2>
+<p>This operation should be performed in any case before <a href="https://michael-fuchs-python.netlify.app/2021/05/22/nlp-text-pre-processing-i-text-cleaning/#removing-punctuation">Removing Punctuation</a>.
+I will explain why in chapter 5 Application to a DataFrame.</p>
+<p>I found the dictionary of emoticons and emojis (emo_dictonary.py) as well as the following function in this <a href="https://github.com/NeelShah18/emot">GitHub</a> Repository.</p>
+</div>
+</div>
+<div id="application-to-a-dataframe" class="section level1">
+<h1>5 <strong>Application</strong> to a DataFrame</h1>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
+<p><img src="/post/2021-06-19-nlp-text-pre-processing-vii-special-cases_files/p130p.png" /></p>
 </div>
