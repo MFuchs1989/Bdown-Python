@@ -15,49 +15,6 @@ output:
 
 
 
-![](/post/2019-01-05-getting-started-with-anaconda_files/1.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/2.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/3.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/4.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/5.png)
-
-
-compressed:
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/1-min.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/2-min.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/3-min.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/4-min.png)
-
-
-
-![](/post/2019-01-05-getting-started-with-anaconda_files/5-min.png)
-
-
-
-
 # 1 Introduction
 
 If you want to work with Python you need a suitable IDE.
