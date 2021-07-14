@@ -34,7 +34,26 @@ output:
 ![](/post/2019-01-05-getting-started-with-anaconda_files/5.png)
 
 
+compressed:
 
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/1-min.png)
+
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/2-min.png)
+
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/3-min.png)
+
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/4-min.png)
+
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/5-min.png)
 
 
 
