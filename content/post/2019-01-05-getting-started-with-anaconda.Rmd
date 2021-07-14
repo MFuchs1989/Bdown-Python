@@ -88,7 +88,7 @@ Now you can search for new libraries that you have not yet installed in the resp
 At the bottom you can press 'apply' to perform the installation.
 Often it happens that with large libraries like pandas is one, further packages are installed with it. 
 
-In our demp_env I installed the following basic libraries:
+In our demo_env I installed the following basic libraries:
 
 + pandas
 + numpy
