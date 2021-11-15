@@ -273,11 +273,11 @@ It's really important that you put a two text message in this chat. The content 
 
 Now enter the following address into your browser: 
 
-+ https://api.telegram.org/bot[HTTP-TOKEN]/getUpdates. 
+`https://api.telegram.org/bot[HTTP-TOKEN]/getUpdates`
 
 Replace [HTTP-TOKEN] with your generated token like here: 
 
-+ https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates
+`https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates`
 
 
 Now you get a similar view from which you can write out the chat ID (I marked it blue in the picture). 
@@ -519,40 +519,67 @@ Now you can select the bot you want to delete and confirm it by typing 'Yes, I a
 ## 4.4 via MS Teams
 
 
+Another nice method is to send messages to a MS Teams channel. The required Python library can be downloaded with the following command:
 
-```{r, eval=F, echo=T}
+`pip install pymsteams`
 
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
+To be able to post messages to a Teams Channel, we need a webhook. This can be created as follows. 
 
 
 ### 4.4.1 Create Incoming Webhook
 
 
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+I'll show you everything step by step below, but if you want you can also read the Microsoft tutorial [here](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-incoming-webhook-1).
 
 
+Go to the Teams Channel you want to use and tap on the three dots to the right of it. 
+
+![](/post/2021-03-13-automated-notifications_files/p131p25.png)
 
 
+Now select Connectors.
+
+![](/post/2021-03-13-automated-notifications_files/p131p26.png)
+
+
+Click on Incoming Webhook. Enter a name of your choice and press Done.
+
+![](/post/2021-03-13-automated-notifications_files/p131p27.png)
+
+
+Now you can copy the created webhook and paste it into the following function (instead of the placeholder 'webhook').
+
+![](/post/2021-03-13-automated-notifications_files/p131p28.png)
 
 
 ### 4.4.2 Simple Notification
 
+```{r, eval=F, echo=T}
+def ms_teams_message_func(text):
+    '''
+    A function for writing messages in a Microsoft Teams Channel
+    
+    Args:
+        text (str): Text message which should be sent, string
+    
+    Returns:
+        A Microsoft Teams message with the corresponding text as content
+    '''    
+    webhook = "webhook"
+    myTeamsMessage.text(text)
+    myTeamsMessage.send()
+```
+
 
 
 ```{r, eval=F, echo=T}
-
+ms_teams_message_func("Hey Guys what's up?")
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+![](/post/2021-03-13-automated-notifications_files/p131p29.png)
 
 
+Works. As with Telegram, you can have all kinds of information sent to you. Try it out. 
 
 
 ### 4.4.3 Notification with DateTime, Processing Time and Evaluation

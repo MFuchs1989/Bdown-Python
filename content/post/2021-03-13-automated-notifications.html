@@ -222,13 +222,9 @@ To find it out, we need to start a chat with the generated bot. Start a new conv
 <p>It’s really important that you put a two text message in this chat. The content does not matter, but there must be messages in the chat, otherwise the next step will not work.</p>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p12.png" /></p>
 <p>Now enter the following address into your browser:</p>
-<ul>
-<li><a href="https://api.telegram.org/bot%5BHTTP-TOKEN%5D/getUpdates" class="uri">https://api.telegram.org/bot[HTTP-TOKEN]/getUpdates</a>.</li>
-</ul>
+<p><code>https://api.telegram.org/bot[HTTP-TOKEN]/getUpdates</code></p>
 <p>Replace [HTTP-TOKEN] with your generated token like here:</p>
-<ul>
-<li><a href="https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates" class="uri">https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates</a></li>
-</ul>
+<p><code>https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates</code></p>
 <p>Now you get a similar view from which you can write out the chat ID (I marked it blue in the picture).</p>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p10.png" /></p>
 <p>Now we have all the information we need.</p>
@@ -408,14 +404,39 @@ telegram_message_func(&#39;Accuracy with GridSearch: &#39; + str(grid_clf_acc) +
 </div>
 <div id="via-ms-teams" class="section level2">
 <h2>4.4 via MS Teams</h2>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<p>Another nice method is to send messages to a MS Teams channel. The required Python library can be downloaded with the following command:</p>
+<p><code>pip install pymsteams</code></p>
+<p>To be able to post messages to a Teams Channel, we need a webhook. This can be created as follows.</p>
 <div id="create-incoming-webhook" class="section level3">
 <h3>4.4.1 Create Incoming Webhook</h3>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<p>I’ll show you everything step by step below, but if you want you can also read the Microsoft tutorial <a href="https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#create-incoming-webhook-1">here</a>.</p>
+<p>Go to the Teams Channel you want to use and tap on the three dots to the right of it.</p>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p25.png" /></p>
+<p>Now select Connectors.</p>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p26.png" /></p>
+<p>Click on Incoming Webhook. Enter a name of your choice and press Done.</p>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p27.png" /></p>
+<p>Now you can copy the created webhook and paste it into the following function (instead of the placeholder ‘webhook’).</p>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p28.png" /></p>
 </div>
 <div id="simple-notification-1" class="section level3">
 <h3>4.4.2 Simple Notification</h3>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<pre class="r"><code>def ms_teams_message_func(text):
+    &#39;&#39;&#39;
+    A function for writing messages in a Microsoft Teams Channel
+    
+    Args:
+        text (str): Text message which should be sent, string
+    
+    Returns:
+        A Microsoft Teams message with the corresponding text as content
+    &#39;&#39;&#39;    
+    webhook = &quot;webhook&quot;
+    myTeamsMessage.text(text)
+    myTeamsMessage.send()</code></pre>
+<pre class="r"><code>ms_teams_message_func(&quot;Hey Guys what&#39;s up?&quot;)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p29.png" /></p>
+<p>Works. As with Telegram, you can have all kinds of information sent to you. Try it out.</p>
 </div>
 <div id="notification-with-datetime-processing-time-and-evaluation-1" class="section level3">
 <h3>4.4.3 Notification with DateTime, Processing Time and Evaluation</h3>
