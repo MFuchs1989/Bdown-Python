@@ -1,0 +1,348 @@
+---
+title: Automated Notifications
+author: Michael Fuchs
+date: '2021-03-13'
+slug: automated-notifications
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+
+
+
+
+
+# 2 Import the Libraries and the Data
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+# 3 Data Pre-Processing
+
+
+3.1  Encoding of the Predictors
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+3.2  Encoding of the Target Variable
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+3.3  Train-Test Split
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+4 Get Automated Notifications
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+4.1 via Notify
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+4.2 via an Audible Signal
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+4.3 via Telegram
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+4.3.1 Set up a Chat Bot
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+4.3.2 Simple Notification
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+4.3.3 Notification with DateTime
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+4.3.4 Notification with DateTime and Processing Time
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+
+4.3.5 Notification with DateTime, Processing Time and Evaluation
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+4.3.6 Delete a Chat Bot
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+4.4 via MS Teams
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+4.4.1 Create Incoming Webhook
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+4.4.2 Simple Notification
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+4.4.3 Notification with DateTime, Processing Time and Evaluation
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+4.4.4 Delete the Webhook
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+4.5 via TensorFlow Notification Callback
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+4.5.1 Preparation Model Training
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+4.5.2 One Time Notifications
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+4.5.3 Ongoing Notifications
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+5 Conclusion
+
+
+
+
+
+
+
+
+
+
+
+
