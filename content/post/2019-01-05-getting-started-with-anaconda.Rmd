@@ -14,7 +14,6 @@ output:
 ---
 
 
-
 # 1 Introduction
 
 If you want to work with Python you need a suitable IDE.
