@@ -299,8 +299,7 @@ telegram_message_func(&#39;End of the Model Training. \nDateTime: &#39; + str(cu
 </div>
 <div id="notification-with-datetime-and-processing-time" class="section level3">
 <h3>4.3.4 Notification with DateTime and Processing Time</h3>
-<pre class="r"><code>start = time.time()
-current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+<pre class="r"><code>current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
 telegram_message_func(&#39;Start of the Model Training. \nDateTime: &#39; + str(current_time_start))
 
 # Model Training:
@@ -326,8 +325,7 @@ telegram_message_func(&#39;Processing Time: \n&#39; + \
 </div>
 <div id="notification-with-datetime-processing-time-and-evaluation" class="section level3">
 <h3>4.3.5 Notification with DateTime, Processing Time and Evaluation</h3>
-<pre class="r"><code>start = time.time()
-current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+<pre class="r"><code>current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
 telegram_message_func(&#39;Start of the Model Training. \nDateTime: &#39; + str(current_time_start))
 
 # Model Training:
@@ -358,8 +356,7 @@ clf_acc = round(accuracy_score(testY, y_pred),2)
 telegram_message_func(&#39;Accuracy: &#39; + str(clf_acc) + &#39;%&#39;)</code></pre>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p21.png" /></p>
 <p>Now we run the model training with GridSearch.</p>
-<pre class="r"><code>start = time.time()
-current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+<pre class="r"><code>current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
 telegram_message_func(&#39;Start of the Model Training. \nDateTime: &#39; + str(current_time_start))
 
 # Model Training:
@@ -416,7 +413,7 @@ telegram_message_func(&#39;Accuracy with GridSearch: &#39; + str(grid_clf_acc) +
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p26.png" /></p>
 <p>Click on Incoming Webhook. Enter a name of your choice and press Done.</p>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p27.png" /></p>
-<p>Now you can copy the created webhook and paste it into the following function (instead of the placeholder ‘webhook’).</p>
+<p>Now you can copy the created webhook and paste it into the following function (<strong>instead of the placeholder ‘webhook’</strong>).</p>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p28.png" /></p>
 </div>
 <div id="simple-notification-1" class="section level3">
@@ -440,8 +437,7 @@ telegram_message_func(&#39;Accuracy with GridSearch: &#39; + str(grid_clf_acc) +
 </div>
 <div id="notification-with-datetime-processing-time-and-evaluation-1" class="section level3">
 <h3>4.4.3 Notification with DateTime, Processing Time and Evaluation</h3>
-<pre class="r"><code>start = time.time()
-current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
+<pre class="r"><code>current_time_start = datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)
 ms_teams_message_func(&#39;Start of the Model Training. \nDateTime: &#39; + str(current_time_start))
 
 # Model Training:
@@ -664,4 +660,7 @@ callback_list = [bot_callback, plotter]</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5 Conclusion</h1>
+<p>In this post I showed how to get notifications sent to you automatically (mainly via Telegram).</p>
+<p>Furthermore, I showed how you can customize the content of the notifications.</p>
+<p>This is especially useful if you have long model trainings going on and want to be informed about the final score or the intermediate scores immediately.</p>
 </div>

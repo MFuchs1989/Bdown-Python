@@ -396,7 +396,6 @@ telegram_message_func('End of the Model Training. \nDateTime: ' + str(current_ti
 
 
 ```{r, eval=F, echo=T}
-start = time.time()
 current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
@@ -428,7 +427,6 @@ telegram_message_func('Processing Time: \n' + \
 ### 4.3.5 Notification with DateTime, Processing Time and Evaluation
 
 ```{r, eval=F, echo=T}
-start = time.time()
 current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
@@ -465,7 +463,6 @@ telegram_message_func('Accuracy: ' + str(clf_acc) + '%')
 Now we run the model training with GridSearch.
 
 ```{r, eval=F, echo=T}
-start = time.time()
 current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
@@ -547,7 +544,7 @@ Click on Incoming Webhook. Enter a name of your choice and press Done.
 ![](/post/2021-03-13-automated-notifications_files/p131p27.png)
 
 
-Now you can copy the created webhook and paste it into the following function (instead of the placeholder 'webhook').
+Now you can copy the created webhook and paste it into the following function (**instead of the placeholder 'webhook'**).
 
 ![](/post/2021-03-13-automated-notifications_files/p131p28.png)
 
@@ -585,7 +582,6 @@ Works. As with Telegram, you can have all kinds of information sent to you. Try 
 ### 4.4.3 Notification with DateTime, Processing Time and Evaluation
 
 ```{r, eval=F, echo=T}
-start = time.time()
 current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 ms_teams_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
@@ -865,7 +861,11 @@ history = model.fit(trainX,
 
 # 5 Conclusion
 
+In this post I showed how to get notifications sent to you automatically (mainly via Telegram). 
 
+Furthermore, I showed how you can customize the content of the notifications.
+
+This is especially useful if you have long model trainings going on and want to be informed about the final score or the intermediate scores immediately. 
 
 
 
