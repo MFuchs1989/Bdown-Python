@@ -237,19 +237,38 @@ Here is the command with which you can load the library in Python. If you don't 
 
 Now open the app and start a new conversation. Here you type @BotFather.
 
+![](/post/2021-03-13-automated-notifications_files/p131p7.png)
+
+
 Once you have started the conversation with BotFather, type /newbot.
 
-Now you will be asked by the bot to enter a name and then the username which must end in bot. Finally, we get the HTTP tokens (outlined in red in the image below), which we will need later. So far we have the following information:
+![](/post/2021-03-13-automated-notifications_files/p131p8.png)
+
+
+Now you will be asked by the bot to enter a name and then the username which must end in bot. 
+Finally, we get the HTTP tokens (outlined in red in the image below), which we will need later.
+
+![](/post/2021-03-13-automated-notifications_files/p131p9.png)
+
+So far we have the following information:
 
 + Botname: mf-test-bot-20210313
 + Username: mf_20210313_bot
 + HTTP-Token: 1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM
 
 
+
+
+
 Now we only need the chat ID. 
 To find it out, we need to start a chat with the generated bot. Start a new conversation and search for the username (in our case @mf_20210313_bot).
 
+![](/post/2021-03-13-automated-notifications_files/p131p11.png)
+
+
 It's really important that you put a two text message in this chat. The content does not matter, but there must be messages in the chat, otherwise the next step will not work. 
+
+![](/post/2021-03-13-automated-notifications_files/p131p12.png)
 
 
 Now enter the following address into your browser: 
@@ -263,6 +282,7 @@ Replace [HTTP-TOKEN] with your generated token like here:
 
 Now you get a similar view from which you can write out the chat ID (I marked it blue in the picture). 
 
+![](/post/2021-03-13-automated-notifications_files/p131p10.png)
 
 
 Now we have all the information we need. 
@@ -276,16 +296,6 @@ Now we have all the information we need.
 
 
 Now let's try sending text messages. I have written the following function (chat id and token must be customized of course). 
-
-
-Works, great ! Now a little gimmick how to add a suitable photo to your bot for example. Go to the chat with the BotFather and enter /setuserpic. 
-
-Now you can choose a photo of your choice.
-
-This will now appear as the profile picture for your bot. 
-
-Below I will show some options of what content you can send everything to Telegram now.
-
 
 ```{r, eval=F, echo=T}
 def telegram_message_func(text):
@@ -305,87 +315,203 @@ def telegram_message_func(text):
     bot.send_message(chat_id=chat_id, text = text)
 ```
 
-
-
 ```{r, eval=F, echo=T}
 telegram_message_func('Hi There !')
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p7.png)
+![](/post/2021-03-13-automated-notifications_files/p131p13.png)
+
+Works, great ! Now a little gimmick how to add a suitable photo to your bot for example. Go to the chat with the BotFather and enter /setuserpic. 
+
+![](/post/2021-03-13-automated-notifications_files/p131p14.png)
 
 
+Now you can choose a photo of your choice.
 
+![](/post/2021-03-13-automated-notifications_files/p131p15.png)
+
+
+This will now appear as the profile picture for your bot. 
+
+![](/post/2021-03-13-automated-notifications_files/p131p16.png)
+
+
+Below I will show some options of what content you can send everything to Telegram now.
 
 
 ### 4.3.2 Simple Notification
 
 
-
-
 ```{r, eval=F, echo=T}
+telegram_message_func('Start of the Model Training')
 
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+
+y_pred = clf.predict(testX)
+
+telegram_message_func('End of the Model Training')
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
+![](/post/2021-03-13-automated-notifications_files/p131p17.png)
 
 
 
 ### 4.3.3 Notification with DateTime
 
 
+```{r, eval=F, echo=T}
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('Start of the Model Training. DateTime: ' + str(current_time_start))
+
+# Model Training:
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('End of the Model Training. DateTime: ' + str(current_time_end))
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p18.png)
+
+Here the output is displayed even nicer with line break:
 
 
 ```{r, eval=F, echo=T}
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
+# Model Training:
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('End of the Model Training. \nDateTime: ' + str(current_time_end))
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
+![](/post/2021-03-13-automated-notifications_files/p131p19.png)
 
 
 ### 4.3.4 Notification with DateTime and Processing Time
 
 
-
 ```{r, eval=F, echo=T}
+start = time.time()
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
+# Model Training:
+start = time.time()
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+end = time.time()
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('End of the Model Training. \nDateTime: ' + str(current_time_end))
+
+# Processing Time:
+
+processing_time_sec = round(end - start,2)
+processing_time_min = round((end - start)/60, 2)
+processing_time_h = round((end - start)/3600, 2)
+
+telegram_message_func('Processing Time: \n' + \
+                      str(processing_time_sec) + ' Seconds \n' + \
+                      str(processing_time_min) + ' Minutes \n' + \
+                      str(processing_time_h) + ' Hours')
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
+![](/post/2021-03-13-automated-notifications_files/p131p20.png)
 
 
 
 ### 4.3.5 Notification with DateTime, Processing Time and Evaluation
 
 ```{r, eval=F, echo=T}
+start = time.time()
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
+# Model Training:
+start = time.time()
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+end = time.time()
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('End of the Model Training. \nDateTime: ' + str(current_time_end))
+
+# Processing Time:
+
+processing_time_sec = round(end - start,2)
+processing_time_min = round((end - start)/60, 2)
+processing_time_h = round((end - start)/3600, 2)
+
+telegram_message_func('Processing Time: \n' + \
+                      str(processing_time_sec) + ' Seconds \n' + \
+                      str(processing_time_min) + ' Minutes \n' + \
+                      str(processing_time_h) + ' Hours')
+
+
+# Evaluation:
+y_pred = clf.predict(testX)
+clf_acc = round(accuracy_score(testY, y_pred),2)
+
+telegram_message_func('Accuracy: ' + str(clf_acc) + '%')
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+![](/post/2021-03-13-automated-notifications_files/p131p21.png)
+
+Now we run the model training with GridSearch.
+
+```{r, eval=F, echo=T}
+start = time.time()
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
+
+# Model Training:
+start = time.time()
+
+param_grid = {'C': [0.1, 1, 3],  
+              'gamma': [1, 0.1, 0.01, 0.001, 0.0001], 
+              'kernel': ['linear', 'rbf']}
+grid = GridSearchCV(SVC(), param_grid, cv = 10, scoring='accuracy', n_jobs=-1)
+
+grid.fit(trainX, trainY)
+end = time.time()
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+telegram_message_func('End of the Model Training. \nDateTime: ' + str(current_time_end))
+
+# Processing Time:
+
+processing_time_sec = round(end - start,2)
+processing_time_min = round((end - start)/60, 2)
+processing_time_h = round((end - start)/3600, 2)
+
+telegram_message_func('Processing Time: \n' + \
+                      str(processing_time_sec) + ' Seconds \n' + \
+                      str(processing_time_min) + ' Minutes \n' + \
+                      str(processing_time_h) + ' Hours')
 
 
+# Evaluation:
+grid_predictions = grid.predict(testX) 
+grid_clf_acc = round(accuracy_score(testY, grid_predictions),2)
 
+telegram_message_func('Accuracy with GridSearch: ' + str(grid_clf_acc) + '%')
+```
 
+![](/post/2021-03-13-automated-notifications_files/p131p23.png)
 
 
 ### 4.3.6 Delete a Chat Bot
 
+As I mentioned before, I will delete the bot again after this post. This goes as follows. Go to the chat with the BotFather and type /deletebot. 
 
-```{r, eval=F, echo=T}
+![](/post/2021-03-13-automated-notifications_files/p131p24.png)
 
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
+Now you can select the bot you want to delete and confirm it by typing 'Yes, I am totally sure.'. Make sure that you have written everything correctly otherwise it will not work.
 
 
 
