@@ -175,14 +175,84 @@ clf.fit(trainX, trainY)</code></pre>
 </div>
 <div id="via-an-audible-signal" class="section level2">
 <h2>4.2 via an Audible Signal</h2>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<p>Here is another method, where I don’t receive text messages, but acoustic signals.</p>
+<pre class="r"><code>def make_noise_func():
+    &#39;&#39;&#39;
+    A function to send an acoustic signal
+    
+    Args:
+        none
+    
+    Returns:
+        An acoustic signal
+    &#39;&#39;&#39;
+    # Specification in Milliseconds  
+    duration = 1000  
+    # Specification in Hertz
+    freq = 440  
+    winsound.Beep(freq, duration)</code></pre>
+<pre class="r"><code>clf = SVC(kernel=&#39;linear&#39;)
+clf.fit(trainX, trainY)
+
+make_noise_func()</code></pre>
 </div>
 <div id="via-telegram" class="section level2">
 <h2>4.3 via Telegram</h2>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
 <div id="set-up-a-chat-bot" class="section level3">
 <h3>4.3.1 Set up a Chat Bot</h3>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<p><a href="https://telegram.org/">Telegram</a> is a popular and widely used text messenger that can also be used to set up a bot and receive messages from Python. Prerequisite is of course that you have Telegram. Otherwise, download the app and follow these steps to set up our bot.</p>
+<p>Here is the command with which you can load the library in Python. If you don’t know how to do that, read this post of mine: <a href="https://michael-fuchs-python.netlify.app/2019/01/05/getting-started-with-anaconda/">Getting Started with Anaconda</a></p>
+<p><code>conda install -c conda-forge python-telegram-bot</code></p>
+<p>Now open the app and start a new conversation. Here you type <span class="citation">@BotFather</span>.</p>
+<p>Once you have started the conversation with BotFather, type /newbot.</p>
+<p>Now you will be asked by the bot to enter a name and then the username which must end in bot. Finally, we get the HTTP tokens (outlined in red in the image below), which we will need later. So far we have the following information:</p>
+<ul>
+<li>Botname: mf-test-bot-20210313</li>
+<li>Username: mf_20210313_bot</li>
+<li>HTTP-Token: 1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM</li>
+</ul>
+<p>Now we only need the chat ID.
+To find it out, we need to start a chat with the generated bot. Start a new conversation and search for the username (in our case <span class="citation">@mf_20210313_bot</span>).</p>
+<p>It’s really important that you put a two text message in this chat. The content does not matter, but there must be messages in the chat, otherwise the next step will not work.</p>
+<p>Now enter the following address into your browser:</p>
+<ul>
+<li><a href="https://api.telegram.org/bot%5BHTTP-TOKEN%5D/getUpdates" class="uri">https://api.telegram.org/bot[HTTP-TOKEN]/getUpdates</a>.</li>
+</ul>
+<p>Replace [HTTP-TOKEN] with your generated token like here:</p>
+<ul>
+<li><a href="https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates" class="uri">https://api.telegram.org/bot1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM/getUpdates</a></li>
+</ul>
+<p>Now you get a similar view from which you can write out the chat ID (I marked it blue in the picture).</p>
+<p>Now we have all the information we need.</p>
+<ul>
+<li>Botname: mf-test-bot-20210313</li>
+<li>Username: mf_20210313_bot</li>
+<li>HTTP-Token: 1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM</li>
+<li>Chat-ID: 1870661656</li>
+</ul>
+<p><strong>Make sure that no one else knows the chat ID and token otherwise they can easily hack into your chat. I will also delete the bot again at the end of this post.</strong></p>
+<p>Now let’s try sending text messages. I have written the following function (chat id and token must be customized of course).</p>
+<p>Works, great ! Now a little gimmick how to add a suitable photo to your bot for example. Go to the chat with the BotFather and enter /setuserpic.</p>
+<p>Now you can choose a photo of your choice.</p>
+<p>This will now appear as the profile picture for your bot.</p>
+<p>Below I will show some options of what content you can send everything to Telegram now.</p>
+<pre class="r"><code>def telegram_message_func(text):
+    &#39;&#39;&#39;
+    A function for writing Telegram messages
+    
+    Args:
+        text (str): Text message which should be sent, string
+    
+    Returns:
+        A Telegram message with the corresponding text as content
+    &#39;&#39;&#39; 
+    bot_token = &#39;1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM&#39;
+    chat_id = 1870661656
+    
+    bot = telegram.Bot(token=bot_token)
+    bot.send_message(chat_id=chat_id, text = text)</code></pre>
+<pre class="r"><code>telegram_message_func(&#39;Hi There !&#39;)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p7.png" /></p>
 </div>
 <div id="simple-notification" class="section level3">
 <h3>4.3.2 Simple Notification</h3>
