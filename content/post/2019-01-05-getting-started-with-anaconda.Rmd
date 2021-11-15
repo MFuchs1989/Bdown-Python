@@ -130,7 +130,7 @@ To see which libraries with which version are installed in a particular environm
 
 ## 4.2 Change your working direcotry
 
-The first thing I always do is specify where I want to work. I can do that easily with the command `cd "path/to/root directory`
+The first thing I always do is specify where I want to work. I can do that easily with the command `cd "path/to/root directory"`
 
 
 
@@ -152,7 +152,7 @@ Quite easy just type: `jupyter notebook`
 
 ## 4.5 All in One
 
-`cd "path/to/root directory`
+`cd "path/to/root directory"`
 
 `conda activate demo_env`
 
@@ -227,7 +227,7 @@ First I specify the path where I want to save the environment.
 Then I activate the environment I want to export. Then I execute the following command:
 
 
-`cd "path/to/root directory`
+`cd "path/to/root directory"`
 
 `conda activate demo_env`
 
@@ -290,7 +290,7 @@ Importing environments can be done in two ways:
 
 Here I navigate again with cd to the respective place where the .yml file is stored. Then I execute the following command:
 
-`cd "path/to/root directory`
+`cd "path/to/root directory"`
 
 `conda env create -f environment.yml`
 
