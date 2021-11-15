@@ -19,62 +19,229 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
-<li><a href="#data-pre-processing">3 Data Pre-Processing</a></li>
+<li><a href="#data-pre-processing">3 Data Pre-Processing</a>
+<ul>
+<li><a href="#encoding-of-the-predictors">3.1 Encoding of the Predictors</a></li>
+<li><a href="#encoding-of-the-target-variable">3.2 Encoding of the Target Variable</a></li>
+<li><a href="#train-test-split">3.3 Train-Test Split</a></li>
+</ul></li>
+<li><a href="#get-automated-notifications">4 Get Automated Notifications</a>
+<ul>
+<li><a href="#via-notify">4.1 via Notify</a></li>
+<li><a href="#via-an-audible-signal">4.2 via an Audible Signal</a></li>
+<li><a href="#via-telegram">4.3 via Telegram</a>
+<ul>
+<li><a href="#set-up-a-chat-bot">4.3.1 Set up a Chat Bot</a></li>
+<li><a href="#simple-notification">4.3.2 Simple Notification</a></li>
+<li><a href="#notification-with-datetime">4.3.3 Notification with DateTime</a></li>
+<li><a href="#notification-with-datetime-and-processing-time">4.3.4 Notification with DateTime and Processing Time</a></li>
+<li><a href="#notification-with-datetime-processing-time-and-evaluation">4.3.5 Notification with DateTime, Processing Time and Evaluation</a></li>
+<li><a href="#delete-a-chat-bot">4.3.6 Delete a Chat Bot</a></li>
+</ul></li>
+<li><a href="#via-ms-teams">4.4 via MS Teams</a>
+<ul>
+<li><a href="#create-incoming-webhook">4.4.1 Create Incoming Webhook</a></li>
+<li><a href="#simple-notification-1">4.4.2 Simple Notification</a></li>
+<li><a href="#notification-with-datetime-processing-time-and-evaluation-1">4.4.3 Notification with DateTime, Processing Time and Evaluation</a></li>
+<li><a href="#delete-the-webhook">4.4.4 Delete the Webhook</a></li>
+</ul></li>
+<li><a href="#via-tensorflow-notification-callback">4.5 via TensorFlow Notification Callback</a>
+<ul>
+<li><a href="#preparation-model-training">4.5.1 Preparation Model Training</a></li>
+<li><a href="#one-time-notifications">4.5.2 One Time Notifications</a></li>
+<li><a href="#ongoing-notifications">4.5.3 Ongoing Notifications</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
+<p>Often model training (especially when working with neural networks) takes some time that can be usefully spent on other work.
+Since I would like to be informed immediately when a model training is finished or a certain processing status has been reached, I have listed some of my methods in this post, how such notifications can be made via Python.</p>
+<p>For this post the dataset <em>Bank Data</em> from the platform <a href="https://archive.ics.uci.edu/ml/datasets/Bank+Marketing">“UCI Machine Learning Repository”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">“GitHub Repository”</a>.</p>
 </div>
 <div id="import-the-libraries-and-the-data" class="section level1">
 <h1>2 Import the Libraries and the Data</h1>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
+<pre class="r"><code>import pandas as pd
+import matplotlib.pyplot as plt
+import time
+
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+
+# for chapter 4.2
+import winsound
+# for chapter 4.3
+import telegram
+from sklearn.metrics import accuracy_score
+from datetime import datetime
+from sklearn.model_selection import GridSearchCV
+# for chapter 4.4
+import pymsteams
+# for chapter 4.5 
+from keras import models
+from keras import layers
+## for chapter 4.5.2
+from tf_notification_callback import TelegramCallback
+## for chapter 4.5.3
+import requests
+import tensorflow as tf
+import tensorflow.keras.utils as np_utils</code></pre>
+<pre class="r"><code>df = pd.read_csv(&#39;bank.csv&#39;, sep=&#39;;&#39;)
+
+col_to_keep = &#39;age&#39;,&#39;job&#39;,&#39;marital&#39;,&#39;education&#39;,&#39;month&#39;,&#39;y&#39;
+
+df = df.filter(col_to_keep)
+df</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p1.png" /></p>
 </div>
 <div id="data-pre-processing" class="section level1">
 <h1>3 Data Pre-Processing</h1>
-<p>3.1 Encoding of the Predictors</p>
+<div id="encoding-of-the-predictors" class="section level2">
+<h2>3.1 Encoding of the Predictors</h2>
+<p>Here we use the get_dummies function from the pandas library as it is simple and quick to write with just a few lines of code.</p>
+<p>For a real model development you should of course use <a href="https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/#via-scikit-learn">OHE from scikit-learn</a> to reuse the created encoder (for new or inverse transformations).</p>
+<p>In this post, however, not the model training itself is central but the automatic notification at the end of a model training via various channels.</p>
+<pre class="r"><code>df = pd.get_dummies(df, prefix=[&#39;Job&#39;], columns=[&#39;job&#39;])
+df = pd.get_dummies(df, prefix=[&#39;Marital&#39;], columns=[&#39;marital&#39;])
+df = pd.get_dummies(df, prefix=[&#39;Education&#39;], columns=[&#39;education&#39;])
+df = pd.get_dummies(df, prefix=[&#39;Month&#39;], columns=[&#39;month&#39;])
+
+print(&#39;Shape of DataFrame: &#39; + str(df.shape))
+print()
+print(&#39;Columns : &#39;)
+print(df.columns)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p2.png" /></p>
+</div>
+<div id="encoding-of-the-target-variable" class="section level2">
+<h2>3.2 Encoding of the Target Variable</h2>
+<pre class="r"><code>vals_to_replace = {&#39;no&#39;:&#39;0&#39;, &#39;yes&#39;:&#39;1&#39;}
+df[&#39;target&#39;] = df[&#39;y&#39;].map(vals_to_replace)
+df[&#39;target&#39;] = df.target.astype(&#39;int64&#39;)
+
+df = df.drop(&#39;y&#39;, axis=1)
+
+print(&#39;Shape of DataFrame: &#39; + str(df.shape))
+print()
+print(&#39;Columns : &#39;)
+print(df.columns)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p3.png" /></p>
+</div>
+<div id="train-test-split" class="section level2">
+<h2>3.3 Train-Test Split</h2>
+<pre class="r"><code>x = df.drop(&#39;target&#39;, axis=1)
+y = df[&#39;target&#39;]
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)</code></pre>
+</div>
+</div>
+<div id="get-automated-notifications" class="section level1">
+<h1>4 Get Automated Notifications</h1>
+<p>Here I start a simple model training (<a href="https://michael-fuchs-python.netlify.app/2019/11/08/introduction-to-support-vector-machines/">classification using Support Vector Machines</a>) which gives me feedback on the processing time in the notebook using the print function.</p>
+<pre class="r"><code>start = time.time()
+
+clf = SVC(kernel=&#39;linear&#39;)
+clf.fit(trainX, trainY)
+
+end = time.time()
+
+print()
+print(&#39;Processing Time: &#39; + str(round(end - start,2)) + &#39; seconds&#39;)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p4.png" /></p>
+<p>Of course, I only see this information when I am actively looking at the notebook. But now I want to use methods where I get notifications no matter what activity I am doing on the PC or elsewhere.</p>
+<div id="via-notify" class="section level2">
+<h2>4.1 via Notify</h2>
+<p>Notify is an extension for Jupyter Notebook that notifies the user via a browser notification as soon as a code cell has finished its execution. Notify is supported by both Chrome and Firefox. I found this package in this <a href="https://github.com/ShopRunner/jupyter-notify">repo</a>.</p>
+<p><strong>Installation and Enabling:</strong></p>
+<p>How to add new libraries to an existing environment is described <a href="https://michael-fuchs-python.netlify.app/2019/01/05/getting-started-with-anaconda/#installing-new-libraries">here</a>.</p>
+<p><code>pip install jupyternotify</code></p>
+<p>Now we <strong>have to enable this</strong> Jupyter Notebook Extension:</p>
+<p><code>%load_ext jupyternotify</code></p>
+<p>Your browser will ask you at this point if you want to allow these notifications. Of course, we answer this with yes.</p>
+<pre class="r"><code>%%notify
+
+clf = SVC(kernel=&#39;linear&#39;)
+clf.fit(trainX, trainY)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p5.png" /></p>
+<p>Personally, when you put multiple notifications in your code lines, I always find it quite useful to add a notification text.</p>
+<pre class="r"><code>%%notify -m &quot;Model Training finished&quot;
+
+clf = SVC(kernel=&#39;linear&#39;)
+clf.fit(trainX, trainY)</code></pre>
+<p><img src="/post/2021-03-13-automated-notifications_files/p131p6.png" /></p>
+</div>
+<div id="via-an-audible-signal" class="section level2">
+<h2>4.2 via an Audible Signal</h2>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>3.2 Encoding of the Target Variable</p>
+</div>
+<div id="via-telegram" class="section level2">
+<h2>4.3 via Telegram</h2>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>3.3 Train-Test Split</p>
+<div id="set-up-a-chat-bot" class="section level3">
+<h3>4.3.1 Set up a Chat Bot</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4 Get Automated Notifications</p>
+</div>
+<div id="simple-notification" class="section level3">
+<h3>4.3.2 Simple Notification</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.1 via Notify</p>
+</div>
+<div id="notification-with-datetime" class="section level3">
+<h3>4.3.3 Notification with DateTime</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.2 via an Audible Signal</p>
+</div>
+<div id="notification-with-datetime-and-processing-time" class="section level3">
+<h3>4.3.4 Notification with DateTime and Processing Time</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3 via Telegram</p>
+</div>
+<div id="notification-with-datetime-processing-time-and-evaluation" class="section level3">
+<h3>4.3.5 Notification with DateTime, Processing Time and Evaluation</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.1 Set up a Chat Bot</p>
+</div>
+<div id="delete-a-chat-bot" class="section level3">
+<h3>4.3.6 Delete a Chat Bot</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.2 Simple Notification</p>
+</div>
+</div>
+<div id="via-ms-teams" class="section level2">
+<h2>4.4 via MS Teams</h2>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.3 Notification with DateTime</p>
+<div id="create-incoming-webhook" class="section level3">
+<h3>4.4.1 Create Incoming Webhook</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.4 Notification with DateTime and Processing Time</p>
+</div>
+<div id="simple-notification-1" class="section level3">
+<h3>4.4.2 Simple Notification</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.5 Notification with DateTime, Processing Time and Evaluation</p>
+</div>
+<div id="notification-with-datetime-processing-time-and-evaluation-1" class="section level3">
+<h3>4.4.3 Notification with DateTime, Processing Time and Evaluation</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.3.6 Delete a Chat Bot</p>
+</div>
+<div id="delete-the-webhook" class="section level3">
+<h3>4.4.4 Delete the Webhook</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.4 via MS Teams</p>
+</div>
+</div>
+<div id="via-tensorflow-notification-callback" class="section level2">
+<h2>4.5 via TensorFlow Notification Callback</h2>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.4.1 Create Incoming Webhook</p>
+<div id="preparation-model-training" class="section level3">
+<h3>4.5.1 Preparation Model Training</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.4.2 Simple Notification</p>
+</div>
+<div id="one-time-notifications" class="section level3">
+<h3>4.5.2 One Time Notifications</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.4.3 Notification with DateTime, Processing Time and Evaluation</p>
+</div>
+<div id="ongoing-notifications" class="section level3">
+<h3>4.5.3 Ongoing Notifications</h3>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.4.4 Delete the Webhook</p>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.5 via TensorFlow Notification Callback</p>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.5.1 Preparation Model Training</p>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.5.2 One Time Notifications</p>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>4.5.3 Ongoing Notifications</p>
-<p><img src="/post/2021-03-13-automated-notifications_files/p131p.png" /></p>
-<p>5 Conclusion</p>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>5 Conclusion</h1>
 </div>

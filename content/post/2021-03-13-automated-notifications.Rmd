@@ -16,29 +16,194 @@ output:
 
 # 1 Introduction
 
+Often model training (especially when working with neural networks) takes some time that can be usefully spent on other work. 
+Since I would like to be informed immediately when a model training is finished or a certain processing status has been reached, I have listed some of my methods in this post, how such notifications can be made via Python.
 
-
-
+For this post the dataset *Bank Data* from the platform ["UCI Machine Learning Repository"](https://archive.ics.uci.edu/ml/datasets/Bank+Marketing) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
 
 
 # 2 Import the Libraries and the Data
 
 
+```{r, eval=F, echo=T}
+import pandas as pd
+import matplotlib.pyplot as plt
+import time
 
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+
+# for chapter 4.2
+import winsound
+# for chapter 4.3
+import telegram
+from sklearn.metrics import accuracy_score
+from datetime import datetime
+from sklearn.model_selection import GridSearchCV
+# for chapter 4.4
+import pymsteams
+# for chapter 4.5 
+from keras import models
+from keras import layers
+## for chapter 4.5.2
+from tf_notification_callback import TelegramCallback
+## for chapter 4.5.3
+import requests
+import tensorflow as tf
+import tensorflow.keras.utils as np_utils
+```
 
 
 ```{r, eval=F, echo=T}
+df = pd.read_csv('bank.csv', sep=';')
 
+col_to_keep = 'age','job','marital','education','month','y'
+
+df = df.filter(col_to_keep)
+df
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+![](/post/2021-03-13-automated-notifications_files/p131p1.png)
 
 
 
 # 3 Data Pre-Processing
 
 
-3.1  Encoding of the Predictors
+## 3.1  Encoding of the Predictors
+
+Here we use the get_dummies function from the pandas library as it is simple and quick to write with just a few lines of code. 
+
+For a real model development you should of course use [OHE from scikit-learn](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/#via-scikit-learn) to reuse the created encoder (for new or inverse transformations).
+
+In this post, however, not the model training itself is central but the automatic notification at the end of a model training via various channels. 
+
+```{r, eval=F, echo=T}
+df = pd.get_dummies(df, prefix=['Job'], columns=['job'])
+df = pd.get_dummies(df, prefix=['Marital'], columns=['marital'])
+df = pd.get_dummies(df, prefix=['Education'], columns=['education'])
+df = pd.get_dummies(df, prefix=['Month'], columns=['month'])
+
+print('Shape of DataFrame: ' + str(df.shape))
+print()
+print('Columns : ')
+print(df.columns)
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p2.png)
+
+
+
+## 3.2  Encoding of the Target Variable
+
+
+```{r, eval=F, echo=T}
+vals_to_replace = {'no':'0', 'yes':'1'}
+df['target'] = df['y'].map(vals_to_replace)
+df['target'] = df.target.astype('int64')
+
+df = df.drop('y', axis=1)
+
+print('Shape of DataFrame: ' + str(df.shape))
+print()
+print('Columns : ')
+print(df.columns)
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p3.png)
+
+
+
+## 3.3  Train-Test Split
+
+
+```{r, eval=F, echo=T}
+x = df.drop('target', axis=1)
+y = df['target']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+# 4 Get Automated Notifications
+
+Here I start a simple model training ([classification using Support Vector Machines](https://michael-fuchs-python.netlify.app/2019/11/08/introduction-to-support-vector-machines/)) which gives me feedback on the processing time in the notebook using the print function.
+
+```{r, eval=F, echo=T}
+start = time.time()
+
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+
+end = time.time()
+
+print()
+print('Processing Time: ' + str(round(end - start,2)) + ' seconds')
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p4.png)
+
+Of course, I only see this information when I am actively looking at the notebook. But now I want to use methods where I get notifications no matter what activity I am doing on the PC or elsewhere.
+
+
+
+## 4.1 via Notify
+
+Notify is an extension for Jupyter Notebook that notifies the user via a browser notification as soon as a code cell has finished its execution. Notify is supported by both Chrome and Firefox. I found this package in this [repo](https://github.com/ShopRunner/jupyter-notify).
+
+
+**Installation and Enabling:**
+
+How to add new libraries to an existing environment is described [here](https://michael-fuchs-python.netlify.app/2019/01/05/getting-started-with-anaconda/#installing-new-libraries).
+
+`pip install jupyternotify`
+
+Now we **have to enable this** Jupyter Notebook Extension:
+
+`%load_ext jupyternotify`
+
+Your browser will ask you at this point if you want to allow these notifications. Of course, we answer this with yes. 
+
+
+
+
+```{r, eval=F, echo=T}
+%%notify
+
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p5.png)
+
+
+Personally, when you put multiple notifications in your code lines, I always find it quite useful to add a notification text. 
+
+
+```{r, eval=F, echo=T}
+%%notify -m "Model Training finished"
+
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p6.png)
+
+
+
+## 4.2 via an Audible Signal
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+## 4.3 via Telegram
 
 
 
@@ -52,70 +217,7 @@ output:
 
 
 
-
-3.2  Encoding of the Target Variable
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-3.3  Train-Test Split
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-4 Get Automated Notifications
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-
-4.1 via Notify
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-4.2 via an Audible Signal
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-4.3 via Telegram
+### 4.3.1 Set up a Chat Bot
 
 
 
@@ -129,195 +231,7 @@ output:
 
 
 
-4.3.1 Set up a Chat Bot
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-4.3.2 Simple Notification
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-
-4.3.3 Notification with DateTime
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-4.3.4 Notification with DateTime and Processing Time
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-
-
-4.3.5 Notification with DateTime, Processing Time and Evaluation
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-
-4.3.6 Delete a Chat Bot
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-4.4 via MS Teams
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-4.4.1 Create Incoming Webhook
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-
-
-4.4.2 Simple Notification
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-
-4.4.3 Notification with DateTime, Processing Time and Evaluation
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-4.4.4 Delete the Webhook
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-4.5 via TensorFlow Notification Callback
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-4.5.1 Preparation Model Training
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-4.5.2 One Time Notifications
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
-
-
-
-4.5.3 Ongoing Notifications
+### 4.3.2 Simple Notification
 
 
 
@@ -333,7 +247,181 @@ output:
 
 
 
-5 Conclusion
+### 4.3.3 Notification with DateTime
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+### 4.3.4 Notification with DateTime and Processing Time
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+
+### 4.3.5 Notification with DateTime, Processing Time and Evaluation
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+### 4.3.6 Delete a Chat Bot
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+## 4.4 via MS Teams
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+### 4.4.1 Create Incoming Webhook
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+### 4.4.2 Simple Notification
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+### 4.4.3 Notification with DateTime, Processing Time and Evaluation
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+### 4.4.4 Delete the Webhook
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+## 4.5 via TensorFlow Notification Callback
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+### 4.5.1 Preparation Model Training
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+### 4.5.2 One Time Notifications
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+### 4.5.3 Ongoing Notifications
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+
+
+
+
+
+# 5 Conclusion
 
 
 
