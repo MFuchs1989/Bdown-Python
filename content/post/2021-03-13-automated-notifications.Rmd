@@ -584,80 +584,283 @@ Works. As with Telegram, you can have all kinds of information sent to you. Try 
 
 ### 4.4.3 Notification with DateTime, Processing Time and Evaluation
 
-
-
-
-
 ```{r, eval=F, echo=T}
+start = time.time()
+current_time_start = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+ms_teams_message_func('Start of the Model Training. \nDateTime: ' + str(current_time_start))
 
+# Model Training:
+start = time.time()
+clf = SVC(kernel='linear')
+clf.fit(trainX, trainY)
+end = time.time()
+
+current_time_end = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+ms_teams_message_func('End of the Model Training. \nDateTime: ' + str(current_time_end))
+
+# Processing Time:
+
+processing_time_sec = round(end - start,2)
+processing_time_min = round((end - start)/60, 2)
+processing_time_h = round((end - start)/3600, 2)
+
+ms_teams_message_func('Processing Time: \n' + \
+                      str(processing_time_sec) + ' Seconds \n' + \
+                      str(processing_time_min) + ' Minutes \n' + \
+                      str(processing_time_h) + ' Hours')
+
+
+# Evaluation:
+y_pred = clf.predict(testX)
+clf_acc = round(accuracy_score(testY, y_pred),2)
+
+ms_teams_message_func('Accuracy: ' + str(clf_acc) + '%')
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+![](/post/2021-03-13-automated-notifications_files/p131p30.png)
 
 
 ### 4.4.4 Delete the Webhook
 
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+Here are [Microsoft's instructions](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook#remove-incoming-webhook) on **how to remove the webhooks** from a Teams channel.
 
 
 ## 4.5 via TensorFlow Notification Callback
 
+So far, we have received notifications at the end of a training of normal machine learning models. 
+Now we come to the topic of neural networks. 
+Of course, we can also use the previous methods, but with [neural networks (here with Keras)](https://michael-fuchs-python.netlify.app/2021/02/16/nn-artificial-neural-network-for-binary-classification/) there is also the possibility to monitor the complete model training. 
 
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+In Chapter 3, we have already encoded the predictors and the target variable and assigned variables of our own (x and y). 
+So we can save this step here.
+However, the division of the data set (train, validation and test part) has to be done again.
 
 
 
 ### 4.5.1 Preparation Model Training
 
+```{r, eval=F, echo=T}
+train_ratio = 0.70
+validation_ratio = 0.15
+test_ratio = 0.15
+
+# Generate TrainX and TrainY
+trainX, testX, trainY, testY = train_test_split(x, y, test_size= 1 - train_ratio)
+# Genearate ValX, TestX, ValY and TestY
+valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(test_ratio + validation_ratio))
+```
+
+```{r, eval=F, echo=T}
+print(trainX.shape)
+print(valX.shape)
+print(testX.shape)
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p31.png)
 
 
 ```{r, eval=F, echo=T}
+input_shape = trainX.shape[1]
 
+n_batch_size = 100
+
+n_steps_per_epoch = int(trainX.shape[0] / n_batch_size)
+n_validation_steps = int(valX.shape[0] / n_batch_size)
+n_test_steps = int(testX.shape[0] / n_batch_size)
+
+n_epochs = 25
+
+
+print('Input Shape: ' + str(input_shape))
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+![](/post/2021-03-13-automated-notifications_files/p131p32.png)
+
+
+```{r, eval=F, echo=T}
+model = models.Sequential()
+model.add(layers.Dense(16, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(16, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+```{r, eval=F, echo=T}
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+```
 
 
 ### 4.5.2 One Time Notifications
 
 
-```{r, eval=F, echo=T}
+`pip install tf-notification-callback`
 
+```{r, eval=F, echo=T}
+telegram_callback = TelegramCallback('1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM',
+                                     '1870661656',
+                                     'ANN Model',
+                                     ['loss', 'val_loss'],
+                                     ['accuracy', 'val_accuracy'],
+                                     True)
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+
+```{r, eval=F, echo=T}
+history = model.fit(trainX,
+                    trainY,
+                    steps_per_epoch=n_steps_per_epoch,
+                    epochs=n_epochs,
+                    batch_size=n_batch_size,
+                    validation_data=(valX, valY),
+                    validation_steps=n_validation_steps,
+                    callbacks=[telegram_callback])
+```
+
+![](/post/2021-03-13-automated-notifications_files/p131p33.png)
+
+![](/post/2021-03-13-automated-notifications_files/p131p34.png)
+
+
+![](/post/2021-03-13-automated-notifications_files/p131p35.png)
+
+
+
+
 
 
 
 ### 4.5.3 Ongoing Notifications
 
+I found the following code from [OMKAR GURAV](https://github.com/OMIII1997) [here](https://www.kaggle.com/product-feedback/181022).
 
+```{r, eval=F, echo=T}
+access_token = '1807598377:AAFgcK1MzqIhpw6cFeS0zQ5WVcjoEmetBUM'
+chat_id = 1870661656
+
+class botCallback(tf.keras.callbacks.Callback):
+    def __init__(self,access_token):
+        self.access_token = access_token
+        self.ping_url = 'https://api.telegram.org/bot'+str(self.access_token)+'/getUpdates'
+        self.response = requests.get(self.ping_url).json()
+        #print(self.response)
+        self.chat_id = chat_id
+        #self.chat_id = self.response['result']
+
+    def send_message(self,message):
+        #print('sending message')
+        self.ping_url = 'https://api.telegram.org/bot'+str(self.access_token)+'/sendMessage?'+\
+                        'chat_id='+str(self.chat_id)+\
+                        '&parse_mode=Markdown'+\
+                        '&text='+message
+        self.response = requests.get(self.ping_url)
+
+    def send_photo(self,filepath):
+        imagefile= open(filepath,"rb")
+        file_dict = {'photo':imagefile}
+        self.ping_url = 'https://api.telegram.org/bot'+str(self.access_token)+'/sendPhoto?chat_id='+str(self.chat_id)
+        self.response = requests.post(self.ping_url, files = file_dict)
+        imagefile.close()
+
+    def on_train_batch_begin(self, batch, logs=None):
+        pass
+
+    def on_train_batch_end(self, batch, logs=None):
+        message = ' Iteration/Batch {}\n Training Accuracy : {:7.2f}\n Training Loss : {:7.2f}\n'.format(batch,logs['accuracy'],logs['loss'])
+        #print(logs)
+        try:
+            message += ' Validation Accuracy : {:7.2f}\n Validation Loss : {:7.2f}\n'.format(logs['val_accuracy'],logs['val_loss'])
+            self.send_message(message)
+        except:
+            pass
+
+    def on_test_batch_begin(self, batch, logs=None):
+        pass
+
+    def on_test_batch_end(self, batch, logs=None):
+        message = ' Iteration/Batch {}\n Training Accuracy : {:7.2f}\n Training Loss : {:7.2f}\n'.format(batch,logs['accuracy'],logs['loss'])
+        try:
+            message += ' Validation Accuracy : {:7.2f}\n Validation Loss : {:7.2f}\n'.format(logs['val_accuracy'],logs['val_loss'])
+            self.send_message(message)
+        except:
+            pass
+
+    def on_epoch_begin(self, epoch, logs=None):
+        pass
+
+    def on_epoch_end(self, epoch, logs=None):
+
+        message = ' Epoch {}\n Training Accuracy : {:7.2f}\n Training Loss : {:7.2f}\n'.format(epoch,logs['accuracy'],logs['loss'])
+        try:
+            message += ' Validation Accuracy : {:7.2f}\n Validation Loss : {:7.2f}\n'.format(logs['val_accuracy'],logs['val_loss'])
+            self.send_message(message)        
+        except:
+            pass
+
+class Plotter(botCallback):
+     def __init__(self,access_token):
+
+         super().__init__(access_token)
+     def on_train_begin(self,logs=None):
+         self.batch = 0
+         self.epoch = []
+         self.train_loss = []
+         self.val_loss = []
+         self.train_acc = []
+         self.val_acc = []
+         self.fig = plt.figure(figsize=(200,100))
+         self.logs = []
+
+     def on_epoch_end(self, epoch, logs=None):
+         self.logs.append(logs)
+         self.epoch.append(epoch)
+         self.train_loss.append(logs['loss'])
+         self.val_loss.append(logs['val_loss'])
+         self.train_acc.append(logs['accuracy'])
+         self.val_acc.append(logs['val_accuracy'])
+         f,(ax1,ax2) = plt.subplots(1,2,sharex=True)
+         #clear_output(wait=True)
+         ax1.plot(self.epoch, self.train_loss, label='Training Loss')
+         ax1.plot(self.epoch, self.val_loss, label='Validation Loss')
+         ax1.legend()
+         ax2.plot(self.epoch, self.train_acc, label='Training Accuracy')
+         ax2.plot(self.epoch, self.val_acc, label='Validation Accuracy')
+         ax2.legend()
+         plt.savefig('Accuracy and Loss plot.jpg')
+         self.send_photo('Accuracy and Loss plot.jpg')
+```
 
 
 ```{r, eval=F, echo=T}
-
+bot_callback = botCallback(access_token)
+plotter = Plotter(access_token)
+callback_list = [bot_callback, plotter]
 ```
 
-![](/post/2021-03-13-automated-notifications_files/p131p.png)
+```{r, eval=F, echo=T}
+history = model.fit(trainX,
+                    trainY,
+                    steps_per_epoch=n_steps_per_epoch,
+                    epochs=n_epochs,
+                    batch_size=n_batch_size,
+                    validation_data=(valX, valY),
+                    validation_steps=n_validation_steps,
+                    callbacks=[callback_list])
+```
 
+![](/post/2021-03-13-automated-notifications_files/p131p36.png)
 
+![](/post/2021-03-13-automated-notifications_files/p131p37.png)
 
-
+![](/post/2021-03-13-automated-notifications_files/p131p38.png)
 
 
 # 5 Conclusion
