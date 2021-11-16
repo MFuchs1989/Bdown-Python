@@ -137,6 +137,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 # 5 Some Python Stuff
 
 + [Modified Print Statements](https://michael-fuchs-python.netlify.app/2021/04/20/modified-print-statements/)
++ [Automated Notifications](https://michael-fuchs-python.netlify.app/2021/03/13/automated-notifications/)
 + [Handling long name spaces](https://michael-fuchs-python.netlify.app/2019/05/14/handling-long-name-spaces/)
 + [Safe tables and images to disc](https://michael-fuchs-python.netlify.app/2019/05/13/safe-tables-and-images-to-disc/)
 + [How to use Pandas set_option()](https://michael-fuchs-python.netlify.app/2019/05/02/how-to-use-pandas-set-option/)
