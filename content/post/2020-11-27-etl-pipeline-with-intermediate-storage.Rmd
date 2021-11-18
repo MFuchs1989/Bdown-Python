@@ -286,7 +286,7 @@ def main():
 ```
 
 
-We have commented out the main from the ETL pipeline here. Of course you have to remove it in the .py file.
+We have commented out the main from the ETL pipeline here with '#'. Of course, this syntax **must not** be commented out in the .py file. 
 
 Unfortunately the view is not optimal. Therefore I recommend to copy the syntax into a .py file. 
 I prefer ["Visual Studio Code"](https://code.visualstudio.com/) from Microsoft.
