@@ -1,0 +1,53 @@
+---
+title: How to connect Python to a local SQL Server
+author: Michael Fuchs
+date: '2021-03-27'
+slug: how-to-connect-python-to-a-local-sql-server
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+
+I have focused heavily on the topic of Text Pre-Processing in my past publications. At this point, I would like to summarize all the important steps in one post. 
+Here I will not go into the theoretical background. For that, please read my earlier posts, where I explained in detail what I did and why. 
+
+
+For this publication the dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One).
+
+
+
+# 2 Import the Libraries
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p1.png)
+
+
+
+
+
+
+
+
+
+
