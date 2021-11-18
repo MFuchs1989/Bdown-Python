@@ -16,17 +16,164 @@ output:
 <div id="TOC">
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#import-the-libraries">2 Import the Libraries</a></li>
+<li><a href="#import-the-libraries-and-preparations">2 Import the Libraries and Preparations</a></li>
+<li><a href="#connection-to-the-db">3 Connection to the DB</a></li>
+<li><a href="#exploration-of-the-respective-db">4 Exploration of the respective DB</a></li>
+<li><a href="#loading-tables-from-db">5 Loading tables from DB</a>
+<ul>
+<li><a href="#complete-dataframe">5.1 Complete Dataframe</a></li>
+<li><a href="#selected-data">5.2 Selected Data</a></li>
+</ul></li>
+<li><a href="#data-manipulation-in-sql-server-using-python">6 Data Manipulation in SQL Server using Python</a>
+<ul>
+<li><a href="#insert-values-into-sql-server-table">6.1 Insert Values into SQL Server Table</a></li>
+</ul></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>I have focused heavily on the topic of Text Pre-Processing in my past publications. At this point, I would like to summarize all the important steps in one post.
-Here I will not go into the theoretical background. For that, please read my earlier posts, where I explained in detail what I did and why.</p>
-<p>For this publication the dataset <em>Amazon Unlocked Mobile</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One">“GitHub Repository”</a>.</p>
+<p>Recently, I have been dealing with a wide variety of topics in the field of <a href="https://michael-fuchs-python.netlify.app/2021/03/24/sql/">SQL</a>.
+You can find my blog posts here: <a href="https://michael-fuchs-sql.netlify.app/">Michael Fuchs SQL</a></p>
+<p>I recommend you to read it as a preparation if you are not familiar with SQL yet.</p>
+<p>In this post I want to show how to access a SQL database (here SQL Server from Microsoft) using Python and run appropriate queries.</p>
 </div>
-<div id="import-the-libraries" class="section level1">
-<h1>2 Import the Libraries</h1>
+<div id="import-the-libraries-and-preparations" class="section level1">
+<h1>2 Import the Libraries and Preparations</h1>
+<p>To make SQL queries via Python we need the library pyodbc. This can be installed as follows:</p>
+<p><code>pip install pyodbc</code></p>
+<pre class="r"><code>import pandas as pd
+import pyodbc</code></pre>
+<p>In preparation for this post, I created a database with tables via SQL Server Management Studio (SSMS).
+How to do that I have described in detail in this post: <a href="https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/">Create a Database</a></p>
+</div>
+<div id="connection-to-the-db" class="section level1">
+<h1>3 Connection to the DB</h1>
+<p>A local SQL server can be reached with the following syntax. Of course, the name of the respective database must be adjusted.</p>
+<pre class="r"><code>cnxn = pyodbc.connect(driver=&#39;{SQL Server}&#39;, server=&#39;(local)&#39;, database=&#39;MyDB&#39;,               
+               trusted_connection=&#39;yes&#39;)
+
+cursor = cnxn.cursor()</code></pre>
+<p>Or this version written a little nicer:</p>
+<pre class="r"><code>conn_str = (
+    r&#39;driver={SQL Server};&#39;
+    r&#39;server=(local);&#39;
+    r&#39;database=MyDB;&#39;
+    r&#39;trusted_connection=yes;&#39;
+    )
+
+cnxn = pyodbc.connect(conn_str)
+
+cursor = cnxn.cursor()</code></pre>
+</div>
+<div id="exploration-of-the-respective-db" class="section level1">
+<h1>4 Exploration of the respective DB</h1>
+<p>The first thing I do when I connect to a new database via Python is to see which tables are stored here.
+I have described here which possibilities there are for this: <a href="https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/#get-an-overview-of-the-data">Data Wrangling / Get an Overview of the Data</a></p>
+<pre class="r"><code>query = &quot;SELECT * FROM SYSOBJECTS WHERE xtype = &#39;U&#39;;&quot;
+
+df_existing_tables = pd.read_sql(query, cnxn)
+df_existing_tables</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p1.png" /></p>
+<p>Or a bit nicer:</p>
+<pre class="r"><code>query_mod = &#39;&#39;&#39;
+            SELECT * 
+                FROM SYSOBJECTS 
+                WHERE xtype = &#39;U&#39;
+            ;
+            &#39;&#39;&#39;
+
+df_existing_tables = pd.read_sql(query_mod, cnxn)
+df_existing_tables</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p2.png" /></p>
+<p>Now I would like to see which columns are stored in the table ‘Customer’:</p>
+<pre class="r"><code>query = &quot;EXEC sp_columns &#39;Customer&#39;;&quot;
+
+df_existing_columns = pd.read_sql(query, cnxn)
+df_existing_columns</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p3.png" /></p>
+</div>
+<div id="loading-tables-from-db" class="section level1">
+<h1>5 Loading tables from DB</h1>
+<p>Of course, now I have the option here to load the stored tables in the database in Python. This goes as follows:</p>
+<div id="complete-dataframe" class="section level2">
+<h2>5.1 Complete Dataframe</h2>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM Customer
+        ;
+            &#39;&#39;&#39;
+
+df_Customer = pd.read_sql(query, cnxn)
+df_Customer</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p4.png" /></p>
+</div>
+<div id="selected-data" class="section level2">
+<h2>5.2 Selected Data</h2>
+<p>Of course, I can also specify my data query:</p>
+<p><strong>with a WHERE Statement</strong></p>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM Customer
+            WHERE ID_Customer &lt; 3
+        ;
+            &#39;&#39;&#39;
+
+df_Customer_selected = pd.read_sql(query, cnxn)
+df_Customer_selected</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p5.png" /></p>
+<p><strong>with a newly generated column</strong></p>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT First_Name, Last_Name,
+               CONCAT(First_Name, &#39; &#39;, Last_Name) AS Full_Name
+            FROM Customer
+        ;
+        &#39;&#39;&#39;
+
+df_Customer_modified = pd.read_sql(query, cnxn)
+df_Customer_modified</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p6.png" /></p>
+<p><strong>with joined data</strong></p>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT t1.ID_Customer,
+               t1.First_Name,
+               t1.Last_Name,
+               t2.Nationality
+            FROM Customer AS t1
+            LEFT JOIN Customer_metadata AS t2
+                ON t1.ID_Customer = t2.ID_Customer
+        ;
+        &#39;&#39;&#39;
+
+df_Customer_joined = pd.read_sql(query, cnxn)
+df_Customer_joined</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p7.png" /></p>
+<p>I can run all sorts of SQL queries here and load them into Python as I need the data.</p>
+</div>
+</div>
+<div id="data-manipulation-in-sql-server-using-python" class="section level1">
+<h1>6 Data Manipulation in SQL Server using Python</h1>
+<p>I can also modify the contents of existing tables on an SQL Server from Python here.</p>
+<div id="insert-values-into-sql-server-table" class="section level2">
+<h2>6.1 Insert Values into SQL Server Table</h2>
+<pre class="r"><code>cursor.execute(&#39;&#39;&#39;
+               INSERT INTO Customer VALUES (&#39;No&#39;, &#39;Name&#39;)
+               ;
+               &#39;&#39;&#39;)
+cnxn.commit()</code></pre>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM Customer
+        ;
+            &#39;&#39;&#39;
+
+df_Customer_manipulated = pd.read_sql(query, cnxn)
+df_Customer_manipulated</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png" /></p>
+<p>Let’s take a look at the SQL Server itself:</p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p9.png" /></p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
+</div>
 </div>

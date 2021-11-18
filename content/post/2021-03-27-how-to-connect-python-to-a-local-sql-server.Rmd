@@ -16,16 +16,237 @@ output:
 
 # 1 Introduction
 
+Recently, I have been dealing with a wide variety of topics in the field of [SQL](https://michael-fuchs-python.netlify.app/2021/03/24/sql/). 
+You can find my blog posts here: [Michael Fuchs SQL](https://michael-fuchs-sql.netlify.app/)
 
-I have focused heavily on the topic of Text Pre-Processing in my past publications. At this point, I would like to summarize all the important steps in one post. 
-Here I will not go into the theoretical background. For that, please read my earlier posts, where I explained in detail what I did and why. 
+I recommend you to read it as a preparation if you are not familiar with SQL yet.
 
-
-For this publication the dataset *Amazon Unlocked Mobile* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One).
+In this post I want to show how to access a SQL database (here SQL Server from Microsoft) using Python and run appropriate queries. 
 
 
 
-# 2 Import the Libraries
+# 2 Import the Libraries and Preparations
+
+To make SQL queries via Python we need the library pyodbc. This can be installed as follows: 
+
+`pip install pyodbc`
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import pyodbc
+```
+
+
+In preparation for this post, I created a database with tables via SQL Server Management Studio (SSMS).
+How to do that I have described in detail in this post: [Create a Database](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/)
+
+
+
+# 3 Connection to the DB
+
+
+A local SQL server can be reached with the following syntax. Of course, the name of the respective database must be adjusted.
+
+
+
+```{r, eval=F, echo=T}
+cnxn = pyodbc.connect(driver='{SQL Server}', server='(local)', database='MyDB',               
+               trusted_connection='yes')
+
+cursor = cnxn.cursor()
+```
+
+
+Or this version written a little nicer:
+
+
+```{r, eval=F, echo=T}
+conn_str = (
+    r'driver={SQL Server};'
+    r'server=(local);'
+    r'database=MyDB;'
+    r'trusted_connection=yes;'
+    )
+
+cnxn = pyodbc.connect(conn_str)
+
+cursor = cnxn.cursor()
+```
+
+
+
+# 4 Exploration of the respective DB
+
+The first thing I do when I connect to a new database via Python is to see which tables are stored here. 
+I have described here which possibilities there are for this: [Data Wrangling / Get an Overview of the Data](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/#get-an-overview-of-the-data)
+
+
+```{r, eval=F, echo=T}
+query = "SELECT * FROM SYSOBJECTS WHERE xtype = 'U';"
+
+df_existing_tables = pd.read_sql(query, cnxn)
+df_existing_tables
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p1.png)
+
+
+Or a bit nicer:
+
+```{r, eval=F, echo=T}
+query_mod = '''
+            SELECT * 
+                FROM SYSOBJECTS 
+                WHERE xtype = 'U'
+            ;
+            '''
+
+df_existing_tables = pd.read_sql(query_mod, cnxn)
+df_existing_tables
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p2.png)
+
+Now I would like to see which columns are stored in the table 'Customer':
+
+
+```{r, eval=F, echo=T}
+query = "EXEC sp_columns 'Customer';"
+
+df_existing_columns = pd.read_sql(query, cnxn)
+df_existing_columns
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p3.png)
+
+
+# 5 Loading tables from DB
+
+
+Of course, now I have the option here to load the stored tables in the database in Python. This goes as follows: 
+
+
+## 5.1 Complete Dataframe
+
+
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
+
+df_Customer = pd.read_sql(query, cnxn)
+df_Customer
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p4.png)
+
+
+
+## 5.2 Selected Data
+
+Of course, I can also specify my data query:
+
+
+**with a WHERE Statement**
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM Customer
+            WHERE ID_Customer < 3
+        ;
+            '''
+
+df_Customer_selected = pd.read_sql(query, cnxn)
+df_Customer_selected
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p5.png)
+
+**with a newly generated column**
+
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT First_Name, Last_Name,
+               CONCAT(First_Name, ' ', Last_Name) AS Full_Name
+            FROM Customer
+        ;
+        '''
+
+df_Customer_modified = pd.read_sql(query, cnxn)
+df_Customer_modified
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p6.png)
+
+**with joined data**
+
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT t1.ID_Customer,
+               t1.First_Name,
+               t1.Last_Name,
+               t2.Nationality
+            FROM Customer AS t1
+            LEFT JOIN Customer_metadata AS t2
+                ON t1.ID_Customer = t2.ID_Customer
+        ;
+        '''
+
+df_Customer_joined = pd.read_sql(query, cnxn)
+df_Customer_joined
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p7.png)
+
+I can run all sorts of SQL queries here and load them into Python as I need the data. 
+
+
+# 6 Data Manipulation in SQL Server using Python
+
+I can also modify the contents of existing tables on an SQL Server from Python here.
+
+
+## 6.1 Insert Values into SQL Server Table
+
+
+```{r, eval=F, echo=T}
+cursor.execute('''
+               INSERT INTO Customer VALUES ('No', 'Name')
+               ;
+               ''')
+cnxn.commit()
+```
+
+
+
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
+
+df_Customer_manipulated = pd.read_sql(query, cnxn)
+df_Customer_manipulated
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png)
+
+
+
+Let's take a look at the SQL Server itself: 
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p9.png)
+
+
 
 
 
@@ -40,7 +261,51 @@ For this publication the dataset *Amazon Unlocked Mobile* from the statistic pla
 
 ```
 
-![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p1.png)
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+
 
 
 
