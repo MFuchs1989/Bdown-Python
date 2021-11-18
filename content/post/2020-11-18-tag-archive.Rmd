@@ -40,8 +40,8 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 # 2 Data Science
 
 + [Machine Learning Pipelines](https://michael-fuchs-python.netlify.app/2021/05/11/machine-learning-pipelines/)
-+ [How to connect Python to a local SQL Server](https://michael-fuchs-python.netlify.app/2021/03/27/how-to-connect-python-to-a-local-sql-server/)
 + [Visualizations](https://michael-fuchs-python.netlify.app/2021/04/07/visualizations/)
++ [How to connect Python to a local SQL Server](https://michael-fuchs-python.netlify.app/2021/03/27/how-to-connect-python-to-a-local-sql-server/)
 + [SQL](https://michael-fuchs-python.netlify.app/2021/03/24/sql/)
 + [The Data Science Process (CRISP-DM)](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/)
 + [Randomized Search](https://michael-fuchs-python.netlify.app/2019/11/06/randomized-search/)
