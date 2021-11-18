@@ -262,4 +262,48 @@ df_NewDF</code></pre>
 <h1>8 Conclusion</h1>
 <p>How to make queries with SQL is part of the basic knowledge if you want to work in the field of Data Science.</p>
 <p>How to connect to a SQL Server via Python and execute queries on it I have shown in this post.</p>
+<p>Here is the SQL syntax I used to create the database and the tables:</p>
+<pre class="r"><code>SET LANGUAGE ENGLISH
+
+
+CREATE DATABASE MyDB;
+
+USE MyDB;
+
+
+CREATE TABLE Customer
+    (ID_Customer INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    First_Name VARCHAR(100) NOT NULL,
+    Last_Name VARCHAR(100) NOT NULL)
+    ;
+
+
+INSERT INTO Customer VALUES (&#39;Max&#39;, &#39;Steel&#39;)
+INSERT INTO Customer VALUES (&#39;Jessy&#39;, &#39;Williams&#39;)
+INSERT INTO Customer VALUES (&#39;Marc&#39;, &#39;Pike&#39;)
+INSERT INTO Customer VALUES (&#39;Emily&#39;, &#39;Taylor&#39;)
+
+SELECT * FROM Customer
+
+
+
+
+CREATE TABLE Customer_metadata
+    (ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+     ID_Customer INT NOT NULL FOREIGN KEY REFERENCES Customer(ID_Customer),
+     Nationality VARCHAR(100) NOT NULL)
+    ;
+
+
+INSERT INTO Customer_metadata VALUES (1, &#39;German&#39;)
+INSERT INTO Customer_metadata VALUES (2, &#39;French&#39;)
+INSERT INTO Customer_metadata VALUES (3, &#39;English&#39;)
+INSERT INTO Customer_metadata VALUES (4, &#39;Spanish&#39;)
+
+
+SELECT * FROM Customer_metadata
+
+
+
+SELECT * FROM NewDF</code></pre>
 </div>
