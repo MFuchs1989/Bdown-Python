@@ -58,7 +58,7 @@ cursor = cnxn.cursor()
 ```
 
 
-Or this version written a little nicer:
+**Or this version** written a little nicer:
 
 
 ```{r, eval=F, echo=T}
@@ -107,6 +107,8 @@ df_existing_tables
 ```
 
 ![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p2.png)
+
+As we can see, two tables are stored in the 'MyDB' database. 
 
 Now I would like to see which columns are stored in the table 'Customer':
 
@@ -205,12 +207,14 @@ df_Customer_joined
 
 ![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p7.png)
 
+**and so on ...**
+
 I can run all sorts of SQL queries here and load them into Python as I need the data. 
 
 
 # 6 Data Manipulation in SQL Server using Python
 
-I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/) the contents of existing tables on an SQL Server from Python here.
+From Python, I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/) the contents of existing tables on a SQL server.
 
 
 ## 6.1 Insert Values into SQL Server Table
@@ -240,7 +244,7 @@ df_Customer_manipulated
 
 ![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png)
 
-
+Worked. A new row was added to the existing record. 
 
 Let's take a look at the SQL Server itself: 
 
@@ -250,6 +254,7 @@ Let's take a look at the SQL Server itself:
 
 ## 6.2 Delete Records in SQL Server
 
+Now we will delete this column again. 
 
 ```{r, eval=F, echo=T}
 cursor.execute('''
@@ -278,7 +283,7 @@ df_Customer_original
 
 
 
-Let's take a look at the SQL Server itself again: 
+Let's take another look at SQL Server itself:
 
 ![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p11.png)
 
@@ -286,6 +291,7 @@ Let's take a look at the SQL Server itself again:
 # 7 Inserting a Python Dataframe into SQL Server
 
 Now I may want to write a new or edited record to a database. This is also possible from here. 
+
 Here is an example data set that I have created in Python:
 
 ```{r, eval=F, echo=T}

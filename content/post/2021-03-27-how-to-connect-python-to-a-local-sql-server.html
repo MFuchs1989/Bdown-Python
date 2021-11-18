@@ -57,7 +57,7 @@ How to do that I have described in detail in this post: <a href="https://michael
                trusted_connection=&#39;yes&#39;)
 
 cursor = cnxn.cursor()</code></pre>
-<p>Or this version written a little nicer:</p>
+<p><strong>Or this version</strong> written a little nicer:</p>
 <pre class="r"><code>conn_str = (
     r&#39;driver={SQL Server};&#39;
     r&#39;server=(local);&#39;
@@ -89,6 +89,7 @@ df_existing_tables</code></pre>
 df_existing_tables = pd.read_sql(query_mod, cnxn)
 df_existing_tables</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p2.png" /></p>
+<p>As we can see, two tables are stored in the ‘MyDB’ database.</p>
 <p>Now I would like to see which columns are stored in the table ‘Customer’:</p>
 <pre class="r"><code>query = &quot;EXEC sp_columns &#39;Customer&#39;;&quot;
 
@@ -151,12 +152,13 @@ df_Customer_modified</code></pre>
 df_Customer_joined = pd.read_sql(query, cnxn)
 df_Customer_joined</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p7.png" /></p>
+<p><strong>and so on …</strong></p>
 <p>I can run all sorts of SQL queries here and load them into Python as I need the data.</p>
 </div>
 </div>
 <div id="data-manipulation-in-sql-server-using-python" class="section level1">
 <h1>6 Data Manipulation in SQL Server using Python</h1>
-<p>I can also <a href="https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/">manipulate</a> the contents of existing tables on an SQL Server from Python here.</p>
+<p>From Python, I can also <a href="https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/">manipulate</a> the contents of existing tables on a SQL server.</p>
 <div id="insert-values-into-sql-server-table" class="section level2">
 <h2>6.1 Insert Values into SQL Server Table</h2>
 <pre class="r"><code>cursor.execute(&#39;&#39;&#39;
@@ -173,11 +175,13 @@ cnxn.commit()</code></pre>
 df_Customer_manipulated = pd.read_sql(query, cnxn)
 df_Customer_manipulated</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png" /></p>
+<p>Worked. A new row was added to the existing record.</p>
 <p>Let’s take a look at the SQL Server itself:</p>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p9.png" /></p>
 </div>
 <div id="delete-records-in-sql-server" class="section level2">
 <h2>6.2 Delete Records in SQL Server</h2>
+<p>Now we will delete this column again.</p>
 <pre class="r"><code>cursor.execute(&#39;&#39;&#39;
                DELETE FROM Customer
                     WHERE First_Name = &#39;No&#39;
@@ -193,14 +197,14 @@ cnxn.commit()</code></pre>
 df_Customer_original = pd.read_sql(query, cnxn)
 df_Customer_original</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p10.png" /></p>
-<p>Let’s take a look at the SQL Server itself again:</p>
+<p>Let’s take another look at SQL Server itself:</p>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p11.png" /></p>
 </div>
 </div>
 <div id="inserting-a-python-dataframe-into-sql-server" class="section level1">
 <h1>7 Inserting a Python Dataframe into SQL Server</h1>
-<p>Now I may want to write a new or edited record to a database. This is also possible from here.
-Here is an example data set that I have created in Python:</p>
+<p>Now I may want to write a new or edited record to a database. This is also possible from here.</p>
+<p>Here is an example data set that I have created in Python:</p>
 <pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;],
                    &#39;Age&#39;: [32,22,62],
                    &#39;Height&#39;: [162, 184, 170],
