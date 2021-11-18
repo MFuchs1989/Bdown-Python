@@ -210,7 +210,7 @@ I can run all sorts of SQL queries here and load them into Python as I need the 
 
 # 6 Data Manipulation in SQL Server using Python
 
-I can also modify the contents of existing tables on an SQL Server from Python here.
+I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/) the contents of existing tables on an SQL Server from Python here.
 
 
 ## 6.1 Insert Values into SQL Server Table
@@ -248,71 +248,143 @@ Let's take a look at the SQL Server itself:
 
 
 
+## 6.2 Delete Records in SQL Server
 
 
-
-
-
+```{r, eval=F, echo=T}
+cursor.execute('''
+               DELETE FROM Customer
+                    WHERE First_Name = 'No'
+               ;
+               ''')
+cnxn.commit()
+```
 
 
 
 
 ```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
 
+df_Customer_original = pd.read_sql(query, cnxn)
+df_Customer_original
 ```
 
-![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p10.png)
 
 
 
+Let's take a look at the SQL Server itself again: 
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p11.png)
 
 
+# 7 Inserting a Python Dataframe into SQL Server
 
-
-
-
-
-
-
-
-
-
-
+Now I may want to write a new or edited record to a database. This is also possible from here. 
+Here is an example data set that I have created in Python:
 
 ```{r, eval=F, echo=T}
-
+df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia'],
+                   'Age': [32,22,62],
+                   'Height': [162, 184, 170],
+                   'Gender': ['female', 'male', 'female']})
+df
 ```
 
-![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p12.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In order to write data to a new table on the SQL Server, I need to create it on the server first. 
 
 ```{r, eval=F, echo=T}
-
+cursor.execute('''
+               CREATE TABLE NewDF
+                    (Name VARCHAR(100) NOT NULL,
+                    Age INT NOT NULL,
+                    Height INT NOT NULL,
+                    Gender VARCHAR(100) NOT NULL)
+               ;
+               ''')
+cnxn.commit()
 ```
 
-![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png)
+Let's take a quick look via SQL Server Object Explorer at the newly created table: 
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.png)
+
+
+It is now listed as we can see.
+Let's try to run a query on this table.
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM NewDF
+        ;
+            '''
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.1.png)
 
 
 
+Fits, there are no data stored yet but we want to insert them in the next step:
+
+```{r, eval=F, echo=T}
+for index, row in df.iterrows():
+     cursor.execute("INSERT INTO dbo.NewDF (Name,Age,Height,Gender) values(?,?,?,?)", row.Name, row.Age, row.Height, row.Gender)
+cnxn.commit()
+```
+
+or **written a bit more clearly**:
+
+```{r, eval=F, echo=T}
+for index, row in df.iterrows():
+     cursor.execute('''
+                    INSERT INTO dbo.NewDF 
+                    (Name,Age,Height,Gender) 
+                    values(?,?,?,?)
+                    ''', 
+                    row.Name, 
+                    row.Age, 
+                    row.Height, 
+                    row.Gender)
+cnxn.commit()
+```
+
+
+Let's start the query again:
+
+```{r, eval=F, echo=T}
+query = '''
+        SELECT * 
+            FROM NewDF
+        ;
+            '''
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p14.png)
+
+
+Worked. The data from our table created in Python is now stored on the SQL server!
 
 
 
+# 8 Conclusion
 
+How to make queries with SQL is part of the basic knowledge if you want to work in the field of Data Science. 
 
+How to connect to a SQL Server via Python and execute queries on it I have shown in this post. 
 
 
 

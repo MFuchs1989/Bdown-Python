@@ -27,7 +27,10 @@ output:
 <li><a href="#data-manipulation-in-sql-server-using-python">6 Data Manipulation in SQL Server using Python</a>
 <ul>
 <li><a href="#insert-values-into-sql-server-table">6.1 Insert Values into SQL Server Table</a></li>
+<li><a href="#delete-records-in-sql-server">6.2 Delete Records in SQL Server</a></li>
 </ul></li>
+<li><a href="#inserting-a-python-dataframe-into-sql-server">7 Inserting a Python Dataframe into SQL Server</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
@@ -153,7 +156,7 @@ df_Customer_joined</code></pre>
 </div>
 <div id="data-manipulation-in-sql-server-using-python" class="section level1">
 <h1>6 Data Manipulation in SQL Server using Python</h1>
-<p>I can also modify the contents of existing tables on an SQL Server from Python here.</p>
+<p>I can also <a href="https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/">manipulate</a> the contents of existing tables on an SQL Server from Python here.</p>
 <div id="insert-values-into-sql-server-table" class="section level2">
 <h2>6.1 Insert Values into SQL Server Table</h2>
 <pre class="r"><code>cursor.execute(&#39;&#39;&#39;
@@ -172,8 +175,91 @@ df_Customer_manipulated</code></pre>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png" /></p>
 <p>Let’s take a look at the SQL Server itself:</p>
 <p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p9.png" /></p>
-<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
-<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
-<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p.png" /></p>
 </div>
+<div id="delete-records-in-sql-server" class="section level2">
+<h2>6.2 Delete Records in SQL Server</h2>
+<pre class="r"><code>cursor.execute(&#39;&#39;&#39;
+               DELETE FROM Customer
+                    WHERE First_Name = &#39;No&#39;
+               ;
+               &#39;&#39;&#39;)
+cnxn.commit()</code></pre>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM Customer
+        ;
+            &#39;&#39;&#39;
+
+df_Customer_original = pd.read_sql(query, cnxn)
+df_Customer_original</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p10.png" /></p>
+<p>Let’s take a look at the SQL Server itself again:</p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p11.png" /></p>
+</div>
+</div>
+<div id="inserting-a-python-dataframe-into-sql-server" class="section level1">
+<h1>7 Inserting a Python Dataframe into SQL Server</h1>
+<p>Now I may want to write a new or edited record to a database. This is also possible from here.
+Here is an example data set that I have created in Python:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;],
+                   &#39;Age&#39;: [32,22,62],
+                   &#39;Height&#39;: [162, 184, 170],
+                   &#39;Gender&#39;: [&#39;female&#39;, &#39;male&#39;, &#39;female&#39;]})
+df</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p12.png" /></p>
+<p>In order to write data to a new table on the SQL Server, I need to create it on the server first.</p>
+<pre class="r"><code>cursor.execute(&#39;&#39;&#39;
+               CREATE TABLE NewDF
+                    (Name VARCHAR(100) NOT NULL,
+                    Age INT NOT NULL,
+                    Height INT NOT NULL,
+                    Gender VARCHAR(100) NOT NULL)
+               ;
+               &#39;&#39;&#39;)
+cnxn.commit()</code></pre>
+<p>Let’s take a quick look via SQL Server Object Explorer at the newly created table:</p>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.png" /></p>
+<p>It is now listed as we can see.
+Let’s try to run a query on this table.</p>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM NewDF
+        ;
+            &#39;&#39;&#39;
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.1.png" /></p>
+<p>Fits, there are no data stored yet but we want to insert them in the next step:</p>
+<pre class="r"><code>for index, row in df.iterrows():
+     cursor.execute(&quot;INSERT INTO dbo.NewDF (Name,Age,Height,Gender) values(?,?,?,?)&quot;, row.Name, row.Age, row.Height, row.Gender)
+cnxn.commit()</code></pre>
+<p>or <strong>written a bit more clearly</strong>:</p>
+<pre class="r"><code>for index, row in df.iterrows():
+     cursor.execute(&#39;&#39;&#39;
+                    INSERT INTO dbo.NewDF 
+                    (Name,Age,Height,Gender) 
+                    values(?,?,?,?)
+                    &#39;&#39;&#39;, 
+                    row.Name, 
+                    row.Age, 
+                    row.Height, 
+                    row.Gender)
+cnxn.commit()</code></pre>
+<p>Let’s start the query again:</p>
+<pre class="r"><code>query = &#39;&#39;&#39;
+        SELECT * 
+            FROM NewDF
+        ;
+            &#39;&#39;&#39;
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF</code></pre>
+<p><img src="/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p14.png" /></p>
+<p>Worked. The data from our table created in Python is now stored on the SQL server!</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>How to make queries with SQL is part of the basic knowledge if you want to work in the field of Data Science.</p>
+<p>How to connect to a SQL Server via Python and execute queries on it I have shown in this post.</p>
 </div>
