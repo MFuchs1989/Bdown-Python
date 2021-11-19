@@ -214,7 +214,7 @@ I can run all sorts of SQL queries here and load them into Python as I need the 
 
 # 6 Data Manipulation in SQL Server using Python
 
-From Python, I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/29/data-manipulation/) the contents of existing tables on a SQL server.
+From Python, I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/#delete-the-table-contents) the contents of existing tables on a SQL server.
 
 
 ## 6.1 Insert Values into SQL Server Table
@@ -227,7 +227,6 @@ cursor.execute('''
                ''')
 cnxn.commit()
 ```
-
 
 
 
