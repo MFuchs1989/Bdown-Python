@@ -51,6 +51,7 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.3 SQL Server specific Posts
 
++ [How to Backup a Database](https://michael-fuchs-sql.netlify.app/2021/08/01/how-to-backup-a-database/)
 + [Local and Global Temp Tables](https://michael-fuchs-sql.netlify.app/2021/05/10/local-and-global-temp-tables/)
 + [Read and write to files](https://michael-fuchs-sql.netlify.app/2021/03/20/read-and-write-to-files/)
 + [Aliases](https://michael-fuchs-sql.netlify.app/2021/03/19/aliases/)
