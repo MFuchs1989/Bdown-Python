@@ -74,6 +74,9 @@ At this point I link the topics covered with the respective posts.
 + [Data Wrangling](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/)
 
 
+## 2.5 SQL Tools
+
++ [Oracle SQL Developer Data Modeler](https://michael-fuchs-sql.netlify.app/2021/09/01/oracle-sql-developer-data-modeler/)
 
 # 3 Conclusion
 
