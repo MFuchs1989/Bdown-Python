@@ -374,6 +374,24 @@ df.to_excel('My_DataFrame.xlsx', sheet_name='Sheet1', engine='xlsxwriter')
 ```
 
 
+### 4.2.1 Writing multiple DFs to one Excel File
+
+
+If you have now created several dataframes and want to write them into a common Excel file (into separate sheets), you can proceed as follows:
+
+```{r, eval=F, echo=T}
+writer = pd.ExcelWriter('Name_of_Excel_File.xlsx', engine='xlsxwriter')
+
+df1.to_excel(writer, sheet_name='Sheet1')
+df2.to_excel(writer, sheet_name='Sheet2')
+df3.to_excel(writer, sheet_name='Sheet3')
+
+writer.save()
+```
+
+
+
+
 
 # 5 How to read further data types
 
@@ -381,7 +399,7 @@ df.to_excel('My_DataFrame.xlsx', sheet_name='Sheet1', engine='xlsxwriter')
 In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:
 
 
-+ Excel (pd.read_excel())
++ [Excel (pd.read_excel())](https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html)
 + HTML (pd.read_html())
 + Feather (pd.read_feather())
 + Parquet (pd.read_parquet())

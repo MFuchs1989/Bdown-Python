@@ -14,8 +14,6 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -41,7 +39,10 @@ output:
 <li><a href="#writing-files">4 Writing files</a>
 <ul>
 <li><a href="#write-to-csv">4.1 Write to csv</a></li>
-<li><a href="#write-to-excel">4.2 Write to excel</a></li>
+<li><a href="#write-to-excel">4.2 Write to excel</a>
+<ul>
+<li><a href="#writing-multiple-dfs-to-one-excel-file">4.2.1 Writing multiple DFs to one Excel File</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#how-to-read-further-data-types">5 How to read further data types</a></li>
 <li><a href="#conclusion">6 Conclusion</a></li>
@@ -249,13 +250,24 @@ now_date</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23z10.png" /></p>
 <p>Or you simply assign a name of your choice:</p>
 <pre class="r"><code>df.to_excel(&#39;My_DataFrame.xlsx&#39;, sheet_name=&#39;Sheet1&#39;, engine=&#39;xlsxwriter&#39;)</code></pre>
+<div id="writing-multiple-dfs-to-one-excel-file" class="section level3">
+<h3>4.2.1 Writing multiple DFs to one Excel File</h3>
+<p>If you have now created several dataframes and want to write them into a common Excel file (into separate sheets), you can proceed as follows:</p>
+<pre class="r"><code>writer = pd.ExcelWriter(&#39;Name_of_Excel_File.xlsx&#39;, engine=&#39;xlsxwriter&#39;)
+
+df1.to_excel(writer, sheet_name=&#39;Sheet1&#39;)
+df2.to_excel(writer, sheet_name=&#39;Sheet2&#39;)
+df3.to_excel(writer, sheet_name=&#39;Sheet3&#39;)
+
+writer.save()</code></pre>
+</div>
 </div>
 </div>
 <div id="how-to-read-further-data-types" class="section level1">
 <h1>5 How to read further data types</h1>
 <p>In addition to csv and json, there are many other file formats that can also be read in python with the pandas read_ * command. Here is a list of them:</p>
 <ul>
-<li>Excel (pd.read_excel())</li>
+<li><a href="https://pandas.pydata.org/docs/reference/api/pandas.read_excel.html">Excel (pd.read_excel())</a></li>
 <li>HTML (pd.read_html())</li>
 <li>Feather (pd.read_feather())</li>
 <li>Parquet (pd.read_parquet())</li>
