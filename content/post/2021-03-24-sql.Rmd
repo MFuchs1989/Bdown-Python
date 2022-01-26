@@ -42,7 +42,7 @@ At this point I link the topics covered with the respective posts.
 ## 2.2 Setup and Relationships of Tables
 
 
-+ [Create a m:m Relationship](https://michael-fuchs-sql.netlify.app/2021/03/16/create-a-m-m-relationship/)
++ [Create a n:m Relationship](https://michael-fuchs-sql.netlify.app/2021/03/16/create-a-m-m-relationship/)
 + [Create a 1:m Relationship](https://michael-fuchs-sql.netlify.app/2021/03/13/create-a-1-m-relationship/)
 + [Create a 1:1 Relationship](https://michael-fuchs-sql.netlify.app/2021/03/10/create-a-1-1-relationship/)
 + [Create a Database](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/)
@@ -76,12 +76,12 @@ At this point I link the topics covered with the respective posts.
 
 ## 2.5 SQL Tools
 
++ [Data Types Settings in Oracle Data Modeler](https://michael-fuchs-sql.netlify.app/2021/10/01/data-types-settings-in-oracle-data-modeler/)
 + [Oracle SQL Developer Data Modeler](https://michael-fuchs-sql.netlify.app/2021/09/01/oracle-sql-developer-data-modeler/)
 
 # 3 Conclusion
 
 
 Here I have created an overview of the topics I have covered with the programming language SQL. 
-
 
 
