@@ -15,7 +15,6 @@ output:
 
  
 
-
 # 1 Introduction
 
 The validation metric ‚Accuracy‘ is a surprisingly common problem in machine learning (specifically in classification), occurring in datasets with a disproportionate ratio of observations in each class. Standard accuracy no longer reliably measures performance, which makes model training much trickier. Possibilities for dealing with imbalanced datasets should be dealt with in this publication.
