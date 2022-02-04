@@ -24,6 +24,15 @@ output:
 <li><a href="#concat-along-rows">3.1 Concat along rows</a></li>
 <li><a href="#concat-along-columns">3.2 Concat along columns</a></li>
 </ul></li>
+<li><a href="#types-of-joins">4 Types of Joins</a>
+<ul>
+<li><a href="#inner-join">4.1 Inner Join</a></li>
+<li><a href="#left-join">4.2 Left Join</a>
+<ul>
+<li><a href="#left_on-right_on">4.2.1 left_on &amp; right_on</a></li>
+<li><a href="#missing-keys">4.2.2 Missing Keys</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -114,7 +123,102 @@ print(&#39;--------------------------&#39;)</code></pre>
 <pre class="r"><code>df_final_concat = pd.concat([Countries_Main, Countries_Capital], axis=1)
 df_final_concat</code></pre>
 <p><img src="/post/2019-04-16-data-management_files/p7p12.png" /></p>
+</div>
+</div>
+<div id="types-of-joins" class="section level1">
+<h1>4 Types of Joins</h1>
+<p>Now we come to joins for tables, which are subject to a certain logic.</p>
+<p>Below I will walk through the different types of joins and explain how they work using the sample tables I have created. Furthermore I will always show at the beginning, with which tables exactly I will execute the following join.</p>
+<div id="inner-join" class="section level2">
+<h2>4.1 Inner Join</h2>
+<pre class="r"><code>print()
+print(&#39;Countries_Inhabitants:&#39;)
+print()
+print(Countries_Inhabitants)
+print(&#39;--------------------------&#39;) 
+print()
+print(&#39;Countries_Land_Area:&#39;)
+print()
+print(Countries_Land_Area)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p13.png" /></p>
+<p>This join will return all of the records in the left table (Countries_Inhabitants) that have a matching record in the right table (Countries_Land_Area).</p>
+<pre class="r"><code>df_final_inner = pd.merge(Countries_Inhabitants, 
+                          Countries_Land_Area, 
+                          on=&#39;Country_ID&#39;, how=&#39;inner&#39;)
+df_final_inner</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p14.png" /></p>
+</div>
+<div id="left-join" class="section level2">
+<h2>4.2 Left Join</h2>
+<pre class="r"><code>print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Capital:&#39;)
+print()
+print(Countries_Capital)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p15.png" /></p>
+<p>This join will return all of the records in the left table (Countries_Main) regardless if any of those records have a match in the right table (Countries_Capital ).</p>
+<pre class="r"><code>df_final_left = pd.merge(Countries_Main,
+                         Countries_Capital,
+                         on=&#39;Country_ID&#39;,
+                         how=&#39;left&#39;)
+df_final_left</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p16.png" /></p>
+<div id="left_on-right_on" class="section level3">
+<h3>4.2.1 left_on &amp; right_on</h3>
+<p>If the columns on the basis of which the join is to be executed are named differently in the two data sets, you can use the parameters left_on and right_on.</p>
+<pre class="r"><code>Countries_Additional = pd.DataFrame({&#39;ID_of_Country&#39;: [1, 2, 3, 4], 
+                                    &#39;Additional_Info&#39;: [&#39;Add_Info&#39;, &#39;Add_Info&#39;, &#39;Add_Info&#39;, &#39;Add_Info&#39;]})
+
+print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Additional:&#39;)
+print()
+print(Countries_Additional)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p17.png" /></p>
+<pre class="r"><code>df_final_left2 = pd.merge(Countries_Main,
+                          Countries_Additional,
+                          left_on=&#39;Country_ID&#39;,
+                          right_on=&#39;ID_of_Country&#39;,
+                          how=&#39;left&#39;)
+#Removes unnecessary columns
+df_final_left2 = df_final_left2.drop(&#39;ID_of_Country&#39;, axis=1)
+df_final_left2</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p18.png" /></p>
+</div>
+<div id="missing-keys" class="section level3">
+<h3>4.2.2 Missing Keys</h3>
+<p>But what happens if a value we want to join to is not available in the second (right) table? Look here:</p>
+<pre class="r"><code>print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Inhabitants:&#39;)
+print()
+print(Countries_Inhabitants)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p19.png" /></p>
+<pre class="r"><code>df_final_left3 = pd.merge(Countries_Main,
+                          Countries_Inhabitants,
+                          on=&#39;Country_ID&#39;,
+                          how=&#39;left&#39;)
+df_final_left3</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p20.png" /></p>
+<p>The missing information is replaced with a NULL value.</p>
 <p><img src="/post/2019-04-16-data-management_files/p7p.png" /></p>
 <p><img src="/post/2019-04-16-data-management_files/p7p.png" /></p>
+<p><img src="/post/2019-04-16-data-management_files/p7p.png" /></p>
+</div>
 </div>
 </div>
