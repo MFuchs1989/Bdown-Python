@@ -319,41 +319,147 @@ The missing information is replaced with a NULL value.
 
 ## 4.3 Right Join
 
+```{r, eval=F, echo=T}
+print()
+print('Countries_Main:')
+print()
+print(Countries_Main)
+print('--------------------------')
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p21.png)
 
 
-
-
-
-
-
-
+This join will return all of the records in the right table (Countries_Inhabitants) regardless if any of those records have a match in the left table (Countries_Main).
 
 
 ```{r, eval=F, echo=T}
-
+df_final_right = pd.merge(Countries_Main,
+                          Countries_Inhabitants,
+                          on='Country_ID',
+                          how='right')
+df_final_right
 ```
 
-![](/post/2019-04-16-data-management_files/p7p.png)
+![](/post/2019-04-16-data-management_files/p7p22.png)
+
+
+## 4.4 Outer Join
+
+As known as FULL OUTER JOIN or FULL JOIN.
+
+```{r, eval=F, echo=T}
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+print()
+print('Countries_Land_Area:')
+print()
+print(Countries_Land_Area)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p23.png)
 
 
 
+This join will return all of the records from both tables, joining records from the left table (Countries_Inhabitants) that match records from the right table (Countries_Land_Area).
+
+```{r, eval=F, echo=T}
+df_final_outer = pd.merge(Countries_Inhabitants,
+                          Countries_Land_Area,
+                          on='Country_ID',
+                          how='outer')
+df_final_outer
+```
+
+![](/post/2019-04-16-data-management_files/p7p24.png)
 
 
 
+Here again the output of the Inner JOIN for comparison:
+
+![](/post/2019-04-16-data-management_files/p7p14.png)
 
 
-
-
+## 4.5 Left Excluding Join
 
 
 ```{r, eval=F, echo=T}
-
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+print()
+print('Countries_Land_Area:')
+print()
+print(Countries_Land_Area)
+print('--------------------------')
 ```
 
-![](/post/2019-04-16-data-management_files/p7p.png)
+![](/post/2019-04-16-data-management_files/p7p25.png)
 
 
+This join will return all of the records in the left table (Countries_Inhabitants) that do not match any records in the right table (Countries_Land_Area).
 
+```{r, eval=F, echo=T}
+df_final_left_excl = pd.merge(Countries_Inhabitants,
+                         Countries_Land_Area,
+                         on='Country_ID',
+                         indicator=True,
+                         how='left').query('_merge=="left_only"')
+#Removes unnecessary columns
+df_final_left_excl = df_final_left_excl.drop('_merge', axis=1)
+df_final_left_excl
+```
+
+![](/post/2019-04-16-data-management_files/p7p26.png)
+
+
+## 4.6 Right Excluding Join
+
+
+```{r, eval=F, echo=T}
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+print()
+print('Countries_Land_Area:')
+print()
+print(Countries_Land_Area)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p27.png)
+
+
+This join will return all of the records in the right table (Countries_Land_Area) that do not match any records in the left table (Countries_Inhabitants).
+
+```{r, eval=F, echo=T}
+df_final_right_excl = pd.merge(Countries_Inhabitants,
+                         Countries_Land_Area,
+                         on='Country_ID',
+                         indicator=True,
+                         how='right').query('_merge=="right_only"')
+#Removes unnecessary columns
+df_final_right_excl = df_final_right_excl.drop('_merge', axis=1)
+df_final_right_excl
+```
+
+![](/post/2019-04-16-data-management_files/p7p28.png)
+
+
+## 4.7 Outer Excluding Join
 
 
 
