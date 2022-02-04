@@ -77,203 +77,54 @@ Here is another overview of the tables I created:
 ![](/post/2019-04-16-data-management_files/p7p5.png)
 
 
+# 3 Pandas concat-Function
 
 
+I use the concat function when I want to concatenate two data sets quick and dirty. 
+The connection of the records can be done either along the rows or the columns (the records must have the same length). 
+But you have to be careful, because the connection along the columns is taken over 1:1 and has no logic behind it. 
 
+If I want to connect tables with a certain logic, I use the merge function (described in more detail in the following chapter 4). 
 
+As said a quick and dirty solution.
 
-# 2 Join the two dataframes along rows
 
-Note:
-Column names must be the same.
-Original index remains intact.
-```{r, eval=F, echo=T}
-a = flight.iloc[1:4,[8,3,6]]
-b = flight.iloc[293:296,[8,3,6]]
-c = flight.iloc[166:171,[8,3,6]]
-print(a)
-print(b)
-print(c)
-```
+## 3.1 Concat along rows
 
-![](/post/2019-04-16-data-management_files/p7p1.png)
 
 
 
-```{r, eval=F, echo=T}
-frames = [a, b, c]
-result = pd.concat(frames)      
-#Alternative: result = pd.concat([a, b])
-result
-```
 
-![](/post/2019-04-16-data-management_files/p7p2.png)
 
 
-```{r, eval=F, echo=T}
-result = pd.concat(frames, keys=['Frame1', 'Frame2', 'Frame3'])
-result
-```
 
-![](/post/2019-04-16-data-management_files/p7p3.png)
 
-```{r, eval=F, echo=T}
-result.loc['Frame3']
-```
 
-![](/post/2019-04-16-data-management_files/p7p4.png)
 
 
 
-# 3 Merge two dataframes
 
-## 3.1 Merge with inner join
 
 
-DayOfWeek 6 included in both
-```{r, eval=F, echo=T}
-pd.merge(a, c, on='DayOfWeek', how='inner')
-```
 
-![](/post/2019-04-16-data-management_files/p7p5.png)
 
 
 
-## 3.2 Merge with outer join
 
-What are the differences between the two data frames regarding DayOfWeek?
-```{r, eval=F, echo=T}
-pd.merge(a, c, on='DayOfWeek', how='outer')
-```
 
-![](/post/2019-04-16-data-management_files/p7p6.png)
 
 
-## 3.3 Merge with concat
 
-You can also easily merge two data sets with the concat method, provided they have the same column length.
 
-```{r, eval=F, echo=T}
-df_Salary = pd.DataFrame({'Transaction': ['Tim', 'Mike', 'Elli'],
-                   'Salary': [4000,5000,3000]})
-df_Salary
-```
 
-![](/post/2019-04-16-data-management_files/p7p13.png)
 
 
-```{r, eval=F, echo=T}
-df_Job = pd.DataFrame({'Job': ['Official', 'Technician', 'Assistant']})
-df_Job
-```
 
-![](/post/2019-04-16-data-management_files/p7p14.png)
 
 
-```{r, eval=F, echo=T}
-df_final = pd.concat([df_Salary, df_Job], axis=1)
-df_final
-```
 
-![](/post/2019-04-16-data-management_files/p7p15.png)
 
 
 
-# 4 Merge multiple data frames
-
-## 4.1 Preparation
-
-```{r, eval=F, echo=T}
-a  =(               
-    flight
-    .groupby(['Origin_Airport'])
-    .agg({'Scheduled_Departure': 'mean'})                                   
-    .rename(columns={"Scheduled_Departure": "avg_Scheduled_Departure"})     
-    .reset_index()                                                          
-)
-
-b  =(               
-    flight
-    .groupby(['Origin_Airport'])
-    .agg({'Dep_Delay': 'mean'})                                   
-    .rename(columns={"Dep_Delay": "avg_Dep_Delay"})     
-    .reset_index()                                                          
-)
-
-c  =(               
-    flight
-    .groupby(['Origin_Airport'])
-    .agg({'Scheduled_Arrival': 'mean'})                                   
-    .rename(columns={"Scheduled_Arrival": "avg_Scheduled_Arrival"})     
-    .reset_index()                                                          
-)
-
-d  =(               
-    flight
-    .groupby(['Origin_Airport'])
-    .agg({'Arrival_Delay': 'mean'})                                   
-    .rename(columns={"Arrival_Delay": "avg_Arrival_Delay"})     
-    .reset_index()                                                          
-)
-```
-
-
-```{r, eval=F, echo=T}
-a.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p7.png)
-
-
-```{r, eval=F, echo=T}
-b.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p8.png)
-
-
-```{r, eval=F, echo=T}
-c.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p9.png)
-
-
-```{r, eval=F, echo=T}
-d.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p10.png)
-
-
-
-## 4.2 Merge up to 3 data frames
-
-```{r, eval=F, echo=T}
-multiple_merge = pd.merge(pd.merge(a,b,on='Origin_Airport'),c,on='Origin_Airport')
-multiple_merge.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p11.png)
-
-
-
-## 4.3 Merge more than 3 data frames
-
-
-```{r, eval=F, echo=T}
-multiple_merge2 = pd.merge(multiple_merge, d, on='Origin_Airport', how='left')
-multiple_merge2.head()
-```
-
-![](/post/2019-04-16-data-management_files/p7p12.png)
-
-
-
-
-# 5 Conclusion
-
-In this post, only a few basic data management functions were shown.
-Of course, there are many more ways of meaningfully merging records.
 
 
