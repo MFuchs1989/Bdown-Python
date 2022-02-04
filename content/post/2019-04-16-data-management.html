@@ -69,5 +69,33 @@ But you have to be careful, because the connection along the columns is taken ov
 <p>As said a quick and dirty solution.</p>
 <div id="concat-along-rows" class="section level2">
 <h2>3.1 Concat along rows</h2>
+<pre class="r"><code>Customer_1 = pd.DataFrame({&#39;ID&#39;: [1, 2], 
+                           &#39;Name&#39;: [&#39;Marc&#39;, &#39;Sven&#39;]})
+
+Customer_2 = pd.DataFrame({&#39;ID&#39;: [98, 99], 
+                           &#39;Name&#39;: [&#39;Sarah&#39;, &#39;Jenny&#39;]})
+
+print(Customer_1)
+print()
+print(Customer_2)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p6.png" /></p>
+<pre class="r"><code>df_final_concat_rows = pd.concat([Customer_1, Customer_2])
+df_final_concat_rows</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p7.png" /></p>
+<pre class="r"><code>print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Capital:&#39;)
+print()
+print(Countries_Capital)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p8.png" /></p>
+<pre class="r"><code>df_final_concat_rows2 = pd.concat([Countries_Main, Countries_Capital])
+df_final_concat_rows2</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p9.png" /></p>
+<p><img src="/post/2019-04-16-data-management_files/p7p.png" /></p>
 </div>
 </div>

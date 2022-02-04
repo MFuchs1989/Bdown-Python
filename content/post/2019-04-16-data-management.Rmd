@@ -91,6 +91,51 @@ As said a quick and dirty solution.
 
 ## 3.1 Concat along rows
 
+```{r, eval=F, echo=T}
+Customer_1 = pd.DataFrame({'ID': [1, 2], 
+                           'Name': ['Marc', 'Sven']})
+
+Customer_2 = pd.DataFrame({'ID': [98, 99], 
+                           'Name': ['Sarah', 'Jenny']})
+
+print(Customer_1)
+print()
+print(Customer_2)
+```
+
+![](/post/2019-04-16-data-management_files/p7p6.png)
+
+
+```{r, eval=F, echo=T}
+df_final_concat_rows = pd.concat([Customer_1, Customer_2])
+df_final_concat_rows
+```
+
+![](/post/2019-04-16-data-management_files/p7p7.png)
+
+
+```{r, eval=F, echo=T}
+print()
+print('Countries_Main:')
+print()
+print(Countries_Main)
+print('--------------------------')
+print()
+print('Countries_Capital:')
+print()
+print(Countries_Capital)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p8.png)
+
+
+```{r, eval=F, echo=T}
+df_final_concat_rows2 = pd.concat([Countries_Main, Countries_Capital])
+df_final_concat_rows2
+```
+
+![](/post/2019-04-16-data-management_files/p7p9.png)
 
 
 
@@ -102,6 +147,24 @@ As said a quick and dirty solution.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-04-16-data-management_files/p7p.png)
 
 
 
