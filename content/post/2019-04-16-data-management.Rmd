@@ -135,7 +135,7 @@ df_final_concat_rows2 = pd.concat([Countries_Main, Countries_Capital])
 df_final_concat_rows2
 ```
 
-![](/post/2019-04-16-data-management_files/p7p910.png)
+![](/post/2019-04-16-data-management_files/p7p10.png)
 
 
 
@@ -317,7 +317,7 @@ df_final_left3
 The missing information is replaced with a NULL value.
 
 
-
+## 4.3 Right Join
 
 
 
