@@ -87,7 +87,9 @@ df
 ![](/post/2019-06-16-types-of-encoder_files/p29p3.png)
 
 
-You can also create dummy variables with the .get_dummies function from pandas. I think this method is more practical because it uses less syntax.
+You can also create dummy variables with the .get_dummies function from pandas. 
+
+This method is faster than the one just shown via scikit-learn but it **also has a big disadvantage**! Here the **mapping is not saved**. But it can still be used to quickly test if creating / using dummy variables improves the model result. If the generated features contribute to an improved result, the **One Hot Encoder from scikit-learn should be used** in any case.
 
 
 ```{r, eval=F, echo=T}

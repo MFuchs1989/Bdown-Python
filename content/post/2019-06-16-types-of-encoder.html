@@ -14,8 +14,6 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -92,7 +90,8 @@ df_OH_final</code></pre>
 <h3>3.1.2 via pandas</h3>
 <pre class="r"><code>df</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p3.png" /></p>
-<p>You can also create dummy variables with the .get_dummies function from pandas. I think this method is more practical because it uses less syntax.</p>
+<p>You can also create dummy variables with the .get_dummies function from pandas.</p>
+<p>This method is faster than the one just shown via scikit-learn but it <strong>also has a big disadvantage</strong>! Here the <strong>mapping is not saved</strong>. But it can still be used to quickly test if creating / using dummy variables improves the model result. If the generated features contribute to an improved result, the <strong>One Hot Encoder from scikit-learn should be used</strong> in any case.</p>
 <pre class="r"><code>df_dummies = pd.get_dummies(df, prefix=[&#39;Job&#39;], columns=[&#39;Job&#39;])
 df_dummies</code></pre>
 <p><img src="/post/2019-06-16-types-of-encoder_files/p29p4.png" /></p>
