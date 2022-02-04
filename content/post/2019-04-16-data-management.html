@@ -37,7 +37,14 @@ output:
 <li><a href="#left-excluding-join">4.5 Left Excluding Join</a></li>
 <li><a href="#right-excluding-join">4.6 Right Excluding Join</a></li>
 <li><a href="#outer-excluding-join">4.7 Outer Excluding Join</a></li>
+<li><a href="#warning">4.8 Warning</a></li>
 </ul></li>
+<li><a href="#merge-multiple-data-frames">5 Merge multiple data frames</a>
+<ul>
+<li><a href="#merge-3-dfs-at-once">5.1 Merge 3 DFs at once</a></li>
+<li><a href="#merge-4-dfs-at-once">5.2 Merge 4 DFs at once</a></li>
+</ul></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -318,6 +325,137 @@ df_final_right_excl</code></pre>
 </div>
 <div id="outer-excluding-join" class="section level2">
 <h2>4.7 Outer Excluding Join</h2>
-<p><img src="/post/2019-04-16-data-management_files/p7p.png" /></p>
+<pre class="r"><code>print()
+print(&#39;Countries_Inhabitants:&#39;)
+print()
+print(Countries_Inhabitants)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Land_Area:&#39;)
+print()
+print(Countries_Land_Area)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p29.png" /></p>
+<p>This join will return all of the records in the left table (Countries_Inhabitants) and all of the records in the right table (Countries_Land_Area) that do not match.</p>
+<pre class="r"><code>df_final_outer_excl = pd.merge(Countries_Inhabitants,
+                          Countries_Land_Area,
+                          on=&#39;Country_ID&#39;,
+                          indicator=True,
+                          how=&#39;outer&#39;).query(&#39;_merge!=&quot;both&quot;&#39;)
+#Removes unnecessary columns
+df_final_outer_excl = df_final_outer_excl.drop(&#39;_merge&#39;, axis=1)
+df_final_outer_excl</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p30.png" /></p>
+<p>Here again for comparison the result of the Outer JOIN / Full Outer JOIN:</p>
+<p><img src="/post/2019-04-16-data-management_files/p7p24.png" /></p>
 </div>
+<div id="warning" class="section level2">
+<h2>4.8 Warning</h2>
+<p><a href="https://pandas.pydata.org/docs/reference/api/pandas.merge.html">If both key columns contain rows where the key is a null value, those rows will be matched against each other. This is different from usual SQL join behaviour and can lead to unexpected results.</a></p>
+<p>Here I show exactly what I mean by that:</p>
+<pre class="r"><code>warning_df_1 = pd.DataFrame({&#39;Country_ID&#39;: [1, 2, 3, np.NaN], 
+                             &#39;Country_Name&#39;: [&#39;Egypt&#39;, 
+                                              &#39;Brazil&#39;, 
+                                              &#39;Germany&#39;, 
+                                              &#39;Malta&#39;]})
+
+warning_df_2 = pd.DataFrame({&#39;Country_ID&#39;: [1, 2, np.NaN, 4], 
+                             &#39;Capital_Name&#39;: [&#39;Cairo&#39;, 
+                                              &#39;Brasilia&#39;, 
+                                              &#39;Berlin&#39;, 
+                                              &#39;Valletta&#39;]})
+
+
+print()
+print(&#39;warning_df_1:&#39;)
+print()
+print(warning_df_1)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;warning_df_2:&#39;)
+print()
+print(warning_df_1)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p31.png" /></p>
+<pre class="r"><code>warning_df_final = pd.merge(warning_df_1,
+                            warning_df_2,
+                            on=&#39;Country_ID&#39;,
+                            how=&#39;left&#39;)
+warning_df_final</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p32.png" /></p>
+<p>Here again for comparison the result of the Left JOIN:</p>
+<p><img src="/post/2019-04-16-data-management_files/p7p16.png" /></p>
+</div>
+</div>
+<div id="merge-multiple-data-frames" class="section level1">
+<h1>5 Merge multiple data frames</h1>
+<p>Of course, you also have the possibility to execute several joins (here left join) simultaneously / nested.</p>
+<div id="merge-3-dfs-at-once" class="section level2">
+<h2>5.1 Merge 3 DFs at once</h2>
+<pre class="r"><code>print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Capital:&#39;)
+print()
+print(Countries_Capital)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Inhabitants:&#39;)
+print()
+print(Countries_Inhabitants)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p33.png" /></p>
+<pre class="r"><code>multiple_merge = pd.merge(pd.merge(Countries_Main,
+                                   Countries_Capital,
+                                   on=&#39;Country_ID&#39;,
+                                   how=&#39;left&#39;),
+                          Countries_Inhabitants,
+                          on=&#39;Country_ID&#39;,
+                          how=&#39;left&#39;)
+multiple_merge.head()</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p34.png" /></p>
+</div>
+<div id="merge-4-dfs-at-once" class="section level2">
+<h2>5.2 Merge 4 DFs at once</h2>
+<pre class="r"><code>print()
+print(&#39;Countries_Main:&#39;)
+print()
+print(Countries_Main)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Capital:&#39;)
+print()
+print(Countries_Capital)
+print(&#39;--------------------------&#39;)
+print()
+print(&#39;Countries_Inhabitants:&#39;)
+print()
+print(Countries_Inhabitants)
+print(&#39;--------------------------&#39;) 
+print()
+print(&#39;Countries_Land_Area:&#39;)
+print()
+print(Countries_Land_Area)
+print(&#39;--------------------------&#39;)</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p35.png" /></p>
+<pre class="r"><code>multiple_merge2 = pd.merge(pd.merge(pd.merge(Countries_Main,
+                                             Countries_Capital,
+                                             on=&#39;Country_ID&#39;,
+                                             how=&#39;left&#39;),
+                                    Countries_Inhabitants,
+                                    on=&#39;Country_ID&#39;,
+                                    how=&#39;left&#39;),
+                           Countries_Land_Area,
+                           on=&#39;Country_ID&#39;,
+                           how=&#39;left&#39;)
+multiple_merge2</code></pre>
+<p><img src="/post/2019-04-16-data-management_files/p7p36.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>In this post, only a few basic data management functions were shown. Of course, there are many more ways of meaningfully merging records.</p>
 </div>

@@ -462,19 +462,199 @@ df_final_right_excl
 ## 4.7 Outer Excluding Join
 
 
+```{r, eval=F, echo=T}
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+print()
+print('Countries_Land_Area:')
+print()
+print(Countries_Land_Area)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p29.png)
+
+
+This join will return all of the records in the left table (Countries_Inhabitants) and all of the records in the right table (Countries_Land_Area) that do not match.
+
+```{r, eval=F, echo=T}
+df_final_outer_excl = pd.merge(Countries_Inhabitants,
+                          Countries_Land_Area,
+                          on='Country_ID',
+                          indicator=True,
+                          how='outer').query('_merge!="both"')
+#Removes unnecessary columns
+df_final_outer_excl = df_final_outer_excl.drop('_merge', axis=1)
+df_final_outer_excl
+```
+
+![](/post/2019-04-16-data-management_files/p7p30.png)
+
+
+
+Here again for comparison the result of the Outer JOIN / Full Outer JOIN:
+
+![](/post/2019-04-16-data-management_files/p7p24.png)
+
+
+## 4.8 Warning
+
+[If both key columns contain rows where the key is a null value, those rows will be matched against each other. This is different from usual SQL join behaviour and can lead to unexpected results.](https://pandas.pydata.org/docs/reference/api/pandas.merge.html)
+
+Here I show exactly what I mean by that:
+
+
+```{r, eval=F, echo=T}
+warning_df_1 = pd.DataFrame({'Country_ID': [1, 2, 3, np.NaN], 
+                             'Country_Name': ['Egypt', 
+                                              'Brazil', 
+                                              'Germany', 
+                                              'Malta']})
+
+warning_df_2 = pd.DataFrame({'Country_ID': [1, 2, np.NaN, 4], 
+                             'Capital_Name': ['Cairo', 
+                                              'Brasilia', 
+                                              'Berlin', 
+                                              'Valletta']})
+
+
+print()
+print('warning_df_1:')
+print()
+print(warning_df_1)
+print('--------------------------')
+print()
+print('warning_df_2:')
+print()
+print(warning_df_1)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p31.png)
+
+
+```{r, eval=F, echo=T}
+warning_df_final = pd.merge(warning_df_1,
+                            warning_df_2,
+                            on='Country_ID',
+                            how='left')
+warning_df_final
+```
+
+![](/post/2019-04-16-data-management_files/p7p32.png)
+
+
+Here again for comparison the result of the Left JOIN:
+
+![](/post/2019-04-16-data-management_files/p7p16.png)
 
 
 
 
+# 5 Merge multiple data frames
+
+Of course, you also have the possibility to execute several joins (here left join) simultaneously / nested. 
+
+
+## 5.1 Merge 3 DFs at once
+
+
+```{r, eval=F, echo=T}
+print()
+print('Countries_Main:')
+print()
+print(Countries_Main)
+print('--------------------------')
+print()
+print('Countries_Capital:')
+print()
+print(Countries_Capital)
+print('--------------------------')
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p33.png)
 
 
 
 
 ```{r, eval=F, echo=T}
-
+multiple_merge = pd.merge(pd.merge(Countries_Main,
+                                   Countries_Capital,
+                                   on='Country_ID',
+                                   how='left'),
+                          Countries_Inhabitants,
+                          on='Country_ID',
+                          how='left')
+multiple_merge.head()
 ```
 
-![](/post/2019-04-16-data-management_files/p7p.png)
+![](/post/2019-04-16-data-management_files/p7p34.png)
+
+
+## 5.2 Merge 4 DFs at once
+
+
+
+
+```{r, eval=F, echo=T}
+print()
+print('Countries_Main:')
+print()
+print(Countries_Main)
+print('--------------------------')
+print()
+print('Countries_Capital:')
+print()
+print(Countries_Capital)
+print('--------------------------')
+print()
+print('Countries_Inhabitants:')
+print()
+print(Countries_Inhabitants)
+print('--------------------------') 
+print()
+print('Countries_Land_Area:')
+print()
+print(Countries_Land_Area)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p35.png)
+
+
+
+
+```{r, eval=F, echo=T}
+multiple_merge2 = pd.merge(pd.merge(pd.merge(Countries_Main,
+                                             Countries_Capital,
+                                             on='Country_ID',
+                                             how='left'),
+                                    Countries_Inhabitants,
+                                    on='Country_ID',
+                                    how='left'),
+                           Countries_Land_Area,
+                           on='Country_ID',
+                           how='left')
+multiple_merge2
+```
+
+![](/post/2019-04-16-data-management_files/p7p36.png)
+
+
+# 6 Conclusion
+
+
+In this post, only a few basic data management functions were shown. Of course, there are many more ways of meaningfully merging records.
+
+
 
 
 
