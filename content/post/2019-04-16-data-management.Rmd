@@ -185,6 +185,11 @@ Below I will walk through the different types of joins and explain how they work
 
 ## 4.1 Inner Join
 
+![](/post/2019-04-16-data-management_files/p7s2.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
+
+
 ```{r, eval=F, echo=T}
 print()
 print('Countries_Inhabitants:')
