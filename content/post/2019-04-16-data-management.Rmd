@@ -21,9 +21,13 @@ output:
 Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
 
 
+One of the essential skills of a data scientist is to generate and join data from different sources.
+For this purpose, I will create four example tables in the following chapter, on which I will subsequently show the different joins.
 
-One of the essential skills of a data scientist is to generate and bring together data from different sources.
-For this I will create example tables in the following chapter 4, on which I will show the different joins afterwards. 
+Here I orient myself at the diagram shown above, which shows the usual joins from the SQL area. 
+
+These we will imitate in the following in python.   
+
 
 # 2 Loading the Libraries and the Data
 
@@ -332,6 +336,11 @@ The missing information is replaced with a NULL value.
 
 ## 4.3 Right Join
 
+![](/post/2019-04-16-data-management_files/p7s4.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
+
+
 ```{r, eval=F, echo=T}
 print()
 print('Countries_Main:')
@@ -363,6 +372,11 @@ df_final_right
 
 
 ## 4.4 Outer Join
+
+![](/post/2019-04-16-data-management_files/p7s5.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
+
 
 As known as FULL OUTER JOIN or FULL JOIN.
 
@@ -405,6 +419,11 @@ Here again the output of the Inner JOIN for comparison:
 ## 4.5 Left Excluding Join
 
 
+![](/post/2019-04-16-data-management_files/p7s6.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
+
+
 ```{r, eval=F, echo=T}
 print()
 print('Countries_Inhabitants:')
@@ -440,6 +459,11 @@ df_final_left_excl
 ## 4.6 Right Excluding Join
 
 
+![](/post/2019-04-16-data-management_files/p7s7.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
+
+
 ```{r, eval=F, echo=T}
 print()
 print('Countries_Inhabitants:')
@@ -473,6 +497,11 @@ df_final_right_excl
 
 
 ## 4.7 Outer Excluding Join
+
+
+![](/post/2019-04-16-data-management_files/p7s8.png)
+
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
 
 
 ```{r, eval=F, echo=T}
