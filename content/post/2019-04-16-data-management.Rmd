@@ -111,7 +111,7 @@ df_final_concat_rows = pd.concat([Customer_1, Customer_2])
 df_final_concat_rows
 ```
 
-![](/post/2019-04-16-data-management_files/p7p7.png)
+![](/post/2019-04-16-data-management_files/p7p8.png)
 
 
 ```{r, eval=F, echo=T}
@@ -127,7 +127,7 @@ print(Countries_Capital)
 print('--------------------------')
 ```
 
-![](/post/2019-04-16-data-management_files/p7p8.png)
+![](/post/2019-04-16-data-management_files/p7p9.png)
 
 
 ```{r, eval=F, echo=T}
@@ -135,17 +135,37 @@ df_final_concat_rows2 = pd.concat([Countries_Main, Countries_Capital])
 df_final_concat_rows2
 ```
 
-![](/post/2019-04-16-data-management_files/p7p9.png)
+![](/post/2019-04-16-data-management_files/p7p910.png)
 
 
 
+## 3.2 Concat along columns
 
 
 
+```{r, eval=F, echo=T}
+print()
+print('Countries_Main:')
+print()
+print(Countries_Main)
+print('--------------------------')
+print()
+print('Countries_Capital:')
+print()
+print(Countries_Capital)
+print('--------------------------')
+```
+
+![](/post/2019-04-16-data-management_files/p7p11.png)
 
 
 
+```{r, eval=F, echo=T}
+df_final_concat = pd.concat([Countries_Main, Countries_Capital], axis=1)
+df_final_concat
+```
 
+![](/post/2019-04-16-data-management_files/p7p12.png)
 
 
 
@@ -174,6 +194,11 @@ df_final_concat_rows2
 
 
 
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-04-16-data-management_files/p7p.png)
 
 
 
