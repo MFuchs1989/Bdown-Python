@@ -50,6 +50,8 @@ from sklearn.linear_model import LogisticRegression
 import statsmodels.api as sm
 
 #for chapter 6.1
+## You may need to install the following library: 
+## conda install -c glemaitre imbalanced-learn
 from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
