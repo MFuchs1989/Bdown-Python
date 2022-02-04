@@ -220,7 +220,9 @@ df_final_inner
 
 ## 4.2 Left Join
 
+![](/post/2019-04-16-data-management_files/p7s3.png)
 
+Source: [C.L. Moffatt](https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins)
 
 
 ```{r, eval=F, echo=T}
