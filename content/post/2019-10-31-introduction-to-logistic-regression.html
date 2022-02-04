@@ -86,13 +86,21 @@ from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
 from sklearn.metrics import plot_confusion_matrix
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
+
 from sklearn.metrics import confusion_matrix
+
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import plot_roc_curve
+
+
 from sklearn.model_selection import cross_val_score</code></pre>
 <pre class="r"><code>bank = pd.read_csv(&quot;bank.csv&quot;, sep = &#39;;&#39;)
 bank = bank.rename(columns={&#39;y&#39;:&#39;final_subscribed&#39;})
@@ -385,6 +393,22 @@ This means that the top left corner of the chart is the “ideal” point - a fa
 roc_auc_score(testY_final, y_pred_proba)</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p22.png" /></p>
 <p>AUC score 1 represents perfect classifier, and 0.5 represents a worthless classifier.</p>
+<p><strong>Multiple ROC curves</strong></p>
+<p>The library scikit-learn also has a function (plot_roc_curve) that creates such a graph easier and faster. In addition, we have the possibility to compare the performance of several classification algorithms in one graph.</p>
+<p>For this purpose, I will again train three different classification algorithms and then compare their performance.</p>
+<p>I will explain how the <a href="https://michael-fuchs-python.netlify.app/2019/11/30/introduction-to-decision-trees/">DecisionTreeClassifier</a> or the <a href="https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/#random-forest-classifier">RandomForestClassifier</a> works in more detail in a later post.</p>
+<pre class="r"><code>lr = LogisticRegression()
+dt = DecisionTreeClassifier()
+rf = RandomForestClassifier()</code></pre>
+<pre class="r"><code>lr.fit(trainX_final, trainY_final)
+dt.fit(trainX_final, trainY_final)
+rf.fit(trainX_final, trainY_final)</code></pre>
+<pre class="r"><code>disp = plot_roc_curve(lr, testX_final, testY_final)</code></pre>
+<p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z4.png" /></p>
+<pre class="r"><code>disp = plot_roc_curve(lr, testX_final, testY_final);
+plot_roc_curve(dt, testX_final, testY_final, ax=disp.ax_);
+plot_roc_curve(rf, testX_final, testY_final, ax=disp.ax_)</code></pre>
+<p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z5.png" /></p>
 </div>
 <div id="cross-validation" class="section level3">
 <h3>6.3.4 Cross Validation</h3>

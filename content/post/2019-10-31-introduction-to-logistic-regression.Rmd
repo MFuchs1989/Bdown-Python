@@ -57,13 +57,21 @@ from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
 from sklearn.metrics import plot_confusion_matrix
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
+
 from sklearn.metrics import confusion_matrix
+
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import plot_roc_curve
+
+
 from sklearn.model_selection import cross_val_score
 ```
 
@@ -540,6 +548,46 @@ roc_auc_score(testY_final, y_pred_proba)
 
 
 AUC score 1 represents perfect classifier, and 0.5 represents a worthless classifier.
+
+
+**Multiple ROC curves**
+
+
+The library scikit-learn also has a function (plot_roc_curve) that creates such a graph easier and faster. In addition, we have the possibility to compare the performance of several classification algorithms in one graph. 
+
+For this purpose, I will again train three different classification algorithms and then compare their performance. 
+
+I will explain how the [DecisionTreeClassifier](https://michael-fuchs-python.netlify.app/2019/11/30/introduction-to-decision-trees/) or the [RandomForestClassifier](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/#random-forest-classifier) works in more detail in a later post. 
+
+
+```{r, eval=F, echo=T}
+lr = LogisticRegression()
+dt = DecisionTreeClassifier()
+rf = RandomForestClassifier()
+```
+
+```{r, eval=F, echo=T}
+lr.fit(trainX_final, trainY_final)
+dt.fit(trainX_final, trainY_final)
+rf.fit(trainX_final, trainY_final)
+```
+
+```{r, eval=F, echo=T}
+disp = plot_roc_curve(lr, testX_final, testY_final)
+```
+
+![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z4.png)
+
+
+```{r, eval=F, echo=T}
+disp = plot_roc_curve(lr, testX_final, testY_final);
+plot_roc_curve(dt, testX_final, testY_final, ax=disp.ax_);
+plot_roc_curve(rf, testX_final, testY_final, ax=disp.ax_)
+```
+
+![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z5.png)
+
+
 
 
 ### 6.3.4 Cross Validation
