@@ -17,20 +17,69 @@ output:
 # 1 Introduction
 
 One of the essential skills of a data scientist is to generate and bring together data from different sources.
+For this I will create example tables in the following chapter 4, on which I will show the different joins afterwards. 
 
-For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
-
-
-
-**Loading the libraries and the data**
+# 2 Loading the Libraries and the Data
 
 ```{r, eval=F, echo=T}
 import pandas as pd
+import numpy as np
 ```
 
+
 ```{r, eval=F, echo=T}
-flight = pd.read_csv("path/to/file/flight.csv")
+Countries_Main = pd.DataFrame({'Country_ID': [1, 2, 3, 4], 
+                               'Country_Name': ['Egypt', 
+                                                'Brazil', 
+                                                'Germany', 
+                                                'Malta']})
+Countries_Main
 ```
+
+![](/post/2019-04-16-data-management_files/p7p1.png)
+
+
+```{r, eval=F, echo=T}
+Countries_Capital = pd.DataFrame({'Country_ID': [1, 2, 3, 4], 
+                                  'Capital_Name': ['Cairo', 
+                                                   'Brasilia', 
+                                                   'Berlin', 
+                                                   'Valletta']})
+Countries_Capital
+```
+
+![](/post/2019-04-16-data-management_files/p7p2.png)
+
+
+```{r, eval=F, echo=T}
+Countries_Inhabitants = pd.DataFrame({'Country_ID': [1, 2, 4], 
+                                      'Inhabitants': [93.4, 207.9, 0.44]})
+Countries_Inhabitants
+```
+
+![](/post/2019-04-16-data-management_files/p7p3.png)
+
+
+
+```{r, eval=F, echo=T}
+Countries_Land_Area = pd.DataFrame({'Country_ID': [1, 2, 3], 
+                                    'Land_Area': [1, 8.5, 0.36]})
+Countries_Land_Area
+```
+
+![](/post/2019-04-16-data-management_files/p7p4.png)
+
+
+
+Here is another overview of the tables I created:
+
+
+![](/post/2019-04-16-data-management_files/p7p5.png)
+
+
+
+
+
 
 
 # 2 Join the two dataframes along rows
