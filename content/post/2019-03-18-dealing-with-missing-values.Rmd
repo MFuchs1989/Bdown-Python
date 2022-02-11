@@ -372,31 +372,104 @@ Again, the principle that the lowest value is used applies. In our example, this
 
 ### 5.2.2 Replace np.NaN with specific values
 
+```{r, eval=F, echo=T}
+df_replace_9 = df.copy()
+df_replace_9
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p28.png)
 
 
+However, we also have the option of using certain values:
+
+```{r, eval=F, echo=T}
+imp_job_const = SimpleImputer(missing_values=np.nan, 
+                              strategy='constant',
+                              fill_value='others')
+
+df_replace_9['Job'] = imp_job_const.fit_transform(df_replace_9[['Job']])
+df_replace_9
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p29.png)
 
 
+## 5.3 for specific Values
+
+Not only a certain kind of values like NaN values can be replaced, this is also possible with specific values. 
 
 
+### 5.3.1 single values
+
+For the following example we take the last version of the last used data set, here df_replace_9:
 
 
+```{r, eval=F, echo=T}
+df_replace_9
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p30.png)
+
+
+```{r, eval=F, echo=T}
+rep_job_const = SimpleImputer(missing_values='others', 
+                              strategy='constant',
+                              fill_value='not_in_scope')
+
+df_replace_9['Job'] = rep_job_const.fit_transform(df_replace_9[['Job']])
+df_replace_9
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p31.png)
+
+
+As we can see, 'others' became 'not_in_scope'.
+
+
+### 5.3.2 multiple values
+
+Unfortunately, we cannot work with lists for multiple values. But with the use of the pipeline function it works. We use for our following example again the last state of the dataset 'df_replace_9':
 
 
 
 ```{r, eval=F, echo=T}
+rep_pipe = Pipeline([('si1',SimpleImputer(missing_values = 'Manager', 
+                                          strategy='constant',
+                                          fill_value='not_relevant')),
+                     ('si2', SimpleImputer(missing_values = 'Teacher', 
+                                           strategy='constant', 
+                                           fill_value='not_relevant'))])
 
+df_replace_9['Job'] = rep_pipe.fit_transform(df_replace_9[['Job']])
+df_replace_9
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p32.png)
 
 
+In my opinion, however, this approach has two disadvantages. Firstly, the values used are not saved (so cannot be reused automatically) and secondly, this is a lot of code to write. With an if-else function you would be faster:
+
+```{r, eval=F, echo=T}
+def rep_func(col):
+
+    if col == 'Student':
+        return 'useless'
+    if col == 'not_relevant':
+        return 'useless'
+    else:
+        return 'useless'
+
+df_replace_9['Job'] = df_replace_9['Job'].apply(rep_func)
+df_replace_9
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p33.png)
 
 
+But again, the values used cannot be easily reused. You would have to create your own dictionary. 
 
 
-
-
-
+# 6 Further Imputation Methods
 
 
 
