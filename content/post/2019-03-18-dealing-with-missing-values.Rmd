@@ -556,38 +556,136 @@ df_knn
 ## 7.1 on single columns
 
 
+```{r, eval=F, echo=T}
+df_knn_1 = df_knn.copy()
 
 
+imp_age_knn = KNNImputer(n_neighbors=2)
 
+df_knn_1['Age'] = imp_age_knn.fit_transform(df_knn_1[['Age']])
+df_knn_1
+```
 
-
-
-
-
-
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p40.png)
 
 
 
 ```{r, eval=F, echo=T}
+imp_salary_knn = KNNImputer(n_neighbors=2)
 
+df_knn_1['Salary'] = imp_salary_knn.fit_transform(df_knn_1[['Salary']])
+df_knn_1
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p41.png)
+
+
+So far so good. However, this is not how the KNNImputer is used in practice. I will show you why in the following chapter.
+
+
+## 7.2 on multiple columns
+
+
+```{r, eval=F, echo=T}
+df_knn_2 = df_knn.copy()
+df_knn_2
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p42.png)
 
 
 
+```{r, eval=F, echo=T}
+imp_age_salary_knn = KNNImputer(n_neighbors=2)
+
+df_knn_2[['Age', 'Salary']] = imp_age_salary_knn.fit_transform(df_knn_2[['Age', 'Salary']])
+df_knn_2
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p43.png)
+
+
+As you can see from the comparison below, the two methods use different values from the KNNImputer (see index 1,3 and 7).
+
+```{r, eval=F, echo=T}
+print()
+print('df_knn_1')
+print()
+print(df_knn_1)
+print('-------------------------')
+print()
+print('df_knn_2')
+print()
+print(df_knn_2)
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p44.png)
+
+
+It should be mentioned here that sometimes it is better to choose this statistical approach in order to achieve better results in the later model training. 
+
+
+## 7.3 Note on this Chapter
+
+KNNImputer stores the calculated metrics for each column added to it. **The number and the order of the columns must remain the same!**
+
+
+# 8 Imputation in Practice 
+
+As already announced, I would like to show again how I use the replacement of missing values in practice during model training. It should be noted that I use a simple illustrative example below. In practice, there would most likely be additional steps like using encoders or feature scaling. This will be omitted at this point. But I will show in which case which order should be followed.
+
+In the following, I use a modified version of the created dataset from the KNN example:
+
+
+```{r, eval=F, echo=T}
+df_practice = df_knn.copy()
+Target_Var = [0,0,1,0,1,1,0,1,1,0]
+df_practice['Target_Var'] = Target_Var
+
+df_practice
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p45.png)
+
+## 8.1 SimpleImputer in Practice
+
+### 8.1.1 Train-Test Split
+
+```{r, eval=F, echo=T}
+df_practice_simpl_imp = df_practice.copy()
+df_practice_simpl_imp
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p46.png)
+
+
+In model training, I first divide the data set into a training part and a test part.
+
+```{r, eval=F, echo=T}
+x = df_practice_simpl_imp.drop('Target_Var', axis=1)
+y = df_practice_simpl_imp['Target_Var']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
 
 
 
+```{r, eval=F, echo=T}
+print()
+print('trainX')
+print()
+print(trainX)
+print('-------------------------')
+print()
+print('testX')
+print()
+print(testX)
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p47.png)
 
 
-
-
-
-
-
-
-
+### 8.1.2 Fit&Transform (trainX)
 
 
 
