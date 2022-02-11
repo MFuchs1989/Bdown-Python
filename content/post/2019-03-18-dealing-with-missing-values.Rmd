@@ -759,6 +759,177 @@ testX.isnull().sum()
 In order to be able to test the created model, we also need to replace them. For this purpose, we saved the metrics of the two SimpleImputers used in the previous step and can use them again here.
 
 
+### 8.1.4 Transform (testX)
+
+In the following, I will show the syntax to replace missing values for both columns ('Age' and 'Salary'). I am aware that in this example only the 'Age' column contains a missing value. But in practice the data sets are usually larger than 10 observations. 
+
+
+```{r, eval=F, echo=T}
+# Transform testX column 'Age'
+testX['Age'] = imp_age_mean1.transform(testX[['Age']])
+
+# Transform testX column 'Salary'
+testX['Salary'] = imp_salary_mean1.transform(testX[['Salary']])
+
+print(testX)
+print()
+print('Number of missing values:')
+print(testX.isnull().sum())
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p51.png)
+
+Now the test of our model training would also work. 
+
+
+## 8.2 ffill & backfill in Practice
+
+As already noted in chapter 6.3, we cannot directly save a metric for further use with the ffill or backfill method. Therefore, in this part I show how I proceed in such a situation.
+
+Here I will not go into each step individually, as they have been sufficiently explained in the previous chapter.
+
+
+### 8.2.1 Train-Test Split
+
+
+```{r, eval=F, echo=T}
+df_practice_ffill_bfill = df_practice.copy()
+df_practice_ffill_bfill
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p52.png)
+
+```{r, eval=F, echo=T}
+x = df_practice_ffill_bfill.drop('Target_Var', axis=1)
+y = df_practice_ffill_bfill['Target_Var']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+
+```{r, eval=F, echo=T}
+print()
+print('trainX')
+print()
+print(trainX)
+print('-------------------------')
+print()
+print('testX')
+print()
+print(testX)
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p53.png)
+
+
+### 8.2.2 Use ffill or backfill
+
+Now I will replace the missing values in our example with the ffill method. 
+
+```{r, eval=F, echo=T}
+# ffill column 'Age'
+trainX['Age'] = trainX['Age'].fillna(method='ffill')
+# ffill column 'Salary'
+trainX['Salary'] = trainX['Salary'].fillna(method='ffill')
+
+print(trainX)
+print()
+print('Number of missing values:')
+print(trainX.isnull().sum())
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p54.png)
+
+### 8.2.3 Fit (trainX)
+
+```{r, eval=F, echo=T}
+# Fit trainX column 'Age' with strategy='mean'
+imp_age_mean2 = SimpleImputer(missing_values=np.nan, strategy='mean')
+imp_age_mean2.fit(trainX[['Age']])
+
+# Fit trainX column 'Salary' with strategy='mean'
+imp_salary_mean2 = SimpleImputer(missing_values=np.nan, strategy='mean')
+imp_salary_mean2.fit(trainX[['Salary']])
+```
+
+
+```{r, eval=F, echo=T}
+pk.dump(imp_age_mean, open('imp_age_mean2.pkl', 'wb'))
+pk.dump(imp_salary_mean, open('imp_salary_mean2.pkl', 'wb'))
+```
+
+
+### 8.2.4 Transform (testX)
+
+I'll leave out the part about model training at this point, since it would only be fictitiously presented anyway. 
+
+```{r, eval=F, echo=T}
+testX.isnull().sum()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p55.png)
+
+
+
+```{r, eval=F, echo=T}
+# Transform testX column 'Age'
+testX['Age'] = imp_age_mean2.transform(testX[['Age']])
+
+# Transform testX column 'Salary'
+testX['Salary'] = imp_salary_mean2.transform(testX[['Salary']])
+
+print(testX)
+print()
+print('Number of missing values:')
+print(testX.isnull().sum())
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p56.png)
+
+## 8.3 KNNImputer in Practice
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -792,32 +963,6 @@ In order to be able to test the created model, we also need to replace them. For
 
 
 
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -827,6 +972,8 @@ In order to be able to test the created model, we also need to replace them. For
 ```
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
 
 
 
