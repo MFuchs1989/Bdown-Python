@@ -1083,26 +1083,3 @@ In this post, I have shown different methods of replacing missing values in a da
 
 
 
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
-
-
-
-
-
-
-
-
-
-
-
-
