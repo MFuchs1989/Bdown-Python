@@ -889,71 +889,193 @@ print(testX.isnull().sum())
 
 ## 8.3 KNNImputer in Practice
 
+Now we come to the last method described in this post for replacing missing values in practice.
+
+
+### 8.3.1 Train-Test Split
+
+```{r, eval=F, echo=T}
+df_practice_knn = df_practice.copy()
+df_practice_knn
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p57.png)
+
+
+```{r, eval=F, echo=T}
+x = df_practice_knn.drop('Target_Var', axis=1)
+y = df_practice_knn['Target_Var']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+```{r, eval=F, echo=T}
+print()
+print('trainX')
+print()
+print(trainX)
+print('-------------------------')
+print()
+print('testX')
+print()
+print(testX)
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p58.png)
+
+### 8.3.2 Fit&Transform (trainX)
+
+
+```{r, eval=F, echo=T}
+# Fit and Transform trainX column 'Age' and 'Salary'
+imp_age_salary_knn1 = KNNImputer(n_neighbors=2)
+trainX[['Age', 'Salary']] = imp_age_salary_knn1.fit_transform(trainX[['Age', 'Salary']])
+
+print(trainX)
+print()
+print('Number of missing values:')
+print(trainX.isnull().sum())
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p59.png)
+
+
+```{r, eval=F, echo=T}
+pk.dump(imp_age_salary_knn1, open('imp_age_salary_knn1.pkl', 'wb'))
+```
 
 
 
+### 8.3.3 Transform (testX)
+
+
+I'll leave out again the part about model training at this point, since it would only be fictitiously presented anyway.
+
+
+```{r, eval=F, echo=T}
+testX.isnull().sum()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p60.png)
 
 
 
+```{r, eval=F, echo=T}
+# Transform testX column 'Age' and 'Salary'
+testX[['Age', 'Salary']] = imp_age_salary_knn1.transform(testX[['Age', 'Salary']])
 
+print(testX)
+print()
+print('Number of missing values:')
+print(testX.isnull().sum())
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p61.png)
+
+
+## 8.4 Recommendation
+
+
+What works for me in practice is a method from statistics that can be used when the data of a variable is normally distributed.
+
+
+We know from [normal distributions (Bell Curve)](https://www.simplypsychology.org/normal-distribution.html) that 68% of the data lie between Z-1 and Z1. 
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4z1.png)
+
+Source: [SimplyPsychology](https://www.simplypsychology.org/normal-distribution.html)
+
+
+
+That is, they have a mean value of 0 +- 1sd with a standard normal distribution. 
+
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4z2.png)
+
+Source: [SimplyPsychology](https://www.simplypsychology.org/normal-distribution.html)
+
+
+
+Therefore, for a variable with a normal distribution, we can replace the missing values with random values that have a range from mean - 1sd to mean + 1sd. 
+
+This method, is a little more cumbersome than the functions we used before, but it provides slightly more accurate values.
+
+
+
+```{r, eval=F, echo=T}
+df_recom = df_knn.copy()
+df_recom = df_recom[['Name', 'Age']]
+df_recom
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p62.png)
+
+
+
+```{r, eval=F, echo=T}
+mean_age = df_recom['Age'].mean()
+sd_age = df_recom['Age'].std()
+
+print('Mean of columne "Age": ' + str(mean_age))
+print('Standard deviation of columne "Age": ' + str(sd_age))
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p63.png)
+
+
+
+Fast saving of the values:
+
+```{r, eval=F, echo=T}
+pk.dump(mean_age, open('mean_age.pkl', 'wb'))
+pk.dump(sd_age, open('sd_age.pkl', 'wb'))
+```
+
+With the random.uniform function I can output floats for a certain range.
+
+
+```{r, eval=F, echo=T}
+random.uniform(mean_age-sd_age, 
+               mean_age+sd_age)
+
+print('Lower limit of the range: ' + str(mean_age-sd_age))
+print('Upper limit of the range: ' + str(mean_age+sd_age))
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p64.png)
 
 
 
 
 ```{r, eval=F, echo=T}
-
+def fill_missings_gaussian_func(col, mean, sd):
+    if np.isnan(col) == True: 
+        col = random.uniform(mean-sd, mean+sd)
+    else:
+         col = col
+    return col
 ```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
-
-
-
-
 
 
 
 ```{r, eval=F, echo=T}
-
+df_recom['Age'] = df_recom['Age'].apply(fill_missings_gaussian_func, args=(mean_age, sd_age)) 
+df_recom
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p65.png)
+
+
+
+Voilá, we have inserted different new values for the missing values of the column 'Age', which are between the defined upper and lower limit of the rage. Now, if you want to be very precise, you can round the 'Age' column to whole numbers to make it consistent.
 
 
 
 
+# 9 Conclusion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
-
-
-
-
-
-
-
+In this post, I have shown different methods of replacing missing values in a dataset in a useful way. Furthermore, I have shown how these procedures should be applied in practice during a model training. 
 
 
 
