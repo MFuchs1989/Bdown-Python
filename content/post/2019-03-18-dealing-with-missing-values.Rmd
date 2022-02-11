@@ -15,307 +15,353 @@ output:
 
 # 1 Introduction
 
-test
-
 
 In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.
 
-For chapter 2.2 of this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
+# 2 Loading the Libraries and the Data
 
-**Loading the libraries**
 ```{r, eval=F, echo=T}
 import pandas as pd
 import numpy as np
 
-#relevant for chapter 2.2
-import missingno as msno
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+
+from sklearn.impute import KNNImputer
+
+from sklearn.model_selection import train_test_split
+import pickle as pk
+import random
 ```
 
-
-# 2 Checking for missing values
-
 ```{r, eval=F, echo=T}
-df1 = pd.DataFrame({'Name': ['Anton', np.NaN, 'Moni', 'Renate', 'Justus'],
-                   'Alter': [32,22,62,np.NaN,18],
-                   'Gehalt': [np.NaN, np.NaN,4500,2500,3800]})
-df1
+df = pd.DataFrame({'Name': ['Anton', 'Moni', np.NaN, 'Renate', 'Justus'],
+                   'Age': [32,22,62,np.NaN,18],
+                   'Salary': [np.NaN, np.NaN,4500,2500,3800],
+                   'Job': ['Student', np.NaN, 'Manager', 'Teacher', 'Student']})
+df
 ```
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p1.png)
 
 
+# 3 Checking for missing values
+
 
 ```{r, eval=F, echo=T}
-df1.isnull().sum()
+df.isnull().sum()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+```{r, eval=F, echo=T}
+def mv_overview_func(df):
+    '''
+    Gives an overview of the total number and percentage of missing values in a data set
+    
+    Args:
+        df (DataFrame): Dataframe to which the function is to be applied
+        
+    Returns:
+        Overview of the total number and percentage of missing values
+    '''
+    # Total missing values
+    mis_val = df.isnull().sum()
+    # Percentage of missing values
+    mis_val_percent = 100 * df.isnull().sum() / len(df)
+    # Data Types
+    data_types = df.dtypes
+    # Make a table with the results
+    mis_val_table = pd.concat([mis_val, mis_val_percent, data_types], axis=1)
+    # Rename the columns
+    mis_val_table_ren_columns = mis_val_table.rename(
+    columns = {0 : 'Missing Values', 1 : '% of Total Values', 2 : 'Data Type'})
+    # Sort the table by percentage of missing descending
+    mis_val_table_ren_columns = mis_val_table_ren_columns[
+        mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
+        '% of Total Values', ascending=False).round(1)
+    # Print some summary information
+    print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"      
+            "There are " + str(mis_val_table_ren_columns.shape[0]) +
+            " columns that have missing values.")
+    # Return the dataframe with missing information
+    return mis_val_table_ren_columns
+```
+
+```{r, eval=F, echo=T}
+mv_overview_func(df)
 ```
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
 
 
-## 2.1 Missing Value Function
+
+
+
 
 
 ```{r, eval=F, echo=T}
-def missing_values_table(df):
-        # Total missing values
-        mis_val = df.isnull().sum()
-        
-        # Percentage of missing values
-        mis_val_percent = 100 * df.isnull().sum() / len(df)
-        
-        # Make a table with the results
-        mis_val_table = pd.concat([mis_val, mis_val_percent], axis=1)
-        
-        # Rename the columns
-        mis_val_table_ren_columns = mis_val_table.rename(
-        columns = {0 : 'Missing Values', 1 : '% of Total Values'})
-        
-        # Sort the table by percentage of missing descending
-        mis_val_table_ren_columns = mis_val_table_ren_columns[
-            mis_val_table_ren_columns.iloc[:,1] != 0].sort_values(
-        '% of Total Values', ascending=False).round(1)
-        
-        # Print some summary information
-        print ("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"      
-            "There are " + str(mis_val_table_ren_columns.shape[0]) +
-              " columns that have missing values.")
-        
-        # Return the dataframe with missing information
-        return mis_val_table_ren_columns
+
 ```
 
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
 
-```{r, eval=F, echo=T}
-missing_values_table(df1)
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p20.png)
 
-## 2.2 Visualization of missing values
 
-To demonstrate the following visualization, we load the data set mentioned under introduction and select some specific columns for this case. Furthermore we create some missing values for demonstration purposes.
 
 
-```{r, eval=F, echo=T}
-#load the data frame
-house = pd.read_csv("house_prices.csv")
 
-#select some specific columns for this case
-house = house[['bedrooms', 'floors', 'yr_built', 'grade']]
 
-#create some missing values for demonstration
-house['grade'] = house['grade'].replace(10, np.NaN)
-house['grade'] = house['grade'].replace(5, np.NaN)
-house['yr_built'] = house['yr_built'].replace(2003, np.NaN)
-house['yr_built'] = house['yr_built'].replace(2004, np.NaN)
-house['floors'] = house['floors'].replace(3, np.NaN)
-house['floors'] = house['floors'].replace(3.5, np.NaN)
-house['bedrooms'] = house['bedrooms'].replace(6, np.NaN)
-house['bedrooms'] = house['bedrooms'].replace(1, np.NaN)
 
-#have a look at the missing values generated
-#here we use the previously defined function fro chapter 2.1
-missing_values_table(house)
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4s1.png)
 
-Now we generate a plot in which we can see missing values per column:
 
-```{r, eval=F, echo=T}
-len = len(house)
-mask = house.isnull()
 
 
-nullable_columns = house.columns[mask.any()].tolist()
-msno.matrix(house[nullable_columns].sample(len))
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4s2.png)
 
-White lines represent a missing value.
 
 
-# 3 Deletion of missing values
 
-```{r, eval=F, echo=T}
-df_del = df1.copy()
-df_del
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p3.png)
 
-All rows with minimum one NaN will be dropped.
-```{r, eval=F, echo=T}
-df_del.dropna()
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p4.png)
 
 
-All rows from the defined columns with a NaN will be dropped. 
-```{r, eval=F, echo=T}
-df_del.dropna(subset=['Name', 'Alter'])
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p5.png)
 
 
-# 4 Replace missings with values
 
-## 4.1 Variant 1
 
-Missing values from only one column (here "Name") are replaced. 
-```{r, eval=F, echo=T}
-df1_MbyW_Var1 = df1.copy()
 
-df1_MbyW_Var1['Name'] = df1_MbyW_Var1['Name'].fillna(0)
-df1_MbyW_Var1
-```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p6.png)
 
 
-Missing values from the complete dataset will be replaced.
-```{r, eval=F, echo=T}
-df1_MbyW_Var1.fillna(0, inplace=True)
-df1_MbyW_Var1
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p7.png)
-
-## 4.2 Variant 2
-
-```{r, eval=F, echo=T}
-df1_MbyW_Var2 = df1.copy()
-df1_MbyW_Var2.loc[df1_MbyW_Var2['Gehalt'].isnull(),'Gehalt'] = "Unbekannter Wert"
-df1_MbyW_Var2
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p8.png)
-
-
-
-# 5 Replace values with missings
-
-## 5.1 Variant 1
-
-Missing values from only one column (here "Gehalt") are replaced.
-```{r, eval=F, echo=T}
-df1_WbyM_Var1 = df1_MbyW_Var1.copy()
-
-df1_WbyM_Var1['Gehalt'] = df1_WbyM_Var1['Gehalt'].replace(0, np.NaN)
-df1_WbyM_Var1
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p9.png)
-
-
-Missing values from the complete dataset will be replaced.
-```{r, eval=F, echo=T}
-df1_WbyM_Var1 = df1_WbyM_Var1.replace(0, np.NaN)
-df1_WbyM_Var1
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p10.png)
-
-
-
-## 5.2 Variant 2
-
-```{r, eval=F, echo=T}
-df1_WbyM_Var2 = df1_MbyW_Var1.copy()
-df1_WbyM_Var2.loc[df1_WbyM_Var2['Alter'] == 0,:'Alter'] = np.NaN
-df1_WbyM_Var2
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p11.png)
-
-
-# 6 Further imputations
-
-```{r, eval=F, echo=T}
-df_basic = df1.copy()
-df_basic
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
-
-## 6.1 with mean
-
-Here all missing values will be replaced with the mean of the column "Alter".
-
-```{r, eval=F, echo=T}
-df_basic['Alter'].mean()
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p13.png)
-
-
-```{r, eval=F, echo=T}
-df_Alter_mean = df_basic['Alter'].fillna(df_basic['Alter'].mean())
-df_Alter_mean
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p14.png)
-
-
-```{r, eval=F, echo=T}
-df_basic['Alter_mean'] = df_Alter_mean
-df_basic
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p15.png)
-
-
-## 6.2 with ffill
-
-*ffill* replace the missing values with the nearest preceding non-missing value.
-
-```{r, eval=F, echo=T}
-df_Alter_ffill = df_basic['Alter'].fillna(method='ffill')
-df_Alter_ffill
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p16.png)
-
-
-```{r, eval=F, echo=T}
-df_basic['Alter_ffill'] = df_Alter_ffill
-df_basic
-```
-
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
-
-
-## 6.3  with backfill
-
-*backfill* replace the missing values with the nearest succeeding non-missing value.
 
 
 
 ```{r, eval=F, echo=T}
-df_Alter_backfill = df_basic['Alter'].fillna(method='backfill')
-df_Alter_backfill
+
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p18.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```{r, eval=F, echo=T}
-df_basic['Alter_backfill'] = df_Alter_backfill
-df_basic
+
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p19.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
 
 
 
 
-# 7 Conclusion
 
-Depending on the application, missing values can be omitted or replaced by different methods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+
+
+
 
 
 
