@@ -14,12 +14,9 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#checking-for-missing-values">2 Checking for missing values</a>
 <ul>
 <li><a href="#missing-value-function">2.1 Missing Value Function</a></li>
@@ -46,8 +43,8 @@ output:
 </ul>
 </div>
 
-<div id="introduction" class="section level1">
-<h1>1 Introduction</h1>
+<p>test
+# 1 Introduction</p>
 <p>In the real world, there is virtually no record that has no missing values. Dealing with missing values can be done differently. In the following several methods will be presented how to deal with them.</p>
 <p>For chapter 2.2 of this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 <p><strong>Loading the libraries</strong></p>
@@ -56,7 +53,6 @@ import numpy as np
 
 #relevant for chapter 2.2
 import missingno as msno</code></pre>
-</div>
 <div id="checking-for-missing-values" class="section level1">
 <h1>2 Checking for missing values</h1>
 <pre class="r"><code>df1 = pd.DataFrame({&#39;Name&#39;: [&#39;Anton&#39;, np.NaN, &#39;Moni&#39;, &#39;Renate&#39;, &#39;Justus&#39;],
