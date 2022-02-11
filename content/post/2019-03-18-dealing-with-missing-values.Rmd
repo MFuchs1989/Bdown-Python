@@ -130,6 +130,8 @@ df_drop.dropna(subset=['Name', 'Age'])
 
 ## 5.1 for **NUMERIC** Features
 
+### 5.1.1 Replace np.NaN with specific values
+
 
 ```{r, eval=F, echo=T}
 df_replace_1 = df.copy()
@@ -165,22 +167,34 @@ Does that make sense? Probably not. So let's look at imputations that follow a c
 
 ### 5.1.2 Replace np.NaN with MEAN
 
-
-
-
-
-
-
-
-
+A popular metric for replacing missing values is the use of mean. 
 
 
 
 ```{r, eval=F, echo=T}
-
+df_replace_2 = df.copy()
+df_replace_2
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p10.png)
+
+
+
+```{r, eval=F, echo=T}
+df_replace_2['Age'].mean()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p11.png)
+
+
+Here all missing values of the column 'Age' are replaced by their mean value.
+
+```{r, eval=F, echo=T}
+df_replace_2['Age'] = df_replace_2['Age'].fillna(df_replace_2['Age'].mean())
+df_replace_2
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
 
 
 

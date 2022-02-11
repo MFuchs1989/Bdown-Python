@@ -25,6 +25,7 @@ output:
 <ul>
 <li><a href="#for-numeric-features">5.1 for <strong>NUMERIC</strong> Features</a>
 <ul>
+<li><a href="#replace-np.nan-with-specific-values">5.1.1 Replace np.NaN with specific values</a></li>
 <li><a href="#replace-np.nan-with-mean">5.1.2 Replace np.NaN with MEAN</a></li>
 </ul></li>
 </ul></li>
@@ -109,6 +110,8 @@ df_drop</code></pre>
 <h1>5 Imputations</h1>
 <div id="for-numeric-features" class="section level2">
 <h2>5.1 for <strong>NUMERIC</strong> Features</h2>
+<div id="replace-np.nan-with-specific-values" class="section level3">
+<h3>5.1.1 Replace np.NaN with specific values</h3>
 <pre class="r"><code>df_replace_1 = df.copy()
 df_replace_1</code></pre>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p7.png" /></p>
@@ -121,9 +124,19 @@ df_replace_1</code></pre>
 df_replace_1</code></pre>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p9.png" /></p>
 <p>Does that make sense? Probably not. So let’s look at imputations that follow a certain logic.</p>
+</div>
 <div id="replace-np.nan-with-mean" class="section level3">
 <h3>5.1.2 Replace np.NaN with MEAN</h3>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
+<p>A popular metric for replacing missing values is the use of mean.</p>
+<pre class="r"><code>df_replace_2 = df.copy()
+df_replace_2</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p10.png" /></p>
+<pre class="r"><code>df_replace_2[&#39;Age&#39;].mean()</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p11.png" /></p>
+<p>Here all missing values of the column ‘Age’ are replaced by their mean value.</p>
+<pre class="r"><code>df_replace_2[&#39;Age&#39;] = df_replace_2[&#39;Age&#39;].fillna(df_replace_2[&#39;Age&#39;].mean())
+df_replace_2</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p12.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
