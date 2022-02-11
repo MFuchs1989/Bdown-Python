@@ -471,49 +471,89 @@ But again, the values used cannot be easily reused. You would have to create you
 
 # 6 Further Imputation Methods
 
+In the following chapter I would like to present some more imputation methods. 
+They differ from the previous ones because they use different values instead of NaN values and not specific values as before. 
+
+In some cases, this can lead to getting a little closer to the truth and thus improve the model training. 
 
 
+## 6.1 with ffill
 
+Here, the missing value is replaced by the preceding non-missing value. 
+
+```{r, eval=F, echo=T}
+df_replace_10 = df.copy()
+df_replace_10
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p34.png)
 
 
 ```{r, eval=F, echo=T}
-
+df_replace_10['Age'] = df_replace_10['Age'].fillna(method='ffill')
+df_replace_10
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p35.png)
 
 
+The ffill function also works for categorical variables. 
+
+```{r, eval=F, echo=T}
+df_replace_10['Job'] = df_replace_10['Job'].fillna(method='ffill')
+df_replace_10
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p36.png)
 
 
-
-
-
-
-
+The condition here is that there is a first value. Let's have a look at the column 'Salary'. Here we have two missing values right at the beginning. Here ffill does not work:
 
 
 ```{r, eval=F, echo=T}
-
+df_replace_10['Salary'] = df_replace_10['Salary'].fillna(method='ffill')
+df_replace_10
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p37.png)
+
+## 6.2 with backfill
+
+What does not work with ffill works with backfill. Backfill replaces the missing value with the upcoming non-missing value. 
+
+```{r, eval=F, echo=T}
+df_replace_10['Salary'] = df_replace_10['Salary'].fillna(method='backfill')
+df_replace_10
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p38.png)
+
+## 6.3 Note on this Chapter
+
+Due to the fact that different values are used for the missing values, it is not possible to define a uniform metric that should replace future missing values from the column.
+
+However, one can proceed as follows for a model training. You start by using the functions ffill or backfill and then calculate a desired metric of your choice (e.g. mean) and save it for future missing values from the respective column.
+
+I will explain the just described procedure in chapter 8.2 in more detail.
 
 
 
+# 7 KNNImputer
 
+Here, the KNN algorithm is used to replace missing values. 
+If you want to know how KNN works exactly, check out this post of mine: [Introduction to KNN Classifier.](https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/) For this chapter, I have again created a sample data set:
 
+```{r, eval=F, echo=T}
+df_knn = pd.DataFrame({'Name': ['Anton', 'Moni', 'Sven', 'Renate', 'Justus', 
+                                'Sarah', 'Jon', 'Alex', 'Jenny', 'Jo'],
+                       'Age': [32,22,62,np.NaN,18,63,np.NaN,44,23,71],
+                       'Salary': [4000, np.NaN,4500,2500,3800,5500,7000,np.NaN,4800,3700]})
+df_knn
+```
 
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p39.png)
 
-
-
-
-
-
-
-
-
-
-
+## 7.1 on single columns
 
 
 

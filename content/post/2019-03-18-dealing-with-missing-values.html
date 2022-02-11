@@ -41,7 +41,16 @@ output:
 <li><a href="#multiple-values">5.3.2 multiple values</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#further-imputation-methods">6 Further Imputation Methods</a></li>
+<li><a href="#further-imputation-methods">6 Further Imputation Methods</a>
+<ul>
+<li><a href="#with-ffill">6.1 with ffill</a></li>
+<li><a href="#with-backfill">6.2 with backfill</a></li>
+<li><a href="#note-on-this-chapter">6.3 Note on this Chapter</a></li>
+</ul></li>
+<li><a href="#knnimputer">7 KNNImputer</a>
+<ul>
+<li><a href="#on-single-columns">7.1 on single columns</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -296,9 +305,55 @@ df_replace_9</code></pre>
 </div>
 <div id="further-imputation-methods" class="section level1">
 <h1>6 Further Imputation Methods</h1>
+<p>In the following chapter I would like to present some more imputation methods.
+They differ from the previous ones because they use different values instead of NaN values and not specific values as before.</p>
+<p>In some cases, this can lead to getting a little closer to the truth and thus improve the model training.</p>
+<div id="with-ffill" class="section level2">
+<h2>6.1 with ffill</h2>
+<p>Here, the missing value is replaced by the preceding non-missing value.</p>
+<pre class="r"><code>df_replace_10 = df.copy()
+df_replace_10</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p34.png" /></p>
+<pre class="r"><code>df_replace_10[&#39;Age&#39;] = df_replace_10[&#39;Age&#39;].fillna(method=&#39;ffill&#39;)
+df_replace_10</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p35.png" /></p>
+<p>The ffill function also works for categorical variables.</p>
+<pre class="r"><code>df_replace_10[&#39;Job&#39;] = df_replace_10[&#39;Job&#39;].fillna(method=&#39;ffill&#39;)
+df_replace_10</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p36.png" /></p>
+<p>The condition here is that there is a first value. Let’s have a look at the column ‘Salary’. Here we have two missing values right at the beginning. Here ffill does not work:</p>
+<pre class="r"><code>df_replace_10[&#39;Salary&#39;] = df_replace_10[&#39;Salary&#39;].fillna(method=&#39;ffill&#39;)
+df_replace_10</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p37.png" /></p>
+</div>
+<div id="with-backfill" class="section level2">
+<h2>6.2 with backfill</h2>
+<p>What does not work with ffill works with backfill. Backfill replaces the missing value with the upcoming non-missing value.</p>
+<pre class="r"><code>df_replace_10[&#39;Salary&#39;] = df_replace_10[&#39;Salary&#39;].fillna(method=&#39;backfill&#39;)
+df_replace_10</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p38.png" /></p>
+</div>
+<div id="note-on-this-chapter" class="section level2">
+<h2>6.3 Note on this Chapter</h2>
+<p>Due to the fact that different values are used for the missing values, it is not possible to define a uniform metric that should replace future missing values from the column.</p>
+<p>However, one can proceed as follows for a model training. You start by using the functions ffill or backfill and then calculate a desired metric of your choice (e.g. mean) and save it for future missing values from the respective column.</p>
+<p>I will explain the just described procedure in chapter 8.2 in more detail.</p>
+</div>
+</div>
+<div id="knnimputer" class="section level1">
+<h1>7 KNNImputer</h1>
+<p>Here, the KNN algorithm is used to replace missing values.
+If you want to know how KNN works exactly, check out this post of mine: <a href="https://michael-fuchs-python.netlify.app/2019/12/27/introduction-to-knn-classifier/">Introduction to KNN Classifier.</a> For this chapter, I have again created a sample data set:</p>
+<pre class="r"><code>df_knn = pd.DataFrame({&#39;Name&#39;: [&#39;Anton&#39;, &#39;Moni&#39;, &#39;Sven&#39;, &#39;Renate&#39;, &#39;Justus&#39;, 
+                                &#39;Sarah&#39;, &#39;Jon&#39;, &#39;Alex&#39;, &#39;Jenny&#39;, &#39;Jo&#39;],
+                       &#39;Age&#39;: [32,22,62,np.NaN,18,63,np.NaN,44,23,71],
+                       &#39;Salary&#39;: [4000, np.NaN,4500,2500,3800,5500,7000,np.NaN,4800,3700]})
+df_knn</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p39.png" /></p>
+<div id="on-single-columns" class="section level2">
+<h2>7.1 on single columns</h2>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
+</div>
 </div>
