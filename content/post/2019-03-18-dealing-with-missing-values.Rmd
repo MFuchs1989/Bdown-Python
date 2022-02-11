@@ -53,7 +53,7 @@ df
 df.isnull().sum()
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
 
 
 ```{r, eval=F, echo=T}
@@ -94,43 +94,76 @@ def mv_overview_func(df):
 mv_overview_func(df)
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p2.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p3.png)
 
-
-
-
-
+# 4 Droping of Missing Values
 
 
 ```{r, eval=F, echo=T}
-
+df_drop = df.copy()
+df_drop
 ```
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p4.png)
 
 
+All rows with minimum one NaN will be dropped:
+
+```{r, eval=F, echo=T}
+df_drop.dropna()
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p5.png)
 
 
+All rows from the defined columns with a NaN will be dropped:
 
 
+```{r, eval=F, echo=T}
+df_drop.dropna(subset=['Name', 'Age'])
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p6.png)
 
 
+# 5 Imputations
+
+## 5.1 for **NUMERIC** Features
 
 
+```{r, eval=F, echo=T}
+df_replace_1 = df.copy()
+df_replace_1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p7.png)
 
 
+Missing values from only one column (here 'Name') are replaced:
 
 
+```{r, eval=F, echo=T}
+df_replace_1['Name'] = df_replace_1['Name'].fillna(0)
+df_replace_1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p8.png)
 
 
+Missing values from the complete dataset will be replaced:
+
+```{r, eval=F, echo=T}
+df_replace_1.fillna(0, inplace=True)
+df_replace_1
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p9.png)
 
 
+Does that make sense? Probably not. So let's look at imputations that follow a certain logic.
 
 
-
-
-
-
+### 5.1.2 Replace np.NaN with MEAN
 
 
 

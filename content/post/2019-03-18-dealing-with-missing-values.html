@@ -20,6 +20,14 @@ output:
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#loading-the-libraries-and-the-data">2 Loading the Libraries and the Data</a></li>
 <li><a href="#checking-for-missing-values">3 Checking for missing values</a></li>
+<li><a href="#droping-of-missing-values">4 Droping of Missing Values</a></li>
+<li><a href="#imputations">5 Imputations</a>
+<ul>
+<li><a href="#for-numeric-features">5.1 for <strong>NUMERIC</strong> Features</a>
+<ul>
+<li><a href="#replace-np.nan-with-mean">5.1.2 Replace np.NaN with MEAN</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -50,7 +58,7 @@ df</code></pre>
 <div id="checking-for-missing-values" class="section level1">
 <h1>3 Checking for missing values</h1>
 <pre class="r"><code>df.isnull().sum()</code></pre>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p2.png" /></p>
 <pre class="r"><code>def mv_overview_func(df):
     &#39;&#39;&#39;
     Gives an overview of the total number and percentage of missing values in a data set
@@ -83,7 +91,38 @@ df</code></pre>
     # Return the dataframe with missing information
     return mis_val_table_ren_columns</code></pre>
 <pre class="r"><code>mv_overview_func(df)</code></pre>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p2.png" /></p>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p3.png" /></p>
+</div>
+<div id="droping-of-missing-values" class="section level1">
+<h1>4 Droping of Missing Values</h1>
+<pre class="r"><code>df_drop = df.copy()
+df_drop</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p4.png" /></p>
+<p>All rows with minimum one NaN will be dropped:</p>
+<pre class="r"><code>df_drop.dropna()</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p5.png" /></p>
+<p>All rows from the defined columns with a NaN will be dropped:</p>
+<pre class="r"><code>df_drop.dropna(subset=[&#39;Name&#39;, &#39;Age&#39;])</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p6.png" /></p>
+</div>
+<div id="imputations" class="section level1">
+<h1>5 Imputations</h1>
+<div id="for-numeric-features" class="section level2">
+<h2>5.1 for <strong>NUMERIC</strong> Features</h2>
+<pre class="r"><code>df_replace_1 = df.copy()
+df_replace_1</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p7.png" /></p>
+<p>Missing values from only one column (here ‘Name’) are replaced:</p>
+<pre class="r"><code>df_replace_1[&#39;Name&#39;] = df_replace_1[&#39;Name&#39;].fillna(0)
+df_replace_1</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p8.png" /></p>
+<p>Missing values from the complete dataset will be replaced:</p>
+<pre class="r"><code>df_replace_1.fillna(0, inplace=True)
+df_replace_1</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p9.png" /></p>
+<p>Does that make sense? Probably not. So let’s look at imputations that follow a certain logic.</p>
+<div id="replace-np.nan-with-mean" class="section level3">
+<h3>5.1.2 Replace np.NaN with MEAN</h3>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
@@ -91,5 +130,6 @@ df</code></pre>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
+</div>
+</div>
 </div>
