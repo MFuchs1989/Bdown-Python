@@ -254,17 +254,123 @@ This way you can see which value is behind imp_age_mean concretely:
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
 
 
+### 5.1.3 Replace np.NaN with MEDIAN
+
+Other metrics such as the median can also be used instead of missing values:
+
+```{r, eval=F, echo=T}
+df_replace_5 = df.copy()
+df_replace_5
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p18.png)
+
+
+```{r, eval=F, echo=T}
+imp_age_median = SimpleImputer(missing_values=np.nan, strategy='median')
+
+df_replace_5['Age'] = imp_age_median.fit_transform(df_replace_5[['Age']])
+df_replace_5
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p19.png)
+
+
+```{r, eval=F, echo=T}
+imp_age_median.statistics_
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p20.png)
+
+
+### 5.1.4 Replace np.NaN with most_frequent
+
+For some variables, it makes sense to use the most frequently occurring value for NaNs instead of mean or median. 
+
+
+```{r, eval=F, echo=T}
+df_replace_6 = df.copy()
+df_replace_6
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p21.png)
 
 
 
+```{r, eval=F, echo=T}
+imp_age_mfreq = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+
+df_replace_6['Age'] = imp_age_mfreq.fit_transform(df_replace_6[['Age']])
+df_replace_6
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p22.png)
 
 
 
+Since there is no value in the variable 'Age' that occurs twice or more often, the lowest value is automatically taken. The same would apply if there were two equally frequent values.
+
+
+## 5.2 for **CATEGORICAL** Features
+
+### 5.2.1 Replace np.NaN with most_frequent
+
+The most_frequent function can be used for numeric variables as well as categorical variables. 
+
+
+```{r, eval=F, echo=T}
+df_replace_7 = df.copy()
+df_replace_7
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p23.png)
 
 
 
+```{r, eval=F, echo=T}
+imp_job_mfreq = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+
+df_replace_7['Job'] = imp_job_mfreq.fit_transform(df_replace_7[['Job']])
+df_replace_7
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p24.png)
 
 
+Here we see that with a frequency of 2, the job 'student' is the most common, so this is used for the missing value here. 
+
+```{r, eval=F, echo=T}
+imp_job_mfreq.statistics_
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p25.png)
+
+
+But what happens if we just don't have a most frequent value in a categorical column like in our example within the column 'Name'?
+
+
+```{r, eval=F, echo=T}
+df_replace_8 = df.copy()
+df_replace_8
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p26.png)
+
+
+```{r, eval=F, echo=T}
+imp_name_mfreq = SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+
+df_replace_8['Name'] = imp_name_mfreq.fit_transform(df_replace_8[['Name']])
+df_replace_8
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p27.png)
+
+
+Again, the principle that the lowest value is used applies. In our example, this is the name Anton, since it begins with A and thus comes before all other names in the alphabet. 
+
+
+### 5.2.2 Replace np.NaN with specific values
 
 
 
@@ -297,54 +403,11 @@ This way you can see which value is behind imp_age_mean concretely:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```{r, eval=F, echo=T}
 
 ```
 
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
