@@ -137,6 +137,32 @@ df_replace_2</code></pre>
 <pre class="r"><code>df_replace_2[&#39;Age&#39;] = df_replace_2[&#39;Age&#39;].fillna(df_replace_2[&#39;Age&#39;].mean())
 df_replace_2</code></pre>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p12.png" /></p>
+<p><strong>scikit-learn - SimpleImputer</strong></p>
+<p>Always keep in mind that you will need all the steps you take to prepare for model training to make predictions later.</p>
+<p>What do I mean by that exactly?
+If the data set you have available for model training already has missing values, it is quite possible that future data sets for which predictions are to be made will also contain missing values.
+In order for the prediction model to work, these missing values must be replaced by metrics that were also used in the model training.</p>
+<pre class="r"><code>df_replace_3 = df.copy()
+df_replace_3</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p13.png" /></p>
+<pre class="r"><code>imp_age_mean = SimpleImputer(missing_values=np.nan, strategy=&#39;mean&#39;)
+
+imp_age_mean.fit(df_replace_3[[&#39;Age&#39;]])
+df_replace_3[&#39;Age&#39;] = imp_age_mean.transform(df_replace_3[[&#39;Age&#39;]])
+df_replace_3</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p14.png" /></p>
+<p>In the steps shown before, I used the .fit and .transform functions separately. If it’s not about model training, you can also combine these two steps and save yourself another line of code.</p>
+<pre class="r"><code>df_replace_4 = df.copy()
+df_replace_4</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p15.png" /></p>
+<pre class="r"><code>imp_age_mean = SimpleImputer(missing_values=np.nan, strategy=&#39;mean&#39;)
+
+df_replace_4[&#39;Age&#39;] = imp_age_mean.fit_transform(df_replace_4[[&#39;Age&#39;]])
+df_replace_4</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p16.png" /></p>
+<p>This way you can see which value is behind imp_age_mean concretely:</p>
+<pre class="r"><code> imp_age_mean.statistics_</code></pre>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p17.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>
 <p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4p.png" /></p>

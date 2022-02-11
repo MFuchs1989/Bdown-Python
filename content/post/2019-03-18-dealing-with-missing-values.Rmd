@@ -197,10 +197,61 @@ df_replace_2
 ![](/post/2019-03-18-dealing-with-missing-values_files/p4p12.png)
 
 
+**scikit-learn - SimpleImputer**
+
+Always keep in mind that you will need all the steps you take to prepare for model training to make predictions later. 
+
+What do I mean by that exactly?
+If the data set you have available for model training already has missing values, it is quite possible that future data sets for which predictions are to be made will also contain missing values. 
+In order for the prediction model to work, these missing values must be replaced by metrics that were also used in the model training. 
 
 
+```{r, eval=F, echo=T}
+df_replace_3 = df.copy()
+df_replace_3
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p13.png)
 
 
+```{r, eval=F, echo=T}
+imp_age_mean = SimpleImputer(missing_values=np.nan, strategy='mean')
+
+imp_age_mean.fit(df_replace_3[['Age']])
+df_replace_3['Age'] = imp_age_mean.transform(df_replace_3[['Age']])
+df_replace_3
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p14.png)
+
+
+In the steps shown before, I used the .fit and .transform functions separately. If it's not about model training, you can also combine these two steps and save yourself another line of code. 
+
+```{r, eval=F, echo=T}
+df_replace_4 = df.copy()
+df_replace_4
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p15.png)
+
+
+```{r, eval=F, echo=T}
+imp_age_mean = SimpleImputer(missing_values=np.nan, strategy='mean')
+
+df_replace_4['Age'] = imp_age_mean.fit_transform(df_replace_4[['Age']])
+df_replace_4
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p16.png)
+
+
+This way you can see which value is behind imp_age_mean concretely: 
+
+```{r, eval=F, echo=T}
+ imp_age_mean.statistics_
+```
+
+![](/post/2019-03-18-dealing-with-missing-values_files/p4p17.png)
 
 
 
