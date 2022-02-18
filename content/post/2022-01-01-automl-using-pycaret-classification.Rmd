@@ -311,7 +311,7 @@ pycc.plot_model(best_clf,
                 save = True)
 ```
 
-Here is an overview of possible graphics in PyCaret: [Examples by module](https://pycaret.gitbook.io/docs/get-started/functions/analyze#examples-by-module)
+Here is an overview of possible graphics in PyCaret: [Examples by module - Classification](https://pycaret.gitbook.io/docs/get-started/functions/analyze#classification)
 
 
 
