@@ -14,6 +14,136 @@ output:
 
 # 1 Introduction
 
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133s1.png)
+
+Source: [PyCaret-GitHub](https://github.com/pycaret)
+
+
+Data Scientists tend to make their tasks more and more effective and efficient. This also applies to the field of machine learning model training. 
+There is a wide range of algorithms that can be used for regression and classification problems. 
+[Machine Learning Pipelines]( https://michael-fuchs-python.netlify.app/2021/05/11/machine-learning-pipelines/) have helped to simplify and speed up the process of finding the best model. 
+
+Now we come to the next stage: **Automated Machine Learning Libraries**
+
+In my research, I came across [**PyCaret**](https://pycaret.org/) in this regard. 
+
+[PyCaret is an open-source, low-code machine learning library in Python that automates machine learning workflows.](https://pycaret.org/)
+
+It can be used to work on the following problems:
+
++ [Classification](https://pycaret.gitbook.io/docs/get-started/quickstart#classification)
++ [Regression](https://pycaret.gitbook.io/docs/get-started/quickstart#regression)
++ [Clustering](https://pycaret.gitbook.io/docs/get-started/quickstart#clustering)
++ [Anomaly Detection](https://pycaret.gitbook.io/docs/get-started/quickstart#anomaly-detection)
++ [Natural Language Processing](https://pycaret.gitbook.io/docs/get-started/quickstart#natural-language-processing)
++ [Association Rules Mining](https://pycaret.gitbook.io/docs/get-started/quickstart#association-rules-mining)
++ [Time Series (beta)](https://pycaret.gitbook.io/docs/get-started/quickstart#time-series-beta)
+
+
+When I read through the [GitBook]( https://pycaret.gitbook.io/docs/) and the [API Reference]( https://pycaret.readthedocs.io/en/latest/) PyCaret was very promising and I can say I was not disappointed. 
+
+In the following I will show how to create a classification algorithm with PyCaret and what other possibilities you have with this AutoML library.
+
+
+# 2 Loading the Libraries and Data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+import pycaret.classification as pycc
+```
+
+
+```{r, eval=F, echo=T}
+class Color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+```
+
+```{r, eval=F, echo=T}
+bird_df = pd.read_csv('bird.csv').drop('id', axis=1)
+bird_df.head()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p1.png)
+
+
+```{r, eval=F, echo=T}
+bird_df.isnull().sum()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p2.png)
+
+
+
+# 3 PyCaret - Classification
+
+## 3.1  Setup
+
+As a first step, I initialize the training environment. At the same time, the transformation pipeline is created.
+This setup function takes two parameters:
+
++ the dataset
++ the target variable
+
+
+```{r, eval=F, echo=T}
+summary_preprocess = pycc.setup(bird_df, target = 'type')
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p3.png)
+
+First we can check if the data types of all variables were recognized correctly. If this is the case, as here, we can press Enter.
+
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p4.png)
+
+Now we get a detailed overview of the initialized setup and the performed transformation steps of the pipeline. 
+
+Default Transformations:
+
++ Missing Value Imputation
++ Perfect Collinearity Removal
++ One-Hot Encoding
++ Train-Test Split
+ 
+
+All transformations can be set individually in the setup function. See here: [PyCaret Official - Preprocessing](https://pycaret.gitbook.io/docs/get-started/preprocessing)
+
+These include:
+
++ [Data Preparation](https://pycaret.gitbook.io/docs/get-started/preprocessing/data-preparation)
+    + Missing Values
+    + Data Types
+    + Encoding
++ [Scale and Transform](https://pycaret.gitbook.io/docs/get-started/preprocessing/scale-and-transform)
++ [Feature Engineering](https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering)
++ [Feature Selection](https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection) and 
++ [Other Parameters](https://pycaret.gitbook.io/docs/get-started/preprocessing/other-setup-parameters)
+
+
+Use these preprocessing and transformation parameters in the setup as needed for your present data set. 
+
+In my example I leave it at the default settings. Using the get_config function we can view the edited record. 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23,8 +153,331 @@ output:
 
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p1.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
 
 
 
