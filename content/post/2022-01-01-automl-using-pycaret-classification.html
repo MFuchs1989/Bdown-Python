@@ -152,7 +152,7 @@ available_models</code></pre>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p10.png" /></p>
 <p><strong>Exclusion of specific models:</strong></p>
 <p>Alternatively, certain models can simply be excluded from the performance comparison. See the following syntax:</p>
-<p><code>best_clf_excl = pycc.compare_models(exclude = ['dummy', 'ridge'])</code></p>
+<pre class="r"><code>best_clf_excl = pycc.compare_models(exclude = [&#39;dummy&#39;, &#39;ridge&#39;])</code></pre>
 </div>
 <div id="further-settings" class="section level3">
 <h3>3.2.2 Further Settings</h3>
@@ -163,7 +163,9 @@ available_models</code></pre>
 <li><a href="https://pycaret.gitbook.io/docs/get-started/functions/train#disable-cross-validation">Disable Cross-Validation</a></li>
 </ul>
 <p>The syntax to these settings would look like this:</p>
-<p><code>best_clf_further_settings = pycc.compare_models(budget_time = 0.7,                                                  probability_threshold = 0.75,                                                  cross_validation=False)</code></p>
+<pre class="r"><code>best_clf_further_settings = pycc.compare_models(budget_time = 0.7, 
+                                                probability_threshold = 0.75, 
+                                                cross_validation=False)</code></pre>
 </div>
 </div>
 <div id="model-evaluation" class="section level2">
@@ -185,7 +187,10 @@ available_models</code></pre>
 <p><strong>Saving image files</strong></p>
 <p>If you want to save the output graphics in PyCaret, you have to set the safe parameter to True.
 The syntax would look like this:</p>
-<p><code>pycc.plot_model(best_clf,                  plot = 'confusion_matrix',                  plot_kwargs = {'percent' : True},                 save = True)</code></p>
+<pre class="r"><code>pycc.plot_model(best_clf, 
+                plot = &#39;confusion_matrix&#39;, 
+                plot_kwargs = {&#39;percent&#39; : True},
+                save = True)</code></pre>
 <p>Here is an overview of possible graphics in PyCaret: <a href="https://pycaret.gitbook.io/docs/get-started/functions/analyze#examples-by-module">Examples by module</a></p>
 </div>
 <div id="model-training" class="section level2">
@@ -197,7 +202,8 @@ The syntax would look like this:</p>
 <pre class="r"><code>et_clf = pycc.create_model(&#39;et&#39;, fold = 5)</code></pre>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p17.png" /></p>
 <p>For some specific algorithms, the hyperparameters can be set specifically. Here is an example with the Decision Tree Classifier:</p>
-<p><code>et_clf_custom_param = pycc.create_model('et',                                          max_depth = 5)</code></p>
+<pre class="r"><code>et_clf_custom_param = pycc.create_model(&#39;et&#39;, 
+                                        max_depth = 5)</code></pre>
 <p><strong>Further Settings</strong></p>
 <p>As with model comparison, additional settings can be made during model training:</p>
 <ul>
@@ -205,7 +211,9 @@ The syntax would look like this:</p>
 <li><a href="https://pycaret.gitbook.io/docs/get-started/functions/train#disable-cross-validation">Disable Cross-Validation</a></li>
 </ul>
 <p>The syntax to these settings would look like this:</p>
-<p><code>et_clf_further_settings = pycc.create_model('et',                                              probability_threshold = 0.75,                                              cross_validation=False)</code></p>
+<pre class="r"><code>et_clf_further_settings = pycc.create_model(&#39;et&#39;, 
+                                            probability_threshold = 0.75, 
+                                            cross_validation=False)</code></pre>
 <p><strong>Access performance metrics grid</strong></p>
 <p>The performance metrics are only displayed here, but not returned.
 However, they can be retrieved with the pull function.</p>

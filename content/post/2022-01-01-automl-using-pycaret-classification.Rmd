@@ -224,7 +224,10 @@ best_clf_specific = pycc.compare_models(include = ['ada', 'svm', 'nb'])
 
 Alternatively, certain models can simply be excluded from the performance comparison. See the following syntax:
 
-`best_clf_excl = pycc.compare_models(exclude = ['dummy', 'ridge'])`
+```{r, eval=F, echo=T}
+best_clf_excl = pycc.compare_models(exclude = ['dummy', 'ridge'])
+```
+
 
 
 
@@ -238,9 +241,11 @@ In PyCaret you have the possibility to make further settings in the model compar
 
 The syntax to these settings would look like this:
 
-`best_clf_further_settings = pycc.compare_models(budget_time = 0.7, 
+```{r, eval=F, echo=T}
+best_clf_further_settings = pycc.compare_models(budget_time = 0.7, 
                                                 probability_threshold = 0.75, 
-                                                cross_validation=False)`
+                                                cross_validation=False)
+```
 
 
 
@@ -296,10 +301,12 @@ pycc.plot_model(best_clf,
 If you want to save the output graphics in PyCaret, you have to set the safe parameter to True. 
 The syntax would look like this:
 
-`pycc.plot_model(best_clf, 
+```{r, eval=F, echo=T}
+pycc.plot_model(best_clf, 
                 plot = 'confusion_matrix', 
                 plot_kwargs = {'percent' : True},
-                save = True)`
+                save = True)
+```
 
 Here is an overview of possible graphics in PyCaret: [Examples by module](https://pycaret.gitbook.io/docs/get-started/functions/analyze#examples-by-module)
 
@@ -327,8 +334,11 @@ et_clf = pycc.create_model('et', fold = 5)
 
 For some specific algorithms, the hyperparameters can be set specifically. Here is an example with the Decision Tree Classifier:
 
-`et_clf_custom_param = pycc.create_model('et', 
-                                        max_depth = 5)`
+```{r, eval=F, echo=T}
+et_clf_custom_param = pycc.create_model('et', 
+                                        max_depth = 5)
+```
+
 
 **Further Settings**
 
@@ -339,9 +349,11 @@ As with model comparison, additional settings can be made during model training:
 
 The syntax to these settings would look like this:
 
-`et_clf_further_settings = pycc.create_model('et', 
+```{r, eval=F, echo=T}
+et_clf_further_settings = pycc.create_model('et', 
                                             probability_threshold = 0.75, 
-                                            cross_validation=False)`
+                                            cross_validation=False)
+```
 
 
 
