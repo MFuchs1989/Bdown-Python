@@ -466,12 +466,12 @@ stacked_clf_dynamic_results = pycc.pull()</code></pre>
 <p>Let’s take another look at the performance overviews. Again, I have only listed the relevant ones and omitted the overviews for less performant algorithms.</p>
 <pre class="r"><code>et_clf_results_df = et_clf_results.loc[[&#39;Mean&#39;]]
 voting_clf_dynamic_results_df = voting_clf_dynamic_results.loc[[&#39;Mean&#39;]]
-stacked_clf_results_results_df = stacked_clf_results.loc[[&#39;Mean&#39;]]
+stacked_clf_results_df = stacked_clf_results.loc[[&#39;Mean&#39;]]
 stacked_clf_dynamic_results_df = stacked_clf_dynamic_results.loc[[&#39;Mean&#39;]]
 
 comparison_df3 = pd.concat([et_clf_results_df,
                             voting_clf_dynamic_results_df,
-                            stacked_clf_results_results_df,
+                            stacked_clf_results_df,
                             stacked_clf_dynamic_results_df]).reset_index()
 
 comparison_df3 = comparison_df3.drop(&#39;index&#39;, axis=1) 

@@ -747,12 +747,12 @@ Let's take another look at the performance overviews. Again, I have only listed 
 ```{r, eval=F, echo=T}
 et_clf_results_df = et_clf_results.loc[['Mean']]
 voting_clf_dynamic_results_df = voting_clf_dynamic_results.loc[['Mean']]
-stacked_clf_results_results_df = stacked_clf_results.loc[['Mean']]
+stacked_clf_results_df = stacked_clf_results.loc[['Mean']]
 stacked_clf_dynamic_results_df = stacked_clf_dynamic_results.loc[['Mean']]
 
 comparison_df3 = pd.concat([et_clf_results_df,
                             voting_clf_dynamic_results_df,
-                            stacked_clf_results_results_df,
+                            stacked_clf_results_df,
                             stacked_clf_dynamic_results_df]).reset_index()
 
 comparison_df3 = comparison_df3.drop('index', axis=1) 
