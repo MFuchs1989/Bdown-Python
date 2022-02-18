@@ -515,61 +515,183 @@ If someone does not like this approach, they are welcome to continue with the ol
 
 ### 3.5.4 ensemble_models
 
+Another way to improve the existing model is to create an ensemble. For this we have two options here:
 
++ [Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/) 
++ [Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
 
+By default, PyCaret always uses 10 estimators for these two methods. However, I want more to be used right away, so I specify this parameter for both methods right away. 
 
+I will train new models for both methods and then compare performance.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**Method: Bagging:**
 
 
 ```{r, eval=F, echo=T}
+# Train the bagged Model 
+et_clf_bagged = pycc.ensemble_model(et_clf, 
+                                    method = 'Bagging', 
+                                    fold = 5,
+                                    n_estimators = 100)
 
+# Obtaining the performance overview
+et_clf_bagged_results = pycc.pull()
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p27.png)
 
 
+**Method: Boosting:**
+
+```{r, eval=F, echo=T}
+# Train the boosted Model 
+et_clf_boosted = pycc.ensemble_model(et_clf, 
+                                     method = 'Boosting', 
+                                     fold = 5,
+                                     n_estimators = 100)
+
+# Obtaining the performance overview
+et_clf_boosted_results = pycc.pull()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p28.png)
 
 
+**Overview of the performance metrics:**
+
+```{r, eval=F, echo=T}
+print(Color.BOLD +'Comparison of performance metrics' + Color.END)
+print()
+print('ExtraTreesClassifier:')
+print()
+print(et_clf_results.loc[['Mean']])
+print()
+print('ExtraTreesClassifier with Optimization:')
+print()
+print(et_clf_tuned_results.loc[['Mean']])
+print()
+print('ExtraTreesClassifier bagged:')
+print()
+print(et_clf_bagged_results.loc[['Mean']])
+print()
+print('ExtraTreesClassifier boosted:')
+print()
+print(et_clf_boosted_results.loc[['Mean']])
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p29.png)
+
+Since this is a little hard to read, I always quite like to create the following overview:
+
+```{r, eval=F, echo=T}
+et_clf_results_df = et_clf_results.loc[['Mean']]
+et_clf_tuned_results_df = et_clf_tuned_results.loc[['Mean']]
+et_clf_bagged_results_df = et_clf_bagged_results.loc[['Mean']]
+et_clf_boosted_results_df = et_clf_boosted_results.loc[['Mean']]
+
+comparison_df = pd.concat([et_clf_results_df,
+                          et_clf_tuned_results_df,
+                          et_clf_bagged_results_df,
+                          et_clf_boosted_results_df]).reset_index()
+
+comparison_df = comparison_df.drop('index', axis=1) 
+comparison_df.insert(0, "Model", ['et_clf', 'et_clf_tuned', 
+                                  'et_clf_bagged', 'et_clf_boosted'])
+
+comparison_df.style.highlight_max(color = 'lightgreen', axis = 0)
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p30.png)
+
+The overview shows us that the et_clf_boosted model performs best. 
+
+As with the tune_model function, there is also the *choose_better = True* parameter here. Use this one if you like.
 
 
+### 3.5.5 blend_models
+
+Another way I would like to introduce to improve performance is to use voting classifiers. 
+
+I have also written a post about this topic before see here: [Ensemble Modeling - Voting](https://michael-fuchs-python.netlify.app/2020/05/05/ensemble-modeling-voting/)
 
 
+```{r, eval=F, echo=T}
+# Training of multiple models
+lr_clf_voting = pycc.create_model('lr', fold = 5)
+dt_clf_voting = pycc.create_model('dt', fold = 5)
+et_clf_voting = pycc.create_model('et', fold = 5)
+
+voting_clf = pycc.blend_models([lr_clf_voting, 
+                                dt_clf_voting, 
+                                et_clf_voting])
+
+# Obtaining the performance overview
+voting_clf_results = pycc.pull()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p31.png)
 
 
+**Dynamic input estimators**
+
+The list of input estimators can also be created automatically using the compare_models function. We have used this function in chapter 3.2. Here the N best models are used as input list.
 
 
+```{r, eval=F, echo=T}
+# Training of N best models
+voting_clf_dynamic = pycc.blend_models(pycc.compare_models(n_select = 3))
+# Obtaining the performance overview
+voting_clf_dynamic_results = pycc.pull()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p32.png)
 
 
+Here you can see which estimator was finally used: 
+
+```{r, eval=F, echo=T}
+voting_clf_dynamic.estimators_
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p33.png)
 
 
+Here is a performance overview again. I have left out the models that have not brought any improvement, so that it remains clear. 
+
+```{r, eval=F, echo=T}
+et_clf_results_df = et_clf_results.loc[['Mean']]
+et_clf_boosted_results_df = et_clf_boosted_results.loc[['Mean']]
+voting_clf_results_df = voting_clf_results.loc[['Mean']]
+voting_clf_dynamic_results_df = voting_clf_dynamic_results.loc[['Mean']]
+
+comparison_df2 = pd.concat([et_clf_results_df,
+                            et_clf_boosted_results_df,
+                            voting_clf_results_df,
+                            voting_clf_dynamic_results_df]).reset_index()
+
+comparison_df2 = comparison_df2.drop('index', axis=1) 
+comparison_df2.insert(0, "Model", ['et_clf',
+                                   'et_clf_boosted',
+                                   'voting_clf', 
+                                   'voting_clf_dynamic'])
+
+comparison_df2.style.highlight_max(color = 'lightgreen', axis = 0)
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p34.png)
+
+We have managed to find an even better model!
 
 
+With blend_models, there are other parameters that could improve performance. These are:
+
++ [Changing the method](https://pycaret.gitbook.io/docs/get-started/functions/optimize#changing-the-method)
++ [Changing the weights](https://pycaret.gitbook.io/docs/get-started/functions/optimize#changing-the-weights)
+
+As with the tune_model function, there is also the *choose_better = True* parameter here. Use this one if you like.
 
 
-
-
-
-
-
-
-
-
-
-
+### 3.5.6 stack_models
 
 
 
