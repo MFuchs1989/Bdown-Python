@@ -206,8 +206,9 @@ print(best_clf)
 
 Of course, the highest Accuracy is not always the decisive metric, so sorting can also be done according to other evaluation metrics. Here, for example, the syntax to sort by AUC score:
 
-`best_clf_AUC = pycc.compare_models(sort = 'AUC')`
-
+```{r, eval=F, echo=T}
+best_clf_AUC = pycc.compare_models(sort = 'AUC')
+```
 
 
 ### 3.2.1 Comparison of Specific Models
@@ -387,35 +388,61 @@ If you want to train multiple models or the same model with different configurat
 
 ## 3.5  Model Optimization
 
+There are several possibilities in PyCaret to further improve the performance of a model. I would like to present these in the following sections.
 
 
+### 3.5.1 Tune the Model
 
+If you want to tune the hyperparameters of the model, you have to use the tune_model function.
 
+Since n_iter is set to 10 by default, I always like to increase this value as it improves the optimization. However, one must also mention here that the calculation time increases as a result.
 
+```{r, eval=F, echo=T}
+et_clf_tuned = pycc.tune_model(et_clf, n_iter = 50)
+```
 
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p20.png)
 
+**Access performance metrics grid**
 
+Again, the performance metrics are only displayed but not returned. 
+Therefore we use the pull function again:
 
+```{r, eval=F, echo=T}
+et_clf_tuned_results = pycc.pull()
+et_clf_tuned_results
+```
 
-
-
-
-
-
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p21.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+print(Color.BOLD +'Comparison of hyperparameters' + Color.END)
+print()
+print(Color.GREEN + Color.UNDERLINE + 'ExtraTreesClassifier:' + Color.END)
+print()
+print(et_clf)
+print()
+print(Color.RED + Color.UNDERLINE + 'ExtraTreesClassifier with Optimization:' + Color.END)
+print()
+print(et_clf_tuned)
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p22.png)
+
+You can spend a lot of time optimizing ML algorithms, so there are also some parameters you can set in the tune_model function. These are among others: 
+
++ custom_grid
++ search_library
++ search_algorithm
++ early_stopping
+
+You can read about the other parameters here: [pycaret.classification.tune_model()](https://pycaret.readthedocs.io/en/latest/api/classification.html#pycaret.classification.tune_model)
 
 
 
-
-
-
+### 3.5.2 Retrieve the Tuner
 
 
 

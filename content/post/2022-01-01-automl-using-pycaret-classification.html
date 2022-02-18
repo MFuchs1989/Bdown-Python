@@ -27,7 +27,11 @@ output:
 </ul></li>
 <li><a href="#model-evaluation">3.3 Model Evaluation</a></li>
 <li><a href="#model-training">3.4 Model Training</a></li>
-<li><a href="#model-optimization">3.5 Model Optimization</a></li>
+<li><a href="#model-optimization">3.5 Model Optimization</a>
+<ul>
+<li><a href="#tune-the-model">3.5.1 Tune the Model</a></li>
+<li><a href="#retrieve-the-tuner">3.5.2 Retrieve the Tuner</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -144,7 +148,7 @@ available_models</code></pre>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p9.png" /></p>
 <p><strong>Changing the sort order</strong></p>
 <p>Of course, the highest Accuracy is not always the decisive metric, so sorting can also be done according to other evaluation metrics. Here, for example, the syntax to sort by AUC score:</p>
-<p><code>best_clf_AUC = pycc.compare_models(sort = 'AUC')</code></p>
+<pre class="r"><code>best_clf_AUC = pycc.compare_models(sort = &#39;AUC&#39;)</code></pre>
 <div id="comparison-of-specific-models" class="section level3">
 <h3>3.2.1 Comparison of Specific Models</h3>
 <p>Since model training can take different amounts of time, depending on the size of the data set, it is sometimes advisable to compare only certain models.</p>
@@ -227,12 +231,46 @@ et_clf_results</code></pre>
 </div>
 <div id="model-optimization" class="section level2">
 <h2>3.5 Model Optimization</h2>
+<p>There are several possibilities in PyCaret to further improve the performance of a model. I would like to present these in the following sections.</p>
+<div id="tune-the-model" class="section level3">
+<h3>3.5.1 Tune the Model</h3>
+<p>If you want to tune the hyperparameters of the model, you have to use the tune_model function.</p>
+<p>Since n_iter is set to 10 by default, I always like to increase this value as it improves the optimization. However, one must also mention here that the calculation time increases as a result.</p>
+<pre class="r"><code>et_clf_tuned = pycc.tune_model(et_clf, n_iter = 50)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p20.png" /></p>
+<p><strong>Access performance metrics grid</strong></p>
+<p>Again, the performance metrics are only displayed but not returned.
+Therefore we use the pull function again:</p>
+<pre class="r"><code>et_clf_tuned_results = pycc.pull()
+et_clf_tuned_results</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p21.png" /></p>
+<pre class="r"><code>print(Color.BOLD +&#39;Comparison of hyperparameters&#39; + Color.END)
+print()
+print(Color.GREEN + Color.UNDERLINE + &#39;ExtraTreesClassifier:&#39; + Color.END)
+print()
+print(et_clf)
+print()
+print(Color.RED + Color.UNDERLINE + &#39;ExtraTreesClassifier with Optimization:&#39; + Color.END)
+print()
+print(et_clf_tuned)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p22.png" /></p>
+<p>You can spend a lot of time optimizing ML algorithms, so there are also some parameters you can set in the tune_model function. These are among others:</p>
+<ul>
+<li>custom_grid</li>
+<li>search_library</li>
+<li>search_algorithm</li>
+<li>early_stopping</li>
+</ul>
+<p>You can read about the other parameters here: <a href="https://pycaret.readthedocs.io/en/latest/api/classification.html#pycaret.classification.tune_model">pycaret.classification.tune_model()</a></p>
+</div>
+<div id="retrieve-the-tuner" class="section level3">
+<h3>3.5.2 Retrieve the Tuner</h3>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
+</div>
 </div>
 </div>
