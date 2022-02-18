@@ -49,8 +49,9 @@ output:
 </ul></li>
 <li><a href="#function-for-colouring-specific-values">6 Function for colouring specific values</a>
 <ul>
-<li><a href="#negative-values">6.1 negative values</a></li>
-<li><a href="#highest-values">6.2 highest values</a></li>
+<li><a href="#highest-values">6.1 highest values</a></li>
+<li><a href="#lowest-values">6.2 lowest values</a></li>
+<li><a href="#negative-values">6.3 negative values</a></li>
 </ul></li>
 <li><a href="#conclusion">7 Conclusion</a></li>
 </ul>
@@ -329,15 +330,33 @@ df</code></pre>
 <div id="function-for-colouring-specific-values" class="section level1">
 <h1>6 Function for colouring specific values</h1>
 <p>I always find it quite nice to be able to color-modify Python’s output so that you can immediately see important figures.</p>
-<div id="negative-values" class="section level2">
-<h2>6.1 negative values</h2>
-<p>Here is an example of how to highlight negative values in a data set:</p>
-<pre class="r"><code>negative_values_df = pd.DataFrame({&#39;Col1&#39;: [32,22,-62,44],
-                                   &#39;Col2&#39;: [32,22,62,-44],
-                                   &#39;Col3&#39;: [-4700, 2400,4500,2500]})
-negative_values_df</code></pre>
+<div id="highest-values" class="section level2">
+<h2>6.1 highest values</h2>
+<p>Sometimes it is useful, e.g. when you want to compare the performance values of algorithms during model training,
+the highest values are displayed in color.</p>
+<pre class="r"><code>colouring_df = pd.DataFrame({&#39;Col1&#39;: [32,22,17,44],
+                             &#39;Col2&#39;: [32,22,62,28],
+                             &#39;Col3&#39;: [4700, 2400,4500,2500]})
+colouring_df</code></pre>
 <p><img src="/post/2019-03-12-data-manipulation_files/p3z14.png" /></p>
-<pre class="r"><code># Function for colouring (negative values red and positive values black)
+<pre class="r"><code>colouring_df.style.highlight_max(color = &#39;lightgreen&#39;, axis = 0)</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z15.png" /></p>
+</div>
+<div id="lowest-values" class="section level2">
+<h2>6.2 lowest values</h2>
+<p>Likewise, you can have even the lowest values displayed in color:</p>
+<pre class="r"><code>colouring_df.style.highlight_min(color = &#39;lightgreen&#39;, axis = 0)</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z16.png" /></p>
+</div>
+<div id="negative-values" class="section level2">
+<h2>6.3 negative values</h2>
+<p>Here is an example of how to highlight negative values in a data set:</p>
+<pre class="r"><code>negative_values_df = pd.DataFrame({&#39;Col1&#39;: [-32,22,-62,44],
+                                   &#39;Col2&#39;: [32,-22,62,-44],
+                                   &#39;Col3&#39;: [-4700, 2400,-4500,2500]})
+negative_values_df</code></pre>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z17.png" /></p>
+<pre class="r"><code># Function for colouring(negative values red and positive values black)
 
 def highlight_neg_values(s): 
     if s.dtype == np.object: 
@@ -348,15 +367,7 @@ def highlight_neg_values(s):
             for cell in is_neg] 
    
 negative_values_df.style.apply(highlight_neg_values)</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z15.png" /></p>
-</div>
-<div id="highest-values" class="section level2">
-<h2>6.2 highest values</h2>
-<p>Of course, we can also output the highest values. This is useful, for example, if you want to compare the performance values of algorithms during model training.</p>
-<pre class="r"><code>highest_values_df = negative_values_df.copy()
-
-highest_values_df.style.highlight_max(color = &#39;lightgreen&#39;, axis = 0)</code></pre>
-<p><img src="/post/2019-03-12-data-manipulation_files/p3z16.png" /></p>
+<p><img src="/post/2019-03-12-data-manipulation_files/p3z18.png" /></p>
 </div>
 </div>
 <div id="conclusion" class="section level1">

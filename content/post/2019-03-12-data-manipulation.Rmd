@@ -524,21 +524,56 @@ df
 
 I always find it quite nice to be able to color-modify Python's output so that you can immediately see important figures.  
 
-## 6.1 negative values
+## 6.1 highest values
 
-Here is an example of how to highlight negative values in a data set:
+Sometimes it is useful, e.g. when you want to compare the performance values of algorithms during model training,
+the highest values are displayed in color.
 
 ```{r, eval=F, echo=T}
-negative_values_df = pd.DataFrame({'Col1': [32,22,-62,44],
-                                   'Col2': [32,22,62,-44],
-                                   'Col3': [-4700, 2400,4500,2500]})
-negative_values_df
+colouring_df = pd.DataFrame({'Col1': [32,22,17,44],
+                             'Col2': [32,22,62,28],
+                             'Col3': [4700, 2400,4500,2500]})
+colouring_df
 ```
 
 ![](/post/2019-03-12-data-manipulation_files/p3z14.png)
 
+
 ```{r, eval=F, echo=T}
-# Function for colouring (negative values red and positive values black)
+colouring_df.style.highlight_max(color = 'lightgreen', axis = 0)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z15.png)
+
+
+## 6.2 lowest values
+
+Likewise, you can have even the lowest values displayed in color: 
+
+
+```{r, eval=F, echo=T}
+colouring_df.style.highlight_min(color = 'lightgreen', axis = 0)
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z16.png)
+
+
+
+## 6.3 negative values
+
+Here is an example of how to highlight negative values in a data set:
+
+```{r, eval=F, echo=T}
+negative_values_df = pd.DataFrame({'Col1': [-32,22,-62,44],
+                                   'Col2': [32,-22,62,-44],
+                                   'Col3': [-4700, 2400,-4500,2500]})
+negative_values_df
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z17.png)
+
+```{r, eval=F, echo=T}
+# Function for colouring(negative values red and positive values black)
 
 def highlight_neg_values(s): 
     if s.dtype == np.object: 
@@ -551,21 +586,7 @@ def highlight_neg_values(s):
 negative_values_df.style.apply(highlight_neg_values)
 ```
 
-![](/post/2019-03-12-data-manipulation_files/p3z15.png)
-
-
-## 6.2 highest values
-
-Of course, we can also output the highest values. This is useful, for example, if you want to compare the performance values of algorithms during model training. 
-
-```{r, eval=F, echo=T}
-highest_values_df = negative_values_df.copy()
-
-highest_values_df.style.highlight_max(color = 'lightgreen', axis = 0)
-```
-
-![](/post/2019-03-12-data-manipulation_files/p3z16.png)
-
+![](/post/2019-03-12-data-manipulation_files/p3z18.png)
 
 
 
