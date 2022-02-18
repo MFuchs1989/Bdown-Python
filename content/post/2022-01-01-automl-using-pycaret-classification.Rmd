@@ -166,32 +166,51 @@ If you want to get other values or information from the initiated setup here is 
 
 
 
+## 3.2  Compare Models
 
-
-
-
-
-
-
-
-
-
-
+Now that all preprocessing steps are completed, we can check the performance of the classification algorithms available in PyCaret. 
 
 
 
 ```{r, eval=F, echo=T}
-
+available_models = pycc.models()
+available_models
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p7.png)
+
+Now let's compare these models:
 
 
 
+```{r, eval=F, echo=T}
+best_clf = pycc.compare_models()
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p8.png)
+
+
+Another nice thing about this view is that the best values of each metric are highlighted in yellow. The Extra Trees Classifier achieved the highest value for almost every metric, so all highlighted fields are listed under this algorithm.
+
+Let's take a detailed look at the best model from the comparison:
+
+
+```{r, eval=F, echo=T}
+print(best_clf)
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p9.png)
+
+
+**Changing the sort order**
+
+Of course, the highest Accuracy is not always the decisive metric, so sorting can also be done according to other evaluation metrics. Here, for example, the syntax to sort by AUC score:
+
+`best_clf_AUC = pycc.compare_models(sort = 'AUC')`
 
 
 
-
+### 3.2.1 Comparison of Specific Models
 
 
 
