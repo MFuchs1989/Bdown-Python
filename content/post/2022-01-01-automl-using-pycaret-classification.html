@@ -84,7 +84,7 @@ This setup function takes two parameters:</p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p3.png" /></p>
 <p>First we can check if the data types of all variables were recognized correctly. If this is the case, as here, we can press Enter.</p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p4.png" /></p>
-<p>Now we get a detailed overview of the initialized setup and the performed transformation steps of the pipeline.</p>
+<p>Now we get a detailed overview (only a part of it is shown here) of the initialized setup and the performed transformation steps of the pipeline.</p>
 <p>Default Transformations:</p>
 <ul>
 <li>Missing Value Imputation</li>
@@ -106,8 +106,20 @@ This setup function takes two parameters:</p>
 <li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection">Feature Selection</a> and</li>
 <li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/other-setup-parameters">Other Parameters</a></li>
 </ul>
-<p>Use these preprocessing and transformation parameters in the setup as needed for your present data set.</p>
-<p>In my example I leave it at the default settings. Using the get_config function we can view the edited record.</p>
+<p>Use these preprocessing and transformation parameters in the setup as needed for your present data set. In my example I leave it at the default settings.</p>
+<p>Using the get_config function we can view the edited record.</p>
+<pre class="r"><code>x = pycc.get_config(&#39;X&#39;)
+y = pycc.get_config(&#39;y&#39;)
+trainX = pycc.get_config(&#39;X_train&#39;)
+testX = pycc.get_config(&#39;X_test&#39;)
+trainY = pycc.get_config(&#39;y_train&#39;)
+testY = pycc.get_config(&#39;y_test&#39;)</code></pre>
+<pre class="r"><code>x</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p5.png" /></p>
+<pre class="r"><code>y</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p6.png" /></p>
+<p>Here we see how the target variable ‘type’ has been recoded to apply machine learning algorithms. This step can also be seen in the summary_preprocess in line 4 (index 3).</p>
+<p>If you want to get other values or information from the initiated setup here is a list of variables that can be retrieved using the get_config function: <a href="https://pycaret.gitbook.io/docs/get-started/functions/others#get_config">Variables accessible by get_config function</a></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>

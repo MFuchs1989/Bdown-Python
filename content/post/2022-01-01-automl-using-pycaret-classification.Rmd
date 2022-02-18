@@ -108,7 +108,7 @@ First we can check if the data types of all variables were recognized correctly.
 
 ![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p4.png)
 
-Now we get a detailed overview of the initialized setup and the performed transformation steps of the pipeline. 
+Now we get a detailed overview (only a part of it is shown here) of the initialized setup and the performed transformation steps of the pipeline. 
 
 Default Transformations:
 
@@ -132,9 +132,40 @@ These include:
 + [Other Parameters](https://pycaret.gitbook.io/docs/get-started/preprocessing/other-setup-parameters)
 
 
-Use these preprocessing and transformation parameters in the setup as needed for your present data set. 
+Use these preprocessing and transformation parameters in the setup as needed for your present data set. In my example I leave it at the default settings. 
 
-In my example I leave it at the default settings. Using the get_config function we can view the edited record. 
+Using the get_config function we can view the edited record. 
+
+```{r, eval=F, echo=T}
+x = pycc.get_config('X')
+y = pycc.get_config('y')
+trainX = pycc.get_config('X_train')
+testX = pycc.get_config('X_test')
+trainY = pycc.get_config('y_train')
+testY = pycc.get_config('y_test')
+```
+
+
+```{r, eval=F, echo=T}
+x
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p5.png)
+
+
+```{r, eval=F, echo=T}
+y
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p6.png)
+
+
+Here we see how the target variable 'type' has been recoded to apply machine learning algorithms. This step can also be seen in the summary_preprocess in line 4 (index 3). 
+
+If you want to get other values or information from the initiated setup here is a list of variables that can be retrieved using the get_config function: [Variables accessible by get_config function](https://pycaret.gitbook.io/docs/get-started/functions/others#get_config)
+
+
+
 
 
 
