@@ -31,6 +31,8 @@ output:
 <ul>
 <li><a href="#tune-the-model">3.5.1 Tune the Model</a></li>
 <li><a href="#retrieve-the-tuner">3.5.2 Retrieve the Tuner</a></li>
+<li><a href="#automatically-choose-better">3.5.3 Automatically Choose Better</a></li>
+<li><a href="#ensemble_models">3.5.4 ensemble_models</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -265,7 +267,43 @@ print(et_clf_tuned)</code></pre>
 </div>
 <div id="retrieve-the-tuner" class="section level3">
 <h3>3.5.2 Retrieve the Tuner</h3>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
+<p>At this point I would like to go into more detail about one parameter: <em>return_tuner=True</em></p>
+<p>So far, we have only received the best model back from the tune_model function after optimizing the hyperparameters.
+But sometimes it is necessary to get back the tuner itself. This can be done with the additional argument return_tuner=True.</p>
+<pre class="r"><code>et_clf_tuned, et_clf_tuner = pycc.tune_model(et_clf, 
+                                             n_iter = 50,
+                                             return_tuner=True)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p23.png" /></p>
+<p>Here it is:</p>
+<pre class="r"><code>et_clf_tuner</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p24.png" /></p>
+</div>
+<div id="automatically-choose-better" class="section level3">
+<h3>3.5.3 Automatically Choose Better</h3>
+<p>A tuned model does not always deliver better results. See the performance overview of the two models in the comparison:</p>
+<pre class="r"><code>print(Color.BOLD +&#39;Comparison of performance metrics&#39; + Color.END)
+print()
+print(Color.GREEN + Color.UNDERLINE + &#39;ExtraTreesClassifier:&#39; + Color.END)
+print()
+print(et_clf_results.loc[[&#39;Mean&#39;]])
+print()
+print(Color.RED + Color.UNDERLINE + &#39;ExtraTreesClassifier with Optimization:&#39; + Color.END)
+print()
+print(et_clf_tuned_results.loc[[&#39;Mean&#39;]])</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p25.png" /></p>
+<p>To prevent this from accidentally becoming a problem, there is the choose_better parameter. If this is set to True, an improved model is always returned. Even if the optimization of the hyperparameters does not result in an improvement, the original model is returned instead of a worse model as was the case above.</p>
+<pre class="r"><code>et_clf_tuned_better, \
+et_clf_tuned_better_tuner = pycc.tune_model(et_clf,n_iter = 50, 
+                                            return_tuner=True,
+                                            choose_better = True)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p26.png" /></p>
+<p>Please do not be confused by the performance overview. This shows the metrics for the best model that the tuner has created. If the performance cannot be increased, the worse model <strong>is not</strong> returned by the tuner but <strong>the old model is used</strong> (now also stored under the object et_clf_tuned_better).</p>
+<p>The grid of performance indicators can again be assigned to an object by pull:</p>
+<pre class="r"><code>et_clf_tuned_better_results = pycc.pull()</code></pre>
+<p>If someone does not like this approach, they are welcome to continue with the old model (et_clf).</p>
+</div>
+<div id="ensemble_models" class="section level3">
+<h3>3.5.4 ensemble_models</h3>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
