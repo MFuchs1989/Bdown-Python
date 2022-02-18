@@ -307,39 +307,73 @@ Here is an overview of possible graphics in PyCaret: [Examples by module](https:
 
 ## 3.4 Model Training
 
+In comparing the classification algorithms, we saw that Extra Trees Classifier performed the best. 
+
+```{r, eval=F, echo=T}
+print(best_clf)
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p16.png)
+
+
+So we will do the model training with it as well. This is done in PyCaret with the create_model function, which also automatically includes cross-validation. Here I set the number of cross-validation runs to 5 (default = 10).
+
+```{r, eval=F, echo=T}
+et_clf = pycc.create_model('et', fold = 5)
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p17.png)
+
+
+For some specific algorithms, the hyperparameters can be set specifically. Here is an example with the Decision Tree Classifier:
+
+`et_clf_custom_param = pycc.create_model('et', 
+                                        max_depth = 5)`
+
+**Further Settings**
+
+As with model comparison, additional settings can be made during model training:
+
++ [Setting the Probability Threshold](https://pycaret.gitbook.io/docs/get-started/functions/train#set-the-probability-threshold)
++ [Disable Cross-Validation](https://pycaret.gitbook.io/docs/get-started/functions/train#disable-cross-validation)
+
+The syntax to these settings would look like this:
+
+`et_clf_further_settings = pycc.create_model('et', 
+                                            probability_threshold = 0.75, 
+                                            cross_validation=False)`
 
 
 
+**Access performance metrics grid**
 
-
-
-
-
-
-
-
-
-
-
+The performance metrics are only displayed here, but not returned. 
+However, they can be retrieved with the pull function.
 
 
 
 ```{r, eval=F, echo=T}
-
+et_clf_results = pycc.pull()
+et_clf_results
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p18.png)
+
+
+Filtered here according to the lines Mean and SD:
+
+```{r, eval=F, echo=T}
+et_clf_results.loc[['Mean', 'SD']]
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p19.png)
+
+
+If you want to train multiple models or the same model with different configurations, you can do this with a for-loop. Have a look at this link: [Train models in a loop](https://pycaret.gitbook.io/docs/get-started/functions/train#train-models-in-a-loop)
 
 
 
-
-
-
-
-
-
-
-
+## 3.5  Model Optimization
 
 
 

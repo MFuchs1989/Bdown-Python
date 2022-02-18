@@ -27,6 +27,7 @@ output:
 </ul></li>
 <li><a href="#model-evaluation">3.3 Model Evaluation</a></li>
 <li><a href="#model-training">3.4 Model Training</a></li>
+<li><a href="#model-optimization">3.5 Model Optimization</a></li>
 </ul></li>
 </ul>
 </div>
@@ -189,7 +190,35 @@ The syntax would look like this:</p>
 </div>
 <div id="model-training" class="section level2">
 <h2>3.4 Model Training</h2>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
+<p>In comparing the classification algorithms, we saw that Extra Trees Classifier performed the best.</p>
+<pre class="r"><code>print(best_clf)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p16.png" /></p>
+<p>So we will do the model training with it as well. This is done in PyCaret with the create_model function, which also automatically includes cross-validation. Here I set the number of cross-validation runs to 5 (default = 10).</p>
+<pre class="r"><code>et_clf = pycc.create_model(&#39;et&#39;, fold = 5)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p17.png" /></p>
+<p>For some specific algorithms, the hyperparameters can be set specifically. Here is an example with the Decision Tree Classifier:</p>
+<p><code>et_clf_custom_param = pycc.create_model('et',                                          max_depth = 5)</code></p>
+<p><strong>Further Settings</strong></p>
+<p>As with model comparison, additional settings can be made during model training:</p>
+<ul>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/train#set-the-probability-threshold">Setting the Probability Threshold</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/train#disable-cross-validation">Disable Cross-Validation</a></li>
+</ul>
+<p>The syntax to these settings would look like this:</p>
+<p><code>et_clf_further_settings = pycc.create_model('et',                                              probability_threshold = 0.75,                                              cross_validation=False)</code></p>
+<p><strong>Access performance metrics grid</strong></p>
+<p>The performance metrics are only displayed here, but not returned.
+However, they can be retrieved with the pull function.</p>
+<pre class="r"><code>et_clf_results = pycc.pull()
+et_clf_results</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p18.png" /></p>
+<p>Filtered here according to the lines Mean and SD:</p>
+<pre class="r"><code>et_clf_results.loc[[&#39;Mean&#39;, &#39;SD&#39;]]</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p19.png" /></p>
+<p>If you want to train multiple models or the same model with different configurations, you can do this with a for-loop. Have a look at this link: <a href="https://pycaret.gitbook.io/docs/get-started/functions/train#train-models-in-a-loop">Train models in a loop</a></p>
+</div>
+<div id="model-optimization" class="section level2">
+<h2>3.5 Model Optimization</h2>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
 <p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
