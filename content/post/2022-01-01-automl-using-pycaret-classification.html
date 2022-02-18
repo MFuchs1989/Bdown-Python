@@ -35,8 +35,18 @@ output:
 <li><a href="#ensemble_models">3.5.4 ensemble_models</a></li>
 <li><a href="#blend_models">3.5.5 blend_models</a></li>
 <li><a href="#stack_models">3.5.6 stack_models</a></li>
+<li><a href="#further-methods">3.5.7 Further Methods</a></li>
 </ul></li>
+<li><a href="#model-evaluation-after-training">3.6 Model Evaluation after Training</a></li>
+<li><a href="#model-predictions">3.7 Model Predictions</a>
+<ul>
+<li><a href="#on-testx">3.7.1 On testX</a></li>
+<li><a href="#on-unseen-data">3.7.2 On unseen data</a></li>
 </ul></li>
+<li><a href="#model-finalization">3.8 Model Finalization</a></li>
+<li><a href="#saving-the-pipeline-model">3.9 Saving the Pipeline &amp; Model</a></li>
+</ul></li>
+<li><a href="#conclusion">4 Conclusion¶</a></li>
 </ul>
 </div>
 
@@ -427,10 +437,197 @@ comparison_df2.style.highlight_max(color = &#39;lightgreen&#39;, axis = 0)</code
 </div>
 <div id="stack_models" class="section level3">
 <h3>3.5.6 stack_models</h3>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
-<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png" /></p>
+<p>Which function should not be missing under the chapter Model Optimization and is also available in PyCaret is the stack_models function.</p>
+<p>I have already written a post about this topic for those who want to learn more about this method: <a href="https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/">Ensemble Modeling - Stacking</a></p>
+<p>The procedure and syntax is almost identical to the blend_models function.</p>
+<pre class="r"><code># Training of multiple models
+lr_clf_stacked = pycc.create_model(&#39;lr&#39;, fold = 5)
+dt_clf_stacked = pycc.create_model(&#39;dt&#39;, fold = 5)
+et_clf_stacked = pycc.create_model(&#39;et&#39;, fold = 5)
+
+stacked_clf = pycc.stack_models([lr_clf_stacked, 
+                                dt_clf_stacked, 
+                                et_clf_stacked])
+
+# Obtaining the performance overview
+stacked_clf_results = pycc.pull()</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p35.png" /></p>
+<p><strong>Dynamic input estimators</strong></p>
+<p>As with the blend_models function, the list of input estimators can also be created automatically with the compare_models function. Here again the N best models are used as input list.</p>
+<pre class="r"><code># Training of N best models
+stacked_clf_dynamic = pycc.stack_models(pycc.compare_models(n_select = 3))
+# Obtaining the performance overview
+stacked_clf_dynamic_results = pycc.pull()</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p36.png" /></p>
+<p>And here again the overview of the estimators that were used.</p>
+<pre class="r"><code>stacked_clf_dynamic.estimators_</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p37.png" /></p>
+<p>Let’s take another look at the performance overviews. Again, I have only listed the relevant ones and omitted the overviews for less performant algorithms.</p>
+<pre class="r"><code>et_clf_results_df = et_clf_results.loc[[&#39;Mean&#39;]]
+voting_clf_dynamic_results_df = voting_clf_dynamic_results.loc[[&#39;Mean&#39;]]
+stacked_clf_results_results_df = stacked_clf_results.loc[[&#39;Mean&#39;]]
+stacked_clf_dynamic_results_df = stacked_clf_dynamic_results.loc[[&#39;Mean&#39;]]
+
+comparison_df3 = pd.concat([et_clf_results_df,
+                            voting_clf_dynamic_results_df,
+                            stacked_clf_results_results_df,
+                            stacked_clf_dynamic_results_df]).reset_index()
+
+comparison_df3 = comparison_df3.drop(&#39;index&#39;, axis=1) 
+comparison_df3.insert(0, &quot;Model&quot;, [&#39;et_clf&#39;, 
+                                   &#39;voting_clf_dynamic&#39;, 
+                                   &#39;stacked_clf&#39;,
+                                   &#39;stacked_clf_dynamic&#39;])
+
+comparison_df3.style.highlight_max(color = &#39;lightgreen&#39;, axis = 0)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p38.png" /></p>
+<p>We were able to improve performance once again.</p>
+<p>With stack_models, there are other parameters that could improve performance. These are:</p>
+<ul>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/optimize#changing-the-method-1">Changing the method</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/optimize#changing-the-meta-model">Changing the meta-model</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/optimize#restacking">Restacking</a></li>
+</ul>
+<p>As with the tune_model function, there is also the <em>choose_better = True</em> parameter here. Use this one if you like.</p>
+</div>
+<div id="further-methods" class="section level3">
+<h3>3.5.7 Further Methods</h3>
+<p>There are two more methods in PyCaret that I would like to mention briefly here:</p>
+<ul>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/optimize#optimize_threshold">optimize_threshold</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/functions/optimize#calibrate_model">calibrate_model</a></li>
+</ul>
+<p>Please read the documentation and decide for yourself if these methods help you.</p>
 </div>
 </div>
+<div id="model-evaluation-after-training" class="section level2">
+<h2>3.6 Model Evaluation after Training</h2>
+<p>I have already discussed the evaluation possibilities via PyCaret in chapter 3.3. Here we only looked at how well the performance of the algorithms fit the training part of our data to get an impression of which model might fit best.</p>
+<p>In the following I will do this again <strong>with a trained model for the test part</strong>. For this I use the model created in chapter 3.5.6 (stacked_clf_dynamic), because this gave the best performance values during the model optimization.</p>
+<pre class="r"><code>type(stacked_clf_dynamic)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p39.png" /></p>
+<pre class="r"><code>pycc.plot_model(stacked_clf_dynamic, plot = &#39;auc&#39;, scale = 2)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p40.png" /></p>
+<p><strong>Use train data</strong></p>
+<p>If you want to know what performance the trained model has on the training data, you can use_train_data = True.
+Here is an example:</p>
+<pre class="r"><code>pycc.plot_model(stacked_clf_dynamic, plot = &#39;auc&#39;,
+                scale = 2,
+                use_train_data = True)</code></pre>
+<p><strong>Saving image files</strong></p>
+<p>If you want to save the output graphics in PyCaret, you have to set the safe parameter to True.
+The syntax would look like this:</p>
+<pre class="r"><code>pycc.plot_model(stacked_clf_dynamic, plot = &#39;auc&#39;,
+                scale = 2,
+                save = True)</code></pre>
+<p>Here is an overview of possible graphics in PyCaret: <a href="https://pycaret.gitbook.io/docs/get-started/functions/analyze#classification">Examples by module</a></p>
+</div>
+<div id="model-predictions" class="section level2">
+<h2>3.7 Model Predictions</h2>
+<p>Now we come to the part where we make predictions with our trained algorithm. Here we use the following model, since it has shown the best validation values:</p>
+<pre class="r"><code>type(stacked_clf_dynamic)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p41.png" /></p>
+<div id="on-testx" class="section level3">
+<h3>3.7.1 On testX</h3>
+<p>As a reminder, here is the test part of our data set, which was generated by the Train-Test Split in the setup function (see chapter 3.1).</p>
+<pre class="r"><code>testX</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p42.png" /></p>
+<pre class="r"><code># Make model predictions on testX
+stacked_clf_dynamic_pred = pycc.predict_model(stacked_clf_dynamic)
+stacked_clf_dynamic_pred</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p43.png" /></p>
+<p>As we can see, three more columns have been added to the testX part:</p>
+<ul>
+<li>type -&gt; These are the true labels in their original form (not recoded)</li>
+<li>Label -&gt; these are the predicted labels (also not recoded)</li>
+<li>Score -&gt; These are the score values for the predicted labels</li>
+</ul>
+<pre class="r"><code># Obtaining the performance overview
+stacked_clf_dynamic_pred_results = pycc.pull()
+stacked_clf_dynamic_pred_results</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p44.png" /></p>
+<p>If we look at the performance values for the prediction, we see that with an accuracy of over 88%, this is even better than that achieved during model training:</p>
+<pre class="r"><code>stacked_clf_dynamic_results_df</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p45.png" /></p>
+<p>The variation comes from the fact that we used cross-validation in model training for this algorithm. Keep this in mind when reporting results to your supervisor or client.</p>
+</div>
+<div id="on-unseen-data" class="section level3">
+<h3>3.7.2 On unseen data</h3>
+<p>Now is the time to make predictions about unseen data. I have created my own data set for this purpose:</p>
+<pre class="r"><code>unseen_df = pd.DataFrame(np.array([[165.00,11.45,156.00,8.68,80.25,7.85,143.00,8.25,86.61,6.63], 
+                                   [63.48,4.03,77.33,3.65,26.84,2.31,48.82,2.51,22.91,1.7], 
+                                   [13.52,1.28,17.88,1.07,15.1,1.05,25.14,1.23,17.81,0.69], 
+                                   [20.25,2.35,25.14,1.76,20.17,1.37,27.67,1.41,15.68,1.55], 
+                                   [62.49,4.75,69.66,3.99,57.3,4.6,77.6,4.26,60.31,3.86], 
+                                   [31.72,2.64,40,1.99,20.36,1.59,32.21,1.62,17.72,1.52], 
+                                   [28.66,2.48,33.24,2.02,29.33,2.26,50.64,2.05,35.99,1.85],
+                                   [68.15,3.84,72.31,3.42,24.23,1.9,50.26,2.13,29.16,2.05]]),
+                         columns=[&#39;huml&#39;, &#39;humw&#39;, &#39;ulnal&#39;, &#39;ulnaw&#39;, &#39;feml&#39;, 
+                                  &#39;femw&#39;, &#39;tibl&#39;, &#39;tibw&#39;, &#39;tarl&#39;, &#39;tarw&#39;])
+
+
+unseen_df</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p46.png" /></p>
+<p>Of course, the data set must contain the same number of variables as it did during setup and model training.</p>
+<p>If you use the predict_model function on new (unseen) data, you have to pass the parameter <strong>data = ‘name_of_the_new_data’</strong> to the function.
+Furthermore I use <strong>raw_score = True</strong> to see which scores are calculated for the respective classes.</p>
+<pre class="r"><code># Make model predictions on unseen data
+stacked_clf_dynamic_pred_unseen = pycc.predict_model(stacked_clf_dynamic,
+                                                     raw_score = True,
+                                                     data = unseen_df)
+
+stacked_clf_dynamic_pred_unseen</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p47.png" /></p>
+<p>Done! We made our first prediction with the model we created.</p>
+<p>Below I show again the effect of the raw_score = True setting. To do this, I selected the newly generated columns:</p>
+<pre class="r"><code>stacked_clf_dynamic_pred_unseen.loc[:,&#39;Label&#39; : &#39;Score_W&#39;]</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p48.png" /></p>
+<p>The column ‘Label’ shows again the predicted labels.
+After that come the score values for the respective classes.</p>
+<p>So the model says with a probability of over 98% that the observation from line 1 belongs to the class ‘SW’.</p>
+</div>
+</div>
+<div id="model-finalization" class="section level2">
+<h2>3.8 Model Finalization</h2>
+<p>Last but not least, we finalize our model.
+Here, the final model is trained again on both the trainX part and the testX part.
+No more changes are made to the model parameters.</p>
+<pre class="r"><code>stacked_clf_dynamic_final = pycc.finalize_model(stacked_clf_dynamic)
+stacked_clf_dynamic_final</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p49.png" /></p>
+</div>
+<div id="saving-the-pipeline-model" class="section level2">
+<h2>3.9 Saving the Pipeline &amp; Model</h2>
+<p>To be able to use the created pipeline and the trained model in another place, we have to save it as a last step.</p>
+<pre class="r"><code>pycc.save_model(stacked_clf_dynamic_final, 
+                &#39;stacked_clf_dynamic_final_pipeline&#39;)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p50.png" /></p>
+<p><strong>Reload a Pipeline</strong></p>
+<p>Let’s review this as well:</p>
+<pre class="r"><code>pipeline_reload = pycc.load_model(&#39;stacked_clf_dynamic_final_pipeline&#39;)</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p51.png" /></p>
+<p>Ready for new predictions</p>
+<pre class="r"><code>unseen_df2 = pd.DataFrame(np.array([[34.07,3.26,41.34,2.62,24.25,2.3,36.35,2.13,24.69,2.12]]),
+                          columns=[&#39;huml&#39;, &#39;humw&#39;, &#39;ulnal&#39;, &#39;ulnaw&#39;, &#39;feml&#39;, 
+                                   &#39;femw&#39;, &#39;tibl&#39;, &#39;tibw&#39;, &#39;tarl&#39;, &#39;tarw&#39;])
+
+
+unseen_df2</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p52.png" /></p>
+<pre class="r"><code>pipeline_reload_pred_unseen2 = pycc.predict_model(pipeline_reload,
+                                                  raw_score = True,
+                                                  data = unseen_df2)
+
+pipeline_reload_pred_unseen2</code></pre>
+<p><img src="/post/2022-01-01-automl-using-pycaret-classification_files/p133p53.png" /></p>
+<p>Works !</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion¶</h1>
+<p>In this post I showed how to use PyCaret to solve a classification problem and demonstrated the power behind this AutoML library.</p>
+<p>With PyCaret you have the possibility to quickly and easily run different scenarios in model training and find the best fitting algorithm for your problem.</p>
+<p>Thanks also to the PyCaret team for giving me quick feedback on my questions.</p>
+<p><strong>Limitations</strong></p>
+<p>In this post, I applied very few data pre-processing steps. Scaling or feature engineering, for example, could have increased the performance even more.</p>
 </div>
