@@ -1018,7 +1018,7 @@ Works !
 
 
 
-# 4 Conclusion¶
+# 4 Conclusion
 
 In this post I showed how to use PyCaret to solve a classification problem and demonstrated the power behind this AutoML library.
 
