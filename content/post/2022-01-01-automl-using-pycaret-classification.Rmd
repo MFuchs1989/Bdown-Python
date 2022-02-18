@@ -212,39 +212,100 @@ Of course, the highest Accuracy is not always the decisive metric, so sorting ca
 
 ### 3.2.1 Comparison of Specific Models
 
+Since model training can take different amounts of time, depending on the size of the data set, it is sometimes advisable to compare only certain models.
+
+```{r, eval=F, echo=T}
+best_clf_specific = pycc.compare_models(include = ['ada', 'svm', 'nb'])
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p10.png)
+
+**Exclusion of specific models:**
+
+Alternatively, certain models can simply be excluded from the performance comparison. See the following syntax:
+
+`best_clf_excl = pycc.compare_models(exclude = ['dummy', 'ridge'])`
 
 
 
+### 3.2.2 Further Settings
+
+In PyCaret you have the possibility to make further settings in the model comparison. These are:
+
++ [Setting the Budget Time](https://pycaret.gitbook.io/docs/get-started/functions/train#set-the-budget-time)
++ [Setting the Probability Threshold](https://pycaret.gitbook.io/docs/get-started/functions/train#set-the-probability-threshold)
++ [Disable Cross-Validation](https://pycaret.gitbook.io/docs/get-started/functions/train#disable-cross-validation)
+
+The syntax to these settings would look like this:
+
+`best_clf_further_settings = pycc.compare_models(budget_time = 0.7, 
+                                                probability_threshold = 0.75, 
+                                                cross_validation=False)`
 
 
 
+## 3.3  Model Evaluation
+
+Now that we have seen in our comparison (best_clf) that the Extra Trees Classifier has achieved the best values, I would like to go into the evaluation for this algorithm.
 
 
+```{r, eval=F, echo=T}
+print(best_clf)
+```
 
-
-
-
-
-
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p11.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+evaluation_best_clf = pycc.evaluate_model(best_clf)
 ```
 
-![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p.png)
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p12.png)
+
+
+Since the evaluate_model function can only be used in notebooks, the plot_model function can also be used as an alternative. 
+
+```{r, eval=F, echo=T}
+pycc.plot_model(best_clf, plot = 'auc')
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p13.png)
 
 
 
+```{r, eval=F, echo=T}
+pycc.plot_model(best_clf, plot = 'confusion_matrix')
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p14.png)
 
 
 
+```{r, eval=F, echo=T}
+pycc.plot_model(best_clf, 
+                plot = 'confusion_matrix', 
+                plot_kwargs = {'percent' : True})
+```
+
+![](/post/2022-01-01-automl-using-pycaret-classification_files/p133p15.png)
+
+
+**Saving image files**
+
+If you want to save the output graphics in PyCaret, you have to set the safe parameter to True. 
+The syntax would look like this:
+
+`pycc.plot_model(best_clf, 
+                plot = 'confusion_matrix', 
+                plot_kwargs = {'percent' : True},
+                save = True)`
+
+Here is an overview of possible graphics in PyCaret: [Examples by module](https://pycaret.gitbook.io/docs/get-started/functions/analyze#examples-by-module)
 
 
 
-
-
+## 3.4 Model Training
 
 
 
