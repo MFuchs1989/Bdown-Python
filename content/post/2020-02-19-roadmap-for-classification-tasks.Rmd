@@ -124,6 +124,15 @@ Here again are the links to the respective publications:
 + [Artificial Neural Network for Multi-Class Classfication](https://michael-fuchs-python.netlify.app/2021/02/23/nn-artificial-neural-network-for-multi-class-classfication/)
 
 
+### 2.3.3 AutoML
+
+The use of automated machine learning libraries is becoming increasingly popular. 
+Here is a guide on how classification problems can be solved with PyCaret:
+
++ [AutoML using PyCaret - Classification](https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/)
+
+
+
 # 3 Conclusion
 
 The methods and algorithms shown in the overviews are described in detail in the respective publications with regard to theory and practical application. Just click on the respective link.
