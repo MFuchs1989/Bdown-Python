@@ -139,6 +139,14 @@ available_models</code></pre>
 </div>
 <div id="model-training" class="section level2">
 <h2>3.4 Model Training</h2>
+<pre class="r"><code>print(best_reg)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p11.png" /></p>
+<pre class="r"><code># Train the RandomForestRegressor Model 
+rf_reg = pycr.create_model(&#39;rf&#39;, fold = 5)
+
+# Obtaining the performance overview
+rf_reg_results = pycr.pull()</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p12.png" /></p>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>

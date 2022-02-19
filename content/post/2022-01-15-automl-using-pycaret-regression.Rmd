@@ -228,11 +228,25 @@ pycr.plot_model(best_reg, plot = 'error',
 
 
 
+```{r, eval=F, echo=T}
+print(best_reg)
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p11.png)
 
 
 
 
 
+```{r, eval=F, echo=T}
+# Train the RandomForestRegressor Model 
+rf_reg = pycr.create_model('rf', fold = 5)
+
+# Obtaining the performance overview
+rf_reg_results = pycr.pull()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p12.png)
 
 
 
