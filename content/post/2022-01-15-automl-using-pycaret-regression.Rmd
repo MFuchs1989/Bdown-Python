@@ -152,6 +152,95 @@ print('Number of Predictors after pre-processig: ' + str(x.shape[1]))
 
 
 
+```{r, eval=F, echo=T}
+available_models = pycr.models()
+available_models
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p5.png)
+
+
+```{r, eval=F, echo=T}
+best_reg = pycr.compare_models()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p6.png)
+
+Let’s take a detailed look at the best model from the comparison:
+
+
+```{r, eval=F, echo=T}
+print(best_reg)
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p7.png)
+
+All the possible games you can do with the compare_models() function have already been described here: [AutoML using PyCaret - Classification - Compare Models](https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/#compare-models)
+
+
+
+## 3.3 Model Evaluation
+
+
+```{r, eval=F, echo=T}
+evaluation_best_clf = pycr.evaluate_model(best_reg)
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p1348p8.png)
+
+Here are a few more charts on the performance of our model:
+
+
+
+```{r, eval=F, echo=T}
+pycr.plot_model(best_reg, plot = 'learning')
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p9.png)
+
+
+
+
+
+```{r, eval=F, echo=T}
+pycr.plot_model(best_reg, plot = 'error')
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p10.png)
+
+
+
+Here is an overview of possible graphics in PyCaret: [Examples by module - Regression](https://pycaret.gitbook.io/docs/get-started/functions/analyze#regression)
+
+**Saving image files**
+
+If you want to save the output graphics in PyCaret, you have to set the safe parameter to True. The syntax would look like this:
+
+
+
+```{r, eval=F, echo=T}
+pycr.plot_model(best_reg, plot = 'error',
+                save = True)
+```
+
+
+## 3.4 Model Training
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,6 +21,8 @@ output:
 <ul>
 <li><a href="#setup">3.1 Setup</a></li>
 <li><a href="#compare-models">3.2 Compare Models</a></li>
+<li><a href="#model-evaluation">3.3 Model Evaluation</a></li>
+<li><a href="#model-training">3.4 Model Training</a></li>
 </ul></li>
 </ul>
 </div>
@@ -110,6 +112,33 @@ print(&#39;Number of Predictors after pre-processig: &#39; + str(x.shape[1]))</c
 </div>
 <div id="compare-models" class="section level2">
 <h2>3.2 Compare Models</h2>
+<pre class="r"><code>available_models = pycr.models()
+available_models</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p5.png" /></p>
+<pre class="r"><code>best_reg = pycr.compare_models()</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p6.png" /></p>
+<p>Let’s take a detailed look at the best model from the comparison:</p>
+<pre class="r"><code>print(best_reg)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p7.png" /></p>
+<p>All the possible games you can do with the compare_models() function have already been described here: <a href="https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/#compare-models">AutoML using PyCaret - Classification - Compare Models</a></p>
+</div>
+<div id="model-evaluation" class="section level2">
+<h2>3.3 Model Evaluation</h2>
+<pre class="r"><code>evaluation_best_clf = pycr.evaluate_model(best_reg)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p1348p8.png" /></p>
+<p>Here are a few more charts on the performance of our model:</p>
+<pre class="r"><code>pycr.plot_model(best_reg, plot = &#39;learning&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p9.png" /></p>
+<pre class="r"><code>pycr.plot_model(best_reg, plot = &#39;error&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p10.png" /></p>
+<p>Here is an overview of possible graphics in PyCaret: <a href="https://pycaret.gitbook.io/docs/get-started/functions/analyze#regression">Examples by module - Regression</a></p>
+<p><strong>Saving image files</strong></p>
+<p>If you want to save the output graphics in PyCaret, you have to set the safe parameter to True. The syntax would look like this:</p>
+<pre class="r"><code>pycr.plot_model(best_reg, plot = &#39;error&#39;,
+                save = True)</code></pre>
+</div>
+<div id="model-training" class="section level2">
+<h2>3.4 Model Training</h2>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
