@@ -186,7 +186,7 @@ All the possible games you can do with the compare_models() function have alread
 evaluation_best_clf = pycr.evaluate_model(best_reg)
 ```
 
-![](/post/2022-01-15-automl-using-pycaret-regression_files/p1348p8.png)
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p8.png)
 
 Here are a few more charts on the performance of our model:
 
