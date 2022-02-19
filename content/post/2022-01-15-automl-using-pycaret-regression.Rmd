@@ -227,14 +227,11 @@ pycr.plot_model(best_reg, plot = 'error',
 ## 3.4 Model Training
 
 
-
 ```{r, eval=F, echo=T}
 print(best_reg)
 ```
 
 ![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p11.png)
-
-
 
 
 
@@ -249,63 +246,139 @@ rf_reg_results = pycr.pull()
 ![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p12.png)
 
 
+## 3.5  Model Optimization
+
+In the following I will try to improve the performance of our created algorithm with different methods. At the end of the chapter I will create an overview of the performance values. On their basis I will select afterwards the final model. 
+
+
+### 3.5.1 Tune the Model
+
+```{r, eval=F, echo=T}
+# Tune the RandomForestRegressor Model 
+rf_reg_tuned, rf_reg_tuner = pycr.tune_model(rf_reg,
+                                             return_tuner=True)
+
+# Obtaining the performance overview
+rf_reg_tuned_results = pycr.pull()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p13.png)
+
+### 3.5.2 ensemble_models
+
+
+```{r, eval=F, echo=T}
+# Train the bagged Model 
+rf_reg_bagged = pycr.ensemble_model(rf_reg, 
+                                    method = 'Bagging', 
+                                    fold = 5,
+                                    n_estimators = 30)
+
+# Obtaining the performance overview
+rf_reg_bagged_results = pycr.pull()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p14.png)
 
 
 
+```{r, eval=F, echo=T}
+# Train the boosted Model 
+rf_reg_boosted = pycr.ensemble_model(rf_reg, 
+                                     method = 'Boosting', 
+                                     fold = 5,
+                                     n_estimators = 30)
+
+# Obtaining the performance overview
+rf_reg_boosted_results = pycr.pull()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p15.png)
+
+### 3.5.3 blend_models
+
+Instead of selecting the models manually I will use the dynamic variant where the N best models are selected using the compare_models function and fed to the voting classifier. 
+
+```{r, eval=F, echo=T}
+# Training of N best models
+voting_reg_dynamic = pycr.blend_models(pycr.compare_models(n_select = 3))
+
+# Obtaining the performance overview
+voting_reg_dynamic_results = pycr.pull()
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p16.png)
 
 
+```{r, eval=F, echo=T}
+voting_reg_dynamic.estimators_
+```
+
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p17.png)
+
+### 3.5.4 stack_models
 
 
+```{r, eval=F, echo=T}
+# Training of N best models
+stacked_reg_dynamic = pycr.stack_models(pycr.compare_models(n_select = 3))
 
+# Obtaining the performance overview
+stacked_reg_dynamic_results = pycr.pull()
+```
 
-
-
-
-
-
-
-
-
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p18.png)
 
 
 
 
 ```{r, eval=F, echo=T}
-
+stacked_reg_dynamic.estimators_
 ```
 
-![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png)
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p19.png)
+
+### 3.5.5 Performance Overview
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+As announced at the beginning of this chapter, I conclude with an overview of the performance metrics that were achieved:
 
 ```{r, eval=F, echo=T}
+rf_reg_results_df = rf_reg_results.loc[['Mean']]
+rf_reg_tuned_results_df = rf_reg_tuned_results.loc[['Mean']]
+rf_reg_bagged_results_df = rf_reg_bagged_results.loc[['Mean']]
+rf_reg_boosted_results_df = rf_reg_boosted_results.loc[['Mean']]
+voting_reg_dynamic_results_df = voting_reg_dynamic_results.loc[['Mean']]
+stacked_reg_dynamic_results_df = stacked_reg_dynamic_results.loc[['Mean']]
 
+
+comparison_df = pd.concat([rf_reg_results_df,
+                           rf_reg_tuned_results_df,
+                           rf_reg_bagged_results_df,
+                           rf_reg_boosted_results_df,
+                           voting_reg_dynamic_results_df,
+                           stacked_reg_dynamic_results_df]).reset_index()
+
+comparison_df = comparison_df.drop('index', axis=1) 
+comparison_df.insert(0, "Model", ['rf_reg', 
+                                  'rf_reg_tuned', 
+                                  'rf_reg_bagged',
+                                  'rf_reg_boosted',
+                                  'voting_reg_dynamic',
+                                  'stacked_reg_dynamic'])
+
+comparison_df.style.highlight_max(axis=0, 
+                                  color = 'lightgreen', 
+                                  subset=['R2']).highlight_min(axis=0, 
+                                                               color = 'lightgreen', 
+                                                               subset=['MAE','MSE',
+                                                                       'RMSE','RMSLE','MAPE'])
 ```
 
-![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png)
+![](/post/2022-01-15-automl-using-pycaret-regression_files/p134p20.png)
 
 
-
+## 3.6  Model Evaluation after Training
 
 
 
