@@ -32,7 +32,11 @@ output:
 <li><a href="#performance-overview">3.5.5 Performance Overview</a></li>
 </ul></li>
 <li><a href="#model-evaluation-after-training">3.6 Model Evaluation after Training</a></li>
+<li><a href="#model-predictions">3.7 Model Predictions</a></li>
+<li><a href="#model-finalization">3.8 Model Finalization</a></li>
+<li><a href="#saving-the-pipeline-model">3.9 Saving the Pipeline &amp; Model</a></li>
 </ul></li>
+<li><a href="#conclusion">4 Conclusion</a></li>
 </ul>
 </div>
 
@@ -251,10 +255,67 @@ comparison_df.style.highlight_max(axis=0,
 </div>
 <div id="model-evaluation-after-training" class="section level2">
 <h2>3.6 Model Evaluation after Training</h2>
-<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
-<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
-<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
-<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
-<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
+<pre class="r"><code>type(stacked_reg_dynamic)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p21.png" /></p>
+<pre class="r"><code>pycr.plot_model(stacked_reg_dynamic, plot = &#39;residuals&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p22.png" /></p>
+<pre class="r"><code>pycr.plot_model(stacked_reg_dynamic, plot = &#39;error&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p23.png" /></p>
 </div>
+<div id="model-predictions" class="section level2">
+<h2>3.7 Model Predictions</h2>
+<pre class="r"><code># Make model predictions on testX
+stacked_reg_dynamic_pred = pycr.predict_model(stacked_reg_dynamic)
+stacked_reg_dynamic_pred</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p24.png" /></p>
+<pre class="r"><code>subset_stacked_reg_dynamic_pred = stacked_reg_dynamic_pred[[&#39;price&#39;, &#39;Label&#39;]]
+subset_stacked_reg_dynamic_pred</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p25.png" /></p>
+<pre class="r"><code>subset_stacked_reg_dynamic_pred.round(2)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p26.png" /></p>
+<pre class="r"><code># Obtaining the performance overview
+stacked_reg_dynamic_pred_results = pycr.pull()
+stacked_reg_dynamic_pred_results</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p27.png" /></p>
+</div>
+<div id="model-finalization" class="section level2">
+<h2>3.8 Model Finalization</h2>
+<pre class="r"><code>stacked_reg_dynamic_final = pycr.finalize_model(stacked_reg_dynamic)
+stacked_reg_dynamic_final</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p28.png" /></p>
+</div>
+<div id="saving-the-pipeline-model" class="section level2">
+<h2>3.9 Saving the Pipeline &amp; Model</h2>
+<pre class="r"><code>pycr.save_model(stacked_reg_dynamic_final, 
+                &#39;stacked_reg_dynamic_final_pipeline&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p29.png" /></p>
+<p><strong>Reload a Pipeline</strong></p>
+<pre class="r"><code>pipeline_reload = pycr.load_model(&#39;stacked_reg_dynamic_final_pipeline&#39;)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p30.png" /></p>
+<pre class="r"><code>unseen_df = pd.DataFrame(np.array([[3,2.25,1170,1249,3,0,0,3,8,1170,0,2014,0,1350,1310]]),
+                          columns=[&#39;bedrooms&#39;, &#39;bathrooms&#39;, &#39;sqft_living&#39;, &#39;sqft_lot&#39;, &#39;floors&#39;, 
+                                   &#39;waterfront&#39;, &#39;view&#39;, &#39;condition&#39;, &#39;grade&#39;, &#39;sqft_above&#39;,
+                                   &#39;sqft_basement&#39;, &#39;yr_built&#39;, &#39;yr_renovated&#39;, &#39;sqft_living15&#39;, &#39;sqft_lot15&#39;])
+
+
+unseen_df</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p31.png" /></p>
+<pre class="r"><code>pipeline_reload_pred_unseen = pycr.predict_model(pipeline_reload,
+                                                 data = unseen_df)
+
+pipeline_reload_pred_unseen</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p32.png" /></p>
+<p>Works !</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4 Conclusion</h1>
+<p>In this post I showed how to solve regression problems using the AutoML library PyCaret.
+In addition to the equivalent post about classifications (<a href="https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/">AutoML using PyCaret - Classification</a>), I went into the regression-specific functions and applications.</p>
+<p><strong>Limitations</strong></p>
+<p>I used only one version of the setup in this post. Other scaling options or feature engineering methods were not tried.
+Also, the handling of outliers was not considered, which could have improved the model.</p>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p.png" /></p>
 </div>
