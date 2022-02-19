@@ -558,8 +558,25 @@ colouring_df.style.highlight_min(color = 'lightgreen', axis = 0)
 ![](/post/2019-03-12-data-manipulation_files/p3z16.png)
 
 
+## 6.3 highest-lowest values
 
-## 6.3 negative values
+If you want to highlight values from different columns with different conditions, you can do this as follows:
+
+```{r, eval=F, echo=T}
+colouring_df.style.highlight_max(axis=0, 
+                                color = 'lightgreen', 
+                                subset=['Col1', 
+                                        'Col2']).highlight_min(axis=0, 
+                                                               color = 'lightgreen', 
+                                                               subset=['Col3'])
+```
+
+![](/post/2019-03-12-data-manipulation_files/p3z19.png)
+
+Here I have highlighted the highest values from columns 'Col1' and 'Col2' and the lowest value from column 'Col3'. 
+
+
+## 6.4 negative values
 
 Here is an example of how to highlight negative values in a data set:
 
