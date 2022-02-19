@@ -28,14 +28,85 @@ output:
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
 <p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134s1.png" /></p>
+<p>In my last post I introduced <a href="https://pycaret.gitbook.io/docs/">PyCaret</a> and showed how to solve <a href="https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/">classification problem</a> using this automated machine learning library.
+As a complement to this post, I would like to introduce the possibilities of <strong>regressions</strong>.</p>
+<p>For this post the dataset <em>House Sales in King County, USA</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 </div>
 <div id="loading-the-libraries-and-data" class="section level1">
 <h1>2 Loading the Libraries and Data</h1>
+<pre class="r"><code>import pandas as pd
+import numpy as np
+
+import pycaret.regression  as pycr</code></pre>
+<pre class="r"><code>house_df = pd.read_csv(&quot;house_prices.csv&quot;)
+house_df = house_df.drop([&#39;zipcode&#39;, &#39;lat&#39;, &#39;long&#39;, &#39;date&#39;, &#39;id&#39;], axis=1)
+house_df</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p1.png" /></p>
 </div>
 <div id="pycaret---regression" class="section level1">
 <h1>3 PyCaret - Regression</h1>
+<p>Many general options you have with PyCaret I already explained in my post about classifications.
+<strong>In the following I would like to go into more detail about new and regression relevant functions.</strong></p>
+<p>If you are not familiar with PyCaret yet, I advise you to read this post of mine first: <a href="https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/">AutoML using PyCaret - Classification</a></p>
 <div id="setup" class="section level2">
 <h2>3.1 Setup</h2>
+<pre class="r"><code>summary_preprocess = pycr.setup(house_df, 
+                                target = &#39;price&#39;,
+                                numeric_features = [&#39;bedrooms&#39;,
+                                                    &#39;waterfront&#39;,
+                                                    &#39;view&#39;,
+                                                    &#39;condition&#39;,
+                                                    &#39;grade&#39;],
+                                normalize = True,
+                                feature_interaction = True,
+                                feature_ratio = True,
+                                group_features = [&#39;sqft_living&#39;, 
+                                                  &#39;sqft_lot&#39;, 
+                                                  &#39;sqft_above&#39;, 
+                                                  &#39;sqft_basement&#39;, 
+                                                  &#39;sqft_living15&#39;, 
+                                                  &#39;sqft_lot15&#39;],
+                                feature_selection = True,
+                                remove_multicollinearity = True)</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p2.png" /></p>
+<p>First we can check if the data types of all variables were recognized correctly. If this is the case, as here, we can press Enter.</p>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p3.png" /></p>
+<p>What is different in this initiation of the setup compared to the <a href="https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/#setup">classification post</a> is that I have included more pre-processing steps:</p>
+<p><strong><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/data-preparation">Data Preparation</a></strong></p>
+<p>This time the datatype of <em>some variables was not recognized correctly</em>. With the parameter <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/data-preparation#data-types">numeric_features=[]</a></em> the correct datatype can be assigned to these variables.</p>
+<p><strong><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/scale-and-transform">Scaling</a></strong></p>
+<p>Furthermore I scaled the data this time with the <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/scale-and-transform#normalize">normalize</a></em> parameter. If you want more information about this topic see here: <a href="https://michael-fuchs-python.netlify.app/2019/08/31/feature-scaling-with-scikit-learn/">Feature Scaling with Scikit-Learn</a></p>
+<p><strong><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering">Feature Engineering</a></strong></p>
+<p>Sometimes it is worthwhile to generate new features through arithmetic operations applied to existing variables. This is exactly what the <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering#feature-interaction">feature_interaction</a></em> and <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering#feature-interaction">feature_ratio</a></em> parameters do.</p>
+<p>Here we would have two more options:</p>
+<ul>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering#polynomial-features">Polynomial Features</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering#trigonometry-features">Trigonometry Features</a></li>
+</ul>
+<p>I would use these two methods if I determine that the relationship between the dependent and independent variables is not linear. Both would generate new features.</p>
+<p>What I also did under the topic Feature Engineering is the grouping of features. This can and should be done if predictors are related in some way. Since we have different square footage data in our dataset, I want to group these features using the <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering#group-features">group_features</a></em> parameter.</p>
+<p><strong><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection">Feature Selection</a></strong></p>
+<p>Now that we have generated some new features by the parameters used before I would like to have it checked which of the predictors are profitable for the model training. For this I use the <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection#feature-selection">feature_selection</a></em>.</p>
+<p>Furthermore, I would like to counteract multicollinearity. I can do this by using the <em><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection#remove-multicollinearity">remove_multicollinearity</a></em> parameter.</p>
+<p><strong>Important information regarding the Order of Operations!</strong></p>
+<p>It is important that we follow the order of operations.</p>
+<ul>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/data-preparation">1 - Data Preparation</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/scale-and-transform">2 - Scale and Transform</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-engineering">3 - Feature Engineering</a></li>
+<li><a href="https://pycaret.gitbook.io/docs/get-started/preprocessing/feature-selection">4 - Feature Selection</a></li>
+</ul>
+<p>In the first three steps additional features can be created whereas in the last step (feature selection) features are excluded because they violate model assumption or are not profitable for model training.</p>
+<pre class="r"><code>x = pycr.get_config(&#39;X&#39;)
+y = pycr.get_config(&#39;y&#39;)
+trainX = pycr.get_config(&#39;X_train&#39;)
+testX = pycr.get_config(&#39;X_test&#39;)
+trainY = pycr.get_config(&#39;y_train&#39;)
+testY = pycr.get_config(&#39;y_test&#39;)</code></pre>
+<p>See here the number of predictors before and after pre-preocessing:</p>
+<pre class="r"><code>print(&#39;Number of Predictors before pre-processig: &#39; + str(house_df.shape[1]-1))
+print(&#39;Number of Predictors after pre-processig: &#39; + str(x.shape[1]))</code></pre>
+<p><img src="/post/2022-01-15-automl-using-pycaret-regression_files/p134p4.png" /></p>
 </div>
 <div id="compare-models" class="section level2">
 <h2>3.2 Compare Models</h2>
