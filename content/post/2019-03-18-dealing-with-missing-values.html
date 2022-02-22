@@ -633,10 +633,10 @@ print(testX.isnull().sum())</code></pre>
 <h2>8.4 Recommendation</h2>
 <p>What works for me in practice is a method from statistics that can be used when the data of a variable is normally distributed.</p>
 <p>We know from <a href="https://www.simplypsychology.org/normal-distribution.html">normal distributions (Bell Curve)</a> that 68% of the data lie between Z-1 and Z1.</p>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4z1.png" /></p>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4s1.png" /></p>
 <p>Source: <a href="https://www.simplypsychology.org/normal-distribution.html">SimplyPsychology</a></p>
 <p>That is, they have a mean value of 0 +- 1sd with a standard normal distribution.</p>
-<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4z2.png" /></p>
+<p><img src="/post/2019-03-18-dealing-with-missing-values_files/p4s2.png" /></p>
 <p>Source: <a href="https://www.simplypsychology.org/normal-distribution.html">SimplyPsychology</a></p>
 <p>Therefore, for a variable with a normal distribution, we can replace the missing values with random values that have a range from mean - 1sd to mean + 1sd.</p>
 <p>This method, is a little more cumbersome than the functions we used before, but it provides slightly more accurate values.</p>

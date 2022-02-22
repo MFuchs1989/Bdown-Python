@@ -982,7 +982,7 @@ What works for me in practice is a method from statistics that can be used when 
 
 We know from [normal distributions (Bell Curve)](https://www.simplypsychology.org/normal-distribution.html) that 68% of the data lie between Z-1 and Z1. 
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4z1.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4s1.png)
 
 Source: [SimplyPsychology](https://www.simplypsychology.org/normal-distribution.html)
 
@@ -991,7 +991,7 @@ Source: [SimplyPsychology](https://www.simplypsychology.org/normal-distribution.
 That is, they have a mean value of 0 +- 1sd with a standard normal distribution. 
 
 
-![](/post/2019-03-18-dealing-with-missing-values_files/p4z2.png)
+![](/post/2019-03-18-dealing-with-missing-values_files/p4s2.png)
 
 Source: [SimplyPsychology](https://www.simplypsychology.org/normal-distribution.html)
 
@@ -1076,8 +1076,6 @@ Voilá, we have inserted different new values for the missing values of the colu
 # 9 Conclusion
 
 In this post, I have shown different methods of replacing missing values in a dataset in a useful way. Furthermore, I have shown how these procedures should be applied in practice during a model training. 
-
-
 
 
 
