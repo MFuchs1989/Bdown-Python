@@ -108,7 +108,8 @@ df_iris.head()</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23s1.png" /></p>
 <p>Also for this pandas offers a quite simple possibility.
 To illustrate this example, we use a kaggle record of data from twitter.</p>
-<pre class="r"><code>df = pd.read_csv(&quot;df.csv&quot;, sep=&quot;;&quot;)</code></pre>
+<pre class="r"><code>df = pd.read_json(&quot;twitter.json&quot;)
+df</code></pre>
 <p><img src="/post/2019-03-01-read-and-write-to-files_files/p23p1.png" /></p>
 </div>
 <div id="read-text-files" class="section level2">

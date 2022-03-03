@@ -116,7 +116,8 @@ To illustrate this example, we use a kaggle record of data from twitter.
 
 
 ```{r, eval=F, echo=T}
-df = pd.read_csv("df.csv", sep=";")
+df = pd.read_json("twitter.json")
+df
 ```
 
 ![](/post/2019-03-01-read-and-write-to-files_files/p23p1.png)
