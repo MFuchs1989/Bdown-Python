@@ -1311,7 +1311,9 @@ lm_reload = pk.load(open("model/lm_model.pkl",'rb'))
 y_pred = lm_reload.predict(testX_final)
 
 # Create a dataset with actual and predicted values
-actual_vs_predicted = pd.DataFrame({'Actual': testY_final, 'Predicted': y_pred})
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = ['values_predicted']
+actual_vs_predicted = pd.concat([testY_final, y_pred_df], axis=1)
 
 # Visualize the results
 df1 = actual_vs_predicted.head(30)
@@ -1507,7 +1509,9 @@ y_pred = lm2_reload.predict(testX_final2)
 
 
 # Create a dataset with actual and predicted values
-actual_vs_predicted = pd.DataFrame({'Actual': testY_final2, 'Predicted': y_pred})
+y_pred_df = pd.DataFrame(y_pred)
+y_pred_df.columns = ['values_predicted']
+actual_vs_predicted = pd.concat([testY_final2, y_pred_df], axis=1)
 
 # Visualize the results
 df1 = actual_vs_predicted.head(30)
