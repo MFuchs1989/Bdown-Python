@@ -2,15 +2,13 @@
 title: NLP - Text Vectorization
 author: Michael Fuchs
 date: '2021-08-01'
-tags:
-  - tag1
-  - tag2
 slug: nlp-text-vectorization
-output:
+categories: []
+tags: []
+  output:
   blogdown::html_page:
     toc: yes
     toc_depth: 5
-images: /2021-08-01-nlp-text-vectorization_files/p135p1.png
 ---
 
 
