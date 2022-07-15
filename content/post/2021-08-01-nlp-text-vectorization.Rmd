@@ -4,7 +4,7 @@ author: Michael Fuchs
 date: '2021-08-01'
 slug: nlp-text-vectorization
 categories: []
-tags: []
+tags: ['post', 'ml']
 output:
   blogdown::html_page:
     toc: true
@@ -25,14 +25,55 @@ In the following, I will use a simple example to show several ways in which vect
 Finally, I will apply a vectorization method to the dataset (['Amazon_Unlocked_Mobile_small_pre_processed.csv'](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One)) created and processed in the [last post](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/) and train a machine learning model on it. 
 
 
+# 2 Import the Libraries and the Data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+```
 
 
 
 ```{r, eval=F, echo=T}
-
+df = pd.DataFrame({'Rating': [2,5,3],
+                   'Text': ["This is a brown horse",
+                            "This horse likes to play",
+                            "The horse is in the stable"]})
+df
 ```
 
 ![](/post/2021-08-01-nlp-text-vectorization_files/p135p1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
