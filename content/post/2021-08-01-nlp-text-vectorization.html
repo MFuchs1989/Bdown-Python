@@ -22,7 +22,10 @@ output:
 <li><a href="#bag-of-wordsbow">3.1 Bag-of-Words(BoW)</a>
 <ul>
 <li><a href="#functionality">3.1.2 Functionality</a></li>
+<li><a href="#creation-of-the-final-data-set">3.1.3 Creation of the final Data Set</a></li>
+<li><a href="#test-of-a-sample-record">3.1.4 Test of a Sample Record</a></li>
 </ul></li>
+<li><a href="#n-grams">3.2 N-grams</a></li>
 </ul></li>
 </ul>
 </div>
@@ -89,20 +92,59 @@ cv_vectorized_matrix</code></pre>
 <li>The rows indicate the documents in the corpus and</li>
 <li>The columns indicate the tokens in the dictionary</li>
 </ul>
-<p>How are the rows and columns in the matrix shown above to be read?</p>
-<ul>
-<li>The rows indicate the documents in the corpus and
-<ul>
-<li>sec</li>
-</ul></li>
-<li>The columns indicate the tokens in the dictionary</li>
-</ul>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 </div>
+<div id="creation-of-the-final-data-set" class="section level3">
+<h3>3.1.3 Creation of the final Data Set</h3>
+<p>Finally, I create a new data set on which to train machine learning algorithms. This time I use the generated array directly to create the final data frame:</p>
+<pre class="r"><code>cv_df = pd.DataFrame(text_cv_vectorized_array, 
+                     columns = cv_vectorizer.get_feature_names()).add_prefix(&#39;Counts_&#39;)
+
+df_new_cv = pd.concat([df, cv_df], axis=1, sort=False)
+df_new_cv</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p6.png" /></p>
+<p>However, the bag-of-words method also has two crucial disadvantages:</p>
+<ul>
+<li>BoW does not preserve the order of words and</li>
+<li>It does not allow to draw useful conclusions for downstream NLP tasks</li>
+</ul>
+</div>
+<div id="test-of-a-sample-record" class="section level3">
+<h3>3.1.4 Test of a Sample Record</h3>
+<p>Let’s test a sample record:</p>
+<pre class="r"><code>new_input = [&quot;Hi this is Mikel.&quot;]
+new_input</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p7.png" /></p>
+<pre class="r"><code>new_input_cv_vectorized = cv_vectorizer.transform(new_input)
+new_input_cv_vectorized_array = new_input_cv_vectorized.toarray()
+new_input_cv_vectorized_array</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p8.png" /></p>
+<pre class="r"><code>new_input_matrix = pd.DataFrame(new_input_cv_vectorized_array, 
+                                columns = cv_vectorizer.get_feature_names())
+
+new_input_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p9.png" /></p>
+<p>The words ‘is’ and ‘this’ have been learned by the CountVectorizer and thus get a count here.</p>
+<pre class="r"><code>new_input = [&quot;You say goodbye and I say hello&quot;, &quot;hello world&quot;]
+new_input</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p10.png" /></p>
+<pre class="r"><code>new_input_cv_vectorized = cv_vectorizer.transform(new_input)
+new_input_cv_vectorized_array = new_input_cv_vectorized.toarray()
+new_input_cv_vectorized_array</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p11.png" /></p>
+<pre class="r"><code>new_input_matrix = pd.DataFrame(new_input_cv_vectorized_array, 
+                                columns = cv_vectorizer.get_feature_names())
+
+new_input_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p12.png" /></p>
+<p>In our second example, I did not use any of the words CountVectorizer learned. Therefore all values are 0.</p>
+</div>
+</div>
+<div id="n-grams" class="section level2">
+<h2>3.2 N-grams</h2>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 </div>
 </div>
