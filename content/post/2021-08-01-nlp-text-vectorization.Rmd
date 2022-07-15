@@ -54,47 +54,75 @@ df
 ![](/post/2021-08-01-nlp-text-vectorization_files/p135p1.png)
 
 
+# 3 Text Vectorization
+
+## 3.1 Bag-of-Words(BoW)
+
+CountVectorizer() is one of the simplest methods of text vectorization.
+
+It creates a sparse matrix consisting of a set of dummy variables. These indicate whether a certain word occurs in the document or not. The CountVectorizer function matches the word vocabulary, learns it, and creates a document term matrix where the individual cells indicate the frequency of that word in a given document.
+This is also called term frequency where the columns are dedicated to each word in the corpus. 
 
 
+### 3.1.2 Functionality
 
 
+```{r, eval=F, echo=T}
+cv = CountVectorizer()
 
+cv_vectorizer = cv.fit(df['Text'])
+text_cv_vectorized = cv_vectorizer.transform(df['Text'])
 
+text_cv_vectorized_array = text_cv_vectorized.toarray()
 
+print(text_cv_vectorized_array)
+print()
+print(text_cv_vectorized_array.shape)
+```
 
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p2.png)
 
+10 different words were found in the text corpus. These can also be output as follows:
 
+```{r, eval=F, echo=T}
+cv_vectorizer.get_feature_names()
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p3.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+cv_vectorizer.vocabulary_
 ```
 
-![](/post/2021-08-01-nlp-text-vectorization_files/p135p.png)
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p4.png)
+
+To make the output a bit more readable we can have it displayed as a dataframe:
+
+
+```{r, eval=F, echo=T}
+cv_vectorized_matrix = pd.DataFrame(text_cv_vectorized.toarray(), 
+                                    columns=cv_vectorizer.get_feature_names())
+cv_vectorized_matrix
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p5.png)
+
+How are the rows and columns in the matrix shown above to be read?
+
++ The rows indicate the documents in the corpus and
++ The columns indicate the tokens in the dictionary
 
 
 
 
 
+How are the rows and columns in the matrix shown above to be read?
 
-
-
++ The rows indicate the documents in the corpus and
+  + sec
++ The columns indicate the tokens in the dictionary
 
 
 
