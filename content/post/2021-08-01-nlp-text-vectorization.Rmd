@@ -499,146 +499,251 @@ df_new_tf_idf.T
 # 4 Best Practice - Application to the Amazon Data Set
 
 
+As mentioned in the introduction, I will now apply a vectorizer to the dataset *Amazon_Unlocked_Mobile_small_pre_processed.csv* that I prepared in the [last post](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/). Afterwards, I will train a machine learning model on it.
+
+
+Feel free to download the dataset from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One).
+
+
+## 4.1  Import the Dataframe
+
+```{r, eval=F, echo=T}
+url = "https://raw.githubusercontent.com/MFuchs1989/Datasets-and-Miscellaneous/main/datasets/NLP/Text%20Pre-Processing%20-%20All%20in%20One/Amazon_Unlocked_Mobile_small_pre_processed.csv"
+
+df_amazon = pd.read_csv(url, error_bad_lines=False)
+# Conversion of the desired column to the correct data type
+df_amazon['Reviews_cleaned_wo_rare_words'] = df_amazon['Reviews_cleaned_wo_rare_words'].astype('str')
+df_amazon.head(3).T
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p24.png)
+
+I have already prepared the data set in various ways. You can read about the exact steps here: [NLP - Text Pre-Processing - All in One](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/)
+
+I will apply the TF-IDF vectorizer to the 'Reviews_cleaned_wo_rare_words' column. For this I will create a subset of the original dataframe. Feel free to try the TF-IDF (or any other vectorizer) on the other processed columns and compare the performance of the ML algorithms. 
+
+
+```{r, eval=F, echo=T}
+df_amazon_subset = df_amazon[['Label', 'Reviews_cleaned_wo_rare_words']]
+df_amazon_subset
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p25.png)
 
 
 
+```{r, eval=F, echo=T}
+x = df_amazon_subset.drop(['Label'], axis=1)
+y = df_amazon_subset['Label']
+
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
 
 
 
+## 4.2  TF-IDF Vectorizer
 
+As with scaling or encoding, the .fit command is applied only to the training part. Using these stored metrics, trainX as well as testX is then vectorized. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+I still used the additional function `.values.astype('U')` in the code below. This would not have been necessary at this point, because I already assigned the correct data type to the column 'Reviews_cleaned_wo_rare_words' when loading the dataset. 
+To be on the safe side that TfidfVectorizer works, this code part can be kept. 
 
 
 
 
 ```{r, eval=F, echo=T}
+tf_idf = TfidfVectorizer()
+tf_idf_vectorizer = tf_idf.fit(trainX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
 
+trainX_tf_idf_vectorized = tf_idf_vectorizer.transform(trainX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
+testX_tf_idf_vectorized = tf_idf_vectorizer.transform(testX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
+
+
+trainX_tf_idf_vectorized_array = trainX_tf_idf_vectorized.toarray()
+testX_tf_idf_vectorized_array = testX_tf_idf_vectorized.toarray()
+
+print('Number of features generated: ' + str(len(tf_idf_vectorizer.get_feature_names())))
 ```
 
-![](/post/2021-08-01-nlp-text-vectorization_files/p135p.png)
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p26.png)
+
+The next step is actually not necessary, since the machine learning models can handle arrays wonderfully. 
+
+
+```{r, eval=F, echo=T}
+trainX_tf_idf_vectorized_final = pd.DataFrame(trainX_tf_idf_vectorized_array, 
+                                              columns = tf_idf_vectorizer.get_feature_names()).add_prefix('TF-IDF_')
+
+testX_tf_idf_vectorized_final = pd.DataFrame(testX_tf_idf_vectorized_array, 
+                                             columns = tf_idf_vectorizer.get_feature_names()).add_prefix('TF-IDF_')
+```
 
 
 
+## 4.3  Model Training
+
+In the following I will use the Support Vector Machine classifier. Of course you can also try any other one. 
 
 
+```{r, eval=F, echo=T}
+clf = SVC(kernel='linear')
+clf.fit(trainX_tf_idf_vectorized_final, trainY)
+
+y_pred = clf.predict(testX_tf_idf_vectorized_final)
+```
 
 
+```{r, eval=F, echo=T}
+confusion_matrix = confusion_matrix(testY, y_pred)
+print(confusion_matrix)
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p27.png)
 
 
+```{r, eval=F, echo=T}
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p28.png)
 
 
+## 4.4  TF-IDF Vectorizer with ngram_range
+
+The TF-IDF Vectorizer can also be used in combination with n-grams. It has been shown in practice that the use of the parameter `analyser='char'` in combination with `ngram_range` not only generates fewer features, which is less computationally intensive, but also often provides the better result.  
+
+```{r, eval=F, echo=T}
+tf_idf_ngram = TfidfVectorizer(analyzer='char',
+                               ngram_range=(2, 3))
+
+tf_idf_ngram_vectorizer = tf_idf_ngram.fit(trainX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
+
+trainX_tf_idf_ngram_vectorized = tf_idf_ngram_vectorizer.transform(trainX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
+testX_tf_idf_ngram_vectorized = tf_idf_ngram_vectorizer.transform(testX['Reviews_cleaned_wo_rare_words'].values.astype('U'))
 
 
+trainX_tf_idf_ngram_vectorized_array = trainX_tf_idf_ngram_vectorized.toarray()
+testX_tf_idf_ngram_vectorized_array = testX_tf_idf_ngram_vectorized.toarray()
+
+print('Number of features generated: ' + str(len(tf_idf_ngram_vectorizer.get_feature_names())))
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p29.png)
 
 
+```{r, eval=F, echo=T}
+trainX_tf_idf_ngram_vectorized_final = pd.DataFrame(trainX_tf_idf_ngram_vectorized_array, 
+                                              columns = tf_idf_ngram_vectorizer.get_feature_names()).add_prefix('TF-IDF_ngram_')
+
+testX_tf_idf_ngram_vectorized_final = pd.DataFrame(testX_tf_idf_ngram_vectorized_array, 
+                                              columns = tf_idf_ngram_vectorizer.get_feature_names()).add_prefix('TF-IDF_ngram_')
+```
 
 
+## 4.5  Model Training II
+
+```{r, eval=F, echo=T}
+clf2 = SVC(kernel='linear')
+clf2.fit(trainX_tf_idf_ngram_vectorized_final, trainY)
+
+y_pred2 = clf2.predict(testX_tf_idf_ngram_vectorized_final)
+```
 
 
-
-
-
-
-
-
-
-
+```{r, eval=F, echo=T}
+y_pred2 = clf2.predict(testX_tf_idf_ngram_vectorized_final)
+```
 
 
 
 ```{r, eval=F, echo=T}
-
+confusion_matrix2 = confusion_matrix(testY, y_pred2)
+print(confusion_matrix2)
 ```
 
-![](/post/2021-08-01-nlp-text-vectorization_files/p135p.png)
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p30.png)
 
 
+```{r, eval=F, echo=T}
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred2)))
+```
 
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p31.png)
 
 
+Unfortunately, the performance did not increase. Therefore, we use the first TF-IDF Vectorizer as well as the first ML model.
 
 
+## 4.6  Out-Of-The-Box-Data
 
+Finally, I'd like to test some self-generated evaluation comments and see what the model predicts.
 
+Normally, all pre-processing steps that took place during model training should also be applied to new data. These were (to be read in the post [NLP - Text Pre-Processing - All in One](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/)): 
 
++ Text Cleaning
+    + Conversion to Lower Case
+    + Removing HTML-Tags
+    + Removing URLs
+    + Removing Accented Characters
+    + Removing Punctuation
+    + Removing irrelevant Characters (Numbers and Punctuation)
+    + Removing extra Whitespaces
++ Tokenization
++ Removing Stop Words
++ Normalization
++ Removing Single Characters
++ Removing specific Words
++ Removing Rare words
 
+For simplicity, I'll omit these steps for this example, since I used simple words without punctuation or special characters.
 
+```{r, eval=F, echo=T}
+my_rating_comment = ["a great device anytime again", 
+                     "has poor reception and a too small display", 
+                     "goes like this to some extent has a lot of good but also negative"]
+```
 
 
+Here is the vectorized data set:
 
+```{r, eval=F, echo=T}
+my_rating_comment_vectorized = tf_idf_vectorizer.transform(my_rating_comment)
+my_rating_comment_vectorized_array = my_rating_comment_vectorized.toarray()
+my_rating_comment_df = pd.DataFrame(my_rating_comment_vectorized_array, 
+                                    columns = tf_idf_vectorizer.get_feature_names())
+my_rating_comment_df
+```
 
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p32.png)
 
+To be able to see which words from my_rating_comment were in the learned vocabulary of the vectorizer (and consequently received a TF-IDF score) I filter the dataset:
 
 
+```{r, eval=F, echo=T}
+my_rating_comment_df_filtered = my_rating_comment_df.loc[:, (my_rating_comment_df != 0).any(axis=0)]
+my_rating_comment_df_filtered
+```
 
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p33.png)
 
+Ok let's predict:
 
 
+```{r, eval=F, echo=T}
+y_pred_my_rating = clf.predict(my_rating_comment_df)
+```
 
 
+Here is the final result:
 
+```{r, eval=F, echo=T}
+my_rating_comment_df_final = pd.DataFrame (my_rating_comment, columns = ['My_Rating'])
+my_rating_comment_df_final['Prediction'] = y_pred_my_rating
+my_rating_comment_df_final
+```
 
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p34.png)
 
+# 5 Conclusion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In this post I showed how to generate readable input from text data for machine learning algorithms. Furthermore, I applied a vectorizer to the previously created and cleaned dataset and trained a machine learning model on it. Finally, I showed how to make new predictions using the trained model. 
