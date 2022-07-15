@@ -39,6 +39,7 @@ output:
 <li><a href="#mathematical-formulas">3.3.1.1 Mathematical Formulas</a></li>
 <li><a href="#example-calculation">3.3.1.2 Example Calculation</a></li>
 <li><a href="#tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
+<li><a href="#functionality-2">3.3.2 Functionality</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -289,6 +290,33 @@ df_new_cv_ngram.T</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s7.png" /></p>
 <p>Here, a 1 is again added to IDF so that a zero value of IDF does not result in a complete suppression of TF-IDF.
 Using the TfidfVectorizer() function on our sample collection clearly shows this effect:</p>
+<pre class="r"><code>documents = [&#39;I said please and you said thanks&#39;,
+             &#39;please darling please&#39;,
+             &#39;please thanks&#39;]
+
+tf_idf = TfidfVectorizer()
+tf_idf_vectorizer = tf_idf.fit(documents)
+documents_tf_idf_vectorized = tf_idf_vectorizer.transform(documents)
+
+documents_tf_idf_vectorized_array = documents_tf_idf_vectorized.toarray()
+
+
+tf_idf_vectorized_matrix = pd.DataFrame(documents_tf_idf_vectorized.toarray(), 
+                                        columns=tf_idf_vectorizer.get_feature_names())
+tf_idf_vectorized_matrix = tf_idf_vectorized_matrix[[&#39;said&#39;, &#39;please&#39;, &#39;and&#39;, &#39;you&#39;, &#39;thanks&#39;, &#39;darling&#39;]]
+tf_idf_vectorized_matrix.T</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p21.png" /></p>
+<p>Here again for comparison the values calculated using the original formula:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s4.png" /></p>
+<p>As we can see here very nicely the values for the word ‘please’ were not completely suppressed during the calculation by TfidfVectorizer().</p>
+<p>However, the interpretation of TF-IDF remain exactly the same despite these minor adjustments.</p>
+<p>Furthermore, the word ‘I’ was not included, because scikit-learn’s vectorizer automatically disregards words with a length of one letter.</p>
+<p><strong>Hint:</strong></p>
+<p>Scikit-learn also provides the TfidfTransformer() function.
+But it needs the customized output of CountVectorize as input to calculate the TF-IDF values, see <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer">here</a>. In almost all cases you can use TfidfVectorizer directly.</p>
+</div>
+<div id="functionality-2" class="section level3">
+<h3>3.3.2 Functionality</h3>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>

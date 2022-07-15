@@ -424,12 +424,45 @@ Here, a 1 is again added to IDF so that a zero value of IDF does not result in a
 Using the TfidfVectorizer() function on our sample collection clearly shows this effect: 
 
 
+```{r, eval=F, echo=T}
+documents = ['I said please and you said thanks',
+             'please darling please',
+             'please thanks']
+
+tf_idf = TfidfVectorizer()
+tf_idf_vectorizer = tf_idf.fit(documents)
+documents_tf_idf_vectorized = tf_idf_vectorizer.transform(documents)
+
+documents_tf_idf_vectorized_array = documents_tf_idf_vectorized.toarray()
 
 
+tf_idf_vectorized_matrix = pd.DataFrame(documents_tf_idf_vectorized.toarray(), 
+                                        columns=tf_idf_vectorizer.get_feature_names())
+tf_idf_vectorized_matrix = tf_idf_vectorized_matrix[['said', 'please', 'and', 'you', 'thanks', 'darling']]
+tf_idf_vectorized_matrix.T
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p21.png)
 
 
+Here again for comparison the values calculated using the original formula:
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135s4.png)
 
 
+As we can see here very nicely the values for the word 'please' were not completely suppressed during the calculation by TfidfVectorizer(). 
+
+However, the interpretation of TF-IDF remain exactly the same despite these minor adjustments.
+
+Furthermore, the word 'I' was not included, because scikit-learn's vectorizer automatically disregards words with a length of one letter. 
+
+**Hint:**
+
+Scikit-learn also provides the TfidfTransformer() function. 
+But it needs the customized output of CountVectorize as input to calculate the TF-IDF values, see [here](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer). In almost all cases you can use TfidfVectorizer directly.
+
+
+### 3.3.2 Functionality
 
 
 
