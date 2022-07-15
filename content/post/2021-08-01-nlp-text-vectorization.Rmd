@@ -349,6 +349,7 @@ df_new_cv_ngram.T
 
 ## 3.3  TF-IDF
 
+### 3.3.1 Explanation
 
 TF-IDF stands for Term Frequency - Inverse Document Frequency . It's a statistical measure of how relevant a word is with respect to a document in a collection of documents.
 

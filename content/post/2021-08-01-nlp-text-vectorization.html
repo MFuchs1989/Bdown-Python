@@ -36,9 +36,12 @@ output:
 </ul></li>
 <li><a href="#tf-idf">3.3 TF-IDF</a>
 <ul>
+<li><a href="#explanation-1">3.3.1 Explanation</a>
+<ul>
 <li><a href="#mathematical-formulas">3.3.1.1 Mathematical Formulas</a></li>
 <li><a href="#example-calculation">3.3.1.2 Example Calculation</a></li>
 <li><a href="#tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
+</ul></li>
 <li><a href="#functionality-2">3.3.2 Functionality</a></li>
 <li><a href="#creation-of-the-final-data-set-2">3.3.3 Creation of the final Data Set</a></li>
 </ul></li>
@@ -249,6 +252,8 @@ df_new_cv_ngram.T</code></pre>
 </div>
 <div id="tf-idf" class="section level2">
 <h2>3.3 TF-IDF</h2>
+<div id="explanation-1" class="section level3">
+<h3>3.3.1 Explanation</h3>
 <p>TF-IDF stands for Term Frequency - Inverse Document Frequency . It’s a statistical measure of how relevant a word is with respect to a document in a collection of documents.</p>
 <p>TF-IDF consists of two components:</p>
 <ul>
@@ -316,6 +321,7 @@ tf_idf_vectorized_matrix.T</code></pre>
 <p><strong>Hint:</strong></p>
 <p>Scikit-learn also provides the TfidfTransformer() function.
 But it needs the customized output of CountVectorize as input to calculate the TF-IDF values, see <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer">here</a>. In almost all cases you can use TfidfVectorizer directly.</p>
+</div>
 </div>
 <div id="functionality-2" class="section level3">
 <h3>3.3.2 Functionality</h3>
