@@ -25,7 +25,21 @@ output:
 <li><a href="#creation-of-the-final-data-set">3.1.3 Creation of the final Data Set</a></li>
 <li><a href="#test-of-a-sample-record">3.1.4 Test of a Sample Record</a></li>
 </ul></li>
-<li><a href="#n-grams">3.2 N-grams</a></li>
+<li><a href="#n-grams">3.2 N-grams</a>
+<ul>
+<li><a href="#explanation">3.2.1 Explanation</a></li>
+<li><a href="#functionality-1">3.2.2 Functionality</a>
+<ul>
+<li><a href="#defining-max_features">3.2.2.2 Defining max_features</a></li>
+</ul></li>
+<li><a href="#creation-of-the-final-data-set-1">3.2.3 Creation of the final Data Set</a></li>
+</ul></li>
+<li><a href="#tf-idf">3.3 TF-IDF</a>
+<ul>
+<li><a href="#mathematical-formulas">3.3.1.1 Mathematical Formulas</a></li>
+<li><a href="#example-calculation">3.3.1.2 Example Calculation</a></li>
+<li><a href="#tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -141,10 +155,143 @@ new_input_matrix</code></pre>
 </div>
 <div id="n-grams" class="section level2">
 <h2>3.2 N-grams</h2>
+<div id="explanation" class="section level3">
+<h3>3.2.1 Explanation</h3>
+<p>First of all, what are n-grams?
+In a nutshell: an N-gram means a sequence of N words.
+So for example, “Hi there” is a 2-gram (a bigram), “Hello sunny world” is a 3-gram (trigram) and “Hi this is Mikel” is a 4-gram.</p>
+<p>How would this look when vectorizing a text corpus?</p>
+<p><em>Example</em>: “A horse rides on the beach.”</p>
+<ul>
+<li>Unigram (1-gram): A, horse, rides, on, the, beach</li>
+<li>Bigram (2-gram): A horse, horse rides, rides on, …</li>
+<li>Trigram (3-gram): A horse rides, horse rides on, …</li>
+</ul>
+<p>Unlike BoW, n-gram maintains word order.
+They can also be created with the CountVectorizer() function. For this only the ngram_range parameter must be adjusted.</p>
+<p>An ngram_range of:</p>
+<ul>
+<li>(1, 1) means only unigrams</li>
+<li>(1, 2) means unigrams and bigrams</li>
+<li>(2, 2) means only bigrams</li>
+<li>(1, 3) means unigrams, bigrams and trigrams …</li>
+</ul>
+<p>Here a short example of this:</p>
+<pre class="r"><code>example_sentence = [&quot;A horse rides on the beach.&quot;]
+example_sentence</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p13.png" /></p>
+<pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(1, 3))
+
+cv_ngram_vectorizer = cv_ngram.fit(example_sentence)
+cv_ngram_vectorizer.get_feature_names()</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p14.png" /></p>
+<pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(2, 3))
+
+cv_ngram_vectorizer = cv_ngram.fit(example_sentence)
+cv_ngram_vectorizer.get_feature_names()</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p15.png" /></p>
+</div>
+<div id="functionality-1" class="section level3">
+<h3>3.2.2 Functionality</h3>
+<p>Now that we know how the CountVectorizer works with the ngram_range parameter, we will apply it to our sample dataset:</p>
+<pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(1, 3))
+
+cv_ngram_vectorizer = cv_ngram.fit(df[&#39;Text&#39;])
+text_cv_ngram_vectorized = cv_ngram_vectorizer.transform(df[&#39;Text&#39;])
+
+text_cv_ngram_vectorized_array = text_cv_ngram_vectorized.toarray()
+
+print(cv_ngram_vectorizer.get_feature_names())</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p16.png" /></p>
+<p>The disadvantage of n-gram is that it usually generates too many features and is therefore very computationally expensive. One way to counteract this is to limit the maximum number of features. This can be done with the max_features parameter.</p>
+<div id="defining-max_features" class="section level4">
+<h4>3.2.2.2 Defining max_features</h4>
+<pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(1, 3),
+                           max_features=15)
+
+cv_ngram_vectorizer = cv_ngram.fit(df[&#39;Text&#39;])
+text_cv_ngram_vectorized = cv_ngram_vectorizer.transform(df[&#39;Text&#39;])
+
+text_cv_ngram_vectorized_array = text_cv_ngram_vectorized.toarray()
+
+print(cv_ngram_vectorizer.get_feature_names())</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p17.png" /></p>
+<pre class="r"><code>cv_ngram_vectorized_matrix = pd.DataFrame(text_cv_ngram_vectorized.toarray(), 
+                                          columns=cv_ngram_vectorizer.get_feature_names())
+cv_ngram_vectorized_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p18.png" /></p>
+<p>That worked out well. But what I always try to avoid with column names are spaces between the words. But this can be easily corrected:</p>
+<pre class="r"><code>cv_ngram_vectorized_matrix_columns_list = cv_ngram_vectorized_matrix.columns.to_list()
+
+k = []
+
+for i in cv_ngram_vectorized_matrix_columns_list:
+    j = i.replace(&#39; &#39;,&#39;_&#39;)
+    k.append(j)
+
+cv_ngram_vectorized_matrix.columns = [k]
+cv_ngram_vectorized_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p19.png" /></p>
+</div>
+</div>
+<div id="creation-of-the-final-data-set-1" class="section level3">
+<h3>3.2.3 Creation of the final Data Set</h3>
+<pre class="r"><code>cv_ngram_df = pd.DataFrame(text_cv_ngram_vectorized_array, 
+                           columns = cv_ngram_vectorizer.get_feature_names()).add_prefix(&#39;Counts_&#39;)
+
+df_new_cv_ngram = pd.concat([df, cv_ngram_df], axis=1, sort=False)
+df_new_cv_ngram.T</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p20.png" /></p>
+</div>
+</div>
+<div id="tf-idf" class="section level2">
+<h2>3.3 TF-IDF</h2>
+<p>TF-IDF stands for Term Frequency - Inverse Document Frequency . It’s a statistical measure of how relevant a word is with respect to a document in a collection of documents.</p>
+<p>TF-IDF consists of two components:</p>
+<ul>
+<li>Term frequency (TF): The number of times the word occurs in the document</li>
+<li>Inverse Document Frequency (IDF): A weighting that indicates how common or rare a word is in the overall document set.</li>
+</ul>
+<p>Multiplying TF and IDF results in the TF-IDF score of a word in a document. The higher the score, the more relevant that word is in that particular document.</p>
+<div id="mathematical-formulas" class="section level4">
+<h4>3.3.1.1 Mathematical Formulas</h4>
+<p>TF-IDF is therefore the product of TF and IDF:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s1.png" /></p>
+<p>where TF computes the term frequency:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s2.png" /></p>
+<p>and IDF computes the inverse document frequency:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s3.png" /></p>
+</div>
+<div id="example-calculation" class="section level4">
+<h4>3.3.1.2 Example Calculation</h4>
+<p>Here is a simple example. Let’s assume we have the following collection of documents D:</p>
+<ul>
+<li>Doc1: “I said please and you said thanks”</li>
+<li>Doc2: “please darling please”</li>
+<li>Doc3: “please thanks”</li>
+</ul>
+<p>The calculation of TF, IDF and TF-IDF is shown in the table below:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s4.png" /></p>
+<p>Let’s take a closer look at the values to understand the calculation. The word ‘said’ appears twice in the first document, and the total number of words in Doc1 is 7.</p>
+<p>The TF value is therefore 2/7.</p>
+<p>In the other two documents ‘said’ is not present at all. This results in an IDF value of log(3/1), since there are a total of three documents in the collection and the word ‘said’ appears in one of the three.</p>
+<p>The calculation of the TF-IDF value is therefore as follows:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s5.png" /></p>
+<p>If you look at the values for ‘please’, you will see that this word appears (sometimes several times) in all documents. It is therefore considered common and receives a TF-IDF value of 0.</p>
+</div>
+<div id="tf-idf-using-scikit-learn" class="section level4">
+<h4>3.3.1.3 TF-IDF using scikit-learn</h4>
+<p>Below I will use the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn.feature_extraction.text.TfidfVectorizer">TF-IDF vectorizer from scikit-learn</a>, which has two small modifications to the original formula.</p>
+<p>The calculation of IDF is as follows:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s6.png" /></p>
+<p>Here, 1 is added to the numerator and to the denominator. This is to avoid the computational problem of dividing by 0. We also need to add a 1 to the numerator to balance the effect of adding 1 to the denominator.</p>
+<p>The second modification is in the calculation of TF-IDF values:</p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135s7.png" /></p>
+<p>Here, a 1 is again added to IDF so that a zero value of IDF does not result in a complete suppression of TF-IDF.
+Using the TfidfVectorizer() function on our sample collection clearly shows this effect:</p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+</div>
 </div>
 </div>
