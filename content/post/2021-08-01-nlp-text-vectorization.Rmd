@@ -5,8 +5,8 @@ date: '2021-08-01'
 slug: nlp-text-vectorization
 categories: []
 tags:
-  - Python
-  - Blog
+  Python
+  Blog
 output:
   blogdown::html_page:
     toc: true
@@ -14,7 +14,7 @@ output:
 ---
 
 
-
+test
 
 # 1 Introduction
 
