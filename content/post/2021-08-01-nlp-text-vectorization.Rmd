@@ -464,22 +464,38 @@ But it needs the customized output of CountVectorize as input to calculate the T
 
 ### 3.3.2 Functionality
 
-
-
-
-
-
-
-
-
 ```{r, eval=F, echo=T}
+tf_idf = TfidfVectorizer()
+tf_idf_vectorizer = tf_idf.fit(df['Text'])
+text_tf_idf_vectorized = tf_idf_vectorizer.transform(df['Text'])
 
+text_tf_idf_vectorized_array = text_tf_idf_vectorized.toarray()
+
+
+tf_idf_vectorized_matrix = pd.DataFrame(text_tf_idf_vectorized.toarray(), 
+                                        columns=tf_idf_vectorizer.get_feature_names())
+
+tf_idf_vectorized_matrix
 ```
 
-![](/post/2021-08-01-nlp-text-vectorization_files/p135p.png)
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p22.png)
 
 
 
+### 3.3.3 Creation of the final Data Set
+
+```{r, eval=F, echo=T}
+tf_idf_df = pd.DataFrame(text_tf_idf_vectorized_array, 
+                         columns = tf_idf_vectorizer.get_feature_names()).add_prefix('TF-IDF_')
+
+df_new_tf_idf = pd.concat([df, tf_idf_df], axis=1, sort=False)
+df_new_tf_idf.T
+```
+
+![](/post/2021-08-01-nlp-text-vectorization_files/p135p23.png)
+
+
+# 4 Best Practice - Application to the Amazon Data Set
 
 
 

@@ -40,8 +40,10 @@ output:
 <li><a href="#example-calculation">3.3.1.2 Example Calculation</a></li>
 <li><a href="#tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
 <li><a href="#functionality-2">3.3.2 Functionality</a></li>
+<li><a href="#creation-of-the-final-data-set-2">3.3.3 Creation of the final Data Set</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#best-practice---application-to-the-amazon-data-set">4 Best Practice - Application to the Amazon Data Set</a></li>
 </ul>
 </div>
 
@@ -317,9 +319,32 @@ But it needs the customized output of CountVectorize as input to calculate the T
 </div>
 <div id="functionality-2" class="section level3">
 <h3>3.3.2 Functionality</h3>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<pre class="r"><code>tf_idf = TfidfVectorizer()
+tf_idf_vectorizer = tf_idf.fit(df[&#39;Text&#39;])
+text_tf_idf_vectorized = tf_idf_vectorizer.transform(df[&#39;Text&#39;])
+
+text_tf_idf_vectorized_array = text_tf_idf_vectorized.toarray()
+
+
+tf_idf_vectorized_matrix = pd.DataFrame(text_tf_idf_vectorized.toarray(), 
+                                        columns=tf_idf_vectorizer.get_feature_names())
+
+tf_idf_vectorized_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p22.png" /></p>
+</div>
+<div id="creation-of-the-final-data-set-2" class="section level3">
+<h3>3.3.3 Creation of the final Data Set</h3>
+<pre class="r"><code>tf_idf_df = pd.DataFrame(text_tf_idf_vectorized_array, 
+                         columns = tf_idf_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_&#39;)
+
+df_new_tf_idf = pd.concat([df, tf_idf_df], axis=1, sort=False)
+df_new_tf_idf.T</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p23.png" /></p>
 </div>
 </div>
+</div>
+<div id="best-practice---application-to-the-amazon-data-set" class="section level1">
+<h1>4 Best Practice - Application to the Amazon Data Set</h1>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 </div>
