@@ -226,6 +226,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 12 Natural Language Processing (NLP)
 
++ [Text Vectorization](https://michael-fuchs-python.netlify.app/2021/08/01/nlp-text-vectorization/)
 + [Text Pre-Processing - All in One](https://michael-fuchs-python.netlify.app/2021/06/23/nlp-text-pre-processing-all-in-one/#final-results)
 + [Text Pre-Processing VII (Special Cases)](https://michael-fuchs-python.netlify.app/2021/06/19/nlp-text-pre-processing-vii-special-cases/)
 + [Text Pre-Processing VI (Word Removal)](https://michael-fuchs-python.netlify.app/2021/06/16/nlp-text-pre-processing-vi-word-removal/)
