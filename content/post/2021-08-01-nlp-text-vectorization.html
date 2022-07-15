@@ -2,15 +2,13 @@
 title: NLP - Text Vectorization
 author: Michael Fuchs
 date: '2021-08-01'
-tags:
-  - tag1
-  - tag2
 slug: nlp-text-vectorization
+categories: []
+tags: []
 output:
   blogdown::html_page:
     toc: yes
     toc_depth: 5
-images: /2021-08-01-nlp-text-vectorization_files/p135p1.png
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
@@ -19,6 +17,13 @@ images: /2021-08-01-nlp-text-vectorization_files/p135p1.png
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#text-vectorization">3 Text Vectorization</a>
+<ul>
+<li><a href="#bag-of-wordsbow">3.1 Bag-of-Words(BoW)</a>
+<ul>
+<li><a href="#functionality">3.1.2 Functionality</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -48,11 +53,56 @@ from sklearn.metrics import accuracy_score</code></pre>
                             &quot;The horse is in the stable&quot;]})
 df</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p1.png" /></p>
+</div>
+<div id="text-vectorization" class="section level1">
+<h1>3 Text Vectorization</h1>
+<div id="bag-of-wordsbow" class="section level2">
+<h2>3.1 Bag-of-Words(BoW)</h2>
+<p>CountVectorizer() is one of the simplest methods of text vectorization.</p>
+<p>It creates a sparse matrix consisting of a set of dummy variables. These indicate whether a certain word occurs in the document or not. The CountVectorizer function matches the word vocabulary, learns it, and creates a document term matrix where the individual cells indicate the frequency of that word in a given document.
+This is also called term frequency where the columns are dedicated to each word in the corpus.</p>
+<div id="functionality" class="section level3">
+<h3>3.1.2 Functionality</h3>
+<pre class="r"><code>cv = CountVectorizer()
+
+cv_vectorizer = cv.fit(df[&#39;Text&#39;])
+text_cv_vectorized = cv_vectorizer.transform(df[&#39;Text&#39;])
+
+text_cv_vectorized_array = text_cv_vectorized.toarray()
+
+print(text_cv_vectorized_array)
+print()
+print(text_cv_vectorized_array.shape)</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p2.png" /></p>
+<p>10 different words were found in the text corpus. These can also be output as follows:</p>
+<pre class="r"><code>cv_vectorizer.get_feature_names()</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p3.png" /></p>
+<pre class="r"><code>cv_vectorizer.vocabulary_</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p4.png" /></p>
+<p>To make the output a bit more readable we can have it displayed as a dataframe:</p>
+<pre class="r"><code>cv_vectorized_matrix = pd.DataFrame(text_cv_vectorized.toarray(), 
+                                    columns=cv_vectorizer.get_feature_names())
+cv_vectorized_matrix</code></pre>
+<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p5.png" /></p>
+<p>How are the rows and columns in the matrix shown above to be read?</p>
+<ul>
+<li>The rows indicate the documents in the corpus and</li>
+<li>The columns indicate the tokens in the dictionary</li>
+</ul>
+<p>How are the rows and columns in the matrix shown above to be read?</p>
+<ul>
+<li>The rows indicate the documents in the corpus and
+<ul>
+<li>sec</li>
+</ul></li>
+<li>The columns indicate the tokens in the dictionary</li>
+</ul>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
-<p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p.png" /></p>
+</div>
+</div>
 </div>

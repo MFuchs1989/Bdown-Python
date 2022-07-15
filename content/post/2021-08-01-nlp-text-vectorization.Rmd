@@ -5,7 +5,7 @@ date: '2021-08-01'
 slug: nlp-text-vectorization
 categories: []
 tags: []
-  output:
+output:
   blogdown::html_page:
     toc: yes
     toc_depth: 5
