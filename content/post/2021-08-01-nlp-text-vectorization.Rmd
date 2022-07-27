@@ -17,7 +17,7 @@ output:
 
 Now that we have cleaned up and prepared our text dataset in the previous posts, we come to the next topic: **Text Vectorization**
 
-Most machine learning algorithms cannot handle string variables. We have to convert them into a format that is readable for machine learning algorithms. Text vectorization is the mapping of vocabulary or tokens from a data set to a corresponding vector of real numbers. These vectors can be used as input to machine learning models. 
+Most machine learning algorithms cannot handle string variables. We have to convert them into a format that is readable for machine learning algorithms. Text vectorization is the process of converting text into real numbers. These numbers can be used as input to machine learning models. 
 
 In the following, I will use a simple example to show several ways in which vectorization can be done. 
 
