@@ -9,89 +9,319 @@ output:
   blogdown::html_page:
     toc: yes
     toc_depth: 5
-    number_sections: yes
 ---
 
 
 
-# Introduction
+# 1 Introduction
+
+In my last post ([NLP - Text Vectorization](https://michael-fuchs-python.netlify.app/2021/08/01/nlp-text-vectorization/)) I showed how to convert words from a text corpus into real numbers to make them readable for machine learning algorithms.
+The problem with BoW or TF-IDF vectorization is that the semantics of the word are not encoded in its vector representation. For example, the words "mobile phone" and "cell phone" have similar meanings, but BoW or TF-IDF does not take this into account and ignores the meaning of the words.
+
+And that's where Word Embedding comes in. 
+
+Word embedding is one of the most popular language modeling techniques used to map words onto vectors of real numbers. It is able to represent words or phrases in a vector space with multiple dimensions that have semantic and syntactic similarity. Word embeddings can be created using various methods. 
+
+**In contrast to BoW or TF-IDF, the word embedding approach vectorizes a word, placing words that have similar meanings closer together**. For example, the words "mobile phone" and "cell phone" would have a similar vector representation. This means that when the word is embedded, the meaning of the word is encoded in the vector.
+
+The motivation behind converting text into semantic vectors is that the word embedding method is not only able to extract the semantic relations, but it should also preserve most of the relevant information about a text corpus.
+
+
+
+# 2  Import the Libraries and the Data
+
+
+```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
+import pickle as pk
+
+from nltk.tokenize import word_tokenize
+import statistics
+
+from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
+
+from gensim.models.doc2vec import Doc2Vec
+from gensim.models.doc2vec import TaggedDocument
+
+from gensim.models import Phrases
+from gensim.models.phrases import Phraser
+
+import gensim.downloader as api
+```
 
 
 
 ```{r, eval=F, echo=T}
-
+df = pd.DataFrame({'Rating': [3,5,1,2],
+                   'Text': ["I love sunflowers",
+                            "Sunflowers fill my heart with joy",
+                            "I love to look into the garden and see the flowers",
+                            "Flowers especially sunflowers are the most beautiful"]})
+df
 ```
 
 ![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p1.png)
 
 
 
+Here I will quickly create tokens from our sample dataset, since Word2Vec from gensim can only do well with them.
 
 
 
+```{r, eval=F, echo=T}
+df['Text_Tokenized'] = df['Text'].str.lower().apply(word_tokenize)
+df
+```
 
-# Import the Libraries and the Data
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p2.png)
 
+
+# 3  Gensim - Word2Vec
+
+
+Word2Vec from gensim is one of the most popular techniques for learning word embeddings using a flat neural network. It can be used with two methods: 
+
++ CBOW (Common Bag Of Words): Using the context to predict a target word
++ Skip Gram: Using a word to predict a target context
+
+The corresponding layer structure looks like this: 
+
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136s1.png)
+
+Source: [Mikolov T., Chen K., Corrado G. & Dean J. (2013). Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.](https://arxiv.org/pdf/1301.3781.pdf)
+
+
+
+When should which method be used?
+
+CBOW is faster and can therefore be used well for large data sets. In addition, the representation of more frequent words is better than with Skip Gram. 
+
+The Skip Gram method works well for smaller data sets and can represent rare words well.
+
+
+
+## 3.1  Instantiation
+
+
+First of all I instantiate the Word2Vec model. 
+I use the following parameters:
+
++ `vector_size`: Determines the size of the vectors we want
++ `window`: Determines the number of words before and after the target word to be considered as context for the word
++ `min_count`: Determines the number of times a word must occur in the text corpus for a word vector to be created 
+
+
+The exact meaning of these and other parameters can be read here: [GENSIM - Word2vec embeddings](https://radimrehurek.com/gensim/models/word2vec.html)
+
+I deliberately assign the vector size (vector_size) to its own variable here, since I will need it again at a later time. 
 
 
 
 
 ```{r, eval=F, echo=T}
+vector_size_n_w2v = 5
 
+w2v_model = Word2Vec(vector_size=vector_size_n_w2v,
+                     window=3,
+                     min_count=1,
+                     sg=0) # 0=CBOW, 1=Skip-gram
+
+print(w2v_model)
 ```
 
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p3.png)
+
+Now the creation of the vocabulary, which is to be learned by Word2Vec, takes place. 
 
 
+```{r, eval=F, echo=T}
+w2v_model.build_vocab(df['Text_Tokenized'])
+print(w2v_model)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p4.png)
+
+Finally, the neural network is trained (here with the CBOW method) over 5 epochs.
+
+```{r, eval=F, echo=T}
+w2v_model.train(df['Text_Tokenized'], 
+                total_examples=w2v_model.corpus_count, 
+                epochs=5)
+```
 
 
+These steps do not necessarily have to be performed individually. If the following syntax is used (with the specification of the text corpus), the creation of the vocabulary as well as the training is carried out automatically. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+However, it is recommended to perform the steps separately, as some parameter settings can be made in each case. You can also read all about it here: [GENSIM - Word2vec embeddings](https://radimrehurek.com/gensim/models/word2vec.html)
 
 
 
 ```{r, eval=F, echo=T}
+vector_size_n_w2v = 5
 
+w2v_model = Word2Vec(df['Text_Tokenized'],
+                     vector_size=vector_size_n_w2v,
+                     window=3,
+                     min_count=1,
+                     sg=0, # 0=CBOW, 1=Skip-gram
+                     epochs=5)
+
+print(w2v_model)
 ```
 
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p5.png)
+
+
+By supplying sentences directly in the original instantiation call, you essentially asked that one call to also do the build_vocab() & train() steps automatically using those sentences. 
+
+It is recommended to save the Word2Vec model immediately after a training session, as this is usually a very time-consuming task. Furthermore, I also save the metric that was used for the `vector_size` parameter. 
+
+
+```{r, eval=F, echo=T}
+w2v_model.save("word2vec/word2vec_model")
+
+pk.dump(vector_size_n_w2v, open('word2vec/vector_size_w2v_metric.pkl', 'wb'))
+```
+
+
+## 3.2  Exploration of the calculated Values
+
+In the following I show a few commands how to display the calculated and stored values.
+
+```{r, eval=F, echo=T}
+# The learned vocabulary:
+w2v_model.wv.index_to_key
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p6.png)
+
+```{r, eval=F, echo=T}
+# Length of the learned vocabulary:
+len(w2v_model.wv.index_to_key)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p7.png)
+
+
+```{r, eval=F, echo=T}
+# Output of the calculated vector for a given word from the vocabulary:
+w2v_model.wv['sunflowers']
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p8.png)
+
+
+```{r, eval=F, echo=T}
+# Length of the calculated vector:
+len(w2v_model.wv['sunflowers'])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p9.png)
+
+
+```{r, eval=F, echo=T}
+# Display the words that are most similar to a given word from the vocabulary:
+w2v_model.wv.most_similar('sunflowers')
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p10.png)
+
+
+## 3.3  Generation of aggregated Sentence Vectors
+
+Now we will generate aggregate sentence vectors based on the word vectors for each word in the given sentence.
 
 
 
+```{r, eval=F, echo=T}
+words = set(w2v_model.wv.index_to_key )
+df['Text_vect'] = np.array([np.array([w2v_model.wv[i] for i in ls if i in words])
+                         for ls in df['Text_Tokenized']])
 
 
+df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p11.png)
+
+Since we used `min_count=1` in the model training, each word was learned by Word2Vec and got a vector (with length of 5). 
+
+Unfortunately, our example sentences have different numbers of words, so the database is correspondingly heterogeneous:
+
+```{r, eval=F, echo=T}
+for i, v in enumerate(df['Text_vect']):
+    print(len(df['Text_Tokenized'].iloc[i]), len(v))
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p12.png)
 
 
+As we can see from the output shown above, the first sentence from the dataset is assigned three vectors (each with a length of 5). This would result in a count of 15 features.
+
+The second sentence would be assigned 30 features (6*5).
+
+However, a machine learning model wants to see a consistent set of features for each example. Currently, a model training error would be thrown out.
+
+To get the number of features equal, the next step is to calculate an element-wise average of the different vectors assigned to a sentence. To explain in more detail how this should work, let's look at the three vectors of the first sentence:
 
 
+```{r, eval=F, echo=T}
+content_sentence1_Text_vect = list(df['Text_vect'].loc[0:0])
+content_sentence1_Text_vect
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p13.png)
 
 
+Each of these word vectors has a size of 5 because we set it that way when we trained our Word2Vec model. Now we will average the first element of these three word vectors and store it as the first entry in our final vector. We do this for all further elements so that we finally get a final vector with length 5 which describes the sentence.
+
+I have listed this calculation manually once for our present example:
+
+```{r, eval=F, echo=T}
+element1 = [0.1476101,
+            -0.03632087,
+            -0.01072454]
+
+element2 = [-0.03066945,
+            0.05751216,
+            0.0047286]
+
+element3 = [-0.09073229,
+            0.01985285,
+            0.10206699]
+
+element4 = [0.13108101,
+            -0.16571797,
+            0.18018547]
+
+element5 = [-0.09720321,
+            -0.18894958,
+            -0.186059]
+
+element1_mean = statistics.mean(element1)
+element2_mean = statistics.mean(element2)
+element3_mean = statistics.mean(element3)
+element4_mean = statistics.mean(element4)
+element5_mean = statistics.mean(element5)
 
 
+manually_calculated_mean_values = [[element1_mean, element2_mean, element3_mean, element4_mean, element5_mean]]
+
+manually_calculated_mean_values_df = pd.DataFrame(manually_calculated_mean_values)
+manually_calculated_mean_values_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p14.png)
+
+This is now the expected output for our first record.
+
+Since I don't want to do this manual calculation for each record separately (a vector size of 5 is very small and in real life you have more than 4 entries in the data set) I use a for-loop for this.
 
 
-
+## 3.4  Generation of averaged Sentence Vectors
 
 
 
