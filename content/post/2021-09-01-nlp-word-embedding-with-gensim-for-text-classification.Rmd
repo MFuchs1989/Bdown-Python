@@ -37,6 +37,7 @@ import numpy as np
 import pickle as pk
 
 from nltk.tokenize import word_tokenize
+from sklearn.svm import SVC
 import statistics
 
 from gensim.models import Word2Vec
@@ -323,124 +324,253 @@ Since I don't want to do this manual calculation for each record separately (a v
 
 ## 3.4  Generation of averaged Sentence Vectors
 
+As described above, I will now generate sentence vectors based on the averaging of the word vectors for the words contained in the sentence. If you can remember I assigned the vector size to a separate variable ('vector_size_n') during instantiation. This is needed again in the else statement of the following for-loop.
+
+
+```{r, eval=F, echo=T}
+text_vect_avg = []
+for v in df['Text_vect']:
+    if v.size:
+        text_vect_avg.append(v.mean(axis=0))
+    else:
+        text_vect_avg.append(np.zeros(vector_size_n, dtype=float)) # the same vector size must be used here as for model training
+        
+        
+df['Text_vect_avg'] = text_vect_avg
+df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p15.png)
+
+Let's check again if the vector lengths are now consistent:
+
+```{r, eval=F, echo=T}
+# Are our sentence vector lengths consistent?
+for i, v in enumerate(df['Text_vect_avg']):
+    print(len(df['Text_Tokenized'].iloc[i]), len(v))
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p16.png)
+
+
+A machine learning algorithm cannot work directly with the column generated above ('Text_vect_avg'). I have added it to the dataset for completeness. However, I continue to work with the created dictionary 'text_vect_avg'.
+
+```{r, eval=F, echo=T}
+df_Machine_Learning = pd.DataFrame(text_vect_avg)
+df_Machine_Learning
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p17.png)
+
+To make this dataset a little prettier, I add names to the columns:
 
 
 
+```{r, eval=F, echo=T}
+df_Machine_Learning.columns = ['Element_' + str(i+1) for i in range(0, df_Machine_Learning.shape[1])]
+df_Machine_Learning
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p18.png)
+
+Let's do a plausibility check again at this point.
+
+In an earlier step, I manually calculated the final vector for the first sentence. Let's briefly compare the result of the for-loop with the manually calculated result:
+
+
+```{r, eval=F, echo=T}
+df_Machine_Learning.iloc[:1]
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p19.png)
 
 
 
+```{r, eval=F, echo=T}
+manually_calculated_mean_values_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p20.png)
+
+Fits perfectly.
+
+Now I create my final data set with which I can train a machine learning model in a meaningful way:
 
 
 
+```{r, eval=F, echo=T}
+final_df = pd.concat([df[['Rating', 'Text']], df_Machine_Learning], axis=1, sort=False)
+final_df
+```
 
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p21.png)
+
+
+## 3.5  Model Training
+
+
+```{r, eval=F, echo=T}
+clf = SVC(kernel='linear')
+clf.fit(df_Machine_Learning, final_df['Rating'])
+```
+
+```{r, eval=F, echo=T}
+pk.dump(clf, open('clf_model.pkl', 'wb'))
+```
+
+
+
+## 3.6  Processing of new Input
+
+What I would like to show is how to deal with new input, i.e. if you want to use a trained model, so that the predictions can be run. 
+
+
+### 3.6.1  Load the Word2Vec Model
+
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded = Word2Vec.load("word2vec/word2vec_model")
+vector_size_n_reloaded = pk.load(open("word2vec/vector_size_w2v_metric.pkl",'rb'))
+
+print(w2v_model_reloaded)
+print(vector_size_n_reloaded)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p22.png)
+
+
+### 3.6.2  Load the new Input
+
+
+```{r, eval=F, echo=T}
+new_input = ["Flowers I like to see in the park especially sunflowers", 
+             "I like flowers"]
+
+print(new_input[0])
+print(new_input[1])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p23.png)
+
+It makes sense to transfer it to a dataframe if you don't get the data that way anyway.
+
+
+```{r, eval=F, echo=T}
+new_input_df = pd.DataFrame(new_input, columns=['New_Input'])
+new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p24.png)
+
+
+### 3.6.3  Pre-Processing of the new Input
+
+Let's apply the steps shown earlier to the new dataset as well so we can use the ML model.
+
+
+```{r, eval=F, echo=T}
+new_input_df['New_Input_Tokenized'] = new_input_df['New_Input'].str.lower().apply(word_tokenize)
+new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p25.png)
+
+
+
+```{r, eval=F, echo=T}
+words = set(w2v_model_reloaded.wv.index_to_key )
+new_input_df['New_Input_vect'] = np.array([np.array([w2v_model_reloaded.wv[i] for i in ls if i in words])
+                                           for ls in new_input_df['New_Input_Tokenized']])
+
+
+new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p26.png)
+
+
+
+```{r, eval=F, echo=T}
+for i, v in enumerate(new_input_df['New_Input_vect']):
+    print(len(new_input_df['New_Input_Tokenized'].iloc[i]), len(v))
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p27.png)
+
+
+Here we see now that only 7 out of 10 (or 2 out of 3 in the second sentence) words were already learned by Word2Vec and only accordingly many word vectors were merged in the column 'New_Input_vect'. 
+
+```{r, eval=F, echo=T}
+text_vect_avg = []
+for v in new_input_df['New_Input_vect']:
+    if v.size:
+        text_vect_avg.append(v.mean(axis=0))
+    else:
+        text_vect_avg.append(np.zeros(vector_size_n_reloaded, dtype=float)) # the same vector size must be used here as for model training
+        
+        
+new_input_df['New_Input_vect_avg'] = text_vect_avg
+new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p28.png)
 
 
 
 
 
 ```{r, eval=F, echo=T}
-
+for i, v in enumerate(new_input_df['New_Input_vect_avg']):
+    print(len(new_input_df['New_Input_Tokenized'].iloc[i]), len(v))
 ```
 
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p29.png)
 
 
+Fits, the final vector length is uniform again.
 
+```{r, eval=F, echo=T}
+new_input_Machine_Learning_df = pd.DataFrame(text_vect_avg)
+new_input_Machine_Learning_df.columns = ['Element_' + str(i+1) for i in range(0, new_input_Machine_Learning_df.shape[1])]
+new_input_Machine_Learning_df
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p30.png)
 
 
 
 
 ```{r, eval=F, echo=T}
-
+final_new_input_df = pd.concat([new_input_df[['New_Input']], new_input_Machine_Learning_df], axis=1, sort=False)
+final_new_input_df
 ```
 
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p31.png)
 
 
 
+### 3.6.4  Model Predictions
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Okay, now we are ready to receive the predictions.
 
 
 ```{r, eval=F, echo=T}
+clf_reloaded = pk.load(open("clf_model.pkl",'rb'))
 
+y_pred = clf_reloaded.predict(new_input_Machine_Learning_df)
+y_pred
 ```
 
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+
+```{r, eval=F, echo=T}
+final_new_input_df['Prediction'] = y_pred
+final_new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p32.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 3.7  Updating the Word2Vec Model
 
 
 
