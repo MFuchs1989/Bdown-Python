@@ -98,9 +98,9 @@ Source: [Mikolov T., Chen K., Corrado G. & Dean J. (2013). Efficient estimation 
 
 When should which method be used?
 
-CBOW is faster and can therefore be used well for large data sets. In addition, the representation of more frequent words is better than with Skip Gram. 
+**CBOW is faster** and can therefore be used well for large data sets. In addition, the representation of more frequent words is better than with Skip Gram. 
 
-The Skip Gram method works well for smaller data sets and can represent rare words well.
+The **Skip Gram** method works well for smaller data sets and can **represent rare words well**.
 
 
 
@@ -916,7 +916,7 @@ The Word2Vec model as well as the Doc2Vec model obtained the same vectors during
 The two relaoded models were not only updated with the additional sample data set but also trained over more epochs (20). A small difference in the vectors can already be seen here.
 
 
-## 4.3  Generation of aggregated Sentence Vectors¶
+## 4.3  Generation of aggregated Sentence Vectors
 
 The principle how to combine the generated word vectors for a sentence and bring them into the same length I have already described above. Therefore here only the adapted syntax for Doc2Vec.
 
@@ -1012,7 +1012,7 @@ You are also encouraged to read through the documentation of how [FastText](http
 
 # 6  Phrases & Phraser
 
-## 6.1  Detecting Phrases¶
+## 6.1  Detecting Phrases
 
 [GENSIM](https://radimrehurek.com/gensim/index.html) includes some useful features that can simplify / improve a model training of Word2Vec or Doc2Vec. 
 One of them is [Phrase detection](https://radimrehurek.com/gensim/models/phrases.html)
@@ -1106,7 +1106,7 @@ for i in range(0,len(df_phrases)):
 Note: I will show the saving of the model(s) and the creation of a final dataset at a later time. 
 
 
-## 6.2  Updating the Phrases Model¶
+## 6.2  Updating the Phrases Model
 
 Like the Word2Vec/Doc2Vec model, the Phrases model can be updated with new input. I will show you how to do this in this chapter. Here we have a new data set:
 
@@ -1198,7 +1198,7 @@ bigram_phraser_reload.find_phrases(sentence_stream)
 
 ## 6.4  Creation of the final dataframe
 
-As soon as I am done with the Phrases model training, I will exclusively use the created Phraser model.
+As soon as I am done with the Phrases model training, **I will exclusively use the created Phraser model**.
 
 
 ```{r, eval=F, echo=T}

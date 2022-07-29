@@ -46,15 +46,15 @@ output:
 <ul>
 <li><a href="#instantiation-1">4.1 Instantiation</a></li>
 <li><a href="#updating-the-doc2vec-model">4.2 Updating the Doc2Vec Model</a></li>
-<li><a href="#generation-of-aggregated-sentence-vectors-1">4.3 Generation of aggregated Sentence Vectors¶</a></li>
+<li><a href="#generation-of-aggregated-sentence-vectors-1">4.3 Generation of aggregated Sentence Vectors</a></li>
 <li><a href="#generation-of-averaged-sentence-vectors-1">4.4 Generation of averaged Sentence Vectors</a></li>
 <li><a href="#final-saving-of-the-doc2vec-model">4.5 Final saving of the Doc2Vec Model</a></li>
 </ul></li>
 <li><a href="#gensim---fasttext">5 Gensim - FastText</a></li>
 <li><a href="#phrases-phraser">6 Phrases &amp; Phraser</a>
 <ul>
-<li><a href="#detecting-phrases">6.1 Detecting Phrases¶</a></li>
-<li><a href="#updating-the-phrases-model">6.2 Updating the Phrases Model¶</a></li>
+<li><a href="#detecting-phrases">6.1 Detecting Phrases</a></li>
+<li><a href="#updating-the-phrases-model">6.2 Updating the Phrases Model</a></li>
 <li><a href="#safe-load">6.3 Safe &amp; Load</a></li>
 <li><a href="#creation-of-the-final-dataframe">6.4 Creation of the final dataframe</a></li>
 </ul></li>
@@ -115,8 +115,8 @@ df</code></pre>
 <p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136s1.png" /></p>
 <p>Source: <a href="https://arxiv.org/pdf/1301.3781.pdf">Mikolov T., Chen K., Corrado G. &amp; Dean J. (2013). Efficient estimation of word representations in vector space. arXiv preprint arXiv:1301.3781.</a></p>
 <p>When should which method be used?</p>
-<p>CBOW is faster and can therefore be used well for large data sets. In addition, the representation of more frequent words is better than with Skip Gram.</p>
-<p>The Skip Gram method works well for smaller data sets and can represent rare words well.</p>
+<p><strong>CBOW is faster</strong> and can therefore be used well for large data sets. In addition, the representation of more frequent words is better than with Skip Gram.</p>
+<p>The <strong>Skip Gram</strong> method works well for smaller data sets and can <strong>represent rare words well</strong>.</p>
 <div id="instantiation" class="section level2">
 <h2>3.1 Instantiation</h2>
 <p>First of all I instantiate the Word2Vec model.
@@ -534,7 +534,7 @@ print(d2v_model_reloaded.wv[&#39;sunflowers&#39;])</code></pre>
 <p>The two relaoded models were not only updated with the additional sample data set but also trained over more epochs (20). A small difference in the vectors can already be seen here.</p>
 </div>
 <div id="generation-of-aggregated-sentence-vectors-1" class="section level2">
-<h2>4.3 Generation of aggregated Sentence Vectors¶</h2>
+<h2>4.3 Generation of aggregated Sentence Vectors</h2>
 <p>The principle how to combine the generated word vectors for a sentence and bring them into the same length I have already described above. Therefore here only the adapted syntax for Doc2Vec.</p>
 <pre class="r"><code>words = set(d2v_model_reloaded.wv.index_to_key )
 new_input_doc2vec[&#39;New_Input_vect&#39;] = np.array([np.array([d2v_model_reloaded.wv[i] for i in ls if i in words])
@@ -591,7 +591,7 @@ d2v_model_reloaded_vectors.save(&quot;doc2vec/d2v_model_vectors_updated&quot;)</
 <div id="phrases-phraser" class="section level1">
 <h1>6 Phrases &amp; Phraser</h1>
 <div id="detecting-phrases" class="section level2">
-<h2>6.1 Detecting Phrases¶</h2>
+<h2>6.1 Detecting Phrases</h2>
 <p><a href="https://radimrehurek.com/gensim/index.html">GENSIM</a> includes some useful features that can simplify / improve a model training of Word2Vec or Doc2Vec.
 One of them is <a href="https://radimrehurek.com/gensim/models/phrases.html">Phrase detection</a></p>
 <p>It can be used to easily find and replace bigrams or trigrams in a text corpus. This can be an incredible booster for the Word2Vec model when creating vectors.</p>
@@ -639,7 +639,7 @@ for i in range(0,len(df_phrases)):
 <p>Note: I will show the saving of the model(s) and the creation of a final dataset at a later time.</p>
 </div>
 <div id="updating-the-phrases-model" class="section level2">
-<h2>6.2 Updating the Phrases Model¶</h2>
+<h2>6.2 Updating the Phrases Model</h2>
 <p>Like the Word2Vec/Doc2Vec model, the Phrases model can be updated with new input. I will show you how to do this in this chapter. Here we have a new data set:</p>
 <pre class="r"><code>df_phrases_new_input = pd.DataFrame({&#39;Text&#39;: [&quot;Data Science becomes more and more popular&quot;,
                                               &quot;For Data Science task you need machnine learning algorithms&quot;,
@@ -684,7 +684,7 @@ bigram_phraser_reload.find_phrases(sentence_stream)</code></pre>
 </div>
 <div id="creation-of-the-final-dataframe" class="section level2">
 <h2>6.4 Creation of the final dataframe</h2>
-<p>As soon as I am done with the Phrases model training, I will exclusively use the created Phraser model.</p>
+<p>As soon as I am done with the Phrases model training, <strong>I will exclusively use the created Phraser model</strong>.</p>
 <pre class="r"><code>test_new_input = pd.DataFrame({&#39;Text&#39;: [&quot;Data Science especially machine learning in New York is a total hype&quot;]})
 
 test_new_input</code></pre>
