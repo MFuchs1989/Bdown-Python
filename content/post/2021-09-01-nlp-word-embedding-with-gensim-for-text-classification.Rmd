@@ -572,6 +572,274 @@ final_new_input_df
 
 ## 3.7  Updating the Word2Vec Model
 
+After all, it is not uncommon to want to regularly improve your existing model. Word2Vec offers a simple solution for this.
+
+Let's assume that the content of the new record ('new_input_df') has pleased me quite well and I want to train my existing w2v_model the contained vocabulary.
+
+
+```{r, eval=F, echo=T}
+new_input_df
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p33.png)
+
+In the following, I have compared what Word2Vec have already learned with the new vocabulary and **found three words that the model does not yet know**.
+
+```{r, eval=F, echo=T}
+list_new_input = []
+
+for value in new_input_df.New_Input.str.lower().str.split(' '):
+    list_new_input.extend(value)
+
+set(list_new_input) - set(list(w2v_model_reloaded.wv.index_to_key))
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p34.png)
+
+
+Just a reminder, the current existing vocabulary contains 20 words:
+
+```{r, eval=F, echo=T}
+len(w2v_model_reloaded.wv.index_to_key)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p35.png)
+
+
+### 3.7.1  Updating the Weights
+
+First I load the model I want to update.
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded = Word2Vec.load("word2vec/word2vec_model")
+```
+
+Then I train the Word2Vec model on the new data set (the tokens, since Word2Vec can only handle this). 
+
+Make sure that you **specify the correct length / the length of the correct dataset**, because this step was not necessary before during instantiation. 
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded.train(new_input_df['New_Input_Tokenized'], 
+                         total_examples=len(new_input_df),
+                         epochs=10)
+```
+
+
+Let's look at the length of the new vocabulary:
+
+```{r, eval=F, echo=T}
+len(w2v_model_reloaded.wv.index_to_key)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p36.png)
+
+
+Mhhh... strange. My vocabulary has not changed. But what about the weights of the features and consequently the word vectors?
+
+For this I compare the calculated vector (for the word 'flowers') of the model w2v_model and w2v_model_reloaded (which we just updated). 
+
+
+```{r, eval=F, echo=T}
+print(w2v_model.wv['flowers'])
+print(w2v_model_reloaded.wv['flowers'])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p37.png)
+
+
+Ok the weights have changed at least. 
+
+I also assumed this, since the word 'flowers' was present in the learned vocabulary as well as in the newly learned text corpus. What about the vectors for a word that was not included in the new text corpus?
+
+
+```{r, eval=F, echo=T}
+print(w2v_model.wv['sunflowers'])
+print(w2v_model_reloaded.wv['sunflowers'])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p38.png)
+
+
+Here the vectors remained the same. However, this **should not have been mandatory**, because finally the semantic relation of several words is considered in Word2Vec. Even if a word is not necessarily relearned, its vector(s) can still be influenced by the newly added words. 
+
+But how do I now also adapt the vocabulary?
+
+
+### 3.7.2  Updating the Weights and the Vocabulary
+
+Also for this I reload the Word2Vec model, because each execution of a learning process (which the weights updated) is kept.
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded = Word2Vec.load("word2vec/word2vec_model")
+```
+
+In order to also include the new vocabulary to the existing one, you need to apply the .build_vocab() function before retraining.
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded.build_vocab(new_input_df['New_Input_Tokenized'], update=True)
+print(w2v_model_reloaded)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p39.png)
+
+Perfect, that worked (see 'vocab=23'). 
+
+Now the training can be started to adjust the weights of the features as well. 
+
+It is no longer necessary to pay explicit attention to the `total_examples` parameter as in the previous chapter, since this information is already given by the instantiation and can be retrieved using .corpus_count.
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded.train(new_input_df['New_Input_Tokenized'], 
+                         total_examples=w2v_model_reloaded.corpus_count, 
+                         epochs=20)
+```
+
+Let's compare again the calculated vectors of the models w2v_model and w2v_model_reloaded for the word 'flowers':
+
+
+```{r, eval=F, echo=T}
+print(w2v_model.wv['flowers'])
+print(w2v_model_reloaded.wv['flowers'])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p40.png)
+
+
+Great, the vectors have adjusted again.
+
+And what about the vectors for 'sunflowers'?
+
+
+```{r, eval=F, echo=T}
+print(w2v_model.wv['sunflowers'])
+print(w2v_model_reloaded.wv['sunflowers'])
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p41.png)
+
+
+This time there was also an adjustment, because the newly learned vocabulary has created new word contexts and these have influenced the new calculation of the vectors.
+
+
+
+## 3.8  Final saving of the Word2Vec Model
+
+### 3.8.1  Saving the entire Model
+
+If you want to continue the model training at a later time, you have to save the complete model (as shown before):
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded.save("word2vec/w2v_model_updated")
+```
+
+
+### 3.8.2  Saving the KeyedVectors
+
+If the model training is completely finished and should not be repeated / updated, it is recommended to save only the KeyedVectors, which contain the calculated vectors of the learned vocabulary.
+
+A trained Word2Vec model can reach a very high memory capacity very quickly. KeyedVectors, on the other hand, are much smaller and faster objects that can be used to load the required vectors very quickly while conserving memory.
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded_vectors = w2v_model_reloaded.wv
+
+w2v_model_reloaded_vectors.save("word2vec/w2v_model_vectors_updated")
+```
+
+Ok, let's reload it once:
+
+
+```{r, eval=F, echo=T}
+w2v_model_vectors_reloaded = KeyedVectors.load("word2vec/w2v_model_vectors_updated", mmap='r')
+print(w2v_model_vectors_reloaded)
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p42.png)
+
+Be aware that from now on **the additional argument .wv is no longer needed**. 
+
+
+```{r, eval=F, echo=T}
+w2v_model_vectors_reloaded['sunflowers']
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p43.png)
+
+Here again for comparison that the same values have been saved:
+
+```{r, eval=F, echo=T}
+w2v_model_reloaded.wv['sunflowers']
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p44.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```{r, eval=F, echo=T}
@@ -604,51 +872,11 @@ final_new_input_df
 
 
 
-
-
-
-
 ```{r, eval=F, echo=T}
 
 ```
 
 ![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
-
-
-
-
-
 
 
 
@@ -687,6 +915,72 @@ final_new_input_df
 
 
 
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png)
 
 
 
