@@ -42,6 +42,24 @@ output:
 <li><a href="#saving-the-keyedvectors">3.8.2 Saving the KeyedVectors</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#gensim---doc2vec">4 Gensim - Doc2Vec</a>
+<ul>
+<li><a href="#instantiation-1">4.1 Instantiation</a></li>
+<li><a href="#updating-the-doc2vec-model">4.2 Updating the Doc2Vec Model</a></li>
+<li><a href="#generation-of-aggregated-sentence-vectors-1">4.3 Generation of aggregated Sentence Vectors¶</a></li>
+<li><a href="#generation-of-averaged-sentence-vectors-1">4.4 Generation of averaged Sentence Vectors</a></li>
+<li><a href="#final-saving-of-the-doc2vec-model">4.5 Final saving of the Doc2Vec Model</a></li>
+</ul></li>
+<li><a href="#gensim---fasttext">5 Gensim - FastText</a></li>
+<li><a href="#phrases-phraser">6 Phrases &amp; Phraser</a>
+<ul>
+<li><a href="#detecting-phrases">6.1 Detecting Phrases¶</a></li>
+<li><a href="#updating-the-phrases-model">6.2 Updating the Phrases Model¶</a></li>
+<li><a href="#safe-load">6.3 Safe &amp; Load</a></li>
+<li><a href="#creation-of-the-final-dataframe">6.4 Creation of the final dataframe</a></li>
+</ul></li>
+<li><a href="#use-pre-trained-models">7 Use Pre-Trained Models</a></li>
+<li><a href="#conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
@@ -438,15 +456,290 @@ print(w2v_model_vectors_reloaded)</code></pre>
 <p>Here again for comparison that the same values have been saved:</p>
 <pre class="r"><code>w2v_model_reloaded.wv[&#39;sunflowers&#39;]</code></pre>
 <p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p44.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
-<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p.png" /></p>
 </div>
 </div>
+</div>
+<div id="gensim---doc2vec" class="section level1">
+<h1>4 Gensim - Doc2Vec</h1>
+<p>Ok now we are familiar with Word2Vec and how it works…. but what is Doc2Vec??</p>
+<p>Once you understand what Word2Vec is, the concept of Doc2Vec is very easy to understand.
+A Doc2Vec model is based on Word2Vec, with only one more vector added to the neural network for input, the paragraph ID.
+Accordingly, Doc2vec also uses an unsupervised learning approach to learn document representation like Word2Vec.
+Look at the following diagram of the layer structure:</p>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136s2.png" /></p>
+<p>Source: <a href="http://148.204.64.1/~sidorov/MICAI_2016_helena.pdf">Markov, I, Gómez-Adorno, H, Posadas-Durán, J P, Sidorov, G, &amp; Gelbukh, A (2016, October). Author profiling with doc2vec neural network-based document embeddings. In Mexican International Conference on Artificial Intelligence (pp. 117-131). Springer, Cham.</a></p>
+<p>The diagram shown above is <strong>based on the layer structure of the CBOW</strong> model and is called <strong>distributed Memory version of Paragraph Vector (PV-DM)</strong>.</p>
+<p>But instead of using only nearby words to predict the target word, another feature vector is added which is document specific. So when training the word vectors W, the document vector D is trained as well, and in the end of training, it holds a numeric representation of the document. Thus, when the word vectors W are trained, the document vector D is also trained, which contains a numerical representation of the document at the end of the training.</p>
+<p>The <strong>counterpart of the PV-DM is called Distributed Bag of Words Version of Paragraph Vector (PV-DBOW)</strong> and is based on the Skip-Gram approach.</p>
+<p>Since PV-DM is most commonly used in practice, I will limit myself to this method in this post. Furthermore, the way it works is very similar to the Word2Vec model I described in great detail above, so I won’t go into each step again in the following.</p>
+<p>I load the same data set as for Word2Vec as the data basis:</p>
+<pre class="r"><code>df_doc2vec = pd.DataFrame({&#39;Rating&#39;: [3,5,1,2],
+                           &#39;Text&#39;: [&quot;I love sunflowers&quot;,
+                            &quot;Sunflowers fill my heart with joy&quot;,
+                            &quot;I love to look into the garden and see the flowers&quot;,
+                            &quot;Flowers especially sunflowers are the most beautiful&quot;]})
+df_doc2vec</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p45.png" /></p>
+<pre class="r"><code>df_doc2vec[&#39;Text_Tokenized&#39;] = df_doc2vec[&#39;Text&#39;].str.lower().apply(word_tokenize)
+df_doc2vec</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p46.png" /></p>
+<div id="instantiation-1" class="section level2">
+<h2>4.1 Instantiation</h2>
+<p>The TaggedDocument function helps us to create an input format suitable for the Doc2Vec algorithm.
+This results in a list of words (tokens) associated with a particular tag (paragraph ID). This results in the additional feature vector mentioned earlier that benefits model training.</p>
+<p>Again I assign the <code>vector_size</code> to a separate variable.</p>
+<pre class="r"><code>vector_size_n_d2v = 5
+documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(df_doc2vec[&#39;Text_Tokenized&#39;])]
+
+d2v_model = Doc2Vec(documents,
+                    vector_size=vector_size_n_d2v,
+                    window=3,
+                    min_count=1,
+                    dm=1, # 0=PV-DBOW, 1=PV-DM
+                    epochs=5)</code></pre>
+<pre class="r"><code># Length of the learned vocabulary:
+len(d2v_model.wv.index_to_key)</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p47.png" /></p>
+<pre class="r"><code># Saving the model as well as the required parameters 
+d2v_model.save(&quot;doc2vec/doc2vec_model&quot;)
+
+pk.dump(vector_size_n_d2v, open(&#39;doc2vec/vector_size_d2v_metric.pkl&#39;, &#39;wb&#39;))</code></pre>
+</div>
+<div id="updating-the-doc2vec-model" class="section level2">
+<h2>4.2 Updating the Doc2Vec Model</h2>
+<p>Again, I use the same example data set as for Word2Vec.</p>
+<pre class="r"><code>new_input_doc2vec = [&quot;Flowers I like to see in the park especially sunflowers&quot;, &quot;I like flowers&quot;]
+new_input_doc2vec = pd.DataFrame(new_input_doc2vec, columns=[&#39;New_Input&#39;])
+new_input_doc2vec[&#39;New_Input_Tokenized&#39;] = new_input_doc2vec[&#39;New_Input&#39;].str.lower().apply(word_tokenize)
+new_input_doc2vec</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p48.png" /></p>
+<pre class="r"><code>d2v_model_reloaded = Doc2Vec.load(&quot;doc2vec/doc2vec_model&quot;)
+vector_size_n_d2v_reloaded = pk.load(open(&quot;doc2vec/vector_size_d2v_metric.pkl&quot;,&#39;rb&#39;))</code></pre>
+<pre class="r"><code># Learning the vocabulary
+documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(new_input_doc2vec[&#39;New_Input_Tokenized&#39;])]
+d2v_model_reloaded.build_vocab(documents, update=True)</code></pre>
+<pre class="r"><code>len(d2v_model_reloaded.wv.index_to_key)</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p49.png" /></p>
+<pre class="r"><code>#Training the model again
+d2v_model_reloaded.train(documents, 
+                         total_examples=d2v_model_reloaded.corpus_count, 
+                         epochs=20)</code></pre>
+<p>Here are the calculated vectors of the different models for the word ‘sunflowers’ for comparison:</p>
+<pre class="r"><code>print(w2v_model.wv[&#39;sunflowers&#39;])
+print(d2v_model.wv[&#39;sunflowers&#39;])
+print(w2v_model_reloaded.wv[&#39;sunflowers&#39;])
+print(d2v_model_reloaded.wv[&#39;sunflowers&#39;])</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p50.png" /></p>
+<p>The Word2Vec model as well as the Doc2Vec model obtained the same vectors during the first training (5 epochs). Now you might think that the two models work exactly the same. However, this is not the case, since the document tag is included in Doc2Vec. However, this effect is not yet noticeable due to the short training time of 5 epochs.</p>
+<p>The two relaoded models were not only updated with the additional sample data set but also trained over more epochs (20). A small difference in the vectors can already be seen here.</p>
+</div>
+<div id="generation-of-aggregated-sentence-vectors-1" class="section level2">
+<h2>4.3 Generation of aggregated Sentence Vectors¶</h2>
+<p>The principle how to combine the generated word vectors for a sentence and bring them into the same length I have already described above. Therefore here only the adapted syntax for Doc2Vec.</p>
+<pre class="r"><code>words = set(d2v_model_reloaded.wv.index_to_key )
+new_input_doc2vec[&#39;New_Input_vect&#39;] = np.array([np.array([d2v_model_reloaded.wv[i] for i in ls if i in words])
+                         for ls in new_input_doc2vec[&#39;New_Input_Tokenized&#39;]])
+
+new_input_doc2vec</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p51.png" /></p>
+<pre class="r"><code>for i, v in enumerate(new_input_doc2vec[&#39;New_Input_vect&#39;]):
+    print(len(new_input_doc2vec[&#39;New_Input_Tokenized&#39;].iloc[i]), len(v))</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p52.png" /></p>
+</div>
+<div id="generation-of-averaged-sentence-vectors-1" class="section level2">
+<h2>4.4 Generation of averaged Sentence Vectors</h2>
+<pre class="r"><code>text_vect_avg = []
+for v in new_input_doc2vec[&#39;New_Input_vect&#39;]:
+    if v.size:
+        text_vect_avg.append(v.mean(axis=0))
+    else:
+        text_vect_avg.append(np.zeros(vector_size_n_d2v_reloaded, dtype=float)) # the same vector size must be used here as for model training
+        
+        
+new_input_doc2vec[&#39;New_Input_vect_avg&#39;] = text_vect_avg
+new_input_doc2vec</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p53.png" /></p>
+<pre class="r"><code>for i, v in enumerate(new_input_doc2vec[&#39;New_Input_vect_avg&#39;]):
+    print(len(new_input_doc2vec[&#39;New_Input_Tokenized&#39;].iloc[i]), len(v))</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p54.png" /></p>
+<pre class="r"><code>new_input_w2v_Machine_Learning_df = pd.DataFrame(text_vect_avg)
+new_input_w2v_Machine_Learning_df.columns = [&#39;Element_&#39; + str(i+1) for i in range(0, new_input_w2v_Machine_Learning_df.shape[1])]
+new_input_w2v_Machine_Learning_df</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p55.png" /></p>
+<pre class="r"><code>final_new_input_d2v_df = pd.concat([new_input_doc2vec[[&#39;New_Input&#39;]], 
+                                    new_input_w2v_Machine_Learning_df], 
+                                    axis=1, sort=False)
+final_new_input_d2v_df</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p56.png" /></p>
+</div>
+<div id="final-saving-of-the-doc2vec-model" class="section level2">
+<h2>4.5 Final saving of the Doc2Vec Model</h2>
+<p>Again, with Doc2Vec I have the two options of either saving the entire model (if I want to continue with the training at another time) or saving only the calculated vectors:</p>
+<p><strong>Saving the entire Model</strong></p>
+<pre class="r"><code>d2v_model_reloaded.save(&quot;doc2vec/d2v_model_updated&quot;)</code></pre>
+<p><strong>Saving the KeyedVectors</strong></p>
+<pre class="r"><code>d2v_model_reloaded_vectors = d2v_model_reloaded.wv
+
+d2v_model_reloaded_vectors.save(&quot;doc2vec/d2v_model_vectors_updated&quot;)</code></pre>
+<p>That’s it.</p>
+</div>
+</div>
+<div id="gensim---fasttext" class="section level1">
+<h1>5 Gensim - FastText</h1>
+<p>You are also encouraged to read through the documentation of how <a href="https://radimrehurek.com/gensim/models/fasttext.html#module-gensim.models.fasttext">FastText</a> works. <a href="https://radimrehurek.com/gensim/models/fasttext.html#module-gensim.models.fasttext">FastText</a> is another extremely useful word embedding and text classification module developed by Facebook that has already achieved excellent results on many NLP problems and it works pretty much the same way as Word2Vec and Doc2Vec.</p>
+</div>
+<div id="phrases-phraser" class="section level1">
+<h1>6 Phrases &amp; Phraser</h1>
+<div id="detecting-phrases" class="section level2">
+<h2>6.1 Detecting Phrases¶</h2>
+<p><a href="https://radimrehurek.com/gensim/index.html">GENSIM</a> includes some useful features that can simplify / improve a model training of Word2Vec or Doc2Vec.
+One of them is <a href="https://radimrehurek.com/gensim/models/phrases.html">Phrase detection</a></p>
+<p>It can be used to easily find and replace bigrams or trigrams in a text corpus. This can be an incredible booster for the Word2Vec model when creating vectors.</p>
+<p>Let’s have a look at the following example dataframe:</p>
+<pre class="r"><code>df_phrases = pd.DataFrame({&#39;Text&#39;: [&quot;I love machine learning it is state of the art&quot;,
+                                    &quot;Machine learning is pretty famous in new york&quot;,
+                                    &quot;New york is the place to be for machine learning&quot;,
+                                    &quot;New york for machine learning&quot;]})
+df_phrases</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p57.png" /></p>
+<pre class="r"><code>df_phrases[&#39;Text_Tokenized&#39;] = df_phrases[&#39;Text&#39;].str.lower().apply(word_tokenize)
+df_phrases</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p58.png" /></p>
+<p>After tokenization of the data set, the phrase model can now be trained. The two parameters I use are:</p>
+<ul>
+<li><code>min_count</code>: Ignore all words whose total number of words found in the text corpus is less than this value</li>
+<li><code>threshold</code>: Determines the formation of the phrases based on their achieved score. A higher value means fewer phrases.</li>
+</ul>
+<p>You can read these and other parameters here: <a href="https://radimrehurek.com/gensim/models/phrases.html#gensim.models.phrases.Phrases">gensim.models.phrases.Phrases</a></p>
+<pre class="r"><code>bigram_phrases = Phrases(df_phrases[&#39;Text_Tokenized&#39;], 
+                         min_count=2, 
+                         threshold=2)</code></pre>
+<p><strong>If you want</strong> to detect not only bigrams but <strong>also trigrams</strong> in your text corpus use the following code:</p>
+<p><code>trigram_phrases = Phrases(bigram_phrases)</code></p>
+<p>Let’s see what bigrams were found and learned:</p>
+<pre class="r"><code>print(&#39;Number of bigrams learned: &#39; + str(len(bigram_phrases.export_phrases())))
+print()
+print(&#39;Learned bigrams:&#39;)
+print(bigram_phrases.export_phrases())</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p59.png" /></p>
+<p>You can transfer the found bigrams into a dataframe with the following code:</p>
+<pre class="r"><code>dct_bigrams = {k:[v] for k,v in bigram_phrases.export_phrases().items()}
+df_bigrams = pd.DataFrame(dct_bigrams).T.reset_index()
+df_bigrams.columns = [&#39;bigram&#39;, &#39;score&#39;]
+df_bigrams</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p60.png" /></p>
+<p>Why am I taking this step?</p>
+<p>It is not so easy to determine <code>min_count</code> and <code>threshold</code> at the beginning.
+This way you can see by filtering and sorting which scoring the bigrams (or trigrams) have received and adjust these parameters if necessary.</p>
+<p>Let’s briefly preview what the new sentences from our sample dataset would look like if we applied the trained phrases model:</p>
+<pre class="r"><code># Preview:
+for i in range(0,len(df_phrases)):
+    print(bigram_phrases[df_phrases[&#39;Text_Tokenized&#39;][i]])</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p61.png" /></p>
+<p>Note: I will show the saving of the model(s) and the creation of a final dataset at a later time.</p>
+</div>
+<div id="updating-the-phrases-model" class="section level2">
+<h2>6.2 Updating the Phrases Model¶</h2>
+<p>Like the Word2Vec/Doc2Vec model, the Phrases model can be updated with new input. I will show you how to do this in this chapter. Here we have a new data set:</p>
+<pre class="r"><code>df_phrases_new_input = pd.DataFrame({&#39;Text&#39;: [&quot;Data Science becomes more and more popular&quot;,
+                                              &quot;For Data Science task you need machnine learning algorithms&quot;,
+                                              &quot;The buzzword 2020 is Data Science&quot;]})
+df_phrases_new_input</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p62.png" /></p>
+<pre class="r"><code>df_phrases_new_input[&#39;Text_Tokenized&#39;] = df_phrases_new_input[&#39;Text&#39;].str.lower().apply(word_tokenize)
+df_phrases_new_input</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p63.png" /></p>
+<p>The add_vocab function can be used to update the existing model:</p>
+<pre class="r"><code>bigram_phrases.add_vocab(df_phrases_new_input[&#39;Text_Tokenized&#39;])</code></pre>
+<p>Now let’s look again at what bigrams were learned from the model:</p>
+<pre class="r"><code>print(&#39;Number of bigrams learned: &#39; + str(len(bigram_phrases.export_phrases())))
+print()
+print(&#39;Learned bigrams:&#39;)
+print(bigram_phrases.export_phrases())</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p64.png" /></p>
+<p>Perfect, a new bigram (‘machine_learning’) was learned.</p>
+</div>
+<div id="safe-load" class="section level2">
+<h2>6.3 Safe &amp; Load</h2>
+<p>As with Word2Vec/Doc2Vec, we can save the Phrases model and reload it at a later time as well as re-train /update it.</p>
+<p><strong>Phrases:</strong></p>
+<pre class="r"><code>bigram_phrases.save(&quot;bigram_phrases&quot;)</code></pre>
+<pre class="r"><code>bigram_phrases_relaod = Phrases.load(&quot;bigram_phrases&quot;)</code></pre>
+<pre class="r"><code>print(&#39;Number of bigrams learned: &#39; + str(len(bigram_phrases_relaod.export_phrases())))
+print()
+print(&#39;Learned bigrams:&#39;)
+print(bigram_phrases_relaod.export_phrases())</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p65.png" /></p>
+<p><strong>Phraser:</strong></p>
+<p>If we don’t want to train the model further, we can use Phraser to save memory and increase speed.</p>
+<pre class="r"><code>bigram_phraser = Phraser(bigram_phrases)
+bigram_phraser.save(&quot;bigram_phraser&quot;)</code></pre>
+<pre class="r"><code>bigram_phraser_reload = Phraser.load(&quot;bigram_phraser&quot;)</code></pre>
+<pre class="r"><code># Check if relaoded phraser still work
+sentence = [&quot;I live in new york&quot;]
+sentence_stream = [doc.split(&quot; &quot;) for doc in sentence]
+
+bigram_phraser_reload.find_phrases(sentence_stream)</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p66.png" /></p>
+</div>
+<div id="creation-of-the-final-dataframe" class="section level2">
+<h2>6.4 Creation of the final dataframe</h2>
+<p>As soon as I am done with the Phrases model training, I will exclusively use the created Phraser model.</p>
+<pre class="r"><code>test_new_input = pd.DataFrame({&#39;Text&#39;: [&quot;Data Science especially machine learning in New York is a total hype&quot;]})
+
+test_new_input</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p67.png" /></p>
+<pre class="r"><code>test_new_input[&#39;Text&#39;][0]</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p68.png" /></p>
+<pre class="r"><code>test_new_input[&#39;Text_Tokenized&#39;] = test_new_input[&#39;Text&#39;].str.lower().apply(word_tokenize)
+test_new_input</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p69.png" /></p>
+<pre class="r"><code>bigram_phraser.find_phrases(test_new_input[&#39;Text_Tokenized&#39;])</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p70.png" /></p>
+<p>All three learned bigrams also appear in our example here and are correctly detected by the model.</p>
+<p><strong>Now I want to create a final dataset that contains the bigrams instead of the individual words in the text corpus.</strong></p>
+<p>I use the following function for this purpose:</p>
+<pre class="r"><code>def make_bigrams_func(text):
+    &#39;&#39;&#39;
+    Replaces single words by found bigrams
+    The bigram model &#39;bigram_phraser&#39; must be loaded
+    
+    Args:
+        text (str): String to which the functions are to be applied, string
+    
+    Returns:
+        String with inserted bigrams
+    &#39;&#39;&#39;  
+    return [bigram_phraser[doc] for doc in text]</code></pre>
+<pre class="r"><code>test_new_input[&#39;Text_Tokenized_bigrams&#39;] = make_bigrams_func(test_new_input[&#39;Text_Tokenized&#39;])
+test_new_input</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p71.png" /></p>
+<pre class="r"><code>test_new_input[&#39;Text_Tokenized_bigrams&#39;][0]</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p72.png" /></p>
+<p>Perfect, our new text corpus now contains the bigrams found instead of the individual words.</p>
+<p>Now I could train a Word2Vec or Doc2Vec model on this data basis, which would probably generate better values of the vectors.</p>
+</div>
+</div>
+<div id="use-pre-trained-models" class="section level1">
+<h1>7 Use Pre-Trained Models</h1>
+<p>Especially in the field of NLP it is very difficult to get a sufficiently large data base in the beginning to be able to do a meaningful model training.</p>
+<p>What has proven to be extremely useful in solving many NLP problems is the use of pre-trained models.</p>
+<p>Gensim offers a wide range of pre-trained models:</p>
+<pre class="r"><code>list(api.info()[&#39;models&#39;].keys())</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p73.png" /></p>
+<p>Let’s load one of them:</p>
+<pre class="r"><code>glove_vectors = api.load(&#39;glove-wiki-gigaword-50&#39;)</code></pre>
+<p>Ok let’s see if our vocabulary is also already included in it:</p>
+<pre class="r"><code>glove_vectors[&#39;sunflowers&#39;]</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p74.png" /></p>
+<pre class="r"><code>glove_vectors.most_similar(&#39;sunflowers&#39;, topn=5)</code></pre>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136p75.png" /></p>
+<p>Yes it is. So we can make life easy for ourselves and use the already calculated vectors of ‘glove-wiki-gigaword-50’.</p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>8 Conclusion</h1>
+<p>In this post I went into detail about using Word2Vec and Doc2Vec from the python library gensim to solve text classification problems.</p>
+<p>Furthermore, I have shown how the Phrases module can be used to further improve the data basis.</p>
+<p>The final folder structure should now look like this:</p>
+<p><img src="/post/2021-09-01-nlp-word-embedding-with-gensim-for-text-classification_files/p136s3.png" /></p>
 </div>
