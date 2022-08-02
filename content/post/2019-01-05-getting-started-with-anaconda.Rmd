@@ -125,6 +125,17 @@ To see which libraries with which version are installed in a particular environm
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p6.png)
 
+If you want to see which Python version you are currently using, use the following command:
+
+`python -V`
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102z1.png)
+
+If you want to display the version of a specific library, use the following syntax:  
+
+
+
+
 
 ## 4.2 Change your working direcotry
 
