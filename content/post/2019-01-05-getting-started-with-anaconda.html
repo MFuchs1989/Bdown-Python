@@ -36,6 +36,9 @@ output:
 <li><a href="#add-packages-via-conda-pip">4.3.3 Add Packages via conda &amp; pip</a></li>
 </ul></li>
 <li><a href="#installing-a-specific-version">4.4 Installing a specific Version</a></li>
+<li><a href="#updating-libraries">4.5 Updating Libraries</a></li>
+<li><a href="#exporting-an-existing-environment">4.6 Exporting an existing Environment</a></li>
+<li><a href="#creating-a-new-environment">4.7 Creating a new environment</a></li>
 </ul></li>
 </ul>
 </div>
@@ -199,5 +202,45 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <p><code>pip install Theano==1.0.3</code></p>
 <p>Let’s display the installed versions:</p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p12.png" /></p>
+</div>
+<div id="updating-libraries" class="section level2">
+<h2>4.5 Updating Libraries</h2>
+<p>If you have been working with an environment for a while and suspect/know that there is already a newer version of a package, you can also update this library:</p>
+<p><code>conda activate "your_env"</code></p>
+<p><strong>Conda:</strong></p>
+<p><code>conda update django</code></p>
+<p><strong>Pip:</strong></p>
+<p>We assume here that Theano is only available via PyPI (I know there is also an Anaconda version for this).</p>
+<p><code>pip install Theano --upgrade</code></p>
+<p>With these two commands, the latest or latest possible version is installed again.</p>
+<p>Let’s display the installed versions again:</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p13.png" /></p>
+<p>If you want to update your complete environment you can do it with this:</p>
+<p><code>conda update -n "your_env" --all</code></p>
+</div>
+<div id="exporting-an-existing-environment" class="section level2">
+<h2>4.6 Exporting an existing Environment</h2>
+<p>Why I like working with virtual environments so much is shown by the fact that you can export existing environments very easily. Either because you want to make a backup or to share with colleagues so that everyone is working with the same libraries or versions of the packages. It’s not uncommon for developers to have problems just because they’ve been working with different versions of libraries.</p>
+<p>Make sure that the environment you want to export is activated.</p>
+<p><code>conda activate "your_env"</code></p>
+<p><code>cd "path/to/destination"</code></p>
+<p><code>conda env export --file exported.yml</code></p>
+<p>The activated environment is now exported to the named destination and saved as a .yml file.</p>
+<p>Here it is:</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p14.png" /></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p15.png" /></p>
+<p>I always use <a href="https://code.visualstudio.com/">Visual Studio Code</a> to open this .yml file.</p>
+<p>Please make two changes in the .yml file:</p>
+<ul>
+<li>Change the name (at the top) to be the same as the name of the .yml file.</li>
+<li>Delete the Prefix at the end of the file</li>
+</ul>
+</div>
+<div id="creating-a-new-environment" class="section level2">
+<h2>4.7 Creating a new environment</h2>
+<p>As I mentioned before, it is advisable to create a separate environment for each new project. This can be done either by importing a .yml file with a base environment and adding all the necessary packages manually or by creating a completely new environment directly from Anaconda Powershell Prompt.</p>
+<p>This is really very simple and fast, just use:</p>
+<p><code>conda create -n myenv</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p16.png" /></p>
 </div>
 </div>

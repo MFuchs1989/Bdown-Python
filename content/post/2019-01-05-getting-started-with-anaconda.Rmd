@@ -279,25 +279,81 @@ Let's display the installed versions:
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p12.png)
 
+## 4.5 Updating Libraries
+
+
+If you have been working with an environment for a while and suspect/know that there is already a newer version of a package, you can also update this library:
+
+
+`conda activate "your_env"`
+
+**Conda:**
+
+`conda update django`
+
+
+**Pip:** 
+
+We assume here that Theano is only available via PyPI (I know there is also an Anaconda version for this). 
+
+`pip install Theano --upgrade`
+
+
+With these two commands, the latest or latest possible version is installed again. 
+
+Let's display the installed versions again:
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p13.png)
+
+
+If you want to update your complete environment you can do it with this:
+
+`conda update -n "your_env" --all`
+
+
+## 4.6 Exporting an existing Environment
+
+Why I like working with virtual environments so much is shown by the fact that you can export existing environments very easily. Either because you want to make a backup or to share with colleagues so that everyone is working with the same libraries or versions of the packages. It's not uncommon for developers to have problems just because they've been working with different versions of libraries. 
+
+Make sure that the environment you want to export is activated.
 
 
 
+`conda activate "your_env"`
+
+`cd "path/to/destination"`
+
+`conda env export --file exported.yml`
+
+
+The activated environment is now exported to the named destination and saved as a .yml file.
+
+Here it is:
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p14.png)
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p15.png)
+
+I always use [Visual Studio Code](https://code.visualstudio.com/) to open this .yml file. 
+
+Please make two changes in the .yml file:
+
+- Change the name (at the top) to be the same as the name of the .yml file.
+- Delete the Prefix at the end of the file
 
 
 
+## 4.7 Creating a new environment
 
+As I mentioned before, it is advisable to create a separate environment for each new project. This can be done either by importing a .yml file with a base environment and adding all the necessary packages manually or by creating a completely new environment directly from Anaconda Powershell Prompt. 
 
+This is really very simple and fast, just use: 
 
+`conda create -n myenv`
 
-
-
-
-
-
-
-
-
-
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p16.png)
 
 
 
