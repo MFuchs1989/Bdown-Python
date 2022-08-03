@@ -14,6 +14,69 @@ output:
 ---
 
 
+# 1  Introduction
+
+If you want to work with Python you need a suitable IDE.
+
+IDE stands for "Integrated Development Environment" and there are many different ones you can use for Python:
+
++ [Eric Python IDE](https://eric-ide.python-projects.org/)
++ [Spyder](https://www.spyder-ide.org/)
++ [PyCharm](https://www.jetbrains.com/de-de/pycharm/)
++ [Atom](https://atom.io/)
+
+to name just a few.
+
+I personally prefer to use [Jupyter Notebooks](https://jupyter.org/). 
+For this we need [Anaconda](https://www.anaconda.com/). 
+Anaconda is a free and open source distribution of the programming languages Python and R for scientific computing (among others: data science, machine learning).
+
+Using Anaconda in conjunction with Jupyter Notebooks offers two distinct advantages:
+
++ Using Jupyter Notebooks, you can create and share documents that include live code, equations, visualizations, and narrative text.
++ Using Anaconda, you can easily and quickly create virtual environments, extend them as desired and share them with other colleagues or clients. 
+
+In this post I want to show how to get [Anaconda](https://www.anaconda.com/) and [Jupyter Notebooks](https://jupyter.org/) running.
+
+
+# 2 Install Anaconda
+
+First of all we have to install Anaconda. You can do this from here: [Anaconda Installation](https://docs.anaconda.com/anaconda/install/).
+
+Here you can select for which operating system you want to have Anaconda installed. For Windows for example follow this link: [Anaconda Installation for Windows](https://www.anaconda.com/products/individual#windows).
+
+After the .exe file has been downloaded, run it and click through the installation.
+There is only one step to pay attention to here. When you get to the Advanced Options section, select **'Add Anaconda3 to my PATH environment variable'**.
+Otherwise we would have to add this path manually later.
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p.png)
 
 
