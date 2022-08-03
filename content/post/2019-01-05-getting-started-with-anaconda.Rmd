@@ -355,6 +355,76 @@ This is really very simple and fast, just use:
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p16.png)
 
+As I said, super easy but as we can see it is unfortunately still completely empty. 
+
+**First of all** I activate the new environment and **install pip from anaconda** as a package. 
+
+`conda activate "your_env"`
+
+`conda install -c anaconda pip`
+
+After that, all sorts of other libraries can be added without hesitation. 
+
+For example, here is a list of the packages I used to create the example environment (found here in my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment)):
+
++ **conda install -c anaconda pip**
++ conda install -c anaconda pandas
++ conda install -c anaconda numpy
++ conda install -c anaconda scikit-learn
++ conda install -c conda-forge matplotliby
++ conda install -c anaconda seaborn
++ conda install -c anaconda nltk
++ pip install tensorflow
++ pip install keras
++ pip install xgboost
++ **pip install jupyter_contrib_nbextensions**
++ **jupyter contrib nbextension install --user**
+
+
+## 4.8 Deleting Environments
+
+Quite apart from storage capacity reasons, I quite like to keep my workspace as clean as possible. This includes deleting environments that are no longer needed (after exporting them to a .yml file, of course). 
+
+This can be done with the following two steps:
+
+
+`conda deactivate "your_env"`
+
+`conda env remove -n myenv`
+
+
+And again we have only two environments:
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p17.png)
+
+Now we have deleted the environment, but the file under Anaconda is most likely still there. 
+Use this command to see where your environments are stored and then delete the folder (in our case this would have been 'myenv') so that everything is really clean again: 
+
+`conda info --envs`
+
+
+# Starting a Jupyter Notebook
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

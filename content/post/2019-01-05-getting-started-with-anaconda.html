@@ -39,7 +39,9 @@ output:
 <li><a href="#updating-libraries">4.5 Updating Libraries</a></li>
 <li><a href="#exporting-an-existing-environment">4.6 Exporting an existing Environment</a></li>
 <li><a href="#creating-a-new-environment">4.7 Creating a new environment</a></li>
+<li><a href="#deleting-environments">4.8 Deleting Environments</a></li>
 </ul></li>
+<li><a href="#starting-a-jupyter-notebook">Starting a Jupyter Notebook</a></li>
 </ul>
 </div>
 
@@ -242,5 +244,40 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <p>This is really very simple and fast, just use:</p>
 <p><code>conda create -n myenv</code></p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p16.png" /></p>
+<p>As I said, super easy but as we can see it is unfortunately still completely empty.</p>
+<p><strong>First of all</strong> I activate the new environment and <strong>install pip from anaconda</strong> as a package.</p>
+<p><code>conda activate "your_env"</code></p>
+<p><code>conda install -c anaconda pip</code></p>
+<p>After that, all sorts of other libraries can be added without hesitation.</p>
+<p>For example, here is a list of the packages I used to create the example environment (found here in my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment">GitHub Repository</a>):</p>
+<ul>
+<li><strong>conda install -c anaconda pip</strong></li>
+<li>conda install -c anaconda pandas</li>
+<li>conda install -c anaconda numpy</li>
+<li>conda install -c anaconda scikit-learn</li>
+<li>conda install -c conda-forge matplotliby</li>
+<li>conda install -c anaconda seaborn</li>
+<li>conda install -c anaconda nltk</li>
+<li>pip install tensorflow</li>
+<li>pip install keras</li>
+<li>pip install xgboost</li>
+<li><strong>pip install jupyter_contrib_nbextensions</strong></li>
+<li><strong>jupyter contrib nbextension install –user</strong></li>
+</ul>
 </div>
+<div id="deleting-environments" class="section level2">
+<h2>4.8 Deleting Environments</h2>
+<p>Quite apart from storage capacity reasons, I quite like to keep my workspace as clean as possible. This includes deleting environments that are no longer needed (after exporting them to a .yml file, of course).</p>
+<p>This can be done with the following two steps:</p>
+<p><code>conda deactivate "your_env"</code></p>
+<p><code>conda env remove -n myenv</code></p>
+<p>And again we have only two environments:</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p17.png" /></p>
+<p>Now we have deleted the environment, but the file under Anaconda is most likely still there.
+Use this command to see where your environments are stored and then delete the folder (in our case this would have been ‘myenv’) so that everything is really clean again:</p>
+<p><code>conda info --envs</code></p>
+</div>
+</div>
+<div id="starting-a-jupyter-notebook" class="section level1">
+<h1>Starting a Jupyter Notebook</h1>
 </div>
