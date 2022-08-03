@@ -127,7 +127,7 @@ Alternatively, you can activate the desired environment and then display the ins
 
 `conda activate "your_env"`
 
-**`conda list`**
+`conda list`
 
 If you want to check which version of a particular library is installed (in the activated environment) you can also query that directly: 
 
@@ -141,6 +141,172 @@ Here we see that in the base environment pandas is installed with version 1.4.3.
 If you want to see which Python version is installed use this command here: 
 
 `python -V`
+
+
+## 4.2  Import Environments
+
+We can also import predefined environments using the Anaconda Powershell prompt.
+
+If you want to have the created sample environment feel free to download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment).
+
+Navigate again with cd to the respective place where the .yml file is stored:
+
+`cd "path/to/root directory"`
+
+`conda env create -f environment.yml`
+
+
+In our demo environment I installed the following basic libraries:
+
++ python
++ pandas
++ numpy
++ scikit-learn
++ matplotlib
++ seaborn
++ nltk
++ pip (from conda!)
++ tensorflow (via pip)
++ keras (via pip)
++ xgboost (via pip)
++ **jupyter_contrib_nbextensions** (via pip)
+
+Of course, some cool libraries will be added over time. How to add them you will learn in a moment.
+
+And already we have a new environment installed:
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p10.png)
+
+
+You can also use the list command to see which library was installed with which package manager. See the entries *'pypi'* or *'anaconda'* in the column *'Channel'*. 
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p11.png)
+
+
+How this comes about I explain in the following chapter.
+
+
+
+## 4.3  Adding Libraries
+
+
+### 4.3.1  Pip vs Conda
+
+
+Python supports third-party frameworks and libraries that already contain various features and elements that can be used by programmers.
+
+Pip and Conda are both package managers that assist in the installation and management (update or removal) of packages. 
+
+
+Pip is the official package manager of the Python Software Foundation. It gets its packages from the official software repository PyPI (Python Package Index) and is delivered by default with the installation of Python. 
+
+In contrast, conda is a language-independent and cross-platform package manager that manages Python packages, among other things (C libraries or executables like C compilers). It is supplied by default with the installation of Anaconda. 
+
+
+Unfortunately, **problems can occur if conda and pip are used together** when creating an environment.
+
+
+Most of these problems originate from the fact that conda has limited ability to control packages that it did not install itself. 
+
+If conda is run after pip, packages installed via pip can be overwritten. 
+Likewise, a library installed by pip may inadvertently update or remove packages that are needed by other conda libraries and thus become unusable. 
+
+
+### 4.3.2 Best Practice
+
+
+Conda is often used for data science and machine learning applications and is therefore the more interesting package manager for me. However, pip is the central package pool with far more available libraries than is the case in conda. Thus, **sometimes it is simply unavoidable to use both pip and conda in the same environment** at the same time, as some libraries are exclusively available to PyPI. 
+
+
+
+Therefore, there are some **recommendations that should be followed**:
+
+- Use virtual environments for isolation
+- Create a separate (virtual) environment for each project
+- Install as many libraries as possible with conda
+- If there is no way around pip, install the pip version of Anaconda (conda install -c anaconda pip) in your virtual environment first, so that the PyPI package is only installed in this environment and not across all environments
+- Make sure that pip does not run in the "root" environment
+- Make a backup copy of your environment so that you can fall back to the old state
+
+
+
+
+### 4.3.3 Add Packages via conda & pip
+
+For both options, **make sure that you have activated the desired environment** in which to install the new package. For the second one, **make sure that the pip version of Anaconda is installed**.
+
+
+`conda activate "your_env"`
+
+**Conda:**
+
+`conda install -c anaconda django`
+
+
+**Pip:**
+
+We assume here that Theano is only available via PyPI (I know there is also an Anaconda version for this). 
+
+`pip install Theano`
+
+
+
+## 4.4 Installing a specific Version
+
+By default, the latest version of a library is installed or at least the latest allowed one (due to dependencies to other libraries). 
+
+However, you can also install specific versions of a package: 
+
+
+`conda activate "your_env"`
+
+**Conda:**
+
+`conda install -c anaconda django==3.2.0`
+
+
+**Pip:**
+
+We assume here that Theano is only available via PyPI (I know there is also an Anaconda version for this). 
+
+`pip install Theano==1.0.3`
+
+
+Let's display the installed versions:
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p12.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```{r, eval=F, echo=T}
