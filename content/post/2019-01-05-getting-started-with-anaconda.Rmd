@@ -103,7 +103,10 @@ At the bottom there is a button called 'Import'. With it we can import the new e
 
 # 4 Anaconda Powershell Prompt
 
-With Anaconda, the Anaconda Powershell Prompt was also downloaded. I actually manage my environment exclusively via the Anaconda Powershell Prompt. The reason for this is that I can't do everything via the Anaconda Navigator. For example, I can't find all libraries via the search function such as the very popular jupyter_contrib_nbextensions. Another reason is that I cannot extract environments for sharing.
+With Anaconda, the Anaconda Powershell Prompt was also downloaded. 
+I actually **manage my environment exclusively via the Anaconda Powershell Prompt**.
+The reason for this is that I can't do everything via the Anaconda Navigator. 
+For example, I can't find all libraries via the search function such as the very popular [jupyter_contrib_nbextensions](https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html). Another reason is that I cannot extract environments for sharing.
 
 
 ## 4.1 Exploring your Environments
