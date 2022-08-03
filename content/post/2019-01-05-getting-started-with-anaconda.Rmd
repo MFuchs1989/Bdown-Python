@@ -101,27 +101,46 @@ At the bottom there is a button called 'Import'. With it we can import the new e
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p6.png)
 
 
+# 4 Anaconda Powershell Prompt
+
+With Anaconda, the Anaconda Powershell Prompt was also downloaded. I actually manage my environment exclusively via the Anaconda Powershell Prompt. The reason for this is that I can't do everything via the Anaconda Navigator. For example, I can't find all libraries via the search function such as the very popular jupyter_contrib_nbextensions. Another reason is that I cannot extract environments for sharing.
 
 
+## 4.1 Exploring your Environments
+
+With the following command we get an overview of the existing environments installed:
+
+`conda env list`
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p7.png)
 
 
+Ok, so far we have only installed the base environment but to see which libraries with which version are installed in the base environment, use the following command:
+
+`conda list -n base`
 
 
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p8.png)
+
+Alternatively, you can activate the desired environment and then display the installed libraries: 
 
 
+`conda activate "your_env"`
+
+**`conda list`**
+
+If you want to check which version of a particular library is installed (in the activated environment) you can also query that directly: 
+
+`conda list pandas`
 
 
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p9.png)
 
+Here we see that in the base environment pandas is installed with version 1.4.3. 
 
+If you want to see which Python version is installed use this command here: 
 
-
-
-
-
-
-
-
-
+`python -V`
 
 
 ```{r, eval=F, echo=T}

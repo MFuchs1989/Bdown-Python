@@ -25,6 +25,10 @@ output:
 <li><a href="#create-a-new-environment">3.2 Create a new Environment</a></li>
 <li><a href="#import-environments">3.3 Import Environments</a></li>
 </ul></li>
+<li><a href="#anaconda-powershell-prompt">4 Anaconda Powershell Prompt</a>
+<ul>
+<li><a href="#exploring-your-environments">4.1 Exploring your Environments</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -86,5 +90,27 @@ Give it a desired name and select the Python or R programming language.</p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p5.png" /></p>
 <p>At the bottom there is a button called ‘Import’. With it we can import the new environment together with its predefined libraries.</p>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p6.png" /></p>
+</div>
+</div>
+<div id="anaconda-powershell-prompt" class="section level1">
+<h1>4 Anaconda Powershell Prompt</h1>
+<p>With Anaconda, the Anaconda Powershell Prompt was also downloaded. I actually manage my environment exclusively via the Anaconda Powershell Prompt. The reason for this is that I can’t do everything via the Anaconda Navigator. For example, I can’t find all libraries via the search function such as the very popular jupyter_contrib_nbextensions. Another reason is that I cannot extract environments for sharing.</p>
+<div id="exploring-your-environments" class="section level2">
+<h2>4.1 Exploring your Environments</h2>
+<p>With the following command we get an overview of the existing environments installed:</p>
+<p><code>conda env list</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p7.png" /></p>
+<p>Ok, so far we have only installed the base environment but to see which libraries with which version are installed in the base environment, use the following command:</p>
+<p><code>conda list -n base</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p8.png" /></p>
+<p>Alternatively, you can activate the desired environment and then display the installed libraries:</p>
+<p><code>conda activate "your_env"</code></p>
+<p><strong><code>conda list</code></strong></p>
+<p>If you want to check which version of a particular library is installed (in the activated environment) you can also query that directly:</p>
+<p><code>conda list pandas</code></p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p9.png" /></p>
+<p>Here we see that in the base environment pandas is installed with version 1.4.3.</p>
+<p>If you want to see which Python version is installed use this command here:</p>
+<p><code>python -V</code></p>
 </div>
 </div>
