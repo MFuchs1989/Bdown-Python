@@ -87,13 +87,34 @@ Now you can search for new libraries that you have not yet installed in the resp
 At the bottom you can press 'apply' to perform the installation. Often it happens that with large libraries like pandas is one, further packages are installed with it.
 
 
+## 3.3  Import Environments
+
+We do not need to load each library individually. Predefined environments with a list of libraries can also be imported at once. I have created a test environment here: environment.yml
+
+Let's use the Anaconda navigator and go to the environments via the corresponding button on the left.
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p5.png)
+
+At the bottom there is a button called 'Import'. With it we can import the new environment together with its predefined libraries.
+
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p6.png)
 
 
 
 
 
 
-![](/post/2019-01-05-getting-started-with-anaconda_files/p102p.png)
+
+
+
+
+
+
+
+
+
+
 
 
 
