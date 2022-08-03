@@ -404,32 +404,74 @@ Use this **command to see where your environments are stored** and then delete t
 `conda info --envs`
 
 
-# Starting a Jupyter Notebook
+# 5 Starting a Jupyter Notebook
 
 
+This is a very simple process:
+
+- 1. Determine the path where the notebook should be opened
+- 2. Activate the environment you want to use
+- 3. Start the Jupyter Notebook
 
 
+Here are the commands to do this: 
+
+`cd "path/to/root directory"`
+
+`conda activate "your_env"`
+
+`jupyter notebook`
 
 
+A new tab is generated in the specified default browser from which you can launch Jupyter Notebooks.
 
 
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p18.png)
 
 
+How exactly the Jupyter notebooks can be used is not central to this post. But you can find lots of beginners guides on the internet:
+
++ [Jupyter Notebook: An Introduction](https://realpython.com/jupyter-notebook-introduction/)
++ [Jupyter Notebook Tutorial: The Definitive Guide](https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook)
++ [Jupyter/IPython Notebook Quick Start Guide](https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/)
 
 
+From a Jupyter notebook it is also possible to check which packages are installed in the selected environment or which packages have been installed with which version. The location can also be determined:
 
 
+```{r, eval=F, echo=T}
+!conda list
+```
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p19.png)
 
 
+```{r, eval=F, echo=T}
+import pandas as pd
+import keras
+
+import os
+```
 
 
+```{r, eval=F, echo=T}
+print('Installed version for pandas: ' + str(pd.__version__))
+print('Installed version for keras: ' + str(keras.__version__))
+```
 
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p20.png)
 
+```{r, eval=F, echo=T}
+os.path.abspath(keras.__file__)
+```
 
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p21.png)
 
+```{r, eval=F, echo=T}
+!python -V
+```
 
-
-
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p22.png)
 
 
 

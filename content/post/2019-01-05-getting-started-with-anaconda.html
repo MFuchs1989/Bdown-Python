@@ -41,7 +41,7 @@ output:
 <li><a href="#creating-a-new-environment">4.7 Creating a new environment</a></li>
 <li><a href="#deleting-environments">4.8 Deleting Environments</a></li>
 </ul></li>
-<li><a href="#starting-a-jupyter-notebook">Starting a Jupyter Notebook</a></li>
+<li><a href="#starting-a-jupyter-notebook">5 Starting a Jupyter Notebook</a></li>
 </ul>
 </div>
 
@@ -279,5 +279,43 @@ Use this <strong>command to see where your environments are stored</strong> and 
 </div>
 </div>
 <div id="starting-a-jupyter-notebook" class="section level1">
-<h1>Starting a Jupyter Notebook</h1>
+<h1>5 Starting a Jupyter Notebook</h1>
+<p>This is a very simple process:</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>Determine the path where the notebook should be opened</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Activate the environment you want to use</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>Start the Jupyter Notebook</li>
+</ol></li>
+</ul>
+<p>Here are the commands to do this:</p>
+<p><code>cd "path/to/root directory"</code></p>
+<p><code>conda activate "your_env"</code></p>
+<p><code>jupyter notebook</code></p>
+<p>A new tab is generated in the specified default browser from which you can launch Jupyter Notebooks.</p>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p18.png" /></p>
+<p>How exactly the Jupyter notebooks can be used is not central to this post. But you can find lots of beginners guides on the internet:</p>
+<ul>
+<li><a href="https://realpython.com/jupyter-notebook-introduction/">Jupyter Notebook: An Introduction</a></li>
+<li><a href="https://www.datacamp.com/community/tutorials/tutorial-jupyter-notebook">Jupyter Notebook Tutorial: The Definitive Guide</a></li>
+<li><a href="https://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/">Jupyter/IPython Notebook Quick Start Guide</a></li>
+</ul>
+<p>From a Jupyter notebook it is also possible to check which packages are installed in the selected environment or which packages have been installed with which version. The location can also be determined:</p>
+<pre class="r"><code>!conda list</code></pre>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p19.png" /></p>
+<pre class="r"><code>import pandas as pd
+import keras
+
+import os</code></pre>
+<pre class="r"><code>print(&#39;Installed version for pandas: &#39; + str(pd.__version__))
+print(&#39;Installed version for keras: &#39; + str(keras.__version__))</code></pre>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p20.png" /></p>
+<pre class="r"><code>os.path.abspath(keras.__file__)</code></pre>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p21.png" /></p>
+<pre class="r"><code>!python -V</code></pre>
+<p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p22.png" /></p>
 </div>
