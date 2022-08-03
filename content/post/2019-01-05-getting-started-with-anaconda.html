@@ -42,6 +42,7 @@ output:
 <li><a href="#deleting-environments">4.8 Deleting Environments</a></li>
 </ul></li>
 <li><a href="#starting-a-jupyter-notebook">5 Starting a Jupyter Notebook</a></li>
+<li><a href="#conclusion">6 Conclusion</a></li>
 </ul>
 </div>
 
@@ -318,4 +319,21 @@ print(&#39;Installed version for keras: &#39; + str(keras.__version__))</code></
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p21.png" /></p>
 <pre class="r"><code>!python -V</code></pre>
 <p><img src="/post/2019-01-05-getting-started-with-anaconda_files/p102p22.png" /></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1>6 Conclusion</h1>
+<p>Working with virtual environments is really fun. If you follow the advice given above, you will prevent a large number of the errors and conflicts that arise in practice.</p>
+<p><strong>Download the created Environment</strong></p>
+<p>If you want to have the created sample environment feel free to download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment">GitHub Repository</a>.</p>
+<p><strong>Possibly</strong> the <strong>packages are no longer up to date</strong>. You should therefore <strong>update the most important libraries</strong>. Here is my list of commands, which I call in the Anaconda Powershell Prompt after I have activated the desired environment:</p>
+<pre class="r"><code>conda update pip
+conda update pandas
+conda update numpy
+conda update scikit-learn
+conda update matplotliby
+conda update seaborn
+conda update nltk
+pip install tensorflow --upgrade
+pip install keras --upgrade
+pip install xgboost --upgrade</code></pre>
 </div>
