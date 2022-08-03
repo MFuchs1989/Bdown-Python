@@ -399,7 +399,7 @@ And again we have only two environments:
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p17.png)
 
 Now we have deleted the environment, but the file under Anaconda is most likely still there. 
-Use this command to see where your environments are stored and then delete the folder (in our case this would have been 'myenv') so that everything is really clean again: 
+Use this **command to see where your environments are stored** and then delete the folder (in our case this would have been 'myenv') so that everything is really clean again: 
 
 `conda info --envs`
 
