@@ -51,24 +51,40 @@ Otherwise we would have to add this path manually later.
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p1.png)
 
+# 3 Anaconda Navigator
+
+After successful installation, search for Anaconda Navigator on your computer.
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p2.png)
+
+As we can see, different IDEs have already been installed with it, including Jupyter Notebooks. On the left side we can now select Environments. 
 
 
+## 3.1 What are environments?
+
+To program with Python we need different libraries (for example numpy or pandas). We can store these collected in virtual environments. It is of great advantage that you can also use specific versions of the libraries.  
+
+To program with Python we need different libraries (for example numpy or pandas). We can store these collected in virtual environments. It is of great advantage that you can also use specific versions of the libraries.  Why is this important, especially in project work, when you have developed models or done analyses for customers? You have the option of extracting all the libraries used for this purpose with their respective version and handing them over to the customer. In this way, the customer is able to execute the code without errors for a long time. It often happens that parts of packages change and then no longer work. That's why version management is so incredibly beneficial. 
 
 
+## 3.2 Create a new Environment
+
+We have now selected Environments on the left side. 
+At the bottom there is a button 'Create' with which you can create a new environment.  
+Give it a desired name and select the Python or R programming language.
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p3.png)
 
 
+Click on your new environment and select 'Not installed' at the top.
 
 
+Now you can search for new libraries that you have not yet installed in the respective environment. Here for example Pandas.
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p4.png)
 
 
-
-
-
-
-
-
-
-
+At the bottom you can press 'apply' to perform the installation. Often it happens that with large libraries like pandas is one, further packages are installed with it.
 
 
 
