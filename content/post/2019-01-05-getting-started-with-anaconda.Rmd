@@ -179,9 +179,10 @@ Please execute the following command to make the nbextensions work:
 
 `jupyter contrib nbextension install --user`
 
-Of course, some cool libraries will be added over time. How to add them you will learn in a moment.
+Please do not forget to uncheck 'disable configuration for nbextensions without explicit compatibility' in Jupyter Notebook so you can use the nbextensions.
 
-And already we have a new environment installed:
+
+Of course, some cool libraries will be added over time. How to add them you will learn in a moment. And already we have a new environment installed:
 
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p10.png)
@@ -387,6 +388,8 @@ For example, here is a list of the packages I used to create the example environ
 + `pip install xgboost`
 + **`pip install jupyter_contrib_nbextensions`**
 + **`jupyter contrib nbextension install --user`**
+
+Please do not forget to uncheck 'disable configuration for nbextensions without explicit compatibility' in Jupyter Notebook so you can use the nbextensions. 
 
 
 ## 4.8 Deleting Environments
