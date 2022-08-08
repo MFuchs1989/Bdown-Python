@@ -14,8 +14,6 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -115,7 +113,7 @@ df.head()</code></pre>
 </div>
 <div id="definition-of-required-functions" class="section level1">
 <h1>4 Definition of required functions</h1>
-<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+<pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -148,7 +146,7 @@ df.head()</code></pre>
     print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
     print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
-    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
 <pre class="r"><code>def Augmented_Dickey_Fuller_Test_func(series , column_name):
     &#39;&#39;&#39;
@@ -175,7 +173,7 @@ df.head()</code></pre>
         print(&quot;Conclusion:====&gt;&quot;)
         print(&quot;Fail to reject the null hypothesis&quot;)
         print(&quot;Data is non-stationary&quot;)</code></pre>
-<pre class="r"><code>def cointegration_test(df): 
+<pre class="r"><code>def cointegration_test_func(df): 
     &#39;&#39;&#39;
     Test if there is a long-run relationship between features
     
@@ -194,7 +192,7 @@ df.head()</code></pre>
     print(&#39;Column Name   &gt;  Test Stat &gt; C(95%)    =&gt;   Signif  \n&#39;, &#39;--&#39;*20)
     for col, trace, cvt in zip(df.columns, traces, cvts):
         print(adjust(col), &#39;&gt; &#39;, adjust(round(trace,2), 9), &quot;&gt;&quot;, adjust(cvt, 8), &#39; =&gt;  &#39; , trace &gt; cvt)</code></pre>
-<pre class="r"><code>def inverse_diff(actual_df, pred_df):
+<pre class="r"><code>def inverse_diff_func(actual_df, pred_df):
     &#39;&#39;&#39;
     Transforms the differentiated values back
     
@@ -241,7 +239,7 @@ train_diff.dropna(inplace = True)</code></pre>
     train_diff[str(feature)].plot(figsize=(15, 6))
     plt.xlabel(&quot;Date&quot;)
     plt.ylabel(feature)
-    plt.title(f&quot;{str(feature)} price of Facebook stocks before stationary&quot;)
+    plt.title(f&quot;{str(feature)} price of Facebook stocks after stationary&quot;)
     plt.show()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p8.png" /></p>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p9.png" /></p>
@@ -262,7 +260,7 @@ train_diff.dropna(inplace = True)</code></pre>
 <h1>6 Cointegration Test</h1>
 <p>A cointegration test is the co-movement among underlying variables over the long run. This long-run estimation feature distinguishes it from correlation. Two or more variables are cointegrated if ond only if they share common trends.</p>
 <p>In comparison: The Correlation is simply a measure of the degree of mutual association between two or more variables.</p>
-<pre class="r"><code>cointegration_test(train_diff)</code></pre>
+<pre class="r"><code>cointegration_test_func(train_diff)</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p12.png" /></p>
 <p>As we can see from the output, there is the presence of a long-run relationship between features.</p>
 </div>

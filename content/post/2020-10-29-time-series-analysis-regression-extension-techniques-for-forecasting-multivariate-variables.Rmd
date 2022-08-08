@@ -95,7 +95,7 @@ for feature in df[['Open', 'High', 'Low', 'Close']]:
 # 4 Definition of required functions
 
 ```{r, eval=F, echo=T}
-def mean_absolute_percentage_error(y_true, y_pred):
+def mean_absolute_percentage_error_func(y_true, y_pred):
     '''
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -131,7 +131,7 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
     print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
     print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
     print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
-    print(f'MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}')
+    print(f'MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}')
     print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
 ```
 
@@ -164,7 +164,7 @@ def Augmented_Dickey_Fuller_Test_func(series , column_name):
 ```
 
 ```{r, eval=F, echo=T}
-def cointegration_test(df): 
+def cointegration_test_func(df): 
     '''
     Test if there is a long-run relationship between features
     
@@ -186,7 +186,7 @@ def cointegration_test(df):
 ```
 
 ```{r, eval=F, echo=T}
-def inverse_diff(actual_df, pred_df):
+def inverse_diff_func(actual_df, pred_df):
     '''
     Transforms the differentiated values back
     
@@ -253,7 +253,7 @@ for feature in train_diff:
     train_diff[str(feature)].plot(figsize=(15, 6))
     plt.xlabel("Date")
     plt.ylabel(feature)
-    plt.title(f"{str(feature)} price of Facebook stocks before stationary")
+    plt.title(f"{str(feature)} price of Facebook stocks after stationary")
     plt.show()
 ```
 
@@ -288,7 +288,7 @@ A cointegration test is the co-movement among underlying variables over the long
 In comparison: The Correlation is simply a measure of the degree of mutual association between two or more variables.
 
 ```{r, eval=F, echo=T}
-cointegration_test(train_diff)
+cointegration_test_func(train_diff)
 ```
 
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p12.png)
@@ -662,8 +662,6 @@ In this post about time series prediction of multiple target variables, I introd
 The content of the entire post was created using the following sources:
 
 Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
-
-
 
 
 
