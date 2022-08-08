@@ -282,7 +282,7 @@ for i in [1,2,3,4,5,6,7,8,9]:
     df1 = {&#39;AR_Term&#39;:i, &#39;AIC&#39;: aic, &#39;BIC&#39;: bic}
     df_results_VAR = df_results_VAR.append(df1, ignore_index=True)
     clist = [&#39;AR_Term&#39;,&#39;AIC&#39;,&#39;BIC&#39;]
-    df_results_VAR = df_results_VAR[clist] </code></pre>
+    df_results_VAR = df_results_VAR[clist]  </code></pre>
 <pre class="r"><code>df_results_VAR.sort_values(by=[&#39;AIC&#39;, &#39;BIC&#39;], ascending=True)</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p13.png" /></p>
 <pre class="r"><code>best_values_VAR = df_results_VAR.sort_values(by=[&#39;AIC&#39;, &#39;BIC&#39;]).head(1)
@@ -296,20 +296,18 @@ print(&quot;AR_Term_value_VAR: &quot;, AR_Term_value_VAR)</code></pre>
 </div>
 <div id="fit-var" class="section level3">
 <h3>7.1.2 Fit VAR</h3>
-<pre class="r"><code>model = VAR(train_diff)
+<pre class="r"><code>model = VAR(train_diff).fit(int(AR_Term_value_VAR))
 
-results = model.fit(int(AR_Term_value_VAR))
-display(results.summary())
-z = results.forecast(y=train_diff.values, steps=len(testX))
-df_pred = pd.DataFrame(z, columns=train_diff.columns)</code></pre>
-<pre class="r"><code>df_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
-df_pred = df_pred.set_index(&quot;new_index&quot;)</code></pre>
-<pre class="r"><code>df_pred.head()</code></pre>
-<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p16.png" /></p>
+result = model.forecast(y=train_diff.values, steps=len(testX))</code></pre>
 </div>
 <div id="inverse-transformation" class="section level3">
 <h3>7.1.3 Inverse Transformation</h3>
-<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]],df_pred)
+<pre class="r"><code>df_pred = pd.DataFrame(result, columns=train_diff.columns)
+df_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_pred = df_pred.set_index(&quot;new_index&quot;)
+df_pred.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p16.png" /></p>
+<pre class="r"><code>res = inverse_diff_func(trainX, df_pred)
 res.head()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p17.png" /></p>
 </div>
@@ -343,20 +341,21 @@ pg = list(ParameterGrid(param_grid))</code></pre>
 <pre class="r"><code>df_results_VARMA = pd.DataFrame(columns=[&#39;p&#39;, &#39;q&#39;, &#39;tr&#39;,&#39;RMSE open&#39;,&#39;RMSE high&#39;,&#39;RMSE low&#39;,&#39;RMSE close&#39;])
 
 for a,b in enumerate(pg):
+    print(f&#39; Running for {b}&#39;)
     p = b.get(&#39;p&#39;)
     q = b.get(&#39;q&#39;)
     tr = b.get(&#39;tr&#39;)
     model = VARMAX(train_diff, order=(p,q), trend=tr).fit()
-    z = model.forecast(y=train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]].values, steps=len(testX))
-    df_pred = pd.DataFrame(z, columns=[ &#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;])
-    res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]],df_pred)
-    openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, res.Open_1st_inv_diff))
-    highrmse = np.sqrt(metrics.mean_squared_error(testX.High, res.High_1st_inv_diff))
-    lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, res.Low_1st_inv_diff))
-    closermse = np.sqrt(metrics.mean_squared_error(testX.Close, res.Close_1st_inv_diff))
+    result = model.forecast(steps=len(testX))
+    inv_res = inverse_diff_func(trainX, result)
+    openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_1st_inv_diff))
+    highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_1st_inv_diff))
+    lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_1st_inv_diff))
+    closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_1st_inv_diff))
     df_results_VARMA = df_results_VARMA.append({&#39;p&#39;: p, &#39;q&#39;: q, &#39;tr&#39;: tr,&#39;RMSE open&#39;: openrmse,
                                                 &#39;RMSE high&#39;:highrmse,&#39;RMSE low&#39;:lowrmse,
                                                 &#39;RMSE close&#39;:closermse }, ignore_index=True)</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97z1.png" /></p>
 <pre class="r"><code>df_results_VARMA.sort_values(by=[&#39;RMSE open&#39;, &#39;RMSE high&#39;, &#39;RMSE low&#39;, &#39;RMSE close&#39;]).head()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p21.png" /></p>
 <pre class="r"><code>best_values_VARMA = df_results_VARMA.sort_values(by=[&#39;RMSE open&#39;, &#39;RMSE high&#39;, &#39;RMSE low&#39;, &#39;RMSE close&#39;]).head(1)
@@ -373,14 +372,18 @@ print(&quot;tr_value_VARMA: &quot;, tr_value_VARMA)</code></pre>
 </div>
 <div id="fit-varma" class="section level3">
 <h3>7.2.2 Fit VARMA</h3>
-<pre class="r"><code>model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], 
+<pre class="r"><code>model = VARMAX(train_diff, 
                order=(p_value_VARMA, q_value_VARMA),trends = tr_value_VARMA).fit(disp=False)
 result = model.forecast(steps = len(testX))</code></pre>
 </div>
 <div id="inverse-transformation-1" class="section level3">
 <h3>7.2.3 Inverse Transformation</h3>
-<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], result)
-
+<pre class="r"><code>df_pred = pd.DataFrame(result, columns=train_diff.columns)
+df_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_pred = df_pred.set_index(&quot;new_index&quot;)
+df_pred.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97z2.png" /></p>
+<pre class="r"><code>res = inverse_diff_func(trainX, df_pred)
 res.head()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p24.png" /></p>
 </div>
@@ -426,16 +429,16 @@ for i in pq:
         pass
     else:
         print(f&#39; Running for {i}&#39;)
-        model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], order=(i[0],i[2])).fit(disp=False)
+        model = VARMAX(train_diff, order=(i[0],i[2])).fit(disp=False)
         result = model.forecast(steps = len(testX))
-        inv_res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], result)
-        Opensrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;Open&#39;], inv_res.Open_1st_inv_diff))
-        Highrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;High&#39;], inv_res.High_1st_inv_diff))
-        Lowrmse = np.sqrt(metrics.mean_squared_error(testX[&#39;Low&#39;], inv_res.Low_1st_inv_diff))
-        Closermse = np.sqrt(metrics.mean_squared_error(testX[&#39;Close&#39;], inv_res.Close_1st_inv_diff))
-        df_results_VARMA_2 = df_results_VARMA_2.append({&#39;p&#39;: i[0], &#39;q&#39;: i[2], &#39;RMSE Open&#39;:Opensrmse,
-                                                        &#39;RMSE High&#39;:Highrmse,&#39;RMSE Low&#39;:Lowrmse,
-                                                        &#39;RMSE Close&#39;:Closermse }, ignore_index=True)</code></pre>
+        inv_res = inverse_diff_func(trainX, result)
+        openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_1st_inv_diff))
+        highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_1st_inv_diff))
+        lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_1st_inv_diff))
+        closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_1st_inv_diff))
+        df_results_VARMA_2 = df_results_VARMA_2.append({&#39;p&#39;: i[0], &#39;q&#39;: i[2], &#39;RMSE Open&#39;:openrmse,
+                                                        &#39;RMSE High&#39;:highrmse,&#39;RMSE Low&#39;:lowrmse,
+                                                        &#39;RMSE Close&#39;:closermse }, ignore_index=True)</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p31.png" /></p>
 <pre class="r"><code>df_results_VARMA_2.sort_values(by=[&#39;RMSE Open&#39;, &#39;RMSE High&#39;, &#39;RMSE Low&#39;, &#39;RMSE Close&#39;])</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p32.png" /></p>
@@ -452,13 +455,18 @@ print(&quot;q_value_VARMA_2: &quot;, q_value_VARMA_2)</code></pre>
 </div>
 <div id="fit-varma_2" class="section level3">
 <h3>7.3.2 Fit VARMA_2</h3>
-<pre class="r"><code>model = VARMAX(train_diff[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]], 
+<pre class="r"><code>model = VARMAX(train_diff, 
                order=(int(p_value_VARMA_2),int(q_value_VARMA_2))).fit(disp=False)
 result = model.forecast(steps = len(testX))</code></pre>
 </div>
 <div id="inverse-transformation-2" class="section level3">
 <h3>7.3.3 Inverse Transformation</h3>
-<pre class="r"><code>res = inverse_diff(df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]],result)
+<pre class="r"><code>df_pred = pd.DataFrame(result, columns=train_diff.columns)
+df_pred[&quot;new_index&quot;] = range(len(trainX), len(X))
+df_pred = df_pred.set_index(&quot;new_index&quot;)
+df_pred.head()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97z3.png" /></p>
+<pre class="r"><code>res = inverse_diff_func(trainX, df_pred)
 res.head()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p35.png" /></p>
 </div>
