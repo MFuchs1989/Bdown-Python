@@ -14,8 +14,6 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -96,7 +94,7 @@ df.head()</code></pre>
 </div>
 <div id="definition-of-required-functions" class="section level1">
 <h1>3 Definition of required functions</h1>
-<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+<pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -125,13 +123,13 @@ df.head()</code></pre>
     Returns:
         MSE, MAE, RMSE, MAPE and R² 
     &#39;&#39;&#39;    
-    #print(&#39;Evaluation metric results: &#39;)
+    print(&#39;Evaluation metric results: &#39;)
     print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
     print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
-    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
-<pre class="r"><code>def univariate_data_prep_function(dataset, start, end, window, horizon):
+<pre class="r"><code>def univariate_data_prep_func(dataset, start, end, window, horizon):
     &#39;&#39;&#39;
     Prepare univariate data that is suitable for a time series
     
@@ -213,11 +211,11 @@ For example: Data is at the daily level. The model is shown the first window fro
 horizon_sss = 1
 train_split_sss = 30000
 
-x_train_uni_sss, y_train_uni_sss = univariate_data_prep_function(x_scaled, 0, train_split_sss, 
-                                                                 univar_hist_window_sss, horizon_sss)
+x_train_uni_sss, y_train_uni_sss = univariate_data_prep_func(x_scaled, 0, train_split_sss, 
+                                                             univar_hist_window_sss, horizon_sss)
 
-x_val_uni_sss, y_val_uni_sss = univariate_data_prep_function(x_scaled, train_split_sss, None, 
-                                                             univar_hist_window_sss, horizon_sss)</code></pre>
+x_val_uni_sss, y_val_uni_sss = univariate_data_prep_func(x_scaled, train_split_sss, None, 
+                                                         univar_hist_window_sss, horizon_sss)</code></pre>
 <pre class="r"><code>print (&#39;Length of first Single Window:&#39;)
 print (len(x_train_uni_sss[0]))
 print()
@@ -232,11 +230,11 @@ print (y_train_uni_sss[0])</code></pre>
 horizon_hs = 10
 train_split_hs = 30000
 
-x_train_uni_hs, y_train_uni_hs = univariate_data_prep_function(x_scaled, 0, train_split_hs, 
-                                                               univar_hist_window_hs, horizon_hs)
+x_train_uni_hs, y_train_uni_hs = univariate_data_prep_func(x_scaled, 0, train_split_hs, 
+                                                           univar_hist_window_hs, horizon_hs)
 
-x_val_uni_hs, y_val_uni_hs = univariate_data_prep_function(x_scaled, train_split_hs, None, 
-                                                           univar_hist_window_hs, horizon_hs)</code></pre>
+x_val_uni_hs, y_val_uni_hs = univariate_data_prep_func(x_scaled, train_split_hs, None, 
+                                                       univar_hist_window_hs, horizon_hs)</code></pre>
 <pre class="r"><code>print (&#39;Length of first Single Window:&#39;)
 print (len(x_train_uni_hs[0]))
 print()
