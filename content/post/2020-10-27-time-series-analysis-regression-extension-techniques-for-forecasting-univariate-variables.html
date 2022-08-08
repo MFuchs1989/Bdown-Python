@@ -14,8 +14,6 @@ output:
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -173,6 +171,9 @@ plt.show()</code></pre>
 <h1>5 Check for stationarity</h1>
 <pre class="r"><code>Augmented_Dickey_Fuller_Test_func(df[&#39;Close&#39; ],&#39;Close&#39;)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p4.png" /></p>
+<p>As we can see from the result, <strong>the present time series is not stationary</strong>.</p>
+<p><strong>However, Auto_arima can handle this internally!</strong></p>
+<p>Therefore, it is not necessary at this point to differentiate the data as I have done, for example, in the following post: <a href="https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/#make-data-stationary">Multivariate Time Series - Make data stationary</a></p>
 </div>
 <div id="arima-in-action" class="section level1">
 <h1>6 ARIMA in Action</h1>

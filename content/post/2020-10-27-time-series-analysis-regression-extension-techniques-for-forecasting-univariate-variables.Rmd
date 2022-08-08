@@ -217,6 +217,13 @@ Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p4.png)
 
 
+As we can see from the result, **the present time series is not stationary**.
+
+**However, Auto_arima can handle this internally!**
+
+Therefore, it is not necessary at this point to differentiate the data as I have done, for example, in the following post: [Multivariate Time Series - Make data stationary](https://michael-fuchs-python.netlify.app/2020/10/29/time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables/#make-data-stationary)
+
+
 # 6 ARIMA in Action
 
 ```{r, eval=F, echo=T}
