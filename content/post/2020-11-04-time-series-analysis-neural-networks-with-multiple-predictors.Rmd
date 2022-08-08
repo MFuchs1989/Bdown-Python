@@ -59,7 +59,7 @@ The variable 'traffic_volume' will be our target variable again.
 
 
 ```{r, eval=F, echo=T}
-def mean_absolute_percentage_error(y_true, y_pred):
+def mean_absolute_percentage_error_func(y_true, y_pred):
     '''
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -92,17 +92,17 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
     Returns:
         MSE, MAE, RMSE, MAPE and R² 
     '''    
-    #print('Evaluation metric results: ')
+    print('Evaluation metric results: ')
     print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
     print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
     print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
-    print(f'MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}')
+    print(f'MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}')
     print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
 ```
 
 
 ```{r, eval=F, echo=T}
-def multiple_data_prep_function(predictors, target, start, end, window, horizon):
+def multiple_data_prep_func(predictors, target, start, end, window, horizon):
     '''
     Prepare univariate data that is suitable for a time series
     
@@ -323,13 +323,13 @@ multi_hist_window_hs = 48
 horizon_hs = 10
 train_split_hs = 30000
 
-x_train_multi_hs, y_train_multi_hs = multiple_data_prep_function(x_scaled, y_scaled, 
-                                                                 0, train_split_hs, 
-                                                                 multi_hist_window_hs, horizon_hs)
+x_train_multi_hs, y_train_multi_hs = multiple_data_prep_func(x_scaled, y_scaled, 
+                                                             0, train_split_hs, 
+                                                             multi_hist_window_hs, horizon_hs)
 
-x_val_multi_hs, y_val_multi_hs= multiple_data_prep_function(x_scaled, y_scaled, 
-                                                            train_split_hs, None, 
-                                                            multi_hist_window_hs, horizon_hs)
+x_val_multi_hs, y_val_multi_hs= multiple_data_prep_func(x_scaled, y_scaled, 
+                                                        train_split_hs, None, 
+                                                        multi_hist_window_hs, horizon_hs)
 ```
 
 
