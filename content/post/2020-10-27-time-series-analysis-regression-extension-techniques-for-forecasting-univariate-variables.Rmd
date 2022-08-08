@@ -137,7 +137,7 @@ plt.show()
 # 4 Definition of required functions
 
 ```{r, eval=F, echo=T}
-def mean_absolute_percentage_error(y_true, y_pred):
+def mean_absolute_percentage_error_func(y_true, y_pred):
     '''
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -174,7 +174,7 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
     print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
     print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
     print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
-    print(f'MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}')
+    print(f'MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}')
     print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
 ```
 
@@ -464,13 +464,13 @@ In the following, modeling will be done only for the column 'Close'. The column 
 ```{r, eval=F, echo=T}
 X = df[['Close']]
 
-actualtrain, actualtest = train_test_split(X, test_size=30)
+actualtrain, actualtest = time_train_test_split(X, test_size=30)
 ```
 
 ```{r, eval=F, echo=T}
 exoX = df[['Open']]
 
-exotrain, exotest = train_test_split(exoX, test_size=30)
+exotrain, exotest = time_train_test_split(exoX, test_size=30)
 ```
 
 Let's configure and run seasonal ARIMA with an exogenous variable.
