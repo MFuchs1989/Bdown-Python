@@ -242,8 +242,9 @@ final_df.shape</code></pre>
 <pre class="r"><code>scaler_x = preprocessing.MinMaxScaler()
 scaler_y = preprocessing.MinMaxScaler()
 
-
-x_scaled = scaler_x.fit_transform(final_df)
+# Here we scale the predictors
+x_scaled = scaler_x.fit_transform(final_df.drop(column_name_criterium, axis=1))
+# Here we scale the criterium
 y_scaled = scaler_y.fit_transform(final_df[[column_name_criterium]])</code></pre>
 </div>
 <div id="train-validation-split" class="section level2">
@@ -260,7 +261,10 @@ Why not ? See here:</p>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99s2.png" /></p>
 <p>If we now have multiple predictors, we can determine the one value for the target variable, but we do not have predicted values for our predictors on the basis of which we can make the further predictions.</p>
 <p>For this reason, we must limit ourselves to Horizon Style at this point.</p>
-<pre class="r"><code>multi_hist_window_hs = 48
+<pre class="r"><code># Here we allow the model to see / train the last 48 observations
+multi_hist_window_hs = 48
+# Here we try to predict the following 10 observations
+# Must be the same length as the test_data !
 horizon_hs = 10
 train_split_hs = 30000
 
@@ -344,13 +348,15 @@ plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p9.png" /></p>
 <p><strong>Test the model</strong></p>
 <pre class="r"><code>trained_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
-<pre class="r"><code>df_temp = df[features_to_keep]
+<pre class="r"><code>df_temp = final_df.drop(column_name_criterium, axis=1)
 test_horizon = df_temp.tail(multi_hist_window_hs)
 test_history = test_horizon.values
 
 
 test_scaled = scaler_x.fit_transform(test_history)
 test_scaled = test_scaled.reshape(1, test_scaled.shape[0], test_scaled.shape[1])
+
+
 
 # Inserting the model
 predicted_results = trained_lstm_model_multi.predict(test_scaled)
@@ -410,7 +416,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p14.png" /></p>
 <p><strong>Test the model</strong></p>
 <pre class="r"><code>trained_bi_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
-<pre class="r"><code>df_temp = df[features_to_keep]
+<pre class="r"><code>df_temp = final_df.drop(column_name_criterium, axis=1)
 test_horizon = df_temp.tail(multi_hist_window_hs)
 test_history = test_horizon.values
 
@@ -475,7 +481,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p19.png" /></p>
 <p><strong>Test the model</strong></p>
 <pre class="r"><code>trained_gru_model_multi = tf.keras.models.load_model(model_path)</code></pre>
-<pre class="r"><code>df_temp = df[features_to_keep]
+<pre class="r"><code>df_temp = final_df.drop(column_name_criterium, axis=1)
 test_horizon = df_temp.tail(multi_hist_window_hs)
 test_history = test_horizon.values
 
@@ -542,7 +548,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p24.png" /></p>
 <p><strong>Test the model</strong></p>
 <pre class="r"><code>trained_ed_lstm_model_multi = tf.keras.models.load_model(model_path)</code></pre>
-<pre class="r"><code>df_temp = df[features_to_keep]
+<pre class="r"><code>df_temp = final_df.drop(column_name_criterium, axis=1)
 test_horizon = df_temp.tail(multi_hist_window_hs)
 test_history = test_horizon.values
 
@@ -610,7 +616,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-11-04-time-series-analysis-neural-networks-with-multiple-predictors_files/p99p29.png" /></p>
 <p><strong>Test the model</strong></p>
 <pre class="r"><code>trained_cnn_model_multi = tf.keras.models.load_model(model_path)</code></pre>
-<pre class="r"><code>df_temp = df[features_to_keep]
+<pre class="r"><code>df_temp = final_df.drop(column_name_criterium, axis=1)
 test_horizon = df_temp.tail(multi_hist_window_hs)
 test_history = test_horizon.values
 
