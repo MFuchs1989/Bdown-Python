@@ -19,7 +19,7 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#theoretical-background">2 Theoretical Background</a></li>
-<li><a href="#import-the-libraries-and-data">3 Import the libraries and data</a></li>
+<li><a href="#import-the-libraries-and-data">3 Import the Libraries and Data</a></li>
 <li><a href="#definition-of-required-functions">4 Definition of required functions</a></li>
 <li><a href="#check-for-stationarity">5 Check for stationarity</a></li>
 <li><a href="#arima-in-action">6 ARIMA in Action</a></li>
@@ -73,7 +73,7 @@ The term autoregression indicates that it is a regression of the variable agains
 <p>ARIMA is made up of two models: AR and MA</p>
 </div>
 <div id="import-the-libraries-and-data" class="section level1">
-<h1>3 Import the libraries and data</h1>
+<h1>3 Import the Libraries and Data</h1>
 <pre class="r"><code>import numpy as np
 import pandas as pd
 
@@ -141,7 +141,7 @@ plt.show()</code></pre>
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
     print(f&#39;MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
-<pre class="r"><code>def Augmented_Dickey_Fuller_Test_func(series , column_name):
+<pre class="r"><code>def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
     &#39;&#39;&#39;
     Calculates statistical values whether the available data are stationary or not 
     
@@ -153,19 +153,21 @@ plt.show()</code></pre>
         p-value that indicates whether the data are stationary or not
     &#39;&#39;&#39; 
     print (f&#39;Results of Dickey-Fuller Test for column: {column_name}&#39;)
-    dftest = adfuller(series, autolag=&#39;AIC&#39;)
-    dfoutput = pd.Series(dftest[0:4], index=[&#39;Test Statistic&#39;,&#39;p-value&#39;,&#39;No Lags Used&#39;,&#39;Number of Observations Used&#39;])
-    for key,value in dftest[4].items():
-       dfoutput[&#39;Critical Value (%s)&#39;%key] = value
-    print (dfoutput)
-    if dftest[1] &lt;= 0.05:
-        print(&quot;Conclusion:====&gt;&quot;)
+    adfTest = adfuller(timeseries, autolag=&#39;AIC&#39;)
+    dfResults = pd.Series(adfTest[0:4], index=[&#39;ADF Test Statistic&#39;,&#39;P-Value&#39;,&#39;# Lags Used&#39;,&#39;# Observations Used&#39;])
+    for key, value in adfTest[4].items():
+       dfResults[&#39;Critical Value (%s)&#39;%key] = value
+    print (dfResults)
+    if adfTest[1] &lt;= 0.05:
+        print()
+        print(&quot;Conclusion:&quot;)
         print(&quot;Reject the null hypothesis&quot;)
-        print(&quot;Data is stationary&quot;)
+        print(&#39;\033[92m&#39; + &quot;Data is stationary&quot; + &#39;\033[0m&#39;)
     else:
-        print(&quot;Conclusion:====&gt;&quot;)
+        print()
+        print(&quot;Conclusion:&quot;)
         print(&quot;Fail to reject the null hypothesis&quot;)
-        print(&quot;Data is non-stationary&quot;)</code></pre>
+        print(&#39;\033[91m&#39; + &quot;Data is non-stationary&quot; + &#39;\033[0m&#39;)</code></pre>
 </div>
 <div id="check-for-stationarity" class="section level1">
 <h1>5 Check for stationarity</h1>

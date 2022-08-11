@@ -84,7 +84,7 @@ ARIMA is a method among several used for forecasting univariate variables and ha
 ARIMA is made up of two models: AR and MA
 
 
-# 3 Import the libraries and data
+# 3 Import the Libraries and Data
 
 ```{r, eval=F, echo=T}
 import numpy as np
@@ -180,7 +180,7 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
 
 
 ```{r, eval=F, echo=T}
-def Augmented_Dickey_Fuller_Test_func(series , column_name):
+def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
     '''
     Calculates statistical values whether the available data are stationary or not 
     
@@ -192,19 +192,21 @@ def Augmented_Dickey_Fuller_Test_func(series , column_name):
         p-value that indicates whether the data are stationary or not
     ''' 
     print (f'Results of Dickey-Fuller Test for column: {column_name}')
-    dftest = adfuller(series, autolag='AIC')
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-value','No Lags Used','Number of Observations Used'])
-    for key,value in dftest[4].items():
-       dfoutput['Critical Value (%s)'%key] = value
-    print (dfoutput)
-    if dftest[1] <= 0.05:
-        print("Conclusion:====>")
+    adfTest = adfuller(timeseries, autolag='AIC')
+    dfResults = pd.Series(adfTest[0:4], index=['ADF Test Statistic','P-Value','# Lags Used','# Observations Used'])
+    for key, value in adfTest[4].items():
+       dfResults['Critical Value (%s)'%key] = value
+    print (dfResults)
+    if adfTest[1] <= 0.05:
+        print()
+        print("Conclusion:")
         print("Reject the null hypothesis")
-        print("Data is stationary")
+        print('\033[92m' + "Data is stationary" + '\033[0m')
     else:
-        print("Conclusion:====>")
+        print()
+        print("Conclusion:")
         print("Fail to reject the null hypothesis")
-        print("Data is non-stationary")
+        print('\033[91m' + "Data is non-stationary" + '\033[0m')
 ```
 
 
