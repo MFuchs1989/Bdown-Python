@@ -461,6 +461,8 @@ for name, column in df[['Close' ,'Open' ,'High','Low']].iteritems():
 
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p23.png)
 
+Like ARIMA, SARIMAX can handle non-stationary time series internally. 
+
 In the following, modeling will be done only for the column 'Close'. The column 'Open' will be used as exogenous variables.
 
 ```{r, eval=F, echo=T}
