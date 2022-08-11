@@ -37,9 +37,10 @@ output:
 </ul></li>
 <li><a href="#installing-a-specific-version">4.4 Installing a specific Version</a></li>
 <li><a href="#updating-libraries">4.5 Updating Libraries</a></li>
-<li><a href="#exporting-an-existing-environment">4.6 Exporting an existing Environment</a></li>
-<li><a href="#creating-a-new-environment">4.7 Creating a new environment</a></li>
-<li><a href="#deleting-environments">4.8 Deleting Environments</a></li>
+<li><a href="#deleting-libraries">4.6 Deleting Libraries</a></li>
+<li><a href="#exporting-an-existing-environment">4.7 Exporting an existing Environment</a></li>
+<li><a href="#creating-a-new-environment">4.8 Creating a new environment</a></li>
+<li><a href="#deleting-environments">4.9 Deleting Environments</a></li>
 </ul></li>
 <li><a href="#starting-a-jupyter-notebook">5 Starting a Jupyter Notebook</a></li>
 <li><a href="#conclusion">6 Conclusion</a></li>
@@ -226,8 +227,17 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <p>If you want to update your complete environment you can do it with this:</p>
 <p><code>conda update -n "your_env" --all</code></p>
 </div>
+<div id="deleting-libraries" class="section level2">
+<h2>4.6 Deleting Libraries</h2>
+<p>Deleting libraries is as easy as adding them.You just need to know if the package was installed via pip or conda and then use the appropriate command:</p>
+<p><code>conda activate "your_env"</code></p>
+<p><strong>Conda:</strong></p>
+<p><code>conda remove django</code></p>
+<p><strong>Pip:</strong></p>
+<p><code>pip uninstall Theano</code></p>
+</div>
 <div id="exporting-an-existing-environment" class="section level2">
-<h2>4.6 Exporting an existing Environment</h2>
+<h2>4.7 Exporting an existing Environment</h2>
 <p>Why I like working with virtual environments so much is shown by the fact that you can export existing environments very easily. Either because you want to make a backup or to share with colleagues so that everyone is working with the same libraries or versions of the packages. It’s not uncommon for developers to have problems just because they’ve been working with different versions of libraries.</p>
 <p>Make sure that the environment you want to export is activated.</p>
 <p><code>conda activate "your_env"</code></p>
@@ -245,7 +255,7 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 </ul>
 </div>
 <div id="creating-a-new-environment" class="section level2">
-<h2>4.7 Creating a new environment</h2>
+<h2>4.8 Creating a new environment</h2>
 <p>As I mentioned before, it is advisable to create a separate environment for each new project. This can be done either by importing a .yml file with a base environment and adding all the necessary packages manually or by creating a completely new environment directly from Anaconda Powershell Prompt.</p>
 <p>This is really very simple and fast, just use:</p>
 <p><code>conda create -n myenv</code></p>
@@ -273,7 +283,7 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <p>Please do not forget to uncheck ‘disable configuration for nbextensions without explicit compatibility’ in Jupyter Notebook so you can use the nbextensions.</p>
 </div>
 <div id="deleting-environments" class="section level2">
-<h2>4.8 Deleting Environments</h2>
+<h2>4.9 Deleting Environments</h2>
 <p>Quite apart from storage capacity reasons, I quite like to keep my workspace as clean as possible. This includes deleting environments that are no longer needed (after exporting them to a .yml file, of course).</p>
 <p>This can be done with the following two steps:</p>
 <p><code>conda deactivate "your_env"</code></p>
