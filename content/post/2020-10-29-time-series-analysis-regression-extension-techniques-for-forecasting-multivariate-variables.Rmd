@@ -56,26 +56,7 @@ df.head()
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p1.png)
 
 
-# 3 EDA
-
-
-```{r, eval=F, echo=T}
-for feature in df[['Open', 'High', 'Low', 'Close']]:
-    df[str(feature)].plot(figsize=(15, 6))
-    plt.xlabel("Date")
-    plt.ylabel(feature)
-    plt.title(f"{str(feature)} price of Facebook stocks before stationary")
-    plt.show()
-```
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p2.png)
-
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png)
-
-
-
-# 4 Definition of required Functions
+# 3 Definition of required Functions
 
 ```{r, eval=F, echo=T}
 def mean_absolute_percentage_error_func(y_true, y_pred):
@@ -191,6 +172,25 @@ def inverse_diff_func(actual_df, pred_df):
         df_temp[str(col)+'_inv_diff'] = actual_df[col].iloc[-1] + df_temp[str(col)].cumsum()
     return df_temp
 ```
+
+
+# 4 EDA
+
+
+```{r, eval=F, echo=T}
+for feature in df[['Open', 'High', 'Low', 'Close']]:
+    df[str(feature)].plot(figsize=(15, 6))
+    plt.xlabel("Date")
+    plt.ylabel(feature)
+    plt.title(f"{str(feature)} price of Facebook stocks before stationary")
+    plt.show()
+```
+
+![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p2.png)
+
+
+![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png)
+
 
 
 # 5 Stationarity

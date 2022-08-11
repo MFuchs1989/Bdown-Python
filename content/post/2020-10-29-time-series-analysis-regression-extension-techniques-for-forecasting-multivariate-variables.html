@@ -19,8 +19,8 @@ output:
 <ul>
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
-<li><a href="#eda">3 EDA</a></li>
-<li><a href="#definition-of-required-functions">4 Definition of required Functions</a></li>
+<li><a href="#definition-of-required-functions">3 Definition of required Functions</a></li>
+<li><a href="#eda">4 EDA</a></li>
 <li><a href="#stationarity">5 Stationarity</a>
 <ul>
 <li><a href="#check-for-stationary">5.1 Check for stationary</a></li>
@@ -89,19 +89,8 @@ warnings.filterwarnings(&quot;ignore&quot;)</code></pre>
 df.head()</code></pre>
 <p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p1.png" /></p>
 </div>
-<div id="eda" class="section level1">
-<h1>3 EDA</h1>
-<pre class="r"><code>for feature in df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]]:
-    df[str(feature)].plot(figsize=(15, 6))
-    plt.xlabel(&quot;Date&quot;)
-    plt.ylabel(feature)
-    plt.title(f&quot;{str(feature)} price of Facebook stocks before stationary&quot;)
-    plt.show()</code></pre>
-<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p2.png" /></p>
-<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png" /></p>
-</div>
 <div id="definition-of-required-functions" class="section level1">
-<h1>4 Definition of required Functions</h1>
+<h1>3 Definition of required Functions</h1>
 <pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
@@ -202,6 +191,17 @@ df.head()</code></pre>
     for col in columns: 
         df_temp[str(col)+&#39;_inv_diff&#39;] = actual_df[col].iloc[-1] + df_temp[str(col)].cumsum()
     return df_temp</code></pre>
+</div>
+<div id="eda" class="section level1">
+<h1>4 EDA</h1>
+<pre class="r"><code>for feature in df[[&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39;]]:
+    df[str(feature)].plot(figsize=(15, 6))
+    plt.xlabel(&quot;Date&quot;)
+    plt.ylabel(feature)
+    plt.title(f&quot;{str(feature)} price of Facebook stocks before stationary&quot;)
+    plt.show()</code></pre>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p2.png" /></p>
+<p><img src="/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png" /></p>
 </div>
 <div id="stationarity" class="section level1">
 <h1>5 Stationarity</h1>
