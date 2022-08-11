@@ -134,7 +134,7 @@ plt.show()
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p3.png)
 
 
-# 4 Definition of required functions
+# 4 Definition of required Functions
 
 ```{r, eval=F, echo=T}
 def mean_absolute_percentage_error_func(y_true, y_pred):
@@ -210,7 +210,7 @@ def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
 ```
 
 
-# 5 Check for stationarity
+# 5 Check for Stationarity
 
 ```{r, eval=F, echo=T}
 Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
@@ -373,7 +373,7 @@ for m in  [1, 4, 7, 12, 52]:
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png)
 
 
-## 7.1 Get the final model
+## 7.1 Get the final Model
 
 ```{r, eval=F, echo=T}
 df_results_SARIMA.sort_values(by=['RMSE'])
@@ -540,7 +540,7 @@ for m in [1, 4, 7, 12, 52]:
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png)
 
 
-## 8.1 Get the final model
+## 8.1 Get the final Model
 
 Again, we have the RMSE values stored in a separate table.
 
@@ -636,11 +636,15 @@ In my following post I will present algorithms that allow the prediction of mult
 
 **References**
 
-The content of the entire post was created using the following sources:
+The content of this post was inspired by:
+
+Machine Learning Plus: [Time Series Analysis in Python – A Comprehensive Guide with Examples](https://www.machinelearningplus.com/time-series/time-series-analysis-python/) from Selva Prabhakaran
+
+Kaggle: [Complete Guide on Time Series Analysis in Python](https://www.kaggle.com/code/prashant111/complete-guide-on-time-series-analysis-in-python/notebook) from Prashant Banerjee
 
 Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
 
-
+Medium: [A Brief Introduction to ARIMA and SARIMAX Modeling in Python](https://medium.com/swlh/a-brief-introduction-to-arima-and-sarima-modeling-in-python-87a58d375def) from Datascience George
 
 
 

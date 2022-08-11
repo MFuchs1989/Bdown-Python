@@ -20,16 +20,16 @@ output:
 <li><a href="#introduction">1 Introduction</a></li>
 <li><a href="#theoretical-background">2 Theoretical Background</a></li>
 <li><a href="#import-the-libraries-and-data">3 Import the Libraries and Data</a></li>
-<li><a href="#definition-of-required-functions">4 Definition of required functions</a></li>
-<li><a href="#check-for-stationarity">5 Check for stationarity</a></li>
+<li><a href="#definition-of-required-functions">4 Definition of required Functions</a></li>
+<li><a href="#check-for-stationarity">5 Check for Stationarity</a></li>
 <li><a href="#arima-in-action">6 ARIMA in Action</a></li>
 <li><a href="#seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a>
 <ul>
-<li><a href="#get-the-final-model">7.1 Get the final model</a></li>
+<li><a href="#get-the-final-model">7.1 Get the final Model</a></li>
 </ul></li>
 <li><a href="#sarimax">8 SARIMAX</a>
 <ul>
-<li><a href="#get-the-final-model-1">8.1 Get the final model</a></li>
+<li><a href="#get-the-final-model-1">8.1 Get the final Model</a></li>
 </ul></li>
 <li><a href="#conclusion">9 Conclusion</a></li>
 </ul>
@@ -105,7 +105,7 @@ plt.show()</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p3.png" /></p>
 </div>
 <div id="definition-of-required-functions" class="section level1">
-<h1>4 Definition of required functions</h1>
+<h1>4 Definition of required Functions</h1>
 <pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
@@ -170,7 +170,7 @@ plt.show()</code></pre>
         print(&#39;\033[91m&#39; + &quot;Data is non-stationary&quot; + &#39;\033[0m&#39;)</code></pre>
 </div>
 <div id="check-for-stationarity" class="section level1">
-<h1>5 Check for stationarity</h1>
+<h1>5 Check for Stationarity</h1>
 <pre class="r"><code>Augmented_Dickey_Fuller_Test_func(df[&#39;Close&#39; ],&#39;Close&#39;)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p4.png" /></p>
 <p>As we can see from the result, <strong>the present time series is not stationary</strong>.</p>
@@ -273,7 +273,7 @@ for m in  [1, 4, 7, 12, 52]:
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p16.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p17.png" /></p>
 <div id="get-the-final-model" class="section level2">
-<h2>7.1 Get the final model</h2>
+<h2>7.1 Get the final Model</h2>
 <pre class="r"><code>df_results_SARIMA.sort_values(by=[&#39;RMSE&#39;])</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96z1.png" /></p>
 <pre class="r"><code>best_values_SARIMA = df_results_SARIMA.sort_values(by=[&#39;RMSE&#39;]).head(1)
@@ -375,7 +375,7 @@ for m in [1, 4, 7, 12, 52]:
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p31.png" /></p>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p32.png" /></p>
 <div id="get-the-final-model-1" class="section level2">
-<h2>8.1 Get the final model</h2>
+<h2>8.1 Get the final Model</h2>
 <p>Again, we have the RMSE values stored in a separate table.</p>
 <pre class="r"><code>df_results_SARIMAX.sort_values(by=[&#39;RMSE&#39;])</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p33.png" /></p>
@@ -426,6 +426,9 @@ plt.show()</code></pre>
 <p>These were used to predict values for univariate time series.
 In my following post I will present algorithms that allow the prediction of multiple target variables.</p>
 <p><strong>References</strong></p>
-<p>The content of the entire post was created using the following sources:</p>
+<p>The content of this post was inspired by:</p>
+<p>Machine Learning Plus: <a href="https://www.machinelearningplus.com/time-series/time-series-analysis-python/">Time Series Analysis in Python – A Comprehensive Guide with Examples</a> from Selva Prabhakaran</p>
+<p>Kaggle: <a href="https://www.kaggle.com/code/prashant111/complete-guide-on-time-series-analysis-in-python/notebook">Complete Guide on Time Series Analysis in Python</a> from Prashant Banerjee</p>
 <p>Vishwas, B. V., &amp; Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4</p>
+<p>Medium: <a href="https://medium.com/swlh/a-brief-introduction-to-arima-and-sarima-modeling-in-python-87a58d375def">A Brief Introduction to ARIMA and SARIMAX Modeling in Python</a> from Datascience George</p>
 </div>
