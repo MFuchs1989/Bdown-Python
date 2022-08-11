@@ -21,7 +21,7 @@ In my last post (["Regression Extension Techniques for Univariate Time Series"](
 For this post the dataset *FB* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets/Time%20Series%20Analysis).
 
 
-# 2 Import the libraries and the data
+# 2 Import the Libraries and the Data
 
 ```{r, eval=F, echo=T}
 import numpy as np
@@ -74,25 +74,8 @@ for feature in df[['Open', 'High', 'Low', 'Close']]:
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p3.png)
 
 
-```{r, eval=F, echo=T}
-for feature in df[['Open', 'High', 'Low', 'Close']]:
-    plt.figure(1, figsize=(15,6))
-    plt.subplot(211)
-    plt.title(f"{str(feature)} Histogram before stationary")
-    df[str(feature)].hist()
-    plt.subplot(212)
-    df[str(feature)].plot(kind='kde')
-    plt.title(f"{str(feature)} Kernal Density Estimator before stationary")
-    plt.show()
-```
 
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p4.png)
-
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p5.png)
-
-
-# 4 Definition of required functions
+# 4 Definition of required Functions
 
 ```{r, eval=F, echo=T}
 def mean_absolute_percentage_error_func(y_true, y_pred):
@@ -127,7 +110,7 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
     Returns:
         MSE, MAE, RMSE, MAPE and R² 
     '''    
-    #print('Evaluation metric results: ')
+    print('Evaluation metric results: ')
     print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
     print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
     print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
@@ -136,7 +119,7 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
 ```
 
 ```{r, eval=F, echo=T}
-def Augmented_Dickey_Fuller_Test_func(series , column_name):
+def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
     '''
     Calculates statistical values whether the available data are stationary or not 
     
@@ -148,19 +131,21 @@ def Augmented_Dickey_Fuller_Test_func(series , column_name):
         p-value that indicates whether the data are stationary or not
     ''' 
     print (f'Results of Dickey-Fuller Test for column: {column_name}')
-    dftest = adfuller(series, autolag='AIC')
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-value','No Lags Used','Number of Observations Used'])
-    for key,value in dftest[4].items():
-       dfoutput['Critical Value (%s)'%key] = value
-    print (dfoutput)
-    if dftest[1] <= 0.05:
-        print("Conclusion:====>")
+    adfTest = adfuller(timeseries, autolag='AIC')
+    dfResults = pd.Series(adfTest[0:4], index=['ADF Test Statistic','P-Value','# Lags Used','# Observations Used'])
+    for key, value in adfTest[4].items():
+       dfResults['Critical Value (%s)'%key] = value
+    print (dfResults)
+    if adfTest[1] <= 0.05:
+        print()
+        print("Conclusion:")
         print("Reject the null hypothesis")
-        print("Data is stationary")
+        print('\033[92m' + "Data is stationary" + '\033[0m')
     else:
-        print("Conclusion:====>")
+        print()
+        print("Conclusion:")
         print("Fail to reject the null hypothesis")
-        print("Data is non-stationary")
+        print('\033[91m' + "Data is non-stationary" + '\033[0m')
 ```
 
 ```{r, eval=F, echo=T}
@@ -174,15 +159,18 @@ def cointegration_test_func(df):
     Returns:
         True or False whether a variable has a long-run relationship between other features
     ''' 
-    res = coint_johansen(df,-1,5)
-    d = {'0.90':0, '0.95':1, '0.99':2}
-    traces = res.lr1
-    cvts = res.cvt[:, d[str(1-0.05)]]
+    johansen_cointegration_test = coint_johansen(df,-1,5)
+    c = {'0.90':0, '0.95':1, '0.99':2}
+    traces = johansen_cointegration_test.lr1
+    cvts = johansen_cointegration_test.cvt[:, c[str(1-0.05)]]
     def adjust(val, length= 6): 
         return str(val).ljust(length)
-    print('Column Name   >  Test Stat > C(95%)    =>   Signif  \n', '--'*20)
+    print('Column_Name  >  Test_Stat  >  C(95%)  =>  Signif  \n', '--'*25)
     for col, trace, cvt in zip(df.columns, traces, cvts):
-        print(adjust(col), '> ', adjust(round(trace,2), 9), ">", adjust(cvt, 8), ' =>  ' , trace > cvt)
+        print(adjust(col), '  >  ', 
+              adjust(round(trace,2), 9), "  >  ", 
+              adjust(cvt, 8), '  => ' , 
+              trace > cvt)
 ```
 
 ```{r, eval=F, echo=T}
@@ -197,11 +185,11 @@ def inverse_diff_func(actual_df, pred_df):
     Returns:
         Dataframe with the predicted values
     '''
-    df_res = pred_df.copy()
+    df_temp = pred_df.copy()
     columns = actual_df.columns
     for col in columns: 
-        df_res[str(col)+'_1st_inv_diff'] = actual_df[col].iloc[-1] + df_res[str(col)].cumsum()
-    return df_res
+        df_temp[str(col)+'_inv_diff'] = actual_df[col].iloc[-1] + df_temp[str(col)].cumsum()
+    return df_temp
 ```
 
 
@@ -236,6 +224,9 @@ train_diff.dropna(inplace = True)
 ```
 
 
+## 5.4 Check again for stationary
+
+
 ```{r, eval=F, echo=T}
 for name, column in train_diff.iteritems():
     Augmented_Dickey_Fuller_Test_func(train_diff[name],name)
@@ -243,42 +234,6 @@ for name, column in train_diff.iteritems():
 ```
 
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p7.png)
-
-
-## 5.4 Check again for stationary
-
-
-```{r, eval=F, echo=T}
-for feature in train_diff:
-    train_diff[str(feature)].plot(figsize=(15, 6))
-    plt.xlabel("Date")
-    plt.ylabel(feature)
-    plt.title(f"{str(feature)} price of Facebook stocks after stationary")
-    plt.show()
-```
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p8.png)
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p9.png)
-
-
-```{r, eval=F, echo=T}
-for feature in train_diff:
-    plt.figure(1, figsize=(15,6))
-    plt.subplot(211)
-    plt.title(f"{str(feature)} Histogram after stationary")
-    train_diff[str(feature)].hist()
-    plt.subplot(212)
-    train_diff[str(feature)].plot(kind='kde')
-    plt.title(f"{str(feature)} Kernal Density Estimator after stationary")
-    plt.show()
-```
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p10.png)
-
-
-![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p11.png)
-
 
 
 # 6 Cointegration Test
@@ -380,7 +335,7 @@ res.head()
 ```{r, eval=F, echo=T}
 for i in ['Open', 'High', 'Low', 'Close' ]:
     print(f'Evaluation metric for {i}')
-    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_1st_inv_diff'])
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_inv_diff'])
 ```
 
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p18.png)
@@ -392,7 +347,7 @@ for i in ['Open', 'High', 'Low', 'Close' ]:
     plt.rcParams["figure.figsize"] = [10,7]
     plt.plot(trainX[str(i)], label='Train '+str(i))
     plt.plot(testX[str(i)], label='Test '+str(i))
-    plt.plot(res[str(i)+'_1st_inv_diff'], label='Predicted '+str(i))
+    plt.plot(res[str(i)+'_inv_diff'], label='Predicted '+str(i))
     plt.legend(loc='best')
     plt.show()
 ```
@@ -433,10 +388,10 @@ for a,b in enumerate(pg):
     model = VARMAX(train_diff, order=(p,q), trend=tr).fit()
     result = model.forecast(steps=len(testX))
     inv_res = inverse_diff_func(trainX, result)
-    openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_1st_inv_diff))
-    highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_1st_inv_diff))
-    lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_1st_inv_diff))
-    closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_1st_inv_diff))
+    openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_inv_diff))
+    highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_inv_diff))
+    lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_inv_diff))
+    closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_inv_diff))
     df_results_VARMA = df_results_VARMA.append({'p': p, 'q': q, 'tr': tr,'RMSE open': openrmse,
                                                 'RMSE high':highrmse,'RMSE low':lowrmse,
                                                 'RMSE close':closermse }, ignore_index=True)
@@ -506,7 +461,7 @@ res.head()
 ```{r, eval=F, echo=T}
 for i in ['Open', 'High', 'Low', 'Close']:
     print(f'Evaluation metric for {i}')
-    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_1st_inv_diff'])
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_inv_diff'])
 ```
 
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p25.png)
@@ -518,7 +473,7 @@ for i in ['Open', 'High', 'Low', 'Close']:
     plt.rcParams["figure.figsize"] = [10,7]
     plt.plot(trainX[str(i)], label='Train '+str(i))
     plt.plot(testX[str(i)], label='Test '+str(i))
-    plt.plot(res[str(i)+'_1st_inv_diff'], label='Predicted '+str(i))
+    plt.plot(res[str(i)+'_inv_diff'], label='Predicted '+str(i))
     plt.legend(loc='best')
     plt.show()
 ```
@@ -570,10 +525,10 @@ for i in pq:
         model = VARMAX(train_diff, order=(i[0],i[2])).fit(disp=False)
         result = model.forecast(steps = len(testX))
         inv_res = inverse_diff_func(trainX, result)
-        openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_1st_inv_diff))
-        highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_1st_inv_diff))
-        lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_1st_inv_diff))
-        closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_1st_inv_diff))
+        openrmse = np.sqrt(metrics.mean_squared_error(testX.Open, inv_res.Open_inv_diff))
+        highrmse = np.sqrt(metrics.mean_squared_error(testX.High, inv_res.High_inv_diff))
+        lowrmse = np.sqrt(metrics.mean_squared_error(testX.Low, inv_res.Low_inv_diff))
+        closermse = np.sqrt(metrics.mean_squared_error(testX.Close, inv_res.Close_inv_diff))
         df_results_VARMA_2 = df_results_VARMA_2.append({'p': i[0], 'q': i[2], 'RMSE Open':openrmse,
                                                         'RMSE High':highrmse,'RMSE Low':lowrmse,
                                                         'RMSE Close':closermse }, ignore_index=True)
@@ -643,7 +598,7 @@ res.head()
 ```{r, eval=F, echo=T}
 for i in ['Open', 'High', 'Low', 'Close']:
     print(f'Evaluation metric for {i}')
-    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_1st_inv_diff'])
+    timeseries_evaluation_metrics_func(testX[str(i)] , res[str(i)+'_inv_diff'])
 ```
 
 ![](/post/2020-10-29-time-series-analysis-regression-extension-techniques-for-forecasting-multivariate-variables_files/p97p36.png)
@@ -655,7 +610,7 @@ for i in ['Open', 'High', 'Low', 'Close' ]:
     plt.rcParams["figure.figsize"] = [10,7]
     plt.plot(trainX[str(i)], label='Train '+str(i))
     plt.plot(testX[str(i)], label='Test '+str(i))
-    plt.plot(res[str(i)+'_1st_inv_diff'], label='Predicted '+str(i))
+    plt.plot(res[str(i)+'_inv_diff'], label='Predicted '+str(i))
     plt.legend(loc='best')
     plt.show()
 ```
@@ -677,9 +632,15 @@ In this post about time series prediction of multiple target variables, I introd
 
 **References**
 
-The content of the entire post was created using the following sources:
+The content of this post was inspired by:
+
+Machine Learning Plus: [Time Series Analysis in Python – A Comprehensive Guide with Examples](https://www.machinelearningplus.com/time-series/time-series-analysis-python/) from Selva Prabhakaran
+
+Kaggle: [Complete Guide on Time Series Analysis in Python](https://www.kaggle.com/code/prashant111/complete-guide-on-time-series-analysis-in-python/notebook) from Prashant Banerjee
 
 Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
+
+Analytics Vidhya: [Developing Vector AutoRegressive Model in Python!](https://www.analyticsvidhya.com/blog/2021/08/vector-autoregressive-model-in-python/)
 
 
 
