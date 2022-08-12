@@ -1583,9 +1583,16 @@ I have applied:
 
 **References**
 
-The content of the entire post was created using the following sources:
+The content of this post was inspired by:
+
+
+Kaggle: [Time Series Analysis using LSTM Keras](https://www.kaggle.com/code/hassanamin/time-series-analysis-using-lstm-keras/notebook) from Hassan Amin 
+
+Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
 
 Vishwas, B. V., & Patel, A. (2020). Hands-on Time Series Analysis with Python. New York: Apress. DOI: 10.1007/978-1-4842-5992-4
+
+Medium: [Time Series Forecast Using Deep Learning](Time Series Forecast Using Deep Learning) from Rajaram Suryanarayanan               
 
 
 
