@@ -22,7 +22,9 @@ output:
 <ul>
 <li><a href="#compare-models">4.1 Compare Models</a></li>
 <li><a href="#train-a-single-model">4.2 Train a single Model</a></li>
+<li><a href="#compare-models-with-external-variables">4.3 Compare Models with external variables</a></li>
 </ul></li>
+<li><a href="#merlion">5 Merlion</a></li>
 </ul>
 </div>
 
@@ -238,13 +240,122 @@ model_results</code></pre>
 </div>
 <div id="train-a-single-model" class="section level2">
 <h2>4.2 Train a single Model</h2>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p>Of course, you also have the possibility to train certain models specifically. Since FBProphet seems to be the best model for the data set at hand, I would like to use this algorithm specifically.</p>
+<p>If you want to use another specific algorithm is here a list of models available in AutoTS: <a href="https://winedarksea.github.io/AutoTS/build/html/source/tutorial.html#models-1">Models in AutoTS</a></p>
+<p>Here again the parameters that led to the best result for FBProphet:</p>
+<pre class="r"><code>print(&#39;Best model:&#39;)
+print(best_model_Name)
+print()
+print(&#39;Model parameter of best model:&#39;)
+print(best_model_Parameters)
+print()
+print(&#39;Transformation parameter of best model:&#39;)
+print(best_model_TransformationParameters)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p8.png" /></p>
+<p>I could now enter the parameters as follows:</p>
+<pre class="r"><code>FBProphet_model = model_forecast(
+    model_name=&quot;FBProphet&quot;,
+    model_param_dict={&#39;holiday&#39;: True, &#39;regression_type&#39;: None, &#39;growth&#39;: &#39;linear&#39;, 
+                      &#39;n_changepoints&#39;: 25, &#39;changepoint_prior_scale&#39;: 30, 
+                      &#39;seasonality_mode&#39;: &#39;additive&#39;, &#39;changepoint_range&#39;: 0.8, 
+                      &#39;seasonality_prior_scale&#39;: 40, &#39;holidays_prior_scale&#39;: 10.0},
+    model_transform_dict={
+        &#39;fillna&#39;: &#39;ffill_mean_biased&#39;,
+        &#39;transformations&#39;: {&#39;0&#39;: &#39;SeasonalDifference&#39;, 
+                            &#39;1&#39;: &#39;Round&#39;},
+        &#39;transformation_params&#39;: {&#39;0&#39;: {&#39;lag_1&#39;: 52, &#39;method&#39;: &#39;Median&#39;}, 
+                                  &#39;1&#39;: {&#39;decimals&#39;: 1, &#39;on_transform&#39;: True, &#39;on_inverse&#39;: False}}},
+    df_train=trainX,
+    forecast_length=30)</code></pre>
+<p>But after I am too lazy to transcribe everything I can also use the saved metrics from the best model of AutoTS. I just have to format them as a dictionary.</p>
+<pre class="r"><code>best_model_Parameters_dic = ast.literal_eval(str(best_model_Parameters))
+best_model_TransformationParameters_dic = ast.literal_eval(str(best_model_TransformationParameters))</code></pre>
+<pre class="r"><code>LastValueNaive_model = model_forecast(
+    model_name = best_model_Name,
+    model_param_dict = best_model_Parameters_dic,
+    model_transform_dict = best_model_TransformationParameters_dic,
+    df_train = trainX,
+    forecast_length=30)</code></pre>
+<pre class="r"><code>forecasts_df_LastValueNaive_model = LastValueNaive_model.forecast
+forecasts_df_LastValueNaive_model.head()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p9.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(testX, forecasts_df_LastValueNaive_model)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p10.png" /></p>
+<p>OK why is this result now again better than the one achieved before with FBProphet? This has to do with the fact that we had used cross vailidation (n=3) before.</p>
+<p>Let’s display the results:</p>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [15,7]
+plt.plot(trainX, label=&#39;Train &#39;)
+plt.plot(testX, label=&#39;Test &#39;)
+plt.plot(forecasts_df_LastValueNaive_model, label=&#39;Predicted &#39;)
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p11.png" /></p>
+<p>Looks better already.</p>
 </div>
+<div id="compare-models-with-external-variables" class="section level2">
+<h2>4.3 Compare Models with external variables</h2>
+<p>Now, the fact is that time series can be affected by other variables. We can also take this into account in our machine learning algorithms.</p>
+<p>Let’s look at the following variables to finally predict ‘Close’:</p>
+<pre class="r"><code>df.head()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p12.png" /></p>
+<pre class="r"><code>trainX_multi = df.iloc[:-30]
+testX_multi = df.iloc[-30:]</code></pre>
+<p>We can have the values for all variables predicted with a higher weight for the target variable (‘Close’).</p>
+<pre class="r"><code>model_ext_var = AutoTS(
+    forecast_length=30,
+    frequency=&#39;d&#39;,
+    prediction_interval=0.9,
+    model_list=&#39;all&#39;,
+    transformer_list=&quot;all&quot;,
+    max_generations=7,
+    num_validations=3,
+    models_to_validate=0.2,
+    validation_method=&quot;similarity&quot;,
+    n_jobs=-1)</code></pre>
+<pre class="r"><code>weights_close = {&#39;Close&#39;: 20}
+
+model_ext_var = model_ext_var.fit(trainX_multi,
+                                  weights=weights_close)</code></pre>
+<p>This time it is an ensemble that gives the best result:</p>
+<pre class="r"><code>best_model_ext_var_Name = model_ext_var.best_model_name
+best_model_ext_var_Parameters = model_ext_var.best_model_params
+best_model_ext_var_TransformationParameters = model_ext_var.best_model_transformation_params
+
+print(&#39;Best model:&#39;)
+print(best_model_ext_var_Name)
+print()
+print(&#39;Model parameter of best model:&#39;)
+print(best_model_ext_var_Parameters)
+print()
+print(&#39;Transformation parameter of best model:&#39;)
+print(best_model_ext_var_TransformationParameters)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p13.png" /></p>
+<p>Let’s do the validation:</p>
+<pre class="r"><code>prediction_ext_var = model_ext_var.predict()
+forecasts_df_ext_var = prediction_ext_var.forecast
+forecasts_up_ext_var, forecasts_low_ext_var = prediction_ext_var.upper_forecast, prediction_ext_var.lower_forecast</code></pre>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]:
+    print(f&#39;Evaluation metric for {i}&#39;)
+    timeseries_evaluation_metrics_func(testX_multi[str(i)] , forecasts_df_ext_var[str(i)])</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p14.png" /></p>
+<pre class="r"><code>for i in [&#39;Open&#39;, &#39;High&#39;, &#39;Low&#39;, &#39;Close&#39; ]:
+    
+    plt.rcParams[&quot;figure.figsize&quot;] = [10,7]
+    plt.plot(trainX_multi[str(i)], label=&#39;Train &#39;+str(i))
+    plt.plot(testX_multi[str(i)], label=&#39;Test &#39;+str(i))
+    plt.plot(forecasts_df_ext_var[str(i)], label=&#39;Predicted &#39;+str(i))
+    plt.legend(loc=&#39;best&#39;)
+    plt.show()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p15.png" /></p>
+<p>As you can see, with AutoTS you can quickly and easily get a first insight into which algorithm fits best to the dataset at hand.</p>
+</div>
+</div>
+<div id="merlion" class="section level1">
+<h1>5 Merlion</h1>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 </div>
