@@ -521,57 +521,123 @@ As you can see, with AutoTS you can quickly and easily get a first insight into 
 
 # 5  Merlion
 
+As mentioned at the beginning, I find [Merlion](https://github.com/salesforce/Merlion) quite handy for specifically testing promising algorithms for their performance to see if they fit our time series. 
 
 
+## 5.1  Prepare the Data
 
 
+```{r, eval=F, echo=T}
+df.head()
+```
 
-
-
-
-
-
-
-
-
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p17.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p18.png)
+
+
+```{r, eval=F, echo=T}
+train_diff = trainX.diff()
+train_diff.dropna(inplace = True)
+```
+
+
+```{r, eval=F, echo=T}
+Augmented_Dickey_Fuller_Test_func(train_diff['Close' ],'Close')
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p19.png)
 
 
 
+This time we differentiate our time series:
+
+```{r, eval=F, echo=T}
+train_data = TimeSeries.from_pd(train_diff)
+test_data = TimeSeries.from_pd(testX)
+```
 
 
 
+## 5.2  Default Forecaster Model
 
 
 
+```{r, eval=F, echo=T}
+merlion_default_model = DefaultForecaster(DefaultForecasterConfig())
+merlion_default_model.train(train_data=train_data)
+forecast_default_model, test_err = merlion_default_model.forecast(time_stamps=test_data.time_stamps)
+```
+
+Admittedly, the output of the forecast is not as easy to continue using as I would like. However, we can easily transform it into a usable format:
+
+
+```{r, eval=F, echo=T}
+forecast_default_model_df = pd.DataFrame(forecast_default_model).reset_index()
+forecast_default_model_df.columns = ['index', 'ts', 'Value']
+forecast_default_model_df['Value'] = forecast_default_model_df['Value'].astype(str)
+forecast_default_model_df['Value'] = forecast_default_model_df['Value'].str.replace(',', '')
+forecast_default_model_df['Value'] = forecast_default_model_df['Value'].str.replace('(', '')
+forecast_default_model_df['Value'] = forecast_default_model_df['Value'].str.replace(')', '')
+forecast_default_model_df['Value'] = forecast_default_model_df['Value'].astype(float)
+
+# Assign correct index to dataframe
+forecast_default_model_df = forecast_default_model_df.drop(['ts','index'], axis=1)
+forecast_default_model_df.index = testX.index
+
+# Rename the column accordingly
+forecast_default_model_df.columns = ['Close']
+
+
+forecast_default_model_df.head()
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p20.png)
+
+Now let's do the inverse transformation so that the predicted values become useful.
+
+
+```{r, eval=F, echo=T}
+forecast_default_model_df = inverse_diff_func(trainX, forecast_default_model_df)
+forecast_default_model_df.head()
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p21.png)
 
 
 
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_default_model_df['Close_inv_diff'])
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p22.png)
 
 
 
+```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_default_model_df['Close_inv_diff'], label='Predicted ')
+
+plt.legend(loc='best')
+plt.show()
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p23.png)
 
 
+Mhhh still not the best result. Let's see if we can improve that again.
 
+## 5.3  Multiple Models & Ensembles
 
-
-
-
-
-
-
-
-
-
-
-
+### 5.3.1  Model Config & Training
 
 
 

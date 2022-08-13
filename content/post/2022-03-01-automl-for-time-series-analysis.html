@@ -24,7 +24,15 @@ output:
 <li><a href="#train-a-single-model">4.2 Train a single Model</a></li>
 <li><a href="#compare-models-with-external-variables">4.3 Compare Models with external variables</a></li>
 </ul></li>
-<li><a href="#merlion">5 Merlion</a></li>
+<li><a href="#merlion">5 Merlion</a>
+<ul>
+<li><a href="#prepare-the-data">5.1 Prepare the Data</a></li>
+<li><a href="#default-forecaster-model">5.2 Default Forecaster Model</a></li>
+<li><a href="#multiple-models-ensembles">5.3 Multiple Models &amp; Ensembles</a>
+<ul>
+<li><a href="#model-config-training">5.3.1 Model Config &amp; Training</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </div>
 
@@ -353,10 +361,70 @@ forecasts_up_ext_var, forecasts_low_ext_var = prediction_ext_var.upper_forecast,
 </div>
 <div id="merlion" class="section level1">
 <h1>5 Merlion</h1>
+<p>As mentioned at the beginning, I find <a href="https://github.com/salesforce/Merlion">Merlion</a> quite handy for specifically testing promising algorithms for their performance to see if they fit our time series.</p>
+<div id="prepare-the-data" class="section level2">
+<h2>5.1 Prepare the Data</h2>
+<pre class="r"><code>df.head()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p17.png" /></p>
+<pre class="r"><code>Augmented_Dickey_Fuller_Test_func(df[&#39;Close&#39; ],&#39;Close&#39;)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p18.png" /></p>
+<pre class="r"><code>train_diff = trainX.diff()
+train_diff.dropna(inplace = True)</code></pre>
+<pre class="r"><code>Augmented_Dickey_Fuller_Test_func(train_diff[&#39;Close&#39; ],&#39;Close&#39;)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p19.png" /></p>
+<p>This time we differentiate our time series:</p>
+<pre class="r"><code>train_data = TimeSeries.from_pd(train_diff)
+test_data = TimeSeries.from_pd(testX)</code></pre>
+</div>
+<div id="default-forecaster-model" class="section level2">
+<h2>5.2 Default Forecaster Model</h2>
+<pre class="r"><code>merlion_default_model = DefaultForecaster(DefaultForecasterConfig())
+merlion_default_model.train(train_data=train_data)
+forecast_default_model, test_err = merlion_default_model.forecast(time_stamps=test_data.time_stamps)</code></pre>
+<p>Admittedly, the output of the forecast is not as easy to continue using as I would like. However, we can easily transform it into a usable format:</p>
+<pre class="r"><code>forecast_default_model_df = pd.DataFrame(forecast_default_model).reset_index()
+forecast_default_model_df.columns = [&#39;index&#39;, &#39;ts&#39;, &#39;Value&#39;]
+forecast_default_model_df[&#39;Value&#39;] = forecast_default_model_df[&#39;Value&#39;].astype(str)
+forecast_default_model_df[&#39;Value&#39;] = forecast_default_model_df[&#39;Value&#39;].str.replace(&#39;,&#39;, &#39;&#39;)
+forecast_default_model_df[&#39;Value&#39;] = forecast_default_model_df[&#39;Value&#39;].str.replace(&#39;(&#39;, &#39;&#39;)
+forecast_default_model_df[&#39;Value&#39;] = forecast_default_model_df[&#39;Value&#39;].str.replace(&#39;)&#39;, &#39;&#39;)
+forecast_default_model_df[&#39;Value&#39;] = forecast_default_model_df[&#39;Value&#39;].astype(float)
+
+# Assign correct index to dataframe
+forecast_default_model_df = forecast_default_model_df.drop([&#39;ts&#39;,&#39;index&#39;], axis=1)
+forecast_default_model_df.index = testX.index
+
+# Rename the column accordingly
+forecast_default_model_df.columns = [&#39;Close&#39;]
+
+
+forecast_default_model_df.head()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p20.png" /></p>
+<p>Now let’s do the inverse transformation so that the predicted values become useful.</p>
+<pre class="r"><code>forecast_default_model_df = inverse_diff_func(trainX, forecast_default_model_df)
+forecast_default_model_df.head()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p21.png" /></p>
+<pre class="r"><code>timeseries_evaluation_metrics_func(testX, forecast_default_model_df[&#39;Close_inv_diff&#39;])</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p22.png" /></p>
+<pre class="r"><code>plt.rcParams[&quot;figure.figsize&quot;] = [15,7]
+plt.plot(trainX, label=&#39;Train &#39;)
+plt.plot(testX, label=&#39;Test &#39;)
+plt.plot(forecast_default_model_df[&#39;Close_inv_diff&#39;], label=&#39;Predicted &#39;)
+
+plt.legend(loc=&#39;best&#39;)
+plt.show()</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p23.png" /></p>
+<p>Mhhh still not the best result. Let’s see if we can improve that again.</p>
+</div>
+<div id="multiple-models-ensembles" class="section level2">
+<h2>5.3 Multiple Models &amp; Ensembles</h2>
+<div id="model-config-training" class="section level3">
+<h3>5.3.1 Model Config &amp; Training</h3>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+</div>
+</div>
 </div>
