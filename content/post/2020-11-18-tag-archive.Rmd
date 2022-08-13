@@ -243,6 +243,7 @@ The goal is to cluster all publications in a meaningful way so that they can be 
 
 # 13 AutoML
 
++ [AutoML for Time Series Analysis](https://michael-fuchs-python.netlify.app/2022/03/01/automl-for-time-series-analysis/)
 + [PyCaret - Regression](https://michael-fuchs-python.netlify.app/2022/01/15/automl-using-pycaret-regression/)
 + [PyCaret - Classification](https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/)
 
