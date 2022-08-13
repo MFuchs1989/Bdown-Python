@@ -773,122 +773,142 @@ forecast_merlion_selector_model_df = merlion_forecast_processing_func(forecast_m
 ```
 
 
+**merlion_arima_model**
 
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_merlion_arima_model_df['Close_inv_diff'])
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p26.png)
 
 
 ```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_merlion_arima_model_df['Close_inv_diff'], label='Predicted ')
 
+plt.legend(loc='best')
+plt.show()
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p27.png)
 
 
 
 
+**merlion_prophet_model**
 
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_merlion_prophet_model_df['Close_inv_diff'])
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p28.png)
 
 
 ```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_merlion_prophet_model_df['Close_inv_diff'], label='Predicted ')
 
+plt.legend(loc='best')
+plt.show()
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p29.png)
 
 
 
 
 
 
+**merlion_mses_model**
 
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_merlion_mses_model_df['Close_inv_diff'])
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p30.png)
 
 
 ```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_merlion_mses_model_df['Close_inv_diff'], label='Predicted ')
 
+plt.legend(loc='best')
+plt.show()
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p31.png)
 
 
 
+
+**merlion_ensemble_model**
+
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_merlion_ensemble_model_df['Close_inv_diff'])
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p32.png)
 
 
 ```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_merlion_ensemble_model_df['Close_inv_diff'], label='Predicted ')
 
+plt.legend(loc='best')
+plt.show()
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p33.png)
+
+
+
+**merlion_selector_model**
+
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecast_merlion_selector_model_df['Close_inv_diff'])
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p34.png)
+
+
+```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecast_merlion_selector_model_df['Close_inv_diff'], label='Predicted ')
+
+plt.legend(loc='best')
+plt.show()
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p35.png)
+
+
+Of all the validations shown, the ensemble model seems to me to be the most promising (if only for the first half of the predictions). But ok we can either adjust that or repeat the model training after half the time.
+
+
+
+# 6 Conclusion
+
+In this post I showed how to quickly and easily figure out which algorithm(s) might fit the time series at hand to predict future values. 
+
+These are certainly not perfect yet and need to be improved but you can at least exclude some options that do not fit well and focus on the more promising algorithms. 
+
+
+
+
+
+
+
+
+
 
 
