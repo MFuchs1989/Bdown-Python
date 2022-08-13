@@ -31,6 +31,7 @@ output:
 <li><a href="#multiple-models-ensembles">5.3 Multiple Models &amp; Ensembles</a>
 <ul>
 <li><a href="#model-config-training">5.3.1 Model Config &amp; Training</a></li>
+<li><a href="#model-evaluation">5.3.2 Model Evaluation</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -420,7 +421,104 @@ plt.show()</code></pre>
 <h2>5.3 Multiple Models &amp; Ensembles</h2>
 <div id="model-config-training" class="section level3">
 <h3>5.3.1 Model Config &amp; Training</h3>
-<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
+<p>Now I am going to train multiple models as well as ensembles:</p>
+<pre class="r"><code>merlion_arima_model_config = ArimaConfig(max_forecast_steps=100, order=(1, 1, 1),
+                                         transform=TemporalResample(granularity=&quot;D&quot;))
+
+merlion_arima_model  = Arima(merlion_arima_model_config)</code></pre>
+<pre class="r"><code>merlion_prophet_model_config = ProphetConfig(max_forecast_steps=100, transform=Identity())
+
+merlion_prophet_model  = Prophet(merlion_prophet_model_config)</code></pre>
+<pre class="r"><code>merlion_mses_model_config = MSESConfig(max_forecast_steps=100, max_backstep=80,
+                                       transform=TemporalResample(granularity=&quot;D&quot;))
+
+merlion_mses_model  = MSES(merlion_mses_model_config)</code></pre>
+<pre class="r"><code>merlion_ensemble_model_config = ForecasterEnsembleConfig(combiner=Mean(), 
+                                                         models=[merlion_arima_model, 
+                                                                 merlion_prophet_model, 
+                                                                 merlion_mses_model])
+
+merlion_ensemble_model  = ForecasterEnsemble(config=merlion_ensemble_model_config)</code></pre>
+<pre class="r"><code>merlion_selector_model_config = ForecasterEnsembleConfig(combiner=ModelSelector(metric=ForecastMetric.sMAPE))
+
+merlion_selector_model = ForecasterEnsemble(config=merlion_selector_model_config, 
+                                            models=[merlion_arima_model, 
+                                                    merlion_prophet_model, 
+                                                    merlion_mses_model])</code></pre>
+<pre class="r"><code>print(f&quot;Training {type(merlion_arima_model).__name__}:&quot;)
+merlion_arima_model.train(train_data)
+
+print(f&quot;\nTraining {type(merlion_prophet_model).__name__}:&quot;)
+merlion_prophet_model.train(train_data=train_data)
+
+print(f&quot;\nTraining {type(merlion_mses_model).__name__}:&quot;)
+merlion_mses_model.train(train_data=train_data)
+
+print(&quot;\nTraining ensemble model:&quot;)
+merlion_ensemble_model.train(train_data=train_data)
+
+print(&quot;\nTraining model selector:&quot;)
+merlion_selector_model.train(train_data=train_data)
+
+print()
+print(&quot;Model training finished!!&quot;)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p24.png" /></p>
+<pre class="r"><code>print(f&quot;Forecasting {type(merlion_arima_model).__name__}...&quot;)
+forecast_merlion_arima_model, test_err1 = merlion_arima_model.forecast(time_stamps=test_data.time_stamps)
+
+print(f&quot;\nForecasting {type(merlion_prophet_model).__name__}...&quot;)
+forecast_merlion_prophet_model, test_err2 = merlion_prophet_model.forecast(time_stamps=test_data.time_stamps)
+
+print(f&quot;\nForecasting {type(merlion_mses_model).__name__}...&quot;)
+forecast_merlion_mses_model, test_err3 = merlion_mses_model.forecast(time_stamps=test_data.time_stamps, 
+                                                         time_series_prev=train_data)
+
+print(&quot;\nForecasting ensemble model...&quot;)
+forecast_merlion_ensemble_model, test_err_e = merlion_ensemble_model.forecast(time_stamps=test_data.time_stamps)
+
+print(&quot;\nForecasting model selector...&quot;)
+forecast_merlion_selector_model, test_err_s = merlion_selector_model.forecast(time_stamps=test_data.time_stamps, 
+                                                                              time_series_prev=train_data)
+
+print()
+print()
+print(&quot;Forecasting finished!!&quot;)</code></pre>
+<p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p25.png" /></p>
+</div>
+<div id="model-evaluation" class="section level3">
+<h3>5.3.2 Model Evaluation</h3>
+<p>Since I don’t feel like doing the same processing steps over and over for each result, I wrote a simple function that does it for me:</p>
+<pre class="r"><code>def merlion_forecast_processing_func(x):
+    &#39;&#39;&#39;
+    This function is adapted to the Facebook dataframe !!  
+    Brings the forecast of the Merlion models into a readable format
+    
+    Args:
+        x (df): Y values for the dependent variable (test part), dataframe
+    
+    Returns:
+        Processed dataframe
+    &#39;&#39;&#39;   
+    x = pd.DataFrame(x).reset_index()
+    x.columns = [&#39;index&#39;, &#39;ts&#39;, &#39;Value&#39;]
+    x[&#39;Value&#39;] = x[&#39;Value&#39;].astype(str)
+    x[&#39;Value&#39;] = x[&#39;Value&#39;].str.replace(&#39;,&#39;, &#39;&#39;)
+    x[&#39;Value&#39;] = x[&#39;Value&#39;].str.replace(&#39;(&#39;, &#39;&#39;)
+    x[&#39;Value&#39;] = x[&#39;Value&#39;].str.replace(&#39;)&#39;, &#39;&#39;)
+    x[&#39;Value&#39;] = x[&#39;Value&#39;].astype(float)
+    # Assign correct index to dataframe
+    x = x.drop([&#39;ts&#39;, &#39;index&#39;], axis=1)
+    x.index = testX.index
+    # Rename the column accordingly
+    x.columns = [&#39;Close&#39;]
+    # Apply inverse_diff function
+    x = inverse_diff_func(trainX, x)
+    return x</code></pre>
+<pre class="r"><code>forecast_merlion_arima_model_df = merlion_forecast_processing_func(forecast_merlion_arima_model)
+forecast_merlion_prophet_model_df = merlion_forecast_processing_func(forecast_merlion_prophet_model)
+forecast_merlion_mses_model_df = merlion_forecast_processing_func(forecast_merlion_mses_model)
+forecast_merlion_ensemble_model_df = merlion_forecast_processing_func(forecast_merlion_ensemble_model)
+forecast_merlion_selector_model_df = merlion_forecast_processing_func(forecast_merlion_selector_model)</code></pre>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>
 <p><img src="/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png" /></p>

@@ -639,33 +639,138 @@ Mhhh still not the best result. Let's see if we can improve that again.
 
 ### 5.3.1  Model Config & Training
 
+Now I am going to train multiple models as well as ensembles:
 
+```{r, eval=F, echo=T}
+merlion_arima_model_config = ArimaConfig(max_forecast_steps=100, order=(1, 1, 1),
+                                         transform=TemporalResample(granularity="D"))
 
+merlion_arima_model  = Arima(merlion_arima_model_config)
+```
 
+```{r, eval=F, echo=T}
+merlion_prophet_model_config = ProphetConfig(max_forecast_steps=100, transform=Identity())
 
+merlion_prophet_model  = Prophet(merlion_prophet_model_config)
+```
 
+```{r, eval=F, echo=T}
+merlion_mses_model_config = MSESConfig(max_forecast_steps=100, max_backstep=80,
+                                       transform=TemporalResample(granularity="D"))
 
+merlion_mses_model  = MSES(merlion_mses_model_config)
+```
 
+```{r, eval=F, echo=T}
+merlion_ensemble_model_config = ForecasterEnsembleConfig(combiner=Mean(), 
+                                                         models=[merlion_arima_model, 
+                                                                 merlion_prophet_model, 
+                                                                 merlion_mses_model])
+
+merlion_ensemble_model  = ForecasterEnsemble(config=merlion_ensemble_model_config)
+```
+
+```{r, eval=F, echo=T}
+merlion_selector_model_config = ForecasterEnsembleConfig(combiner=ModelSelector(metric=ForecastMetric.sMAPE))
+
+merlion_selector_model = ForecasterEnsemble(config=merlion_selector_model_config, 
+                                            models=[merlion_arima_model, 
+                                                    merlion_prophet_model, 
+                                                    merlion_mses_model])
+```
+
+```{r, eval=F, echo=T}
+print(f"Training {type(merlion_arima_model).__name__}:")
+merlion_arima_model.train(train_data)
+
+print(f"\nTraining {type(merlion_prophet_model).__name__}:")
+merlion_prophet_model.train(train_data=train_data)
+
+print(f"\nTraining {type(merlion_mses_model).__name__}:")
+merlion_mses_model.train(train_data=train_data)
+
+print("\nTraining ensemble model:")
+merlion_ensemble_model.train(train_data=train_data)
+
+print("\nTraining model selector:")
+merlion_selector_model.train(train_data=train_data)
+
+print()
+print("Model training finished!!")
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p24.png)
 
 
 
 ```{r, eval=F, echo=T}
+print(f"Forecasting {type(merlion_arima_model).__name__}...")
+forecast_merlion_arima_model, test_err1 = merlion_arima_model.forecast(time_stamps=test_data.time_stamps)
 
+print(f"\nForecasting {type(merlion_prophet_model).__name__}...")
+forecast_merlion_prophet_model, test_err2 = merlion_prophet_model.forecast(time_stamps=test_data.time_stamps)
+
+print(f"\nForecasting {type(merlion_mses_model).__name__}...")
+forecast_merlion_mses_model, test_err3 = merlion_mses_model.forecast(time_stamps=test_data.time_stamps, 
+                                                         time_series_prev=train_data)
+
+print("\nForecasting ensemble model...")
+forecast_merlion_ensemble_model, test_err_e = merlion_ensemble_model.forecast(time_stamps=test_data.time_stamps)
+
+print("\nForecasting model selector...")
+forecast_merlion_selector_model, test_err_s = merlion_selector_model.forecast(time_stamps=test_data.time_stamps, 
+                                                                              time_series_prev=train_data)
+
+print()
+print()
+print("Forecasting finished!!")
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p25.png)
 
 
+### 5.3.2  Model Evaluation
+
+Since I don't feel like doing the same processing steps over and over for each result, I wrote a simple function that does it for me:
 
 
+```{r, eval=F, echo=T}
+def merlion_forecast_processing_func(x):
+    '''
+    This function is adapted to the Facebook dataframe !!  
+    Brings the forecast of the Merlion models into a readable format
+    
+    Args:
+        x (df): Y values for the dependent variable (test part), dataframe
+    
+    Returns:
+        Processed dataframe
+    '''   
+    x = pd.DataFrame(x).reset_index()
+    x.columns = ['index', 'ts', 'Value']
+    x['Value'] = x['Value'].astype(str)
+    x['Value'] = x['Value'].str.replace(',', '')
+    x['Value'] = x['Value'].str.replace('(', '')
+    x['Value'] = x['Value'].str.replace(')', '')
+    x['Value'] = x['Value'].astype(float)
+    # Assign correct index to dataframe
+    x = x.drop(['ts', 'index'], axis=1)
+    x.index = testX.index
+    # Rename the column accordingly
+    x.columns = ['Close']
+    # Apply inverse_diff function
+    x = inverse_diff_func(trainX, x)
+    return x
+```
 
 
-
-
-
-
-
-
+```{r, eval=F, echo=T}
+forecast_merlion_arima_model_df = merlion_forecast_processing_func(forecast_merlion_arima_model)
+forecast_merlion_prophet_model_df = merlion_forecast_processing_func(forecast_merlion_prophet_model)
+forecast_merlion_mses_model_df = merlion_forecast_processing_func(forecast_merlion_mses_model)
+forecast_merlion_ensemble_model_df = merlion_forecast_processing_func(forecast_merlion_ensemble_model)
+forecast_merlion_selector_model_df = merlion_forecast_processing_func(forecast_merlion_selector_model)
+```
 
 
 
