@@ -15,80 +15,311 @@ output:
 # 1 Introduction
 
 
+There are automated machine learning libraries not only for [classification](https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/) or [regression](https://michael-fuchs-python.netlify.app/2022/01/15/automl-using-pycaret-regression/) but also for time series prediction. 
+
+This is the topic of this post. 
+
+In this post I will introduce two packages that I find quite useful to find out which algorithm fits for my time series:
+
+- [AutoTS](https://github.com/winedarksea/AutoTS)
+- [Merlion](https://github.com/salesforce/Merlion)
+
+Where the latter has less to do with automated machine learning but is fast and easy to use in terms of multiple models and ensembles. 
+
+
+# 2  Import the Libraries and the Functions
 
 
 ```{r, eval=F, echo=T}
+import pandas as pd
+import numpy as np
 
+import matplotlib.pyplot as plt
+from sklearn import metrics
+
+from statsmodels.tsa.stattools import adfuller
+import ast
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
+# Libraries for AutoTS
+from autots import AutoTS
+from autots import model_forecast
+
+
+# Libraries for Merlion
+from merlion.utils import TimeSeries
+from merlion.models.defaults import DefaultForecasterConfig, DefaultForecaster
+
+from merlion.models.forecast.arima import Arima, ArimaConfig
+from merlion.models.forecast.prophet import Prophet, ProphetConfig
+from merlion.models.forecast.smoother import MSES, MSESConfig
+
+from merlion.transform.base import Identity
+from merlion.transform.resample import TemporalResample
+
+from merlion.evaluate.forecast import ForecastMetric
+from merlion.models.ensemble.combine import Mean, ModelSelector
+from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsembleConfig
+```
+
+
+
+```{r, eval=F, echo=T}
+def mean_absolute_percentage_error_func(y_true, y_pred):
+    '''
+    Calculate the mean absolute percentage error as a metric for evaluation
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        Mean absolute percentage error 
+    '''    
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+```
+
+
+
+```{r, eval=F, echo=T}
+def timeseries_evaluation_metrics_func(y_true, y_pred):
+    '''
+    Calculate the following evaluation metrics:
+        - MSE
+        - MAE
+        - RMSE
+        - MAPE
+        - R²
+    
+    Args:
+        y_true (float64): Y values for the dependent variable (test part), numpy array of floats 
+        y_pred (float64): Predicted values for the dependen variable (test parrt), numpy array of floats
+    
+    Returns:
+        MSE, MAE, RMSE, MAPE and R² 
+    '''    
+    print('Evaluation metric results: ')
+    print(f'MSE is : {metrics.mean_squared_error(y_true, y_pred)}')
+    print(f'MAE is : {metrics.mean_absolute_error(y_true, y_pred)}')
+    print(f'RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}')
+    print(f'MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}')
+    print(f'R2 is : {metrics.r2_score(y_true, y_pred)}',end='\n\n')
+```
+
+
+
+
+```{r, eval=F, echo=T}
+def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
+    '''
+    Calculates statistical values whether the available data are stationary or not 
+    
+    Args:
+        series (float64): Values of the column for which stationarity is to be checked, numpy array of floats 
+        column_name (str): Name of the column for which stationarity is to be checked
+    
+    Returns:
+        p-value that indicates whether the data are stationary or not
+    ''' 
+    print (f'Results of Dickey-Fuller Test for column: {column_name}')
+    adfTest = adfuller(timeseries, autolag='AIC')
+    dfResults = pd.Series(adfTest[0:4], index=['ADF Test Statistic','P-Value','# Lags Used','# Observations Used'])
+    for key, value in adfTest[4].items():
+       dfResults['Critical Value (%s)'%key] = value
+    print (dfResults)
+    if adfTest[1] <= 0.05:
+        print()
+        print("Conclusion:")
+        print("Reject the null hypothesis")
+        print('\033[92m' + "Data is stationary" + '\033[0m')
+    else:
+        print()
+        print("Conclusion:")
+        print("Fail to reject the null hypothesis")
+        print('\033[91m' + "Data is non-stationary" + '\033[0m')
+```
+
+
+
+```{r, eval=F, echo=T}
+def inverse_diff_func(actual_df, pred_df):
+    '''
+    Transforms the differentiated values back
+    
+    Args:
+        actual dataframe (float64): Values of the columns, numpy array of floats 
+        predicted dataframe (float64): Values of the columns, numpy array of floats 
+    
+    Returns:
+        Dataframe with the predicted values
+    '''
+    df_temp = pred_df.copy()
+    columns = actual_df.columns
+    for col in columns: 
+        df_temp[str(col)+'_inv_diff'] = actual_df[col].iloc[-1] + df_temp[str(col)].cumsum()
+    return df_temp
+```
+
+
+
+# 3  Import the Data
+
+For this post the dataset FB from the statistic platform [Kaggle](https://www.kaggle.com/) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/blob/main/datasets/Time%20Series%20Analysis/FB.csv).
+
+
+
+```{r, eval=F, echo=T}
+df = pd.read_csv('FB.csv')
+df = df[['Date', 'Open', 'High', 'Low', 'Close']]
+df.index = pd.to_datetime(df.Date)
+df = df.drop('Date', axis=1)
+df.head()
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p1.png)
 
 
+```{r, eval=F, echo=T}
+X = df[['Close']]
+
+trainX = X.iloc[:-30]
+testX = X.iloc[-30:]
+```
+
+
+
+# 4  AutoTS
+
+
+With AutoTS you have the possibility to test all kinds of ML algorithms that are suitable for analyzing and predicting time series. 
+
+Here is the corresponding [GitHub repository](https://github.com/winedarksea/AutoTS)
+
+You can find the exact documentation here: [AutoTS](https://winedarksea.github.io/AutoTS/build/html/source/intro.html#)
 
 
 
 
+## 4.1  Compare Models
 
 
+```{r, eval=F, echo=T}
+model = AutoTS(
+    forecast_length=30,
+    frequency='d', #for daily
+    prediction_interval=0.9,
+    model_list='all', 
+    transformer_list='all',
+    max_generations=7,
+    num_validations=3,
+    validation_method='similarity',
+    n_jobs=-1)
+```
+
+For the parameter model_list there are some settings that can be made:
+
++ defined list of algorithms e.g. ['GSL', 'LastValueNaive' ...]
++ 'superfast'
++ 'fast'
++ 'fast_parallel'
++ 'all'
++ 'default'
++ 'probabilistic'
++ 'multivariate'
+
+For a detailed description of the parameters, please read the [documentation](https://winedarksea.github.io/AutoTS/build/html/source/autots.html). 
 
 
+```{r, eval=F, echo=T}
+model = model.fit(trainX)
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+Let's display the model parameters:
 
 
 
 
 ```{r, eval=F, echo=T}
+best_model_Name = model.best_model_name
+best_model_Parameters = model.best_model_params
+best_model_TransformationParameters = model.best_model_transformation_params
 
+print('Best model:')
+print(best_model_Name)
+print()
+print('Model parameter of best model:')
+print(best_model_Parameters)
+print()
+print('Transformation parameter of best model:')
+print(best_model_TransformationParameters)
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p2.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Now it is time to do the prediction and validation:
 
 
 ```{r, eval=F, echo=T}
-
+prediction = model.predict()
+prediction
 ```
 
-![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p.png)
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p3.png)
+
+```{r, eval=F, echo=T}
+prediction.plot(model.df_wide_numeric,
+                series=model.df_wide_numeric.columns[0],
+                start_date="2019-01-01")
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p4.png)
+
+If you wonder why there are gaps in this chart, it is because the stock price is only documented from Monday to Friday. The weekend or holidays are not considered in the data set. 
+
+But that doesn't matter, we can also display the chart again more nicely. But first let's have a look at the validation metrics:
+
+```{r, eval=F, echo=T}
+forecasts_df = prediction.forecast
+forecasts_up, forecasts_low = prediction.upper_forecast, prediction.lower_forecast
+```
 
 
+```{r, eval=F, echo=T}
+timeseries_evaluation_metrics_func(testX, forecasts_df)
+```
 
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p5.png)
+
+```{r, eval=F, echo=T}
+plt.rcParams["figure.figsize"] = [15,7]
+plt.plot(trainX, label='Train ')
+plt.plot(testX, label='Test ')
+plt.plot(forecasts_df, label='Predicted ')
+plt.plot(forecasts_up, label='Confidence Interval Upper bound ')
+plt.plot(forecasts_low, label='Confidence Interval Lower bound ')
+plt.legend(loc='best')
+plt.show()
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p6.png)
+
+
+With the following command we get all calculated models including their parameters and achieved score:
+
+
+```{r, eval=F, echo=T}
+model_results = model.results()
+model_results
+```
+
+![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p7.png)
+
+
+## 4.2  Train a single Model
 
 
 
