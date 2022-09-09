@@ -399,7 +399,7 @@ For example, here is a list of the packages I used to create the example environ
 + `conda install -c anaconda pandas`
 + `conda install -c anaconda numpy`
 + `conda install -c anaconda scikit-learn`
-+ `conda install -c conda-forge matplotliby`
++ `conda install -c conda-forge matplotlib`
 + `conda install -c anaconda seaborn`
 + `conda install -c anaconda nltk`
 + `pip install tensorflow`
