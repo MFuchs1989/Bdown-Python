@@ -13,9 +13,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -66,14 +63,13 @@ import numpy as np</code></pre>
                    &quot;Single&quot;: [False, True, True, True, False]})
 df </code></pre>
 <p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p38.png" /></p>
-<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).size()       
-#the size function counts columns (including NAs !!) </code></pre>
+<pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).size()       </code></pre>
 <p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p39.png" /></p>
 </div>
 <div id="with-count" class="section level2">
 <h2>3.2 with count</h2>
 <pre class="r"><code>df[[&#39;Single&#39;, &#39;Age&#39;]].groupby([&#39;Single&#39;]).count()     
-#the count function counts columns (excluding NAs !!)</code></pre>
+#The count function don&#39;t consicer NaN values</code></pre>
 <p><img src="/post/2019-05-30-the-use-of-the-groupby-function_files/p1p40.png" /></p>
 <div id="count-non---zero-observations" class="section level3">
 <h3>3.2.1 Count Non - Zero Observations</h3>

@@ -82,7 +82,6 @@ df
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).size()       
-#the size function counts columns (including NAs !!) 
 ```
 
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p39.png)
@@ -91,7 +90,7 @@ df[['Single', 'Age']].groupby(['Single']).size()
 
 ```{r, eval=F, echo=T}
 df[['Single', 'Age']].groupby(['Single']).count()     
-#the count function counts columns (excluding NAs !!)
+#The count function don't consicer NaN values
 ```
 
 ![](/post/2019-05-30-the-use-of-the-groupby-function_files/p1p40.png)
