@@ -181,6 +181,30 @@ flight.iloc[1:4,[1,3,5]]
 
 ![](/post/2019-03-03-data-wrangling_files/p1p15.png)
 
+You can also try these one:
+
+
+
+```{r, eval=F, echo=T}
+# Select all columns from Col_1 to Col_5
+df.loc[:,'Col_1':'Col_5']
+```
+
+
+
+```{r, eval=F, echo=T}
+# Select all columns from Col_1 to Col_5 and Col_9
+df.loc[:,'Col_1':'Col_5'].join(df.loc[:,'Col_9'])
+```
+
+
+```{r, eval=F, echo=T}
+# Select all columns from Col_1 to Col_5 and from Col_9 to Col_13
+df.loc[:,'Col_1':'Col_5'].join(df.loc[:,'Col_9':'Col_13'])
+```
+
+
+
 ## 5.2 Conditional selection
 
 Var.1 (here I see how many cases are affected)

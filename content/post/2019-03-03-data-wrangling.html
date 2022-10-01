@@ -14,9 +14,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -107,6 +104,13 @@ flight_subset</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p14.png" /></p>
 <pre class="r"><code>flight.iloc[1:4,[1,3,5]]</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p15.png" /></p>
+<p>You can also try these one:</p>
+<pre class="r"><code># Select all columns from Col_1 to Col_5
+df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;]</code></pre>
+<pre class="r"><code># Select all columns from Col_1 to Col_5 and Col_9
+df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;].join(df.loc[:,&#39;Col_9&#39;])</code></pre>
+<pre class="r"><code># Select all columns from Col_1 to Col_5 and from Col_9 to Col_13
+df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;].join(df.loc[:,&#39;Col_9&#39;:&#39;Col_13&#39;])</code></pre>
 </div>
 <div id="conditional-selection" class="section level2">
 <h2>5.2 Conditional selection</h2>
