@@ -13,9 +13,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -87,7 +84,7 @@ trainX = X.iloc[:-30]</code></pre>
 <div id="definition-of-required-functions" class="section level1">
 <h1>3 Definition of required functions</h1>
 <p>For the evaluation of the following models I create a function to calculate the mean absolute percentage error and another function that outputs this metric and others for evaluation.</p>
-<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+<pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -120,7 +117,7 @@ trainX = X.iloc[:-30]</code></pre>
     print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
     print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
-    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
 </div>
 <div id="simple-exponential-smoothing" class="section level1">

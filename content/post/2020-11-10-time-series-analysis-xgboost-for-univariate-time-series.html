@@ -13,9 +13,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -99,7 +96,7 @@ pjme</code></pre>
         y = df[target_variable]
         return X, y
     return X</code></pre>
-<pre class="r"><code>def mean_absolute_percentage_error(y_true, y_pred):
+<pre class="r"><code>def mean_absolute_percentage_error_func(y_true, y_pred):
     &#39;&#39;&#39;
     Calculate the mean absolute percentage error as a metric for evaluation
     
@@ -132,7 +129,7 @@ pjme</code></pre>
     print(f&#39;MSE is : {metrics.mean_squared_error(y_true, y_pred)}&#39;)
     print(f&#39;MAE is : {metrics.mean_absolute_error(y_true, y_pred)}&#39;)
     print(f&#39;RMSE is : {np.sqrt(metrics.mean_squared_error(y_true, y_pred))}&#39;)
-    print(f&#39;MAPE is : {mean_absolute_percentage_error(y_true, y_pred)}&#39;)
+    print(f&#39;MAPE is : {mean_absolute_percentage_error_func(y_true, y_pred)}&#39;)
     print(f&#39;R2 is : {metrics.r2_score(y_true, y_pred)}&#39;,end=&#39;\n\n&#39;)</code></pre>
 </div>
 <div id="train-test-split" class="section level1">
