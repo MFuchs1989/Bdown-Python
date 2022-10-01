@@ -13,9 +13,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -247,7 +244,7 @@ plt.show()</code></pre>
 
 param_grid = [{&#39;alpha&#39;:[1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 2, 5, 7, 10, 15, 20]}]
 
-grid = GridSearchCV(ElaNet_reg, param_grid, cv = 10)
+grid = GridSearchCV(ridge_reg, param_grid, cv = 10)
 
 grid.fit(trainX, trainY)</code></pre>
 <pre class="r"><code>print(grid.best_score_)</code></pre>
