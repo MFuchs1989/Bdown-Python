@@ -84,11 +84,13 @@ df
 
 ```{r, eval=F, echo=T}
 # Convert timestamp to DateTime
+# Admittedly in this example the timestamp is in a longer format than usual. Therefore the division by 1000
+
 df['timestamp_epoch2'] = df.timestamp.astype(float)
 df['new_timestamp_epoch'] = df.timestamp_epoch2 / 1000
 df['new_timestamp_epoch_round'] = df.new_timestamp_epoch.round()
 df['new_timestamp_epoch_round'] = df.new_timestamp_epoch_round.astype(int)
-df['final'] = df.new_timestamp_epoch_round.map(lambda x: datetime.datetime.utcfromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
+df['final'] = df.new_timestamp_epoch_round.map(lambda x: datetime.utcfromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
 df['DateTime'] = pd.to_datetime(df['final'])
 df.drop(["timestamp_epoch2", "new_timestamp_epoch", "new_timestamp_epoch_round", "final"], axis = 1, inplace = True) 
 
@@ -98,6 +100,14 @@ df
 ```
 
 ![](/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p2.png)
+
+
+You can also use this syntax:
+
+```{r, eval=F, echo=T}
+df['new_DateTime'] = df['new_timestamp_epoch_round'].apply(datetime.fromtimestamp)
+```
+
 
 
 # 4 Extract Year, Month and Day

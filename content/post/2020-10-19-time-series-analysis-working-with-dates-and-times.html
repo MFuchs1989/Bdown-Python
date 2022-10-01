@@ -13,9 +13,6 @@ output:
     toc_depth: 5  
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -87,11 +84,13 @@ df</code></pre>
 <div id="convert-timestamp-to-datetime" class="section level1">
 <h1>3 Convert timestamp to DateTime</h1>
 <pre class="r"><code># Convert timestamp to DateTime
+# Admittedly in this example the timestamp is in a longer format than usual. Therefore the division by 1000
+
 df[&#39;timestamp_epoch2&#39;] = df.timestamp.astype(float)
 df[&#39;new_timestamp_epoch&#39;] = df.timestamp_epoch2 / 1000
 df[&#39;new_timestamp_epoch_round&#39;] = df.new_timestamp_epoch.round()
 df[&#39;new_timestamp_epoch_round&#39;] = df.new_timestamp_epoch_round.astype(int)
-df[&#39;final&#39;] = df.new_timestamp_epoch_round.map(lambda x: datetime.datetime.utcfromtimestamp(x).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;))
+df[&#39;final&#39;] = df.new_timestamp_epoch_round.map(lambda x: datetime.utcfromtimestamp(x).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;))
 df[&#39;DateTime&#39;] = pd.to_datetime(df[&#39;final&#39;])
 df.drop([&quot;timestamp_epoch2&quot;, &quot;new_timestamp_epoch&quot;, &quot;new_timestamp_epoch_round&quot;, &quot;final&quot;], axis = 1, inplace = True) 
 
@@ -99,6 +98,8 @@ df.drop([&quot;timestamp_epoch2&quot;, &quot;new_timestamp_epoch&quot;, &quot;ne
 # Print new df
 df</code></pre>
 <p><img src="/post/2020-10-19-time-series-analysis-working-with-dates-and-times_files/p94p2.png" /></p>
+<p>You can also use this syntax:</p>
+<pre class="r"><code>df[&#39;new_DateTime&#39;] = df[&#39;new_timestamp_epoch_round&#39;].apply(datetime.fromtimestamp)</code></pre>
 </div>
 <div id="extract-year-month-and-day" class="section level1">
 <h1>4 Extract Year, Month and Day</h1>
