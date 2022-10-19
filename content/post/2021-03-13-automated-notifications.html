@@ -11,9 +11,6 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 <div id="TOC">
 <ul>
@@ -52,6 +49,11 @@ output:
 <li><a href="#ongoing-notifications">4.5.3 Ongoing Notifications</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#via-gmail">4.6 via gmail</a>
+<ul>
+<li><a href="#one-recipient">4.6.1 One Recipient</a></li>
+<li><a href="#multiple-recipients">4.6.2 Multiple Recipients</a></li>
+</ul></li>
 <li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
 </div>
@@ -89,7 +91,11 @@ from tf_notification_callback import TelegramCallback
 ## for chapter 4.5.3
 import requests
 import tensorflow as tf
-import tensorflow.keras.utils as np_utils</code></pre>
+import tensorflow.keras.utils as np_utils
+## for chapter 4.6
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText</code></pre>
 <pre class="r"><code>df = pd.read_csv(&#39;bank.csv&#39;, sep=&#39;;&#39;)
 
 col_to_keep = &#39;age&#39;,&#39;job&#39;,&#39;marital&#39;,&#39;education&#39;,&#39;month&#39;,&#39;y&#39;
@@ -656,6 +662,76 @@ callback_list = [bot_callback, plotter]</code></pre>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p37.png" /></p>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p38.png" /></p>
 </div>
+</div>
+</div>
+<div id="via-gmail" class="section level1">
+<h1>4.6 via gmail</h1>
+<p>You also have the possibility to send e-mails with Python via a gmail account.
+To do this, you need to create a gmail account and create an app password (instructions <a href="https://support.google.com/accounts/answer/185833?hl=en">here</a>).</p>
+<p>With the following code you can send emails from your gmail account to other recipients.</p>
+<p>You just have to enter the recipient addresses, the subject and the content of the e-mail.
+Of course you also have to enter the address of your e-mail account (sender address) and the password so that Python can access the account.</p>
+<div id="one-recipient" class="section level2">
+<h2>4.6.1 One Recipient</h2>
+<pre class="r"><code>#Recipient:
+receiver_address = &#39;mail_adress@gmail.com&#39;
+
+#Subject Text:
+subject_text = &#39;A test mail sent by Python&#39;
+
+#Mail Content:
+mail_content = &#39;A simple e-mail with 1 recipient&#39;
+
+ 
+#The mail addresses and password
+sender_address = &#39;your_gmail_address@gmail.com&#39;
+sender_pass = &#39;generated_app_password&#39;
+#Setup the MIME
+message = MIMEMultipart()
+message[&#39;From&#39;] = sender_address
+message[&#39;To&#39;] = receiver_address
+message[&#39;Subject&#39;] = subject_text
+#The body and the attachments for the mail
+message.attach(MIMEText(mail_content, &#39;plain&#39;))
+#Create SMTP session for sending the mail
+session = smtplib.SMTP(&#39;smtp.gmail.com&#39;, 587)
+session.starttls()
+session.login(sender_address, sender_pass)
+text = message.as_string()
+session.sendmail(sender_address, receiver_address, text)
+session.quit()
+print(&#39;Mail Sent&#39;)</code></pre>
+</div>
+<div id="multiple-recipients" class="section level2">
+<h2>4.6.2 Multiple Recipients</h2>
+<pre class="r"><code>#Recipient List:
+receiver_list = [&#39;mail_adress_1@gmail.com&#39;, &#39;mail_adress_2@gmail.com&#39;]
+receiver_address = &quot;, &quot;.join(receiver_list)
+
+#Subject Text:
+subject_text = &#39;A test mail sent by Python&#39;
+
+#Mail Content:
+mail_content = &#39;Hi all, \nThis is a test mail sent by Python. \nKind Regards&#39;
+
+#The mail addresses and password
+sender_address = &#39;your_gmail_address@gmail.com&#39;
+sender_pass = &#39;generated_app_password&#39;
+#Setup the MIME
+message = MIMEMultipart()
+message[&#39;From&#39;] = sender_address
+message[&#39;To&#39;] = receiver_address
+message[&#39;Subject&#39;] = subject_text 
+#The body and the attachments for the mail
+message.attach(MIMEText(mail_content, &#39;plain&#39;))
+#Create SMTP session for sending the mail
+session = smtplib.SMTP(&#39;smtp.gmail.com&#39;, 587)
+session.starttls()
+session.login(sender_address, sender_pass)
+text = message.as_string()
+session.sendmail(sender_address, receiver_address, text)
+session.quit()
+print(&#39;Mail Sent&#39;)</code></pre>
 </div>
 </div>
 <div id="conclusion" class="section level1">
