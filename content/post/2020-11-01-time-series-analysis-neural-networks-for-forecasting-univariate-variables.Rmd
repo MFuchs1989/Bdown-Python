@@ -203,7 +203,7 @@ In the examples where I use single-step forecasting, I want to train the model o
 univar_hist_window_sss = 48
 horizon_sss = 1
 # 35120 observations in total
-# 300000 should be part of the training (5120 validation)
+# 30000 should be part of the training (5120 validation)
 train_split_sss = 30000
 
 x_train_uni_sss, y_train_uni_sss = univariate_data_prep_func(x_scaled, 0, train_split_sss, 
@@ -231,6 +231,7 @@ In the examples where I use the horizon style, I want to train the model on the 
 ```{r, eval=F, echo=T}
 univar_hist_window_hs = 48
 horizon_hs = 10
+# see comments of section 4.5.1
 train_split_hs = 30000
 
 x_train_uni_hs, y_train_uni_hs = univariate_data_prep_func(x_scaled, 0, train_split_hs, 
