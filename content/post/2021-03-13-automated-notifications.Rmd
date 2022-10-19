@@ -863,7 +863,7 @@ history = model.fit(trainX,
 ![](/post/2021-03-13-automated-notifications_files/p131p38.png)
 
 
-# 4.6 via gmail
+## 4.6 via gmail
 
 You also have the possibility to send e-mails with Python via a gmail account. 
 To do this, you need to create a gmail account and create an app password (instructions [here](https://support.google.com/accounts/answer/185833?hl=en)). 
@@ -873,7 +873,7 @@ With the following code you can send emails from your gmail account to other rec
 You just have to enter the recipient addresses, the subject and the content of the e-mail. 
 Of course you also have to enter the address of your e-mail account (sender address) and the password so that Python can access the account. 
 
-## 4.6.1 One Recipient
+### 4.6.1 One Recipient
 
 ```{r, eval=F, echo=T}
 #Recipient:
@@ -909,7 +909,7 @@ print('Mail Sent')
 
 
 
-## 4.6.2 Multiple Recipients
+### 4.6.2 Multiple Recipients
 
 
 ```{r, eval=F, echo=T}

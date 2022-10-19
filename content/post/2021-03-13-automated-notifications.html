@@ -48,11 +48,11 @@ output:
 <li><a href="#one-time-notifications">4.5.2 One Time Notifications</a></li>
 <li><a href="#ongoing-notifications">4.5.3 Ongoing Notifications</a></li>
 </ul></li>
-</ul></li>
 <li><a href="#via-gmail">4.6 via gmail</a>
 <ul>
 <li><a href="#one-recipient">4.6.1 One Recipient</a></li>
 <li><a href="#multiple-recipients">4.6.2 Multiple Recipients</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#conclusion">5 Conclusion</a></li>
 </ul>
@@ -663,16 +663,15 @@ callback_list = [bot_callback, plotter]</code></pre>
 <p><img src="/post/2021-03-13-automated-notifications_files/p131p38.png" /></p>
 </div>
 </div>
-</div>
-<div id="via-gmail" class="section level1">
-<h1>4.6 via gmail</h1>
+<div id="via-gmail" class="section level2">
+<h2>4.6 via gmail</h2>
 <p>You also have the possibility to send e-mails with Python via a gmail account.
 To do this, you need to create a gmail account and create an app password (instructions <a href="https://support.google.com/accounts/answer/185833?hl=en">here</a>).</p>
 <p>With the following code you can send emails from your gmail account to other recipients.</p>
 <p>You just have to enter the recipient addresses, the subject and the content of the e-mail.
 Of course you also have to enter the address of your e-mail account (sender address) and the password so that Python can access the account.</p>
-<div id="one-recipient" class="section level2">
-<h2>4.6.1 One Recipient</h2>
+<div id="one-recipient" class="section level3">
+<h3>4.6.1 One Recipient</h3>
 <pre class="r"><code>#Recipient:
 receiver_address = &#39;mail_adress@gmail.com&#39;
 
@@ -702,8 +701,8 @@ session.sendmail(sender_address, receiver_address, text)
 session.quit()
 print(&#39;Mail Sent&#39;)</code></pre>
 </div>
-<div id="multiple-recipients" class="section level2">
-<h2>4.6.2 Multiple Recipients</h2>
+<div id="multiple-recipients" class="section level3">
+<h3>4.6.2 Multiple Recipients</h3>
 <pre class="r"><code>#Recipient List:
 receiver_list = [&#39;mail_adress_1@gmail.com&#39;, &#39;mail_adress_2@gmail.com&#39;]
 receiver_address = &quot;, &quot;.join(receiver_list)
@@ -732,6 +731,7 @@ text = message.as_string()
 session.sendmail(sender_address, receiver_address, text)
 session.quit()
 print(&#39;Mail Sent&#39;)</code></pre>
+</div>
 </div>
 </div>
 <div id="conclusion" class="section level1">
