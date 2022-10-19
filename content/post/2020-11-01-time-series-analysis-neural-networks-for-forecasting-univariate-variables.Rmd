@@ -202,6 +202,8 @@ In the examples where I use single-step forecasting, I want to train the model o
 ```{r, eval=F, echo=T}
 univar_hist_window_sss = 48
 horizon_sss = 1
+# 35120 observations in total
+# 300000 should be part of the training (5120 validation)
 train_split_sss = 30000
 
 x_train_uni_sss, y_train_uni_sss = univariate_data_prep_func(x_scaled, 0, train_split_sss, 
@@ -296,8 +298,8 @@ n_epochs = 100
 
 This is how I calculated the selected values:
 
-+ n_steps_per_epoch: len(df) / batch_size
-+ n_validation_steps: len(df) / batch_size 
++ n_steps_per_epoch: len(training_df) / batch_size [30000/256]
++ n_validation_steps: len(validation_df) / batch_size [5120/256]
 
 
 ## 5.1 LSTM

@@ -208,6 +208,8 @@ For example: Data is at the daily level. The model is shown the first window fro
 <p>In the examples where I use single-step forecasting, I want to train the model on the last 48 hours and then try to predict the values for the 49th hour. Therefore horizon_sss = 1.</p>
 <pre class="r"><code>univar_hist_window_sss = 48
 horizon_sss = 1
+# 35120 observations in total
+# 300000 should be part of the training (5120 validation)
 train_split_sss = 30000
 
 x_train_uni_sss, y_train_uni_sss = univariate_data_prep_func(x_scaled, 0, train_split_sss, 
@@ -277,8 +279,8 @@ n_validation_steps = 20
 n_epochs = 100</code></pre>
 <p>This is how I calculated the selected values:</p>
 <ul>
-<li>n_steps_per_epoch: len(df) / batch_size</li>
-<li>n_validation_steps: len(df) / batch_size</li>
+<li>n_steps_per_epoch: len(training_df) / batch_size [30000/256]</li>
+<li>n_validation_steps: len(validation_df) / batch_size [5120/256]</li>
 </ul>
 <div id="lstm" class="section level2">
 <h2>5.1 LSTM</h2>
