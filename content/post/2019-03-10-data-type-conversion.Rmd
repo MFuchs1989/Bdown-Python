@@ -42,7 +42,7 @@ cars = pd.read_csv("path/to/file/auto-mpg.csv")
 ```
 
 
-# 3 Overview of the exisitng data types
+# 3 Overview of the existing data types
 
 
 **Numeric:**
