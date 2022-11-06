@@ -1,0 +1,485 @@
+---
+title: NN – Artificial Neural Network for binary Classification
+author: Michael Fuchs
+date: '2021-02-16'
+slug: nn-artificial-neural-network-for-binary-classification
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+As announced in my [last post](https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/), I will now create a neural network using a Deep Learning library ([Keras](https://keras.io/) in this case) to solve binary classification problems. 
+
+For this publication the dataset *Winequality* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+
+
+# 2 Loading the libraries
+
+
+
+```r
+import pandas as pd
+import os
+import shutil
+import pickle as pk
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+from keras import models
+from keras import layers
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.models import load_model
+```
+
+
+
+# 3 Loading the data
+
+
+```r
+df = pd.read_csv('winequality.csv').dropna()
+df
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p1.png)
+
+
+
+```r
+df['type'].value_counts()
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p2.png)
+
+
+
+# 4 Data pre-processing
+
+## 4.1 Determination of the predictors and the criterion
+
+
+```r
+x = df.drop('type', axis=1)
+y = df['type']
+```
+
+
+## 4.2 Encoding
+
+Since all variables must be numeric, we must recode the criterion at this point. 
+For this I used the LabelEncoder. How to use it can be read in the following post: [Types of Encoder](https://michael-fuchs-python.netlify.app/2019/06/16/types-of-encoder/#label-encoding)
+
+
+
+```r
+encoder = LabelEncoder()
+
+encoded_Y = encoder.fit_transform(y)
+encoded_Y
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p3.png)
+
+
+## 4.3 Train-Validation-Test Split
+
+As already known from the [computer vision posts](https://michael-fuchs-python.netlify.app/2019/01/01/tag-archive/#computer-vision), for neural networks we need to split our dataset into a training part, a validation part and a testing part. 
+In the following, I will randomly assign 70% of the data to the training part and 15% each to the validation and test part. 
+
+
+
+```r
+train_ratio = 0.70
+validation_ratio = 0.15
+test_ratio = 0.15
+
+# Generate TrainX and TrainY
+trainX, testX, trainY, testY = train_test_split(x, encoded_Y, test_size= 1 - train_ratio)
+# Genearate ValX, TestX, ValY and TestY
+valX, testX, valY, testY = train_test_split(testX, testY, test_size=test_ratio/(test_ratio + validation_ratio)) 
+```
+
+
+
+```r
+print(trainX.shape)
+print(valX.shape)
+print(testX.shape)
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p4.png)
+
+
+
+# 5 ANN for binary Classification
+
+My approach to using neural networks with Keras is described in detail in my post [Computer Vision - Convolutional Neural Network](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#simple-cnn) and can be read there if something is unclear. 
+
+
+## 5.1 Name Definitions
+
+
+
+```r
+checkpoint_no = 'ckpt_1_ANN'
+model_name = 'Wine_ANN_2FC_F16_16_epoch_25'
+```
+
+
+## 5.2 Parameter Settings
+
+
+
+```r
+input_shape = trainX.shape[1]
+
+n_batch_size = 100
+
+n_steps_per_epoch = int(trainX.shape[0] / n_batch_size)
+n_validation_steps = int(valX.shape[0] / n_batch_size)
+n_test_steps = int(testX.shape[0] / n_batch_size)
+
+n_epochs = 25
+
+
+print('Input Shape: ' + str(input_shape))
+print('Batch Size: ' + str(n_batch_size))
+print()
+print('Steps per Epoch: ' + str(n_steps_per_epoch))
+print()
+print('Validation Steps: ' + str(n_validation_steps))
+print('Test Steps: ' + str(n_test_steps))
+print()
+print('Number of Epochs: ' + str(n_epochs))
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p5.png)
+
+
+## 5.3 Layer Structure
+
+
+
+```r
+model = models.Sequential()
+model.add(layers.Dense(16, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(16, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+
+```r
+model.summary()
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p6.png)
+
+
+## 5.4 Configuring the model for training
+
+
+```r
+model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+```
+
+
+## 5.5 Callbacks
+
+If you want to know more about callbacks you can read about it here at [Keras](https://keras.io/api/callbacks/) or also in my post about [Convolutional Neural Networks](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#callbacks).
+
+
+
+```r
+# Prepare a directory to store all the checkpoints.
+checkpoint_dir = './'+ checkpoint_no
+if not os.path.exists(checkpoint_dir):
+    os.makedirs(checkpoint_dir)
+```
+
+
+```r
+keras_callbacks = [ModelCheckpoint(filepath = checkpoint_dir + '/' + model_name, 
+                                   monitor='val_loss', save_best_only=True, mode='auto')]
+```
+
+
+
+## 5.6 Fitting the model
+
+
+
+```r
+history = model.fit(trainX,
+                    trainY,
+                    steps_per_epoch=n_steps_per_epoch,
+                    epochs=n_epochs,
+                    batch_size=n_batch_size,
+                    validation_data=(valX, valY),
+                    validation_steps=n_validation_steps,
+                    callbacks=[keras_callbacks])
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p7.png)
+
+
+## 5.7 Obtaining the best model values
+
+
+
+```r
+hist_df = pd.DataFrame(history.history)
+hist_df['epoch'] = hist_df.index + 1
+cols = list(hist_df.columns)
+cols = [cols[-1]] + cols[:-1]
+hist_df = hist_df[cols]
+hist_df.to_csv(checkpoint_no + '/' + 'history_df_' + model_name + '.csv')
+hist_df.head()
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p8.png)
+
+
+
+```r
+values_of_best_model = hist_df[hist_df.val_loss == hist_df.val_loss.min()]
+values_of_best_model
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p9.png)
+
+
+## 5.8 Obtaining class assignments
+
+Similar to the [neural networks for computer vision](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#obtaining-class-assignments-1), I also save the class assignments for later reuse. 
+
+
+
+```r
+class_assignment = dict(zip(y, encoded_Y))
+
+df_temp = pd.DataFrame([class_assignment], columns=class_assignment.keys())
+df_temp = df_temp.stack()
+df_temp = pd.DataFrame(df_temp).reset_index().drop(['level_0'], axis=1)
+df_temp.columns = ['Category', 'Allocated Number']
+df_temp.to_csv(checkpoint_no + '/' + 'class_assignment_df_' + model_name + '.csv')
+
+print('Class assignment:', str(class_assignment))
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p10.png)
+
+
+The encoder used is also saved. 
+
+
+```r
+pk.dump(encoder, open(checkpoint_no + '/' + 'encoder.pkl', 'wb'))
+```
+
+
+## 5.9 Validation
+
+
+```r
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(1, len(acc) + 1)
+
+plt.plot(epochs, acc, 'bo', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
+
+plt.figure()
+
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p11.png)
+
+
+## 5.10 Load best model
+
+Again, reference to the [Computer Vision posts](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#load-best-model) where I explained why and how I cleaned up the Model Checkpoint folders. 
+
+
+
+```r
+# Loading the automatically saved model
+model_reloaded = load_model(checkpoint_no + '/' + model_name)
+
+# Saving the best model in the correct path and format
+root_directory = os.getcwd()
+checkpoint_dir = os.path.join(root_directory, checkpoint_no)
+model_name_temp = os.path.join(checkpoint_dir, model_name + '.h5')
+model_reloaded.save(model_name_temp)
+
+# Deletion of the automatically created folder under Model Checkpoint File.
+folder_name_temp = os.path.join(checkpoint_dir, model_name)
+shutil.rmtree(folder_name_temp, ignore_errors=True)
+```
+
+
+```r
+best_model = load_model(model_name_temp)
+```
+
+
+The overall folder structure should look like this:
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112s1.png)
+
+
+## 5.11 Model Testing
+
+
+
+```r
+test_loss, test_acc = best_model.evaluate(testX,
+                                          testY,
+                                          steps=n_test_steps)
+print()
+print('Test Accuracy:', test_acc)
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p12.png)
+
+
+## 5.12 Predictions
+
+
+```r
+y_pred = model.predict(testX)
+y_pred
+```
+
+![](/post/2021-02-16-nn-artificial-neural-network-for-binary-classification_files/p112p13.png)
+
+
+# 6 Prevent Overfitting
+
+Often you have the problem of overfitting. For this reason, I have presented here a few approaches on how to counteract overfitting.
+
+
+## 6.1  Original Layer Structure
+
+Here again, as a reminder, the used layer structure:
+
+
+```r
+model = models.Sequential()
+model.add(layers.Dense(16, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(16, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+
+
+## 6.2  Reduce the network's size
+
+
+The first thing I always try to do is to change something in the layer structure. To counteract overfitting, it is often advisable to reduce the layer structure. Using our example, I would try the following new layer structure if overfitting existed.
+
+
+```r
+model = models.Sequential()
+model.add(layers.Dense(4, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(4, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+
+
+## 6.3  Adding weight regularization
+
+
+Another option is Weight Regularization:
+
+
+```r
+from keras import regularizers
+
+model = models.Sequential()
+model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                       activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dense(16, kernel_regularizer=regularizers.l2(0.001),
+                       activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+
+
+## 6.4  Adding dropout
+
+As I used to do with [Computer Vision](https://michael-fuchs-python.netlify.app/2021/01/08/computer-vision-convolutional-neural-network/#layer-structure-1), adding dropout layers is also a very useful option. 
+
+An example layer structure in our case would look like this: 
+
+
+```r
+model = models.Sequential()
+model.add(layers.Dense(16, activation='relu', input_shape=(input_shape,)))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(16, activation='relu'))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation='sigmoid'))
+```
+
+
+
+# 7 Conclusion
+
+
+Lastly, I would like to mention a few points regarding this post. It was not relevant for this dataset but in case it was (and with real world data this is mostly the case) further metrics should be stored: 
+
++ Mean values of the individual predictors in order to be able to compensate for missing values later on.
++ Further encoders for predictors, if categorical features are converted.
++ Scaler, if these are used. 
++ If variables would have been excluded, a list with the final features should have been stored.
+
+For what reason I give these recommendations can be well read in my [Data Science Post](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/). Here I have also created [best practice guidelines](https://michael-fuchs-python.netlify.app/2020/08/21/the-data-science-process-crisp-dm/#data-science-best-practice-guidlines-for-ml-model-development) on how to proceed with model training. 
+
+
+I would like to add one limitation at this point. You may have noticed it already, but the dataset was heavily imbalanced. How to deal with such problems I have explained here: [Dealing with imbalanced classes](https://michael-fuchs-python.netlify.app/2020/01/16/dealing-with-imbalanced-classes/)
+
+
+**References**
+
+The content of the entire post was created using the following sources:
+
+Chollet, F. (2018). Deep learning with Python (Vol. 361). New York: Manning.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+---
+title: Roadmap for the Machine Learning fields
+author: Michael Fuchs
+date: '2020-08-20'
+slug: roadmap-for-the-machine-learning-fields
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+ 
+
+
+# 1 Introduction
+
+As mentioned in my previous post here an overview of the Machine Learning fileds.
+
+
+# 2 Roadmap for the Machine Learning fields
+
+
+![](/post/2020-08-20-roadmap-for-the-machine-learning-fields_files/p61p1.png)
+
+
+Here are the links to the individual Roadmaps:
+
++ ["Roadmap for Regression Analysis"](https://michael-fuchs-python.netlify.app/2019/10/14/roadmap-for-regression-analysis/)
++ ["Roadmap for Classification Tasks"](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/)
++ ["Roadmap for Cluster Analysis"](https://michael-fuchs-python.netlify.app/2020/07/14/roadmap-for-cluster-analysis/)
++ ["Roadmap for Dimensionality Reduction"](https://michael-fuchs-python.netlify.app/2020/08/18/roadmap-for-dimensionality-reduction/)
+
+
+
+# 3 Conclusion
+
+The overview shows the fields from machine learning. In addition, I have added all the links to the respective roadmaps.
+
+

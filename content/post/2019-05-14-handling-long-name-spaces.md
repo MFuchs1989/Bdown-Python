@@ -1,0 +1,126 @@
+---
+title: Handling long name spaces
+author: Michael Fuchs
+date: '2019-05-14'
+slug: handling-long-name-spaces
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+
+It happens that the provided data sets sometimes have very long names.
+Of course, you can rename the data sets and column names used, but sometimes it is necessary to keep meaningful names, even if they have more letters or characters. 
+
+With Python, if a line of code gets too long, you usually have the option to jump to the next line. But this is not always the case. What you can do then I would like to introduce in this small post.
+
+
+
+# 2 Import the libraries
+
+
+```r
+import pandas as pd
+```
+
+
+# 3 Generate a customized DataFrame
+
+
+```r
+long_name_data_frame = pd.DataFrame({'Col_Total': [1000,1000,1000],
+                                     'Colum_1': [85,95,105],
+                                     'Colum_2': [300,450,220],
+                                     'Colum_3': [120,230,140]})
+long_name_data_frame
+```
+
+![](/post/2019-05-14-handling-long-name-spaces_files/p116p1.png)
+
+# 4 Handling long name spaces
+
+This data set does not look so tragic yet, but let's imagine that we want to subtract the remaining column values from the Col_Total column. 
+Normally we do this as follows:
+
+
+```r
+long_name_data_frame['Result'] = long_name_data_frame['Col_Total'] - long_name_data_frame['Colum_1'] - long_name_data_frame['Colum_2'] - long_name_data_frame['Colum_3']
+long_name_data_frame
+```
+
+![](/post/2019-05-14-handling-long-name-spaces_files/p116p2.png)
+
+
+This approach quickly leads to a confusing line of code. If you don't have the possibility to jump to the next line after a comma you need another character to tell Python to continue with the following lines.
+
+
+
+```r
+long_name_data_frame['Result2'] = long_name_data_frame['Col_Total'] - \
+                                  long_name_data_frame['Colum_1'] - \
+                                  long_name_data_frame['Colum_2'] - \
+                                  long_name_data_frame['Colum_3']
+long_name_data_frame
+```
+
+![](/post/2019-05-14-handling-long-name-spaces_files/p116p3.png)
+
+
+The same works if we need more lines before an is-equal character. 
+I have created a simple test-function that returns three values from a supplied data set.
+
+
+
+```r
+def test_function(df):
+    number_of_columns = df.shape[0]
+    length_of_the_record = df.shape[1]
+    column_names = df.columns
+    
+    return number_of_columns, length_of_the_record, column_names
+```
+
+We can output the values as usual as follows:
+
+
+```r
+number_of_columns, length_of_the_record, column_names = test_function(long_name_data_frame)
+
+print(number_of_columns)
+print(length_of_the_record)
+print(column_names)
+```
+
+![](/post/2019-05-14-handling-long-name-spaces_files/p116p4.png)
+
+But even that quickly becomes confusing and doesn't look very good.
+Instead, you can proceed as follows:
+
+
+```r
+number_of_columns, \
+length_of_the_record, \
+column_names = test_function(long_name_data_frame)
+
+print(number_of_columns)
+print(length_of_the_record)
+print(column_names)
+```
+
+![](/post/2019-05-14-handling-long-name-spaces_files/p116p5.png)
+
+
+# 5 Conclusion
+
+In this short post I showed how to deal with long name spaces. 
+
+
+

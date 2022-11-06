@@ -1,0 +1,237 @@
+---
+title: How to suppress scientific notation in Pandas
+author: Michael Fuchs
+date: '2019-04-28'
+slug: how-to-suppress-scientific-notation-in-pandas
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+Scientific notations isn't helpful when you are trying to make quick comparisons across your dataset. 
+However, Pandas will introduce scientific notations by default when the data type is a float. In this post I want to show how to get around this problem.
+
+
+# 2 Scientific notations
+
+
+Scientific notation (numbers with e) is a way of writing very large or very small numbers in a clear way. 
+Unfortunately for many people these are not very tangible.
+Here are two examples of how to convert the scientifically written numbers into more readable ones.
+
+
+$$ 2.553e8 = 2.553 \cdot 10^{8} = 255,300,000 $$
+
+$$ 3.328e-5 = 3.328 \cdot 10^{-5} = 0.03328 $$
+
+Now we know how to convert these numbers. But to do this every time with a calculator or something similar is very complicated. Fortunately there are a few methods to do this automatically. 
+
+
+# 3 Import the libraries
+
+
+
+```r
+import pandas as pd
+import numpy as np
+```
+
+
+Here are a few more examples of how differently pandas floats are output. 
+
+
+
+```r
+n_1 = 0.0007
+n_1
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p1.png)
+
+
+
+```r
+n_2 = 0.0000035
+n_2
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p2.png)
+
+
+
+```r
+n_3 = 15622098465455462.02
+n_3
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p3.png)
+
+
+
+```r
+n_ensemble = (n_1, n_2, n_3)
+n_ensemble
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p4.png)
+
+
+
+# 4 Display Values as Strings
+
+
+
+```r
+'{:.7f}'.format(n_2)
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p5.png)
+
+
+```r
+['{:.7f}'.format(x) for x in n_ensemble]
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p6.png)
+
+
+Hint: with the number before the f you can determine the number of decimal places (default = 6)
+
+
+```r
+['{:f}'.format(x) for x in n_ensemble]
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p7.png)
+
+
+
+# 5 Functions
+
+For the following examples we create two artificial datasets:
+
+
+
+```r
+df = pd.DataFrame(np.random.random(5)**10, columns=['random_numbers'])
+df
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p8.png)
+
+
+
+
+```r
+df1 = pd.DataFrame(np.random.random(5)**10, columns=['random_numbers1'])
+df2 = pd.DataFrame(np.random.random(5)**10, columns=['random_numbers2'])
+df_multiple = pd.concat([df1, df2], axis=1)
+df_multiple
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p9.png)
+
+
+
+## 5.1 Use round()
+
+We simply can use the round-function:
+
+
+```r
+df.round(5)
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p10.png)
+
+
+
+```r
+df_multiple.round(5)
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p11.png)
+
+
+## 5.2 Use apply()
+
+Also we can apply a lambda function:
+
+
+```r
+df.apply(lambda x: '%.5f' % x, axis=1)
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p12.png)
+
+
+
+```r
+df_apply1 = df_multiple['random_numbers1'].apply(lambda x: '%.5f' % x)
+df_apply2 = df_multiple['random_numbers2'].apply(lambda x: '%.5f' % x)
+df_multiple_apply = pd.concat([df_apply1, df_apply2], axis=1)
+df_multiple_apply
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p13.png)
+
+
+## 5.3 Use set_option()
+
+Finally, I would like to introduce the set_option function.
+Note that set_option() **changes behavior globaly** in Jupyter Notebooks, so it is not a temporary fix.
+
+
+```r
+pd.set_option('display.float_format', lambda x: '%.5f' % x)
+```
+
+
+```r
+df
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p14.png)
+
+
+
+```r
+df_multiple
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p15.png)
+
+
+In order to **revert Pandas behaviour** to defaul use reset_option().
+
+
+
+```r
+pd.reset_option('display.float_format')
+```
+
+
+```r
+df
+```
+
+![](/post/2019-04-28-how-to-suppress-scientific-notation-in-pandas_files/p66p16.png)
+
+
+
+# 6 Conclusion
+
+In this post I presented several ways how to convert scientifically written numbers quickly and easily into more readable ones.
+
+
+
+
+

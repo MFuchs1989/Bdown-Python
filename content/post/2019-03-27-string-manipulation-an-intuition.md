@@ -1,0 +1,232 @@
+---
+title: String Manipulation. An intuition.
+author: Michael Fuchs
+date: '2019-03-27'
+slug: string-manipulation-an-intuition
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+It happens again and again that in the course of the planned analysis text variables are unfavorably filled and therefore have to be changed.
+Here are some useful build in methods for *string manipulation* from Python.
+
+
+
+**Loading the libraries**
+
+```r
+import pandas as pd
+```
+
+
+
+# 2 Separate
+
+## 2.1 via map - function
+
+Map property applies changes to every element of a column
+
+```r
+string_manipulation = pd.DataFrame({'Name': ['1.Anton', '2.Susi', '3.Moni', '4.Renate'],
+                     'Alter': [32,22,62,44],
+                     'Gehalt': [4700, 2400,4500,2500]})
+string_manipulation
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p1.png)
+
+
+
+```r
+show_map = string_manipulation.copy()
+show_map
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p2.png)
+
+Cleanup of the "Name" column
+
+```r
+show_map.Name = show_map.Name.map(lambda x: x.split('.')[1])
+show_map
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p3.png)
+
+
+
+**Background info how *.split* works:**
+
+
+```r
+x = 'I.am.a.test'
+y = x.split('.')
+print (y)
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p4.png)
+
+
+```r
+z = x.split('.')[1]
+print (z)
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p5.png)
+
+
+## 2.2 via string function
+
+
+```r
+show_str_split = string_manipulation.copy()
+show_str_split
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p6.png)
+
+
+```r
+new = show_str_split["Name"].str.split(".", n = 1, expand = True) 
+new
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p7.png)
+
+
+
+```r
+show_str_split["MA-Nummer"]= new[0] 
+```
+
+
+```r
+show_str_split["MA-Name"]= new[1]
+```
+
+
+```r
+show_str_split
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p8.png)
+
+Exclude unnecessary columns
+
+```r
+small_show_str_split = show_str_split.drop(columns=['Name', 'MA-Nummer'])
+small_show_str_split
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p9.png)
+
+New arrangement of columns
+
+```r
+clist = list(small_show_str_split.columns)
+clist_new = clist[-1:]+clist[:-1]
+small_show_str_split = small_show_str_split[clist_new]
+small_show_str_split
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p10.png)
+
+
+# 3 Unite
+
+## 3.1 two columns
+
+
+```r
+df = pd.DataFrame({'Year': ['2014', '2015'], 'quarter': ['q1', 'q2']})
+df
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p11.png)
+
+
+
+```r
+df['period'] = df[['Year','quarter']].apply(lambda x : '{}{}'.format(x[0],x[1]), axis=1)
+df
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p12.png)
+
+
+## 3.2 three and more columns
+
+
+
+```r
+df = pd.DataFrame([['USA', 'Nevada', 'Las Vegas'], ['Brazil', 'Pernambuco', 'Recife']], columns=['Country', 'State', 'City'],)
+df
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p13.png)
+
+
+```r
+df['AllTogether'] = df[['Country','State', 'City']].apply(lambda x : '{}, 
+                    {} & {}'.format(x[0],x[1],x[2]), axis=1)
+df
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p14.png)
+
+# 4 add_prefix
+
+
+```r
+show_prefix2 = small_show_str_split.copy()
+show_prefix2
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p15.png)
+
+
+
+```r
+show_prefix2['MA-Name'] = show_prefix2['MA-Name'].apply(lambda x: "{}{}".format('MA: ', x))
+show_prefix2
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p16.png)
+
+# 5 add_suffix
+
+
+
+```r
+show_suffix = show_prefix2.copy()
+show_suffix
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p17.png)
+
+
+```r
+show_suffix['Betriebszugehörigkeit'] = show_suffix['Betriebszugehörigkeit'].apply(lambda x: "{}{}".format(x, ' Jahre'))
+show_suffix
+```
+
+![](/post/2019-03-27-string-manipulation-an-intuition_files/p5p18.png)
+
+# 6 Conclusion
+
+This was a small insight into the subject of string manipulation.
+
+
+
+
+
+

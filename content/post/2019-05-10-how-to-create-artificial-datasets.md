@@ -1,0 +1,459 @@
+---
+title: How to create artificial datasets
+author: Michael Fuchs
+date: '2019-05-10'
+slug: how-to-create-artificial-datasets
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+In the following posts, all possible machine learning algorithms will be shown promptly.
+In order to test their functionality in a superficial way, you do not necessarily have to look for a suitable data set (from the internet or similar). Because there is also the possibility to have an artificial data set created for the respective application needs.
+How this can be done I show in this post.
+
+
+# 2 Import the libraries
+
+
+```r
+from sklearn.datasets import make_regression
+from sklearn.datasets import make_classification
+from sklearn.datasets import make_blobs
+
+from matplotlib import pyplot as plt
+
+import pandas as pd
+import numpy as np
+import random
+
+from drawdata import draw_scatter
+```
+
+# 3 Definition of required functions
+
+
+```r
+def random_datetimes(start, end, n):
+    '''
+    Generates random datetimes in a certain range.
+    
+    Args:
+        start (datetime): Datetime for which the range should start
+        end (datetime): Datetime for which the range should end
+        n (int): Number of random datetimes to be generated
+    
+    Returns:
+        Randomly generated n datetimes within the defined range
+    '''
+    start_u = start.value//10**9
+    end_u = end.value//10**9
+
+    return pd.to_datetime(np.random.randint(start_u, end_u, n), unit='s')
+```
+
+
+
+# 4 Simulated Data
+
+As already mentioned at the beginning, you can generate your own artificial data for each application.
+To do so we need the following libraries:
+
+## 4.1 Make Simulated Data For Regression
+
+
+
+```r
+features, output = make_regression(n_samples=100, n_features=1)
+```
+
+
+
+```r
+# plot regression dataset
+plt.scatter(features,output)
+plt.show() 
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p1.png)
+
+We can generate also more features:
+
+
+```r
+features, output = make_regression(n_samples=100, n_features=4)
+```
+
+And safe these features to an object:
+
+
+```r
+features = pd.DataFrame(features, columns=['Store_1', 'Store_2', 'Store_3', 'Store_4'])
+features.head()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p2.png)
+
+Now we do so for the output/target variable:
+
+
+```r
+output = pd.DataFrame(output, columns=['Sales'])
+output.head()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p3.png)
+
+We also can combine these two objects to a final-dataframe:
+
+
+
+```r
+df_final = pd.concat([features, output], axis=1)
+df_final.head()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p4.png)
+
+
+Now we are ready for using some machine learning or statistic models:
+
+
+
+```r
+import statsmodels.api as sm
+
+SM_model = sm.OLS(output, features).fit()
+print(SM_model.summary())
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p5.png)
+
+
+## 4.2 Make Simulated Data For Classification
+
+With almost the same procedure we can also create data for classification tasks.
+
+
+
+```r
+features, output = make_classification(n_samples=100, n_features=25)
+```
+
+
+
+```r
+pd.DataFrame(features).head() 
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p6.png)
+
+See here we have 25 features (=columns) and, by default, two output-classes:
+
+
+
+
+```r
+pd.DataFrame(output, columns=['Target']).value_counts()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p7.png)
+
+In the following I show two examples of how the characteristics of the artificially generated data can be changed:
+
+
+```r
+features, output = make_classification(
+                   n_samples=100, 
+                   n_features=25,
+                   flip_y=0.1)
+
+# the default value for flip_y is 0.01, or 1%
+# 10% of the values of Y will be randomly flipped
+```
+
+
+```r
+features, output = make_classification(
+                   n_samples=100, 
+                   n_features=25,
+                   class_sep=0.1)
+
+# the default value for class_sep is 1.0. The lower the value, the harder classification is
+```
+
+
+So far we have only created data sets that contain two classes (in the output variable).
+Of course, we can also create data sets for **multi-classification tasks**.
+
+
+
+```r
+features, output = make_classification(n_samples=10000, n_features=10, n_informative=5, n_classes=5)
+```
+
+
+
+```r
+pd.DataFrame(output, columns=['Target']).value_counts()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p8.png)
+
+
+## 4.3 Make Simulated Data For Clustering
+
+Last but not least we'll generate some data for cluster-problems.
+
+
+
+```r
+X, y = make_blobs(n_samples=1000, n_features = 2, centers = 3, cluster_std = 0.7)
+
+plt.scatter(X[:, 0], X[:, 1])
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.show()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p9.png)
+
+
+
+```r
+pd.DataFrame(X).head()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p10.png)
+
+
+# 5 Customized dataset
+
+
+
+```r
+df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia'],
+                   'Age': [32,22,62],
+                   'Height': [162, 184, 170],
+                   'Gender': ['female', 'male', 'female']})
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p11.png)
+
+
+## 5.1 Insert a new row to pandas dataframe
+
+
+### 5.1.1 In the first place
+
+
+```r
+df.loc[-1] = ['Sven', 55, 181, 'male']  # adding a row
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p12.png)
+
+
+
+```r
+df.index = df.index + 1  # shifting index
+df = df.sort_index()  # sorting by index
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p13.png)
+
+
+
+### 5.1.2 In the last place
+
+The last index of our record is 3. Therefore, if we want to insert the new line at the end, we must now use .loc[4] in our case.
+
+
+```r
+df.loc[4] = ['Max', 14, 175, 'male']  # adding a row
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p14.png)
+
+
+### 5.1.3 With a defined function
+
+Here is a small function with the help of which you can easily add more rows to a record.
+
+
+```r
+def insert(df, row):
+    insert_loc = df.index.max()
+
+    if pd.isna(insert_loc):
+        df.loc[0] = row
+    else:
+        df.loc[insert_loc + 1] = row
+```
+
+
+
+```r
+insert(df,['Michael', 31, 182, 'male'])
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p15.png)
+
+
+### 5.1.4 With the append function
+
+
+
+```r
+df = df.append(pd.DataFrame([['Lisa', 34, 162, 'female']], columns=df.columns), ignore_index=True)
+df.index = (df.index + 1) % len(df)
+df = df.sort_index()
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p16.png)
+
+
+
+
+## 5.2 Insert a new column to pandas dataframe
+
+Often you want to add more information to your artificially created dataset, such as randomly generated datetimes. This can be done as follows.
+
+For this purpose, we continue to use the data set created in the previous chapter and extend it. 
+
+### 5.2.1 Random Dates
+
+For this we use the function defined in [chapter 3](https://michael-fuchs-python.netlify.app/2019/05/10/how-to-create-artificial-datasets/#definition-of-required-functions).
+
+In the defined function we only have to enter the start and end date, as well as the length of the record (len(df)). 
+
+
+
+```r
+start = pd.to_datetime('2020-01-01')
+end = pd.to_datetime('2020-12-31')
+
+random_datetimes_list = random_datetimes(start, end, len(df))
+random_datetimes_list
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p17.png)
+
+We can now add the list of generated datetimes to the dataset as a separate column. 
+
+
+```r
+df['date'] = random_datetimes_list
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p18.png)
+
+Here we go!
+
+
+### 5.2.1 Random Integers
+
+Of course, you also have the option to randomly generate integers. In the following I will show an example how to output integers in a certain range with defined steps:
+
+
+```r
+Start = 40000
+Stop = 120000
+Step = 10000
+Limit = len(df)
+
+# List of random integers with Step parameter
+rand_int_list = [random.randrange(Start, Stop, Step) for iter in range(Limit)]
+rand_int_list
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p19.png)
+
+Just define Start, Stop and Step for your particular use.
+The Limit will be the length of the dataframe.
+
+
+
+```r
+df['Salary'] = rand_int_list
+df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p20.png)
+
+
+Now we also have a column for salary information in a range of 40k-120k with 10k steps.
+
+
+
+## 5.3 Draw Data
+
+Also a very useful thing is if you can draw the dataset yourself. Here the library 'drawdata' offers itself. 
+
+
+
+```r
+draw_scatter()
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p21.png)
+
+If you execute the command shown above, a blank sheet appears first. Now you have the possibility to draw 4 categories (A, B, C and D). More is unfortunately not yet possible, but is normally sufficient. 
+
+You only have to select one of the 4 categories and then you can draw your point clouds on the blank sheet. 
+
+
+Afterwards you have the possibility to save the drawn data as .csv or .json file:
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p22.png)
+
+If you want to proceed without saving the data separately, **click once on 'copy csv'**  
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p23.png)
+
+and execute the following command:
+
+
+
+```r
+new_df = pd.read_clipboard(sep=",")
+new_df
+```
+
+![](/post/2019-05-10-how-to-create-artificial-datasets_files/p62p24.png)
+
+Now we can get started with the new data.
+
+
+
+
+# 6 Conclusion
+
+As you can see, the way in which artificial data is created basically always works the same.
+Of course, you can change the parameters accordingly depending on the application. See the individual descriptions on scikit-learn:
+
++ ["sklearn.datasets.make_regression"](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html#sklearn.datasets.make_regression)
++ ["sklearn.datasets.make_classification"](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification)
++ ["sklearn.datasets.make_blobs"](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html#sklearn.datasets.make_blobs)
+
+
+
+
+
+

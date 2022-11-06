@@ -1,0 +1,116 @@
+---
+title: Roadmap for Regression Analysis
+author: Michael Fuchs
+date: '2019-10-14'
+slug: roadmap-for-regression-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+ 
+
+# 1 Introduction
+
+
+In my most recent publications, I have dealt extensively with individual topics in the field of regression analysis. This post should serve as a summary of the topics covered.
+
+
+
+# 2 Roadmap for Regression Analysis
+
+
+![](/post/2019-10-14-roadmap-for-regression-analysis_files/p22p1.png)
+
+
+Here are the links to the individual topics.
+
+
+**Data pre-processing:**
+
++ [Dealing with outliers](https://michael-fuchs-python.netlify.com/2019/08/20/dealing-with-outliers/)
++ [Handling Missing Values](https://michael-fuchs-python.netlify.com/2019/03/18/dealing-with-missing-values/)
++ [Feature Encoding](https://michael-fuchs-python.netlify.com/2019/06/16/types-of-encoder/)
++ [Feature Scaling](https://michael-fuchs-python.netlify.com/2019/08/31/feature-scaling-with-scikit-learn/)
+
+
+**Feature Selection:**
+
+Filter methods:
+
++ [Dealing with highly correlated features](https://michael-fuchs-python.netlify.com/2019/07/28/dealing-with-highly-correlated-features/)
++ [Dealing with constant features](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
++ [Dealing with duplicate features](https://michael-fuchs-python.netlify.com/2019/08/09/dealing-with-constant-and-duplicate-features/)
+
+
+Wrapper methods:
+
++ [SelectKBest](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
++ [Forward Feature Selection](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
++ [Backward Elimination](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
++ [Recursive Feature Elimination (RFE)](https://michael-fuchs-python.netlify.com/2019/09/27/wrapper-methods/)
+
+
+Embedded methods:
+
++ [Ridge](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ [Lasso](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
++ [Elastic Net](https://michael-fuchs-python.netlify.com/2019/10/08/embedded-methods/)
+
+
+
+# 3 Different types of regression models
+
++ [Linear Regression](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
++ [Multiple Regression](https://michael-fuchs-python.netlify.com/2019/06/28/introduction-to-regression-analysis-and-predictions/)
++ [Non-Linear Regression](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
++ [Polynomial Regression](https://michael-fuchs-python.netlify.com/2019/07/14/non-linear-regression-analysis/)
+
+
+
+# 4 Further Regression Algorithms
+
+
++ [Decision Tree Regression](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Support Vector Machines Regression](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Stochastic Gradient Descent (SGD) Regression](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [KNN Regression](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Bagging Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Bagging Regressor with Decision Tree Reg as base_estimator](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Random Forest Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [AdaBoost Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [AdaBoost Regressor with Decision Tree Reg as base_estimator](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [Gradient Boosting Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
++ [XGBoost Regressor](https://michael-fuchs-python.netlify.app/2020/04/01/ensemble-modeling-xgboost/#xgboost-for-regression)
++ [Stacking Regressor](https://michael-fuchs-python.netlify.app/2019/07/24/further-regression-algorithms/)
+
+
+# 5 Regression with Neural Networks
+
+Of course, in addition to traditional regression algorithms, neural networks can be used to solve regression problems. 
+
+Here again are the links to the respective publications: 
+
++ [Multi-layer Perceptron Regressor (MLPRegressor)](https://michael-fuchs-python.netlify.app/2021/02/10/nn-multi-layer-perceptron-regressor-mlpregressor/)
++ [Artificial Neural Network for Regression Analysis](https://michael-fuchs-python.netlify.app/2021/03/02/nn-artificial-neural-network-for-regression-analysis/)
+
+
+# 6 Metrics for Regression Analysis
+
++ [Metrics for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/) 
+
+
+# 7 Conclusion
+
+The methods mentioned in the listed posts show how to improve regression models.
+
+The focus of the upcoming publications will be on algorithms for [classification](https://michael-fuchs-python.netlify.app/2020/02/19/roadmap-for-classification-tasks/) problems.
+
+
+
+

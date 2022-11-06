@@ -1,0 +1,461 @@
+---
+title: How to connect Python to a local SQL Server
+author: Michael Fuchs
+date: '2021-03-27'
+slug: how-to-connect-python-to-a-local-sql-server
+categories: []
+tags: []
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+
+# 1 Introduction
+
+Recently, I have been dealing with a wide variety of topics in the field of [SQL](https://michael-fuchs-python.netlify.app/2021/03/24/sql/). 
+You can find my blog posts here: [Michael Fuchs SQL](https://michael-fuchs-sql.netlify.app/)
+
+I recommend you to read it as a preparation if you are not familiar with SQL yet.
+
+In this post I want to show how to access a SQL database (here SQL Server from Microsoft) using Python and run appropriate queries. 
+
+
+
+# 2 Import the Libraries and Preparations
+
+To make SQL queries via Python we need the library pyodbc. This can be installed as follows: 
+
+`pip install pyodbc`
+
+
+
+```r
+import pandas as pd
+import pyodbc
+```
+
+
+In preparation for this post, I created a database with tables via SQL Server Management Studio (SSMS).
+How to do that I have described in detail in this post: [Create a Database](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/)
+
+
+
+# 3 Connection to the DB
+
+
+A local SQL server can be reached with the following syntax. Of course, the name of the respective database must be adjusted.
+
+
+
+
+```r
+cnxn = pyodbc.connect(driver='{SQL Server}', server='(local)', database='MyDB',               
+               trusted_connection='yes')
+
+cursor = cnxn.cursor()
+```
+
+
+**Or this version** written a little nicer:
+
+
+
+```r
+conn_str = (
+    r'driver={SQL Server};'
+    r'server=(local);'
+    r'database=MyDB;'
+    r'trusted_connection=yes;'
+    )
+
+cnxn = pyodbc.connect(conn_str)
+
+cursor = cnxn.cursor()
+```
+
+
+
+# 4 Exploration of the respective DB
+
+The first thing I do when I connect to a new database via Python is to see which tables are stored here. 
+I have described here which possibilities there are for this: [Data Wrangling / Get an Overview of the Data](https://michael-fuchs-sql.netlify.app/2021/03/23/data-wrangling/#get-an-overview-of-the-data)
+
+
+
+```r
+query = "SELECT * FROM SYSOBJECTS WHERE xtype = 'U';"
+
+df_existing_tables = pd.read_sql(query, cnxn)
+df_existing_tables
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p1.png)
+
+
+Or a bit nicer:
+
+
+```r
+query_mod = '''
+            SELECT * 
+                FROM SYSOBJECTS 
+                WHERE xtype = 'U'
+            ;
+            '''
+
+df_existing_tables = pd.read_sql(query_mod, cnxn)
+df_existing_tables
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p2.png)
+
+As we can see, two tables are stored in the 'MyDB' database. 
+
+Now I would like to see which columns are stored in the table 'Customer':
+
+
+
+```r
+query = "EXEC sp_columns 'Customer';"
+
+df_existing_columns = pd.read_sql(query, cnxn)
+df_existing_columns
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p3.png)
+
+
+# 5 Loading tables from DB
+
+
+Of course, now I have the option here to load the stored tables in the database in Python. This goes as follows: 
+
+
+## 5.1 Complete Dataframe
+
+
+
+
+```r
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
+
+df_Customer = pd.read_sql(query, cnxn)
+df_Customer
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p4.png)
+
+
+
+## 5.2 Selected Data
+
+Of course, I can also specify my data query:
+
+
+**with a WHERE Statement**
+
+
+```r
+query = '''
+        SELECT * 
+            FROM Customer
+            WHERE ID_Customer < 3
+        ;
+            '''
+
+df_Customer_selected = pd.read_sql(query, cnxn)
+df_Customer_selected
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p5.png)
+
+**with a newly generated column**
+
+
+
+```r
+query = '''
+        SELECT First_Name, Last_Name,
+               CONCAT(First_Name, ' ', Last_Name) AS Full_Name
+            FROM Customer
+        ;
+        '''
+
+df_Customer_modified = pd.read_sql(query, cnxn)
+df_Customer_modified
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p6.png)
+
+**with joined data**
+
+
+
+```r
+query = '''
+        SELECT t1.ID_Customer,
+               t1.First_Name,
+               t1.Last_Name,
+               t2.Nationality
+            FROM Customer AS t1
+            LEFT JOIN Customer_metadata AS t2
+                ON t1.ID_Customer = t2.ID_Customer
+        ;
+        '''
+
+df_Customer_joined = pd.read_sql(query, cnxn)
+df_Customer_joined
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p7.png)
+
+**and so on ...**
+
+I can run all sorts of SQL queries here and load them into Python as I need the data. 
+
+
+# 6 Data Manipulation in SQL Server using Python
+
+From Python, I can also [manipulate](https://michael-fuchs-sql.netlify.app/2021/03/07/create-a-database/#delete-the-table-contents) the contents of existing tables on a SQL server.
+
+
+## 6.1 Insert Values into SQL Server Table
+
+
+
+```r
+cursor.execute('''
+               INSERT INTO Customer VALUES ('No', 'Name')
+               ;
+               ''')
+cnxn.commit()
+```
+
+
+
+
+```r
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
+
+df_Customer_manipulated = pd.read_sql(query, cnxn)
+df_Customer_manipulated
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p8.png)
+
+Worked. A new row was added to the existing record. 
+
+Let's take a look at the SQL Server itself: 
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p9.png)
+
+
+
+## 6.2 Delete Records in SQL Server
+
+Now we will delete this column again. 
+
+
+```r
+cursor.execute('''
+               DELETE FROM Customer
+                    WHERE First_Name = 'No'
+               ;
+               ''')
+cnxn.commit()
+```
+
+
+
+
+
+```r
+query = '''
+        SELECT * 
+            FROM Customer
+        ;
+            '''
+
+df_Customer_original = pd.read_sql(query, cnxn)
+df_Customer_original
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p10.png)
+
+
+
+Let's take another look at SQL Server itself:
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p11.png)
+
+
+# 7 Inserting a Python Dataframe into SQL Server
+
+Now I may want to write a new or edited record to a database. This is also possible from here. 
+
+Here is an example data set that I have created in Python:
+
+
+```r
+df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia'],
+                   'Age': [32,22,62],
+                   'Height': [162, 184, 170],
+                   'Gender': ['female', 'male', 'female']})
+df
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p12.png)
+
+In order to write data to a new table on the SQL Server, I need to create it on the server first. 
+
+
+```r
+cursor.execute('''
+               CREATE TABLE NewDF
+                    (Name VARCHAR(100) NOT NULL,
+                    Age INT NOT NULL,
+                    Height INT NOT NULL,
+                    Gender VARCHAR(100) NOT NULL)
+               ;
+               ''')
+cnxn.commit()
+```
+
+Let's take a quick look via SQL Server Object Explorer at the newly created table: 
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.png)
+
+
+It is now listed as we can see.
+Let's try to run a query on this table.
+
+
+```r
+query = '''
+        SELECT * 
+            FROM NewDF
+        ;
+            '''
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p13.1.png)
+
+
+
+Fits, there are no data stored yet but we want to insert them in the next step:
+
+
+```r
+for index, row in df.iterrows():
+     cursor.execute("INSERT INTO dbo.NewDF (Name,Age,Height,Gender) values(?,?,?,?)", row.Name, row.Age, row.Height, row.Gender)
+cnxn.commit()
+```
+
+or **written a bit more clearly**:
+
+
+```r
+for index, row in df.iterrows():
+     cursor.execute('''
+                    INSERT INTO dbo.NewDF 
+                    (Name,Age,Height,Gender) 
+                    values(?,?,?,?)
+                    ''', 
+                    row.Name, 
+                    row.Age, 
+                    row.Height, 
+                    row.Gender)
+cnxn.commit()
+```
+
+
+Let's start the query again:
+
+
+```r
+query = '''
+        SELECT * 
+            FROM NewDF
+        ;
+            '''
+
+df_NewDF = pd.read_sql(query, cnxn)
+df_NewDF
+```
+
+![](/post/2021-03-27-how-to-connect-python-to-a-local-sql-server_files/p132p14.png)
+
+
+Worked. The data from our table created in Python is now stored on the SQL server!
+
+
+
+# 8 Conclusion
+
+How to make queries with SQL is part of the basic knowledge if you want to work in the field of Data Science. 
+
+How to connect to a SQL Server via Python and execute queries on it I have shown in this post. 
+
+Here is the SQL syntax I used to create the database and the tables:
+
+
+```r
+SET LANGUAGE ENGLISH
+
+
+CREATE DATABASE MyDB;
+
+USE MyDB;
+
+
+CREATE TABLE Customer
+    (ID_Customer INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    First_Name VARCHAR(100) NOT NULL,
+    Last_Name VARCHAR(100) NOT NULL)
+    ;
+
+
+INSERT INTO Customer VALUES ('Max', 'Steel')
+INSERT INTO Customer VALUES ('Jessy', 'Williams')
+INSERT INTO Customer VALUES ('Marc', 'Pike')
+INSERT INTO Customer VALUES ('Emily', 'Taylor')
+
+SELECT * FROM Customer
+
+
+
+
+CREATE TABLE Customer_metadata
+    (ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+     ID_Customer INT NOT NULL FOREIGN KEY REFERENCES Customer(ID_Customer),
+     Nationality VARCHAR(100) NOT NULL)
+    ;
+
+
+INSERT INTO Customer_metadata VALUES (1, 'German')
+INSERT INTO Customer_metadata VALUES (2, 'French')
+INSERT INTO Customer_metadata VALUES (3, 'English')
+INSERT INTO Customer_metadata VALUES (4, 'Spanish')
+
+
+SELECT * FROM Customer_metadata
+
+
+
+SELECT * FROM NewDF
+```

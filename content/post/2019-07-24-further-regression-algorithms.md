@@ -1,0 +1,966 @@
+---
+title: Further Regression Algorithms
+author: Michael Fuchs
+date: '2019-07-24'
+slug: further-regression-algorithms
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+# 1 Introduction
+
+In previous publications I have covered regression models from the scikit-learn library and the statsmodel library. 
+But besides these, there are a lot of other machine learning algorithms that can be used to create regression models.
+In this publication I would like to introduce them to you.
+
+Short remark in advance:
+I will not go into the exact functioning of the different algorithms below. In the end I have provided a number of links to further publications of mine in which I explain the algorithms used in detail.
+
+For this post the dataset *House Sales in King County, USA* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
+
+The goal is to find an algorithm that can best predict house prices.
+The results of the algorithms will be stored in variables and presented in an overview at the end.
+
+
+# 2 Loading the libraries and the data
+
+
+
+```r
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+
+
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
+from sklearn.linear_model import SGDRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import BaggingRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import StackingRegressor
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import Ridge
+```
+
+
+
+```r
+house = pd.read_csv("path/to/file/house_prices.csv")
+```
+
+
+```r
+house = house.drop(['zipcode', 'lat', 'long', 'date', 'id'], axis=1)
+house.head()
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p1.png)
+
+
+```r
+x = house.drop('price', axis=1)
+y = house['price']
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+# 3 Linear Regression
+
+
+```r
+lm = LinearRegression()
+
+lm.fit(trainX, trainY)
+y_pred = lm.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p2.png)
+
+
+
+```r
+mae_lm = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_lm = lm.score(trainX, trainY)
+```
+
+
+# 4 Decision Tree Regression
+
+
+
+```r
+dt_reg = DecisionTreeRegressor() 
+
+dt_reg.fit(trainX, trainY)
+y_pred = dt_reg.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p3.png)
+
+
+
+```r
+mae_dt_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_dt_reg = dt_reg.score(trainX, trainY)
+```
+
+
+```r
+param_grid = {"criterion": ["mse", "mae"],
+              "min_samples_split": [10, 20, 40],
+              "max_depth": [2, 6, 8],
+              "min_samples_leaf": [20, 40, 100],
+              "max_leaf_nodes": [5, 20, 100],
+              }
+```
+
+
+```r
+grid_dt_reg = GridSearchCV(dt_reg, param_grid, cv=5, n_jobs = -1) 
+```
+
+
+```r
+grid_dt_reg.fit(trainX, trainY)
+```
+
+
+```r
+print(grid_dt_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p4.png)
+
+
+
+
+```r
+y_pred = grid_dt_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p5.png)
+
+
+
+
+```r
+mae_grid_dt_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_dt_reg = grid_dt_reg.score(trainX, trainY)
+```
+
+
+# 5 Support Vector Machines Regression
+
+
+```r
+svr = SVR(kernel='rbf')
+
+svr.fit(trainX, trainY)
+y_pred = svr.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p6.png)
+
+
+
+```r
+mae_svr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_svr = svr.score(trainX, trainY)
+```
+
+
+```r
+k = ['rbf']
+c = [0.001, 0.10, 0.1, 10, 25, 50, 100, 1000]
+g = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
+
+param_grid=dict(kernel=k, C=c, gamma=g)
+```
+
+
+```r
+grid_svr = GridSearchCV(svr, param_grid, cv=5, n_jobs = -1)
+grid_svr.fit(trainX, trainY)
+```
+
+
+```r
+print(grid_svr.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p7.png)
+
+
+
+```r
+y_pred = grid_svr.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p8.png)
+
+
+
+```r
+mae_grid_svr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_svr = grid_svr.score(trainX, trainY)
+```
+
+
+# 6 Stochastic Gradient Descent (SGD) Regression
+
+
+
+```r
+n_iters = list(range(1,10,1))
+
+scores = []
+for n_iter in n_iters:
+    sgd_reg = SGDRegressor(max_iter=n_iter)
+    sgd_reg.fit(trainX, trainY)
+    scores.append(sgd_reg.score(testX, testY))
+  
+plt.title("Effect of n_iter")
+plt.xlabel("n_iter")
+plt.ylabel("score")
+plt.plot(n_iters, scores) 
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p9.png)
+
+
+```r
+n_iter=5
+sgd_reg = SGDRegressor(max_iter=n_iter)
+
+sgd_reg.fit(trainX, trainY)
+y_pred = sgd_reg.predict(testX)
+```
+
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p10.png)
+
+
+
+```r
+mae_sgd_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_sgd_reg = sgd_reg.score(trainX, trainY)
+```
+
+
+```r
+params = {"alpha" : [0.0001, 0.001, 0.01, 0.1],
+    "penalty" : ["l2", "l1", "elasticnet", "none"],
+}
+```
+
+
+```r
+grid_sgd_reg = GridSearchCV(sgd_reg, param_grid=params, cv=5, n_jobs = -1)
+grid_sgd_reg.fit(trainX, trainY)
+```
+
+
+```r
+print(grid_sgd_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p11.png)
+
+
+
+```r
+y_pred = grid_sgd_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p12.png)
+
+
+
+
+```r
+mae_grid_sgd_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_sgd_reg = grid_sgd_reg.score(trainX, trainY)
+```
+
+
+
+# 7 KNN Regression
+
+
+```r
+k_range = range(1, 33)
+scores = {}
+scores_list = []
+
+k_range = range(1, 33)
+scores = {}
+scores_list = []
+
+for k in k_range:
+    knn_reg = KNeighborsRegressor(n_neighbors=k)
+    knn_reg.fit(trainX, trainY)
+    y_pred = knn_reg.predict(testX)
+    scores[k] = metrics.mean_absolute_error(testY, y_pred)
+    scores_list.append(metrics.mean_absolute_error(testY, y_pred))
+```
+
+
+```r
+plt.plot(k_range, scores_list)
+plt.xlabel('Value of K for KNN_reg')
+plt.ylabel('MSE')
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p13.png)
+
+
+
+```r
+n_eighbors = 16
+knn_reg = KNeighborsRegressor(n_neighbors=n_eighbors)
+
+knn_reg.fit(trainX, trainY)
+y_pred = knn_reg.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2)) 
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p14.png)
+
+
+```r
+mae_knn_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_knn_reg = knn_reg.score(trainX, trainY)
+```
+
+
+```r
+k_range = list(range(1,15))
+weight_options = ["uniform", "distance"]
+params = dict(n_neighbors=k_range, weights=weight_options)
+```
+
+
+```r
+grid_knn_reg = GridSearchCV(knn_reg, param_grid=params, cv=5, n_jobs = -1)
+grid_knn_reg.fit(trainX, trainY)
+```
+
+
+
+```r
+print(grid_knn_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p15.png)
+
+
+
+```r
+y_pred = grid_knn_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p16.png)
+
+
+
+```r
+mae_grid_knn_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_knn_reg = grid_knn_reg.score(trainX, trainY)
+```
+
+
+# 8 Ensemble Modeling
+
+I'll define a function that returns the cross-validation RMSE error so we can evaluate our models and pick the best tuning part.
+
+
+```r
+def rmse_cv(model):
+    rmse= np.sqrt(-cross_val_score(model, trainX, trainY, scoring="neg_mean_squared_error", cv = 5))
+    return(rmse)
+```
+
+
+## 8.1 Bagging Regressor
+
+
+
+```r
+n_estimators = [170, 200, 250, 300]
+cv_rmse_br = [rmse_cv(BaggingRegressor(n_estimators = n_estimator)).mean() 
+            for n_estimator in n_estimators]
+```
+
+
+
+```r
+cv_br = pd.Series(cv_rmse_br , index = n_estimators)
+cv_br.plot(title = "Validation BaggingRegressor")
+plt.xlabel("n_estimator")
+plt.ylabel("rmse")
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p17.png)
+
+
+
+
+```r
+cv_br.min()
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p18.png)
+
+
+
+
+```r
+n_estimators = 300
+
+bagging_reg = BaggingRegressor(n_estimators = n_estimators)
+
+bagging_reg.fit(trainX, trainY)
+y_pred = bagging_reg.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2)) 
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p19.png)
+
+
+
+```r
+mae_bagging_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_bagging_reg = bagging_reg.score(trainX, trainY)
+```
+
+
+## 8.2 Bagging Regressor with Decision Tree Reg as base_estimator
+
+As the base estimator I'll use a DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.
+
+
+
+```r
+dt_reg_with_grid_params = DecisionTreeRegressor(criterion = 'mse', max_depth= 8, max_leaf_nodes= 100, min_samples_leaf= 20, min_samples_split= 10) 
+```
+
+
+```r
+n_estimators = 250
+
+bc_params = {
+    'base_estimator': dt_reg_with_grid_params,
+    'n_estimators': n_estimators
+}
+```
+
+
+```r
+bagging_reg_plus_dtr = BaggingRegressor(**bc_params)
+
+bagging_reg_plus_dtr.fit(trainX, trainY)
+y_pred = bagging_reg_plus_dtr.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p20.png)
+
+
+
+```r
+mae_bagging_reg_plus_dtr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_bagging_reg_plus_dtr = bagging_reg_plus_dtr.score(trainX, trainY)
+```
+
+
+## 8.3 Random Forest Regressor
+
+
+
+```r
+n_estimators = 250
+
+rf_reg = RandomForestRegressor(n_estimators = n_estimators)
+
+rf_reg.fit(trainX, trainY)
+y_pred = rf_reg.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p21.png)
+
+
+```r
+mae_rf_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_rf_reg = rf_reg.score(trainX, trainY)
+```
+
+
+```r
+param_dist = {"max_depth": list(range(3,20)),
+              "max_features": list(range(1, 10)),
+              "min_samples_split": list(range(2, 11)),
+              "bootstrap": [True, False],
+              "criterion": ["mse", "mae"]}
+```
+
+
+```r
+n_iter_search = 10
+
+rs_rf_reg = RandomizedSearchCV(rf_reg, param_distributions=param_dist,
+                                   n_iter=n_iter_search, n_jobs = -1)
+rs_rf_reg.fit(trainX, trainY)
+```
+
+
+
+```r
+print(rs_rf_reg.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p22.png)
+
+
+
+```r
+y_pred = rs_rf_reg.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p23.png)
+
+
+
+```r
+mae_rs_rf_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_rs_rf_reg = rs_rf_reg.score(trainX, trainY)
+```
+
+
+## 8.4 AdaBoost Regressor
+
+
+
+```r
+n_estimators = [170, 200, 250, 300]
+cv_rmse_ab_reg = [rmse_cv(AdaBoostRegressor(n_estimators = n_estimator)).mean() 
+            for n_estimator in n_estimators]
+```
+
+
+
+```r
+cv_ab_reg = pd.Series(cv_rmse_ab_reg , index = n_estimators)
+cv_ab_reg.plot(title = "Validation AdaBoost Regressor")
+plt.xlabel("n_estimator")
+plt.ylabel("rmse")
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p24.png)
+
+
+
+```r
+cv_ab_reg.min()
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p25.png)
+
+
+
+
+```r
+n_estimators = 300
+
+ab_reg = AdaBoostRegressor(n_estimators = n_estimators)
+
+ab_reg.fit(trainX, trainY)
+y_pred = ab_reg.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p26.png)
+
+
+
+```r
+mae_ab_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_ab_reg = ab_reg.score(trainX, trainY)
+```
+
+
+## 8.5 AdaBoost Regressor with Decision Tree Reg as base_estimator
+
+I will use again the DecisionTreeRegressor with the best parameters calculated with grid search under chapter 4.
+
+
+```r
+dt_reg_with_grid_params = DecisionTreeRegressor(criterion = 'mse', max_depth= 8, max_leaf_nodes= 100, min_samples_leaf= 20, min_samples_split= 10) 
+```
+
+
+```r
+n_estimators = 300
+
+ab_params = {
+    'n_estimators': n_estimators,
+    'base_estimator': dt_reg_with_grid_params
+}
+```
+
+
+
+```r
+ab_reg_plus_dtr = AdaBoostRegressor(**ab_params)
+
+ab_reg_plus_dtr.fit(trainX, trainY)
+y_pred = ab_reg_plus_dtr.predict(testX)
+```
+
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p27.png)
+
+
+
+```r
+mae_ab_reg_plus_dtr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_ab_reg_plus_dtr = ab_reg_plus_dtr.score(trainX, trainY)
+```
+
+
+## 8.6 Gradient Boosting Regressor
+
+
+
+```r
+n_estimators = [150, 170 , 200, 400, 500]
+cv_rmse_gb_reg = [rmse_cv(GradientBoostingRegressor(n_estimators = n_estimator)).mean() 
+            for n_estimator in n_estimators]
+```
+
+
+
+```r
+cv_gb_reg = pd.Series(cv_rmse_gb_reg , index = n_estimators)
+cv_gb_reg.plot(title = "Validation Gradient Boosting Regressor")
+plt.xlabel("n_estimator")
+plt.ylabel("rmse")
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p28.png)
+
+
+
+```r
+cv_gb_reg.min()
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p29.png)
+
+
+
+```r
+n_estimators = 500
+
+gb_reg = GradientBoostingRegressor(n_estimators = n_estimators)
+
+gb_reg.fit(trainX, trainY)
+y_pred = gb_reg.predict(testX)
+```
+
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p30.png)
+
+
+```r
+mae_gb_reg = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_gb_reg = gb_reg.score(trainX, trainY)
+```
+
+
+## 8.7 Stacking Regressor
+
+
+```r
+ridge = Ridge()
+lasso = Lasso()
+```
+
+
+```r
+estimators = [
+     ('ridge', Ridge()),
+     ('lasso', Lasso())]
+```
+
+
+```r
+sr = StackingRegressor(estimators=estimators, final_estimator=LinearRegression())
+
+sr.fit(trainX, trainY)
+y_pred = sr.predict(testX)
+```
+
+
+```r
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))  
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p31.png)
+
+
+```r
+mae_sr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_sr = sr.score(trainX, trainY)
+```
+
+
+```r
+params = {'lasso__alpha': [x*5.0 for x in range(1, 10)],
+          'ridge__alpha': [x/5.0 for x in range(1, 10)]}
+```
+
+
+```r
+grid_sr = GridSearchCV(sr, param_grid=params, cv=5)
+grid_sr.fit(trainX, trainY)
+```
+
+
+
+```r
+print(grid_sr.best_params_)
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p32.png)
+
+
+
+```r
+y_pred = grid_sr.predict(testX)
+
+print('Mean Absolute Error:', round(metrics.mean_absolute_error(testY, y_pred), 2))
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p33.png)
+
+
+
+```r
+mae_grid_sr = round(metrics.mean_absolute_error(testY, y_pred), 2)
+r_grid_sr = grid_sr.score(trainX, trainY)
+```
+
+
+
+# 9 Overview Results
+
+Now it is time to collect the calculated results.
+
+
+```r
+column_names = ["Algorithmus", "MAE", "R²"]
+df = pd.DataFrame(columns = column_names)
+
+lm_df = pd.DataFrame([('lm', mae_lm, r_lm)], columns=column_names)
+df = df.append(lm_df)
+
+dt_reg_df = pd.DataFrame([('dt_reg', mae_dt_reg, r_dt_reg)], columns=column_names)
+df = df.append(dt_reg_df)
+
+grid_dt_reg_df = pd.DataFrame([('grid_dt_reg', mae_grid_dt_reg, r_grid_dt_reg)], columns=column_names)
+df = df.append(grid_dt_reg_df)
+
+svr_df = pd.DataFrame([('svr', mae_svr, r_svr)], columns=column_names)
+df = df.append(svr_df)
+
+grid_svr_df = pd.DataFrame([('grid_svr', mae_grid_svr, r_grid_svr)], columns=column_names)
+df = df.append(grid_svr_df)
+
+sgd_reg_df = pd.DataFrame([('sgd_reg', mae_sgd_reg, r_sgd_reg)], columns=column_names)
+df = df.append(sgd_reg_df)
+
+grid_sgd_reg_df = pd.DataFrame([('grid_sgd_reg', mae_grid_sgd_reg, r_grid_sgd_reg)], columns=column_names)
+df = df.append(grid_sgd_reg_df)
+
+knn_reg_df = pd.DataFrame([('knn_reg', mae_knn_reg, r_knn_reg)], columns=column_names)
+df = df.append(knn_reg_df)
+
+grid_knn_reg_df = pd.DataFrame([('grid_knn_reg', mae_grid_knn_reg, r_grid_knn_reg)], columns=column_names)
+df = df.append(grid_knn_reg_df)
+
+bagging_reg_df = pd.DataFrame([('bagging_reg', mae_bagging_reg, r_bagging_reg)], columns=column_names)
+df = df.append(bagging_reg_df)
+
+bagging_reg_plus_dtr_df = pd.DataFrame([('bagging_reg_plus_dtr', mae_bagging_reg_plus_dtr, r_bagging_reg_plus_dtr)], columns=column_names)
+df = df.append(bagging_reg_plus_dtr_df)
+
+rf_reg_df = pd.DataFrame([('rf_reg', mae_rf_reg, r_rf_reg)], columns=column_names)
+df = df.append(rf_reg_df)
+
+rs_rf_reg_df = pd.DataFrame([('rs_rf_reg', mae_rs_rf_reg, r_rs_rf_reg)], columns=column_names)
+df = df.append(rs_rf_reg_df)
+
+ab_reg_df = pd.DataFrame([('ab_reg', mae_ab_reg, r_ab_reg)], columns=column_names)
+df = df.append(ab_reg_df)
+
+ab_reg_plus_dtr_df = pd.DataFrame([('ab_reg_plus_dtr', mae_ab_reg_plus_dtr, r_ab_reg_plus_dtr)], columns=column_names)
+df = df.append(ab_reg_plus_dtr_df)
+
+gb_reg_df = pd.DataFrame([('gb_reg', mae_gb_reg, r_gb_reg)], columns=column_names)
+df = df.append(gb_reg_df)
+
+sr_df = pd.DataFrame([('sr', mae_sr, r_sr)], columns=column_names)
+df = df.append(sr_df)
+
+grid_sr_df = pd.DataFrame([('grid_sr', mae_grid_sr, r_grid_sr)], columns=column_names)
+df = df.append(grid_sr_df)
+
+df['MAE'] = np.round(df['MAE'], decimals=3)
+df['R²'] = np.round(df['R²'], decimals=3)
+
+df = df.rename(columns={'R²': 'R'})
+df['R²'] = abs(df.R)
+df = df.drop(columns=['R'])
+
+
+df
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p34.png)
+
+
+Ok this overview is not really readable yet.
+We can do better:
+
+
+
+
+```r
+pd.options.display.float_format = '{:.5f}'.format
+
+df
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p35.png)
+
+Now we display the MAE values in ascending order.
+
+
+
+```r
+best_MAE = df.sort_values(by='MAE', ascending=True)
+best_MAE
+```
+
+![](/post/2019-07-24-further-regression-algorithms_files/p68p36.png)
+
+From the overview we can see that the RandomForestRegressor is the algorithm that achieved the best results. 
+
+
+
+```r
+pd.reset_option('display.float_format')
+```
+
+
+What these metrics mean and how to interpret them I have described in the following post: [Metrics for Regression Analysis](https://michael-fuchs-python.netlify.app/2019/06/30/metrics-for-regression-analysis/)
+
+
+# 10 Conclusion
+
+In this post I have shown which different machine learning algorithms are available to create regression models. 
+The explanation of the exact functionality of the individual algorithms was not central. 
+But I did explain them when I used these algorithms for classification problems. 
+Have a look here:
+
++ [Decision Trees](https://michael-fuchs-python.netlify.com/2019/11/30/introduction-to-decision-trees/)
++ [Support Vector Machines](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/)
++ [SGD Classifier](https://michael-fuchs-python.netlify.com/2019/11/11/introduction-to-sgd-classifier/)
++ [K Nearest Neighbor Classifier](https://michael-fuchs-python.netlify.com/2019/12/27/introduction-to-knn-classifier/)
++ [Bagging](https://michael-fuchs-python.netlify.app/2020/03/07/ensemble-modeling-bagging/)
++ [Boosting](https://michael-fuchs-python.netlify.app/2020/03/26/ensemble-modeling-boosting/)
++ [Stacking](https://michael-fuchs-python.netlify.app/2020/04/24/ensemble-modeling-stacking/)
+
+
+
+

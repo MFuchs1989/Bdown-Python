@@ -1,0 +1,339 @@
+---
+title: Multinomial logistic regression
+author: Michael Fuchs
+date: '2019-11-15'
+slug: multinomial-logistic-regression
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+ 
+
+# 1 Introduction
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27s1.png)
+
+In my previous posts, I explained how ["Logistic Regression"](https://michael-fuchs-python.netlify.com/2019/10/31/introduction-to-logistic-regression/) and ["Support Vector Machines"](https://michael-fuchs-python.netlify.com/2019/11/08/introduction-to-support-vector-machines/) works. Short wrap up: we used a logistic regression or a support vector machine to create a binary classification model. With a Multinomial Logistic Regression (also known as Softmax Regression) it is possible to predict multipe classes. And this is the content this publication is about.
+
+
+For this post the dataset *Iris* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download the dataset from my ["GitHub Repository"](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets). 
+
+
+
+
+# 2 Loading the libraries and the data
+
+
+
+```r
+import numpy as np
+import pandas as pd
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+
+#for chapter 3.2
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+
+#for chapter 4
+import statsmodels.api as sm
+
+#for readable figures
+pd.set_option('float_format', '{:f}'.format)
+```
+
+
+
+```r
+iris = pd.read_csv("path/to/file/Iris_Data.csv")
+```
+
+
+
+```r
+iris.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p1.png)
+
+
+
+# 3 Multinomial logistic regression with scikit-learn
+
+First of all we assign the predictors and the criterion to each object and split the datensatz into a training and a test part.
+
+
+
+```r
+x = iris.drop('species', axis=1)
+y = iris['species']
+trainX, testX, trainY, testY = train_test_split(x, y, test_size = 0.2)
+```
+
+
+## 3.1 Fit the model
+
+Here comes the Multinomial Logistic Regression: 
+
+
+```r
+log_reg = LogisticRegression(solver='newton-cg', multi_class='multinomial')
+log_reg.fit(trainX, trainY)
+y_pred = log_reg.predict(testX)
+```
+
+
+## 3.2 Model validation
+
+
+Let's print the accuracy and error rate:
+
+
+```r
+print('Accuracy: {:.2f}'.format(accuracy_score(testY, y_pred)))
+print('Error rate: {:.2f}'.format(1 - accuracy_score(testY, y_pred)))
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p2.png)
+
+Let's have a look at the scores from cross validation:
+
+
+```r
+clf = LogisticRegression(solver='newton-cg', multi_class='multinomial')
+scores = cross_val_score(clf, trainX, trainY, cv=5)
+scores
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z1.png)
+
+
+```r
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z2.png)
+
+Let's have a look at the confusion matrix:
+
+
+```r
+confusion_matrix = confusion_matrix(testY, y_pred)
+print(confusion_matrix)
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z3.png)
+
+If you have many variables, it makes sense to plot the confusion matrix:
+
+
+```r
+plt.matshow(confusion_matrix, cmap=plt.cm.gray)
+plt.show()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27z4.png)
+
+
+## 3.3 Calculated probabilities
+
+
+We also have the opportunity to get the probabilities of the predicted classes:
+
+
+```r
+probability = log_reg.predict_proba(testX)
+probability
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p3.png)
+
+
+
+Each column here represents a class. The class with the highest probability is the output of the predicted class. Here we can see that the length of the probability data is the same as the length of the test data.
+
+
+```r
+print(probability.shape[0])
+print(testX.shape[0])
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p4.png)
+
+Let's bring the above shown output into shape and a readable format.
+
+
+```r
+df = pd.DataFrame(log_reg.predict_proba(testX), columns=log_reg.classes_)
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p5.png)
+
+
+Tip: with the .classes_ function we get the order of the classes that Python gave.
+
+The sum of the probabilities must always be 1. We can see here:
+
+
+
+```r
+df['sum'] = df.sum(axis=1)
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p6.png)
+
+Now let's add the predicted classes...
+
+
+```r
+df['predicted_class'] = y_pred
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p7.png)
+
+.. and the actual classes:
+
+
+
+```r
+df['actual_class'] = testY.to_frame().reset_index().drop(columns='index')
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p8.png)
+
+
+Now we can do a plausibility check whether the classes were predicted correctly. Unfortunately, the comparison of two object columns works very badly in my test attempts. Therefore I built a small word around in which I convert the predicted_classes and actual_classes using the label encoder from scikit-learn and then continue to work with numerical values.
+
+
+
+```r
+le = preprocessing.LabelEncoder()
+
+df['label_pred'] = le.fit_transform(df['predicted_class'])
+df['label_actual'] = le.fit_transform(df['actual_class'])
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p9.png)
+
+Here we see that the two variables (predicted_class & actual_class) were coded the same and can therefore be continued properly.
+
+
+```r
+targets = df['predicted_class']   
+integerEncoded = le.fit_transform(targets)
+integerMapping=dict(zip(targets,integerEncoded))
+integerMapping
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p10.png)
+
+
+```r
+targets = df['actual_class']   
+integerEncoded = le.fit_transform(targets)
+integerMapping=dict(zip(targets,integerEncoded))
+integerMapping
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p11.png)
+
+Now it's time for our plausibility check whether the classes were predicted correctly. If the result of subtraction is 0, it was a correct estimate of the model.
+
+
+
+```r
+df['check'] = df['label_actual'] - df['label_pred']
+df.head(7)
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p12.png)
+
+For better orientation, we give the observations descriptive names and delete unnecessary columns.
+
+
+```r
+df['correct_prediction?'] = np.where(df['check'] == 0, 'True', 'False')
+df = df.drop(['label_pred', 'label_actual', 'check'], axis=1)
+df.head()
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p13.png)
+
+Now we can use the generated "values" to manually calculate the accuracy again.
+
+
+```r
+true_predictions = df[(df["correct_prediction?"] == 'True')].shape[0]
+false_predictions = df[(df["correct_prediction?"] == 'False')].shape[0]
+total = df["correct_prediction?"].shape[0]
+
+print('manual calculated Accuracy is:', (true_predictions / total * 100))
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p14.png)
+
+
+Let’s take finally a look at the probabilities of the mispredicted classes.
+
+
+
+```r
+wrong_pred = df[(df["correct_prediction?"] == 'False')]
+wrong_pred
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p15.png)
+
+We see we were close to the right class both times.
+
+
+
+# 4 Multinomial Logit with the statsmodel library
+
+To get the p-values of the model created above we have to use the statsmodel library again.
+
+
+```r
+x = iris.drop('species', axis=1)
+y = iris['species']
+```
+
+
+```r
+x = sm.add_constant(x, prepend = False)
+
+mnlogit_mod = sm.MNLogit(y, x)
+mnlogit_fit = mnlogit_mod.fit()
+
+print (mnlogit_fit.summary())
+```
+
+![](/post/2019-11-15-multinomial-logistic-regression_files/p27p16.png)
+
+How to interpret the results exactly can be read ["here"](https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.MNLogit.html).
+
+
+# 5 Conclusion
+
+This publication showed how the Multinomial Logistic Regression can be used to predict multiple classes. Furthermore, the use and interpretation of the probability information was discussed.
+
+
+
+
+

@@ -1,0 +1,296 @@
+---
+title: Visualizations
+author: Michael Fuchs
+date: '2021-04-07'
+slug: visualizations
+categories:
+  - R
+tags:
+  - R Markdown
+output:
+  blogdown::html_page:
+    toc: true
+    toc_depth: 5
+---
+
+
+
+# 1 Introduction
+
+Visualizations are part of the bread and butter business for any Data Analyst or Scientist. 
+So far I have not dealt with this topic in any post. 
+
+
+This post is not imun to changes and additions. I will add more parts little by little.
+
+
+# 2 Loading the libraries
+
+
+```r
+import pandas as pd
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+
+import warnings
+warnings.filterwarnings("ignore")
+```
+
+
+# 3 Line Chart
+
+## 3.1 Creating the Data
+
+
+```r
+df_line = pd.DataFrame({'Year': [2016,2017,2018,2019,2020,2021],
+                        'Value': [5,8,6,15,13,16]})
+df_line
+```
+
+![](/post/2021-04-07-visualizations_files/p120p1.png)
+
+## 3.2 Simple Line Chart
+
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p2.png)
+
+## 3.3 Prevention of unwanted Ticks
+
+Sometimes it happens (especially when you have little data available) that a line chart shows unwanted ticks on the X-axis. 
+
+We therefore use only part of our sample data in the following example. 
+
+
+
+```r
+df_temp = df_line.head(2)
+df_temp
+```
+
+![](/post/2021-04-07-visualizations_files/p120p3.png)
+
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_temp['Year'], df_temp['Value'])
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p4.png)
+
+locator_params helps here:
+
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_temp['Year'], df_temp['Value'])
+
+
+plt.locator_params(axis='x', nbins = df_temp.shape[0])
+
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p5.png)
+
+
+## 3.4 Configurations
+
+### 3.4.1 Rotation of the X-Axis
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+plt.xticks(rotation = 45) # Rotates X-Axis Ticks by 45-degrees
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p6.png)
+
+### 3.4.2 Labeling of the Chart
+
+#### 3.4.2.1 Add a Subtitle
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+plt.suptitle('Development over the Years', fontsize=15, x=0.52, y=0.96)
+plt.title('From 2016 to 2021', ha='center')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p7.png)
+
+The term subtitle is a bit misleading here, because under this method now the actual title is meant and with plt.title the subtitle. 
+
+You can manually set the position of the suptitle as described here: [matplotlib.pyplot.suptitl](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.suptitle.html)
+
+
+#### 3.4.2.2 Show bold Labels
+
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+
+plt.title('Development over the Years', fontsize=14.0, fontweight='bold')
+plt.xlabel('Timeline', fontweight='bold')
+plt.ylabel('Value in Kilograms (kg)', fontweight='bold')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p8.png)
+
+
+#### 3.4.2.3 Add a Legend
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.legend(loc="upper left")
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p9.png)
+
+
+#### 3.4.2.4 Add v-Lines
+
+
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+
+plt.vlines(2017, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='g', label = 'Production Increase', linestyles='dashed')
+plt.vlines(2018, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='r', label = 'Collapse of the economy', linestyles='dotted')
+plt.vlines(2021 - 0.5, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='lime', label = 'Economic recovery', linestyles='solid')
+plt.legend(bbox_to_anchor = (1.0, 1), loc = 'upper left')
+
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p10.png)
+
+If you want to learn more about the use and functionality of v-lines see here:
+
++ [matplotlib.pyplot.vline](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.vlines.html)
++ [List of named colors](https://matplotlib.org/stable/gallery/color/named_colors.html)
+
+
+## 3.5 Storage of the created Charts
+
+
+```r
+plt.figure(figsize=(11,7))
+plt.plot(df_line['Year'], df_line['Value'])
+
+
+plt.vlines(2017, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='g', label = 'Production Increase', linestyles='dashed')
+plt.vlines(2018, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='r', label = 'Collapse of the economy', linestyles='dotted')
+plt.vlines(2021 - 0.5, 
+           df_line['Value'].min(), 
+           df_line['Value'].max(), 
+           colors='lime', label = 'Economic recovery', linestyles='solid')
+plt.legend(bbox_to_anchor = (1.0, 1), loc = 'upper left')
+
+
+plt.title('Development over the Years')
+plt.xlabel('Timeline')
+plt.ylabel('Value in Kilograms (kg)')
+
+
+plt.savefig('Development over the Years.png', bbox_inches='tight')
+
+plt.show()
+```
+
+![](/post/2021-04-07-visualizations_files/p120p11.png)
+
+**Note**: 
+
+For normal graphics there is usually no need for another safefig option. 
+Since we have put the legend outside in our graphic for a better readability we must use here additionally `bbox_inches='tight'`!
+
+Here is our saved image:  
+
+![](/post/2021-04-07-visualizations_files/p120p12.png)
+
+
+# 4 Conclusion
+
+As mentioned at the beginning, I will gradually update this post with more visualization options. 
+
+
