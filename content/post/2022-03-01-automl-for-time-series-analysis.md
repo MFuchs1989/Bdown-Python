@@ -30,7 +30,8 @@ Where the latter has less to do with automated machine learning but is fast and 
 # 2  Import the Libraries and the Functions
 
 
-```{r, eval=F, echo=T}
+
+```r
 import pandas as pd
 import numpy as np
 
@@ -67,7 +68,8 @@ from merlion.models.ensemble.forecast import ForecasterEnsemble, ForecasterEnsem
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 def mean_absolute_percentage_error_func(y_true, y_pred):
     '''
     Calculate the mean absolute percentage error as a metric for evaluation
@@ -85,7 +87,8 @@ def mean_absolute_percentage_error_func(y_true, y_pred):
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 def timeseries_evaluation_metrics_func(y_true, y_pred):
     '''
     Calculate the following evaluation metrics:
@@ -113,7 +116,8 @@ def timeseries_evaluation_metrics_func(y_true, y_pred):
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
     '''
     Calculates statistical values whether the available data are stationary or not 
@@ -145,7 +149,8 @@ def Augmented_Dickey_Fuller_Test_func(timeseries , column_name):
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 def inverse_diff_func(actual_df, pred_df):
     '''
     Transforms the differentiated values back
@@ -172,7 +177,8 @@ For this post the dataset FB from the statistic platform [Kaggle](https://www.ka
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 df = pd.read_csv('FB.csv')
 df = df[['Date', 'Open', 'High', 'Low', 'Close']]
 df.index = pd.to_datetime(df.Date)
@@ -183,7 +189,8 @@ df.head()
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p1.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 X = df[['Close']]
 
 trainX = X.iloc[:-30]
@@ -207,7 +214,8 @@ You can find the exact documentation here: [AutoTS](https://winedarksea.github.i
 ## 4.1  Compare Models
 
 
-```{r, eval=F, echo=T}
+
+```r
 model = AutoTS(
     forecast_length=30,
     frequency='d', #for daily
@@ -234,7 +242,8 @@ For the parameter model_list there are some settings that can be made:
 For a detailed description of the parameters, please read the [documentation](https://winedarksea.github.io/AutoTS/build/html/source/autots.html). 
 
 
-```{r, eval=F, echo=T}
+
+```r
 model = model.fit(trainX)
 ```
 
@@ -243,7 +252,8 @@ Let's display the model parameters:
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 best_model_Name = model.best_model_name
 best_model_Parameters = model.best_model_params
 best_model_TransformationParameters = model.best_model_transformation_params
@@ -263,14 +273,16 @@ print(best_model_TransformationParameters)
 Now it is time to do the prediction and validation:
 
 
-```{r, eval=F, echo=T}
+
+```r
 prediction = model.predict()
 prediction
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p3.png)
 
-```{r, eval=F, echo=T}
+
+```r
 prediction.plot(model.df_wide_numeric,
                 series=model.df_wide_numeric.columns[0],
                 start_date="2019-01-01")
@@ -282,19 +294,22 @@ If you wonder why there are gaps in this chart, it is because the stock price is
 
 But that doesn't matter, we can also display the chart again more nicely. But first let's have a look at the validation metrics:
 
-```{r, eval=F, echo=T}
+
+```r
 forecasts_df = prediction.forecast
 forecasts_up, forecasts_low = prediction.upper_forecast, prediction.lower_forecast
 ```
 
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecasts_df)
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p5.png)
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -311,7 +326,8 @@ plt.show()
 With the following command we get all calculated models including their parameters and achieved score:
 
 
-```{r, eval=F, echo=T}
+
+```r
 model_results = model.results()
 model_results
 ```
@@ -330,7 +346,8 @@ Here again the parameters that led to the best result for FBProphet:
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 print('Best model:')
 print(best_model_Name)
 print()
@@ -346,7 +363,8 @@ print(best_model_TransformationParameters)
 I could now enter the parameters as follows:
 
 
-```{r, eval=F, echo=T}
+
+```r
 FBProphet_model = model_forecast(
     model_name="FBProphet",
     model_param_dict={'holiday': True, 'regression_type': None, 'growth': 'linear', 
@@ -365,12 +383,14 @@ FBProphet_model = model_forecast(
 
 But after I am too lazy to transcribe everything I can also use the saved metrics from the best model of AutoTS. I just have to format them as a dictionary. 
 
-```{r, eval=F, echo=T}
+
+```r
 best_model_Parameters_dic = ast.literal_eval(str(best_model_Parameters))
 best_model_TransformationParameters_dic = ast.literal_eval(str(best_model_TransformationParameters))
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 LastValueNaive_model = model_forecast(
     model_name = best_model_Name,
     model_param_dict = best_model_Parameters_dic,
@@ -380,7 +400,8 @@ LastValueNaive_model = model_forecast(
 ```
 
 
-```{r, eval=F, echo=T}
+
+```r
 forecasts_df_LastValueNaive_model = LastValueNaive_model.forecast
 forecasts_df_LastValueNaive_model.head()
 ```
@@ -388,7 +409,8 @@ forecasts_df_LastValueNaive_model.head()
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p9.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecasts_df_LastValueNaive_model)
 ```
 
@@ -399,7 +421,8 @@ OK why is this result now again better than the one achieved before with FBProph
 
 Let's display the results:
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -421,7 +444,8 @@ Now, the fact is that time series can be affected by other variables. We can als
 Let's look at the following variables to finally predict 'Close':
 
 
-```{r, eval=F, echo=T}
+
+```r
 df.head()
 ```
 
@@ -429,7 +453,8 @@ df.head()
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 trainX_multi = df.iloc[:-30]
 testX_multi = df.iloc[-30:]
 ```
@@ -438,7 +463,8 @@ testX_multi = df.iloc[-30:]
 We can have the values for all variables predicted with a higher weight for the target variable ('Close').
 
 
-```{r, eval=F, echo=T}
+
+```r
 model_ext_var = AutoTS(
     forecast_length=30,
     frequency='d',
@@ -452,7 +478,8 @@ model_ext_var = AutoTS(
     n_jobs=-1)
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 weights_close = {'Close': 20}
 
 model_ext_var = model_ext_var.fit(trainX_multi,
@@ -462,7 +489,8 @@ model_ext_var = model_ext_var.fit(trainX_multi,
 This time it is an ensemble that gives the best result:
 
 
-```{r, eval=F, echo=T}
+
+```r
 best_model_ext_var_Name = model_ext_var.best_model_name
 best_model_ext_var_Parameters = model_ext_var.best_model_params
 best_model_ext_var_TransformationParameters = model_ext_var.best_model_transformation_params
@@ -483,7 +511,8 @@ print(best_model_ext_var_TransformationParameters)
 Let's do the validation:
 
 
-```{r, eval=F, echo=T}
+
+```r
 prediction_ext_var = model_ext_var.predict()
 forecasts_df_ext_var = prediction_ext_var.forecast
 forecasts_up_ext_var, forecasts_low_ext_var = prediction_ext_var.upper_forecast, prediction_ext_var.lower_forecast
@@ -492,7 +521,8 @@ forecasts_up_ext_var, forecasts_low_ext_var = prediction_ext_var.upper_forecast,
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 for i in ['Open', 'High', 'Low', 'Close' ]:
     print(f'Evaluation metric for {i}')
     timeseries_evaluation_metrics_func(testX_multi[str(i)] , forecasts_df_ext_var[str(i)])
@@ -500,7 +530,8 @@ for i in ['Open', 'High', 'Low', 'Close' ]:
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p14.png)
 
-```{r, eval=F, echo=T}
+
+```r
 for i in ['Open', 'High', 'Low', 'Close' ]:
     
     plt.rcParams["figure.figsize"] = [10,7]
@@ -527,7 +558,8 @@ As mentioned at the beginning, I find [Merlion](https://github.com/salesforce/Me
 ## 5.1  Prepare the Data
 
 
-```{r, eval=F, echo=T}
+
+```r
 df.head()
 ```
 
@@ -535,20 +567,23 @@ df.head()
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 Augmented_Dickey_Fuller_Test_func(df['Close' ],'Close')
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p18.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 train_diff = trainX.diff()
 train_diff.dropna(inplace = True)
 ```
 
 
-```{r, eval=F, echo=T}
+
+```r
 Augmented_Dickey_Fuller_Test_func(train_diff['Close' ],'Close')
 ```
 
@@ -558,7 +593,8 @@ Augmented_Dickey_Fuller_Test_func(train_diff['Close' ],'Close')
 
 This time we differentiate our time series:
 
-```{r, eval=F, echo=T}
+
+```r
 train_data = TimeSeries.from_pd(train_diff)
 test_data = TimeSeries.from_pd(testX)
 ```
@@ -569,7 +605,8 @@ test_data = TimeSeries.from_pd(testX)
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_default_model = DefaultForecaster(DefaultForecasterConfig())
 merlion_default_model.train(train_data=train_data)
 forecast_default_model, test_err = merlion_default_model.forecast(time_stamps=test_data.time_stamps)
@@ -578,7 +615,8 @@ forecast_default_model, test_err = merlion_default_model.forecast(time_stamps=te
 Admittedly, the output of the forecast is not as easy to continue using as I would like. However, we can easily transform it into a usable format:
 
 
-```{r, eval=F, echo=T}
+
+```r
 forecast_default_model_df = pd.DataFrame(forecast_default_model).reset_index()
 forecast_default_model_df.columns = ['index', 'ts', 'Value']
 forecast_default_model_df['Value'] = forecast_default_model_df['Value'].astype(str)
@@ -603,7 +641,8 @@ forecast_default_model_df.head()
 Now let's do the inverse transformation so that the predicted values become useful.
 
 
-```{r, eval=F, echo=T}
+
+```r
 forecast_default_model_df = inverse_diff_func(trainX, forecast_default_model_df)
 forecast_default_model_df.head()
 ```
@@ -612,7 +651,8 @@ forecast_default_model_df.head()
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_default_model_df['Close_inv_diff'])
 ```
 
@@ -620,7 +660,8 @@ timeseries_evaluation_metrics_func(testX, forecast_default_model_df['Close_inv_d
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -641,27 +682,31 @@ Mhhh still not the best result. Let's see if we can improve that again.
 
 Now I am going to train multiple models as well as ensembles:
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_arima_model_config = ArimaConfig(max_forecast_steps=100, order=(1, 1, 1),
                                          transform=TemporalResample(granularity="D"))
 
 merlion_arima_model  = Arima(merlion_arima_model_config)
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_prophet_model_config = ProphetConfig(max_forecast_steps=100, transform=Identity())
 
 merlion_prophet_model  = Prophet(merlion_prophet_model_config)
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_mses_model_config = MSESConfig(max_forecast_steps=100, max_backstep=80,
                                        transform=TemporalResample(granularity="D"))
 
 merlion_mses_model  = MSES(merlion_mses_model_config)
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_ensemble_model_config = ForecasterEnsembleConfig(combiner=Mean(), 
                                                          models=[merlion_arima_model, 
                                                                  merlion_prophet_model, 
@@ -670,7 +715,8 @@ merlion_ensemble_model_config = ForecasterEnsembleConfig(combiner=Mean(),
 merlion_ensemble_model  = ForecasterEnsemble(config=merlion_ensemble_model_config)
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 merlion_selector_model_config = ForecasterEnsembleConfig(combiner=ModelSelector(metric=ForecastMetric.sMAPE))
 
 merlion_selector_model = ForecasterEnsemble(config=merlion_selector_model_config, 
@@ -679,7 +725,8 @@ merlion_selector_model = ForecasterEnsemble(config=merlion_selector_model_config
                                                     merlion_mses_model])
 ```
 
-```{r, eval=F, echo=T}
+
+```r
 print(f"Training {type(merlion_arima_model).__name__}:")
 merlion_arima_model.train(train_data)
 
@@ -703,7 +750,8 @@ print("Model training finished!!")
 
 
 
-```{r, eval=F, echo=T}
+
+```r
 print(f"Forecasting {type(merlion_arima_model).__name__}...")
 forecast_merlion_arima_model, test_err1 = merlion_arima_model.forecast(time_stamps=test_data.time_stamps)
 
@@ -734,7 +782,8 @@ print("Forecasting finished!!")
 Since I don't feel like doing the same processing steps over and over for each result, I wrote a simple function that does it for me:
 
 
-```{r, eval=F, echo=T}
+
+```r
 def merlion_forecast_processing_func(x):
     '''
     This function is adapted to the Facebook dataframe !!  
@@ -764,7 +813,8 @@ def merlion_forecast_processing_func(x):
 ```
 
 
-```{r, eval=F, echo=T}
+
+```r
 forecast_merlion_arima_model_df = merlion_forecast_processing_func(forecast_merlion_arima_model)
 forecast_merlion_prophet_model_df = merlion_forecast_processing_func(forecast_merlion_prophet_model)
 forecast_merlion_mses_model_df = merlion_forecast_processing_func(forecast_merlion_mses_model)
@@ -775,14 +825,16 @@ forecast_merlion_selector_model_df = merlion_forecast_processing_func(forecast_m
 
 **merlion_arima_model**
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_merlion_arima_model_df['Close_inv_diff'])
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p26.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -799,14 +851,16 @@ plt.show()
 
 **merlion_prophet_model**
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_merlion_prophet_model_df['Close_inv_diff'])
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p28.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -825,14 +879,16 @@ plt.show()
 
 **merlion_mses_model**
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_merlion_mses_model_df['Close_inv_diff'])
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p30.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -849,14 +905,16 @@ plt.show()
 
 **merlion_ensemble_model**
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_merlion_ensemble_model_df['Close_inv_diff'])
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p32.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
@@ -872,14 +930,16 @@ plt.show()
 
 **merlion_selector_model**
 
-```{r, eval=F, echo=T}
+
+```r
 timeseries_evaluation_metrics_func(testX, forecast_merlion_selector_model_df['Close_inv_diff'])
 ```
 
 ![](/post/2022-03-01-automl-for-time-series-analysis_files/p137p34.png)
 
 
-```{r, eval=F, echo=T}
+
+```r
 plt.rcParams["figure.figsize"] = [15,7]
 plt.plot(trainX, label='Train ')
 plt.plot(testX, label='Test ')
