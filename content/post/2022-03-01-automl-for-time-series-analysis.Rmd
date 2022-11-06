@@ -14,8 +14,6 @@ output:
 
 # 1 Introduction
 
-Hello World!!
-
 There are automated machine learning libraries not only for [classification](https://michael-fuchs-python.netlify.app/2022/01/01/automl-using-pycaret-classification/) or [regression](https://michael-fuchs-python.netlify.app/2022/01/15/automl-using-pycaret-regression/) but also for time series prediction. 
 
 This is the topic of this post. 
