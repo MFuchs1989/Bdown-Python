@@ -20,6 +20,8 @@ output:
 
 TEST
 
+Test 2
+
 Now that we are familiar with smoothing methods for predicting time series, we come to so-called regression extension techniques.
 
 
