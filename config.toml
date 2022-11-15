@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "/post/"
 languageCode = "en-us"
 title = "Michael Fuchs Python"
 theme = "hugo-lithium"
