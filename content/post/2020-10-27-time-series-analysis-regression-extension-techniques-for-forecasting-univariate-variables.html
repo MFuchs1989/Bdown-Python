@@ -16,21 +16,21 @@ output:
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#theoretical-background">2 Theoretical Background</a></li>
-<li><a href="#import-the-libraries-and-data">3 Import the Libraries and Data</a></li>
-<li><a href="#definition-of-required-functions">4 Definition of required Functions</a></li>
-<li><a href="#check-for-stationarity">5 Check for Stationarity</a></li>
-<li><a href="#arima-in-action">6 ARIMA in Action</a></li>
-<li><a href="#seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a>
+<li><a href="#introduction" id="toc-introduction">1 Introduction</a></li>
+<li><a href="#theoretical-background" id="toc-theoretical-background">2 Theoretical Background</a></li>
+<li><a href="#import-the-libraries-and-data" id="toc-import-the-libraries-and-data">3 Import the Libraries and Data</a></li>
+<li><a href="#definition-of-required-functions" id="toc-definition-of-required-functions">4 Definition of required Functions</a></li>
+<li><a href="#check-for-stationarity" id="toc-check-for-stationarity">5 Check for Stationarity</a></li>
+<li><a href="#arima-in-action" id="toc-arima-in-action">6 ARIMA in Action</a></li>
+<li><a href="#seasonal-arima-sarima" id="toc-seasonal-arima-sarima">7 Seasonal ARIMA (SARIMA)</a>
 <ul>
-<li><a href="#get-the-final-model">7.1 Get the final Model</a></li>
+<li><a href="#get-the-final-model" id="toc-get-the-final-model">7.1 Get the final Model</a></li>
 </ul></li>
-<li><a href="#sarimax">8 SARIMAX</a>
+<li><a href="#sarimax" id="toc-sarimax">8 SARIMAX</a>
 <ul>
-<li><a href="#get-the-final-model-1">8.1 Get the final Model</a></li>
+<li><a href="#get-the-final-model-1" id="toc-get-the-final-model-1">8.1 Get the final Model</a></li>
 </ul></li>
-<li><a href="#conclusion">9 Conclusion</a></li>
+<li><a href="#conclusion" id="toc-conclusion">9 Conclusion</a></li>
 </ul>
 </div>
 
@@ -350,7 +350,7 @@ for m in [1, 4, 7, 12, 52]:
     timeseries_evaluation_metrics_func(actualtest, forecast)
 
     # Storage of m value for each model in a separate table 
-    rmse = np.sqrt(metrics.mean_squared_error(testX, forecast))    
+    rmse = np.sqrt(metrics.mean_squared_error(actualtest, forecast))    
     df1 = {&#39;m&#39;:m, &#39;RMSE&#39;: rmse}
     df_results_SARIMAX = df_results_SARIMAX.append(df1, ignore_index=True)
     
@@ -396,7 +396,7 @@ print(&quot;m_value_SARIMAX: &quot;, m_value_SARIMAX)</code></pre>
                                             exogenous=exotest,return_conf_int=True)
     
 forecast = pd.DataFrame(forecast, columns=[&#39;close_pred&#39;])</code></pre>
-<pre class="r"><code>timeseries_evaluation_metrics_func(testX, forecast)</code></pre>
+<pre class="r"><code>timeseries_evaluation_metrics_func(actualtest, forecast)</code></pre>
 <p><img src="/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p37.png" /></p>
 <pre class="r"><code>df_conf = pd.DataFrame(conf_int,columns= [&#39;Upper_bound&#39;,&#39;Lower_bound&#39;])
 df_conf[&quot;new_index&quot;] = range(len(actualtrain), len(X))

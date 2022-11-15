@@ -506,7 +506,7 @@ for m in [1, 4, 7, 12, 52]:
     timeseries_evaluation_metrics_func(actualtest, forecast)
 
     # Storage of m value for each model in a separate table 
-    rmse = np.sqrt(metrics.mean_squared_error(testX, forecast))    
+    rmse = np.sqrt(metrics.mean_squared_error(actualtest, forecast))    
     df1 = {'m':m, 'RMSE': rmse}
     df_results_SARIMAX = df_results_SARIMAX.append(df1, ignore_index=True)
     
@@ -589,7 +589,7 @@ forecast = pd.DataFrame(forecast, columns=['close_pred'])
 
 
 ```{r, eval=F, echo=T}
-timeseries_evaluation_metrics_func(testX, forecast)
+timeseries_evaluation_metrics_func(actualtest, forecast)
 ```
 
 ![](/post/2020-10-27-time-series-analysis-regression-extension-techniques-for-forecasting-univariate-variables_files/p96p37.png)
