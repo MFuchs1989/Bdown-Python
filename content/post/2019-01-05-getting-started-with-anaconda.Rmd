@@ -521,6 +521,7 @@ If you want to have the created sample environment feel free to download it from
 **Possibly** the **packages are no longer up to date**. You should therefore **update the most important libraries**. Here is my list of commands, which I call in the Anaconda Powershell Prompt after I have activated the desired environment:
 
 + **`conda update pip`**
++ `conda update jupyter`
 + `conda update pandas`
 + `conda update numpy`
 + `conda update scikit-learn`
@@ -530,7 +531,5 @@ If you want to have the created sample environment feel free to download it from
 + `pip install tensorflow --upgrade`
 + `pip install keras --upgrade`
 + `pip install xgboost --upgrade`
-
-
 
 
