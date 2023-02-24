@@ -266,6 +266,7 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <p>For example, here is a list of the packages I used to create the example environment (found here in my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment">GitHub Repository</a>):</p>
 <ul>
 <li><strong><code>conda install -c anaconda pip</code></strong></li>
+<li><code>conda install -c anaconda jupyter</code></li>
 <li><code>conda install -c anaconda pandas</code></li>
 <li><code>conda install -c anaconda numpy</code></li>
 <li><code>conda install -c anaconda scikit-learn</code></li>
@@ -276,6 +277,9 @@ Likewise, a library installed by pip may inadvertently update or remove packages
 <li><code>pip install keras</code></li>
 <li><code>pip install xgboost</code></li>
 <li><strong><code>pip install jupyter_contrib_nbextensions</code></strong></li>
+</ul>
+<p>You may need to run the following command once more to see the nbextensions later:</p>
+<ul>
 <li><strong><code>jupyter contrib nbextension install --user</code></strong></li>
 </ul>
 <p>Please do not forget to uncheck ‘disable configuration for nbextensions without explicit compatibility’ in Jupyter Notebook so you can use the nbextensions.</p>

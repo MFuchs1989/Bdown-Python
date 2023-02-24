@@ -397,6 +397,7 @@ After that, all sorts of other libraries can be added without hesitation.
 For example, here is a list of the packages I used to create the example environment (found here in my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/miscellaneous/environment)):
 
 + **`conda install -c anaconda pip`**
++ `conda install -c anaconda jupyter`
 + `conda install -c anaconda pandas`
 + `conda install -c anaconda numpy`
 + `conda install -c anaconda scikit-learn`
@@ -407,6 +408,9 @@ For example, here is a list of the packages I used to create the example environ
 + `pip install keras`
 + `pip install xgboost`
 + **`pip install jupyter_contrib_nbextensions`**
+
+You may need to run the following command once more to see the nbextensions later:
+
 + **`jupyter contrib nbextension install --user`**
 
 Please do not forget to uncheck 'disable configuration for nbextensions without explicit compatibility' in Jupyter Notebook so you can use the nbextensions. 
