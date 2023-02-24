@@ -39,6 +39,7 @@ Using Anaconda in conjunction with Jupyter Notebooks offers two distinct advanta
 In this post I want to show how to get [Anaconda](https://www.anaconda.com/) and [Jupyter Notebooks](https://jupyter.org/) running.
 
 
+
 # 2 Install Anaconda
 
 First of all we have to install Anaconda. You can do this from here: [Anaconda Installation](https://docs.anaconda.com/anaconda/install/).
