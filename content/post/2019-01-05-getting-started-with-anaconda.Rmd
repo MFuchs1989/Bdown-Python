@@ -46,10 +46,10 @@ First of all we have to install Anaconda. You can do this from here: [Anaconda I
 Here you can select for which operating system you want to have Anaconda installed. For Windows for example follow this link: [Anaconda Installation for Windows](https://www.anaconda.com/products/individual#windows).
 
 After the .exe file has been downloaded, run it and click through the installation.
-There is only one step to pay attention to here. When you get to the Advanced Options section, select **'Add Anaconda3 to my PATH environment variable'**.
-Otherwise we would have to add this path manually later.
+There is only one step to pay attention to here. When you get to the Advanced Options section, select **'Register Anaconda3 as my default Python 3.8'**.
 
-![](/post/2019-01-05-getting-started-with-anaconda_files/p102p1.png)
+
+![](/post/2019-01-05-getting-started-with-anaconda_files/p102p1_new.png)
 
 # 3 Anaconda Navigator
 
