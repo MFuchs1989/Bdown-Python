@@ -52,6 +52,12 @@ There is only one step to pay attention to here. When you get to the Advanced Op
 
 ![](/post/2019-01-05-getting-started-with-anaconda_files/p102p1_new.png)
 
+
+In any case, you should make sure that the path to the future environments is stored in your environment variables.
+This should look something like this:
+`C:\Users\Anaconda3\envs`
+
+
 # 3 Anaconda Navigator
 
 After successful installation, search for Anaconda Navigator on your computer.
