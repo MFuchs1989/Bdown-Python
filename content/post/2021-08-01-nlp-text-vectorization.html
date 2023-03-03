@@ -11,52 +11,51 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
-<li><a href="#text-vectorization">3 Text Vectorization</a>
+<li><a href="#introduction" id="toc-introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data" id="toc-import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#text-vectorization" id="toc-text-vectorization">3 Text Vectorization</a>
 <ul>
-<li><a href="#bag-of-wordsbow">3.1 Bag-of-Words(BoW)</a>
+<li><a href="#bag-of-wordsbow" id="toc-bag-of-wordsbow">3.1 Bag-of-Words(BoW)</a>
 <ul>
-<li><a href="#functionality">3.1.2 Functionality</a></li>
-<li><a href="#creation-of-the-final-data-set">3.1.3 Creation of the final Data Set</a></li>
-<li><a href="#test-of-a-sample-record">3.1.4 Test of a Sample Record</a></li>
+<li><a href="#functionality" id="toc-functionality">3.1.2 Functionality</a></li>
+<li><a href="#creation-of-the-final-data-set" id="toc-creation-of-the-final-data-set">3.1.3 Creation of the final Data Set</a></li>
+<li><a href="#test-of-a-sample-record" id="toc-test-of-a-sample-record">3.1.4 Test of a Sample Record</a></li>
 </ul></li>
-<li><a href="#n-grams">3.2 N-grams</a>
+<li><a href="#n-grams" id="toc-n-grams">3.2 N-grams</a>
 <ul>
-<li><a href="#explanation">3.2.1 Explanation</a></li>
-<li><a href="#functionality-1">3.2.2 Functionality</a>
+<li><a href="#explanation" id="toc-explanation">3.2.1 Explanation</a></li>
+<li><a href="#functionality-1" id="toc-functionality-1">3.2.2 Functionality</a>
 <ul>
-<li><a href="#defining-ngram_range">3.2.2.1 Defining ngram_range</a></li>
-<li><a href="#defining-max_features">3.2.2.2 Defining max_features</a></li>
+<li><a href="#defining-ngram_range" id="toc-defining-ngram_range">3.2.2.1 Defining ngram_range</a></li>
+<li><a href="#defining-max_features" id="toc-defining-max_features">3.2.2.2 Defining max_features</a></li>
 </ul></li>
-<li><a href="#creation-of-the-final-data-set-1">3.2.3 Creation of the final Data Set</a></li>
+<li><a href="#creation-of-the-final-data-set-1" id="toc-creation-of-the-final-data-set-1">3.2.3 Creation of the final Data Set</a></li>
 </ul></li>
-<li><a href="#tf-idf">3.3 TF-IDF</a>
+<li><a href="#tf-idf" id="toc-tf-idf">3.3 TF-IDF</a>
 <ul>
-<li><a href="#explanation-1">3.3.1 Explanation</a>
+<li><a href="#explanation-1" id="toc-explanation-1">3.3.1 Explanation</a>
 <ul>
-<li><a href="#mathematical-formulas">3.3.1.1 Mathematical Formulas</a></li>
-<li><a href="#example-calculation">3.3.1.2 Example Calculation</a></li>
-<li><a href="#tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
+<li><a href="#mathematical-formulas" id="toc-mathematical-formulas">3.3.1.1 Mathematical Formulas</a></li>
+<li><a href="#example-calculation" id="toc-example-calculation">3.3.1.2 Example Calculation</a></li>
+<li><a href="#tf-idf-using-scikit-learn" id="toc-tf-idf-using-scikit-learn">3.3.1.3 TF-IDF using scikit-learn</a></li>
 </ul></li>
-<li><a href="#functionality-2">3.3.2 Functionality</a></li>
-<li><a href="#creation-of-the-final-data-set-2">3.3.3 Creation of the final Data Set</a></li>
+<li><a href="#functionality-2" id="toc-functionality-2">3.3.2 Functionality</a></li>
+<li><a href="#creation-of-the-final-data-set-2" id="toc-creation-of-the-final-data-set-2">3.3.3 Creation of the final Data Set</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#best-practice---application-to-the-amazon-data-set">4 Best Practice - Application to the Amazon Data Set</a>
+<li><a href="#best-practice---application-to-the-amazon-data-set" id="toc-best-practice---application-to-the-amazon-data-set">4 Best Practice - Application to the Amazon Data Set</a>
 <ul>
-<li><a href="#import-the-dataframe">4.1 Import the Dataframe</a></li>
-<li><a href="#tf-idf-vectorizer">4.2 TF-IDF Vectorizer</a></li>
-<li><a href="#model-training">4.3 Model Training</a></li>
-<li><a href="#tf-idf-vectorizer-with-ngram_range">4.4 TF-IDF Vectorizer with ngram_range</a></li>
-<li><a href="#model-training-ii">4.5 Model Training II</a></li>
-<li><a href="#out-of-the-box-data">4.6 Out-Of-The-Box-Data</a></li>
+<li><a href="#import-the-dataframe" id="toc-import-the-dataframe">4.1 Import the Dataframe</a></li>
+<li><a href="#tf-idf-vectorizer" id="toc-tf-idf-vectorizer">4.2 TF-IDF Vectorizer</a></li>
+<li><a href="#model-training" id="toc-model-training">4.3 Model Training</a></li>
+<li><a href="#tf-idf-vectorizer-with-ngram_range" id="toc-tf-idf-vectorizer-with-ngram_range">4.4 TF-IDF Vectorizer with ngram_range</a></li>
+<li><a href="#model-training-ii" id="toc-model-training-ii">4.5 Model Training II</a></li>
+<li><a href="#out-of-the-box-data" id="toc-out-of-the-box-data">4.6 Out-Of-The-Box-Data</a></li>
 </ul></li>
-<li><a href="#conclusion">5 Conclusion</a></li>
+<li><a href="#conclusion" id="toc-conclusion">5 Conclusion</a></li>
 </ul>
 </div>
 
@@ -108,13 +107,13 @@ print()
 print(text_cv_vectorized_array.shape)</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p2.png" /></p>
 <p>10 different words were found in the text corpus. These can also be output as follows:</p>
-<pre class="r"><code>cv_vectorizer.get_feature_names()</code></pre>
+<pre class="r"><code>cv_vectorizer.get_feature_names_out()</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p3.png" /></p>
 <pre class="r"><code>cv_vectorizer.vocabulary_</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p4.png" /></p>
 <p>To make the output a bit more readable we can have it displayed as a dataframe:</p>
 <pre class="r"><code>cv_vectorized_matrix = pd.DataFrame(text_cv_vectorized.toarray(), 
-                                    columns=cv_vectorizer.get_feature_names())
+                                    columns=cv_vectorizer.get_feature_names_out())
 cv_vectorized_matrix</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p5.png" /></p>
 <p>How are the rows and columns in the matrix shown above to be read?</p>
@@ -127,7 +126,7 @@ cv_vectorized_matrix</code></pre>
 <h3>3.1.3 Creation of the final Data Set</h3>
 <p>Finally, I create a new data set on which to train machine learning algorithms. This time I use the generated array directly to create the final data frame:</p>
 <pre class="r"><code>cv_df = pd.DataFrame(text_cv_vectorized_array, 
-                     columns = cv_vectorizer.get_feature_names()).add_prefix(&#39;Counts_&#39;)
+                     columns = cv_vectorizer.get_feature_names_out()).add_prefix(&#39;Counts_&#39;)
 
 df_new_cv = pd.concat([df, cv_df], axis=1, sort=False)
 df_new_cv</code></pre>
@@ -149,7 +148,7 @@ new_input_cv_vectorized_array = new_input_cv_vectorized.toarray()
 new_input_cv_vectorized_array</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p8.png" /></p>
 <pre class="r"><code>new_input_matrix = pd.DataFrame(new_input_cv_vectorized_array, 
-                                columns = cv_vectorizer.get_feature_names())
+                                columns = cv_vectorizer.get_feature_names_out())
 
 new_input_matrix</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p9.png" /></p>
@@ -162,7 +161,7 @@ new_input_cv_vectorized_array = new_input_cv_vectorized.toarray()
 new_input_cv_vectorized_array</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p11.png" /></p>
 <pre class="r"><code>new_input_matrix = pd.DataFrame(new_input_cv_vectorized_array, 
-                                columns = cv_vectorizer.get_feature_names())
+                                columns = cv_vectorizer.get_feature_names_out())
 
 new_input_matrix</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p12.png" /></p>
@@ -199,12 +198,12 @@ example_sentence</code></pre>
 <pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(1, 3))
 
 cv_ngram_vectorizer = cv_ngram.fit(example_sentence)
-cv_ngram_vectorizer.get_feature_names()</code></pre>
+cv_ngram_vectorizer.get_feature_names_out()</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p14.png" /></p>
 <pre class="r"><code>cv_ngram = CountVectorizer(ngram_range=(2, 3))
 
 cv_ngram_vectorizer = cv_ngram.fit(example_sentence)
-cv_ngram_vectorizer.get_feature_names()</code></pre>
+cv_ngram_vectorizer.get_feature_names_out()</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p15.png" /></p>
 </div>
 <div id="functionality-1" class="section level3">
@@ -219,7 +218,7 @@ text_cv_ngram_vectorized = cv_ngram_vectorizer.transform(df[&#39;Text&#39;])
 
 text_cv_ngram_vectorized_array = text_cv_ngram_vectorized.toarray()
 
-print(cv_ngram_vectorizer.get_feature_names())</code></pre>
+print(cv_ngram_vectorizer.get_feature_names_out())</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p16.png" /></p>
 <p>The disadvantage of n-gram is that it usually generates too many features and is therefore very computationally expensive. One way to counteract this is to limit the maximum number of features. This can be done with the max_features parameter.</p>
 </div>
@@ -233,10 +232,10 @@ text_cv_ngram_vectorized = cv_ngram_vectorizer.transform(df[&#39;Text&#39;])
 
 text_cv_ngram_vectorized_array = text_cv_ngram_vectorized.toarray()
 
-print(cv_ngram_vectorizer.get_feature_names())</code></pre>
+print(cv_ngram_vectorizer.get_feature_names_out())</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p17.png" /></p>
 <pre class="r"><code>cv_ngram_vectorized_matrix = pd.DataFrame(text_cv_ngram_vectorized.toarray(), 
-                                          columns=cv_ngram_vectorizer.get_feature_names())
+                                          columns=cv_ngram_vectorizer.get_feature_names_out())
 cv_ngram_vectorized_matrix</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p18.png" /></p>
 <p>That worked out well. But what I always try to avoid with column names are spaces between the words. But this can be easily corrected:</p>
@@ -256,7 +255,7 @@ cv_ngram_vectorized_matrix</code></pre>
 <div id="creation-of-the-final-data-set-1" class="section level3">
 <h3>3.2.3 Creation of the final Data Set</h3>
 <pre class="r"><code>cv_ngram_df = pd.DataFrame(text_cv_ngram_vectorized_array, 
-                           columns = cv_ngram_vectorizer.get_feature_names()).add_prefix(&#39;Counts_&#39;)
+                           columns = cv_ngram_vectorizer.get_feature_names_out()).add_prefix(&#39;Counts_&#39;)
 
 df_new_cv_ngram = pd.concat([df, cv_ngram_df], axis=1, sort=False)
 df_new_cv_ngram.T</code></pre>
@@ -322,7 +321,7 @@ documents_tf_idf_vectorized_array = documents_tf_idf_vectorized.toarray()
 
 
 tf_idf_vectorized_matrix = pd.DataFrame(documents_tf_idf_vectorized.toarray(), 
-                                        columns=tf_idf_vectorizer.get_feature_names())
+                                        columns=tf_idf_vectorizer.get_feature_names_out())
 tf_idf_vectorized_matrix = tf_idf_vectorized_matrix[[&#39;said&#39;, &#39;please&#39;, &#39;and&#39;, &#39;you&#39;, &#39;thanks&#39;, &#39;darling&#39;]]
 tf_idf_vectorized_matrix.T</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p21.png" /></p>
@@ -346,7 +345,7 @@ text_tf_idf_vectorized_array = text_tf_idf_vectorized.toarray()
 
 
 tf_idf_vectorized_matrix = pd.DataFrame(text_tf_idf_vectorized.toarray(), 
-                                        columns=tf_idf_vectorizer.get_feature_names())
+                                        columns=tf_idf_vectorizer.get_feature_names_out())
 
 tf_idf_vectorized_matrix</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p22.png" /></p>
@@ -354,7 +353,7 @@ tf_idf_vectorized_matrix</code></pre>
 <div id="creation-of-the-final-data-set-2" class="section level3">
 <h3>3.3.3 Creation of the final Data Set</h3>
 <pre class="r"><code>tf_idf_df = pd.DataFrame(text_tf_idf_vectorized_array, 
-                         columns = tf_idf_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_&#39;)
+                         columns = tf_idf_vectorizer.get_feature_names_out()).add_prefix(&#39;TF-IDF_&#39;)
 
 df_new_tf_idf = pd.concat([df, tf_idf_df], axis=1, sort=False)
 df_new_tf_idf.T</code></pre>
@@ -400,14 +399,14 @@ testX_tf_idf_vectorized = tf_idf_vectorizer.transform(testX[&#39;Reviews_cleaned
 trainX_tf_idf_vectorized_array = trainX_tf_idf_vectorized.toarray()
 testX_tf_idf_vectorized_array = testX_tf_idf_vectorized.toarray()
 
-print(&#39;Number of features generated: &#39; + str(len(tf_idf_vectorizer.get_feature_names())))</code></pre>
+print(&#39;Number of features generated: &#39; + str(len(tf_idf_vectorizer.get_feature_names_out())))</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p26.png" /></p>
 <p>The next step is actually not necessary, since the machine learning models can handle arrays wonderfully.</p>
 <pre class="r"><code>trainX_tf_idf_vectorized_final = pd.DataFrame(trainX_tf_idf_vectorized_array, 
-                                              columns = tf_idf_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_&#39;)
+                                              columns = tf_idf_vectorizer.get_feature_names_out()).add_prefix(&#39;TF-IDF_&#39;)
 
 testX_tf_idf_vectorized_final = pd.DataFrame(testX_tf_idf_vectorized_array, 
-                                             columns = tf_idf_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_&#39;)</code></pre>
+                                             columns = tf_idf_vectorizer.get_feature_names_out()).add_prefix(&#39;TF-IDF_&#39;)</code></pre>
 </div>
 <div id="model-training" class="section level2">
 <h2>4.3 Model Training</h2>
@@ -437,13 +436,13 @@ testX_tf_idf_ngram_vectorized = tf_idf_ngram_vectorizer.transform(testX[&#39;Rev
 trainX_tf_idf_ngram_vectorized_array = trainX_tf_idf_ngram_vectorized.toarray()
 testX_tf_idf_ngram_vectorized_array = testX_tf_idf_ngram_vectorized.toarray()
 
-print(&#39;Number of features generated: &#39; + str(len(tf_idf_ngram_vectorizer.get_feature_names())))</code></pre>
+print(&#39;Number of features generated: &#39; + str(len(tf_idf_ngram_vectorizer.get_feature_names_out())))</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p29.png" /></p>
 <pre class="r"><code>trainX_tf_idf_ngram_vectorized_final = pd.DataFrame(trainX_tf_idf_ngram_vectorized_array, 
-                                              columns = tf_idf_ngram_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_ngram_&#39;)
+                                              columns = tf_idf_ngram_vectorizer.get_feature_names_out()).add_prefix(&#39;TF-IDF_ngram_&#39;)
 
 testX_tf_idf_ngram_vectorized_final = pd.DataFrame(testX_tf_idf_ngram_vectorized_array, 
-                                              columns = tf_idf_ngram_vectorizer.get_feature_names()).add_prefix(&#39;TF-IDF_ngram_&#39;)</code></pre>
+                                              columns = tf_idf_ngram_vectorizer.get_feature_names_out()).add_prefix(&#39;TF-IDF_ngram_&#39;)</code></pre>
 </div>
 <div id="model-training-ii" class="section level2">
 <h2>4.5 Model Training II</h2>
@@ -489,7 +488,7 @@ print(confusion_matrix2)</code></pre>
 <pre class="r"><code>my_rating_comment_vectorized = tf_idf_vectorizer.transform(my_rating_comment)
 my_rating_comment_vectorized_array = my_rating_comment_vectorized.toarray()
 my_rating_comment_df = pd.DataFrame(my_rating_comment_vectorized_array, 
-                                    columns = tf_idf_vectorizer.get_feature_names())
+                                    columns = tf_idf_vectorizer.get_feature_names_out())
 my_rating_comment_df</code></pre>
 <p><img src="/post/2021-08-01-nlp-text-vectorization_files/p135p32.png" /></p>
 <p>To be able to see which words from my_rating_comment were in the learned vocabulary of the vectorizer (and consequently received a TF-IDF score) I filter the dataset:</p>
