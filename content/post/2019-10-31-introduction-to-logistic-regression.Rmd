@@ -614,7 +614,7 @@ scores
 We see that the accuracy values do not have a high variance. That's good!
 
 ```{r, eval=F, echo=T}
-print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std()))
 ```
 
 ![](/post/2019-10-31-introduction-to-logistic-regression_files/p24z3.png)

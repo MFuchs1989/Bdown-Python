@@ -13,39 +13,38 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
-<li><a href="#descriptive-statistics">3 Descriptive statistics</a>
+<li><a href="#introduction" id="toc-introduction">1 Introduction</a></li>
+<li><a href="#loading-the-libraries-and-the-data" id="toc-loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
+<li><a href="#descriptive-statistics" id="toc-descriptive-statistics">3 Descriptive statistics</a>
 <ul>
-<li><a href="#mean-values-of-the-features">3.1 Mean values of the features</a></li>
-<li><a href="#description-of-the-target-variable">3.2 Description of the target variable</a></li>
-<li><a href="#description-of-the-predictor-variables">3.3 Description of the predictor variables</a></li>
+<li><a href="#mean-values-of-the-features" id="toc-mean-values-of-the-features">3.1 Mean values of the features</a></li>
+<li><a href="#description-of-the-target-variable" id="toc-description-of-the-target-variable">3.2 Description of the target variable</a></li>
+<li><a href="#description-of-the-predictor-variables" id="toc-description-of-the-predictor-variables">3.3 Description of the predictor variables</a></li>
 </ul></li>
-<li><a href="#data-pre-processing">4 Data pre-processing</a>
+<li><a href="#data-pre-processing" id="toc-data-pre-processing">4 Data pre-processing</a>
 <ul>
-<li><a href="#conversion-of-the-target-variable">4.1 Conversion of the target variable</a></li>
-<li><a href="#creation-of-dummy-variables">4.2 Creation of dummy variables</a></li>
-<li><a href="#feature-selection">4.3 Feature Selection</a></li>
+<li><a href="#conversion-of-the-target-variable" id="toc-conversion-of-the-target-variable">4.1 Conversion of the target variable</a></li>
+<li><a href="#creation-of-dummy-variables" id="toc-creation-of-dummy-variables">4.2 Creation of dummy variables</a></li>
+<li><a href="#feature-selection" id="toc-feature-selection">4.3 Feature Selection</a></li>
 </ul></li>
-<li><a href="#logistic-regression-with-the-statsmodel-library">5 Logistic Regression with the statsmodel library</a></li>
-<li><a href="#logistic-regression-with-scikit-learn">6 Logistic Regression with scikit-learn</a>
+<li><a href="#logistic-regression-with-the-statsmodel-library" id="toc-logistic-regression-with-the-statsmodel-library">5 Logistic Regression with the statsmodel library</a></li>
+<li><a href="#logistic-regression-with-scikit-learn" id="toc-logistic-regression-with-scikit-learn">6 Logistic Regression with scikit-learn</a>
 <ul>
-<li><a href="#over-sampling-using-smote">6.1 Over-sampling using SMOTE</a></li>
-<li><a href="#model-fitting">6.2 Model Fitting</a></li>
-<li><a href="#model-evaluation">6.3 Model evaluation</a>
+<li><a href="#over-sampling-using-smote" id="toc-over-sampling-using-smote">6.1 Over-sampling using SMOTE</a></li>
+<li><a href="#model-fitting" id="toc-model-fitting">6.2 Model Fitting</a></li>
+<li><a href="#model-evaluation" id="toc-model-evaluation">6.3 Model evaluation</a>
 <ul>
-<li><a href="#confusion-matrix">6.3.1 Confusion matrix</a></li>
-<li><a href="#further-metrics">6.3.2 Further metrics</a></li>
-<li><a href="#roc-auc">6.3.3 ROC / AUC</a></li>
-<li><a href="#cross-validation">6.3.4 Cross Validation</a></li>
+<li><a href="#confusion-matrix" id="toc-confusion-matrix">6.3.1 Confusion matrix</a></li>
+<li><a href="#further-metrics" id="toc-further-metrics">6.3.2 Further metrics</a></li>
+<li><a href="#roc-auc" id="toc-roc-auc">6.3.3 ROC / AUC</a></li>
+<li><a href="#cross-validation" id="toc-cross-validation">6.3.4 Cross Validation</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#conclusion">7 Conclusion</a></li>
-<li><a href="#description-of-the-dataframe">8 Description of the dataframe</a></li>
+<li><a href="#conclusion" id="toc-conclusion">7 Conclusion</a></li>
+<li><a href="#description-of-the-dataframe" id="toc-description-of-the-dataframe">8 Description of the dataframe</a></li>
 </ul>
 </div>
 
@@ -421,7 +420,7 @@ scores = cross_val_score(clf, trainX_final, trainY_final, cv=5)
 scores</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z2.png" /></p>
 <p>We see that the accuracy values do not have a high variance. That’s good!</p>
-<pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std() * 2))</code></pre>
+<pre class="r"><code>print(&quot;Accuracy: %0.2f (+/- %0.2f)&quot; % (scores.mean(), scores.std()))</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24z3.png" /></p>
 </div>
 </div>
