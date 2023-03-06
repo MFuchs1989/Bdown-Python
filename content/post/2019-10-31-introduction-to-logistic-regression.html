@@ -84,8 +84,6 @@ import statsmodels.api as sm
 from imblearn.over_sampling import SMOTE
 
 #for chapter 6.3
-from sklearn.metrics import plot_confusion_matrix
-
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -338,8 +336,15 @@ This can be done in python as follows:</p>
 print(confusion_matrix)</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p19.png" /></p>
 <p>We can also represent the Confusion Matrix with a nice graphic:</p>
-<pre class="r"><code>fig = plot_confusion_matrix(logreg, testX_final, testY_final, display_labels=logreg.classes_)
-fig.figure_.suptitle(&quot;Confusion Matrix for Bank Dataset&quot;)
+<pre class="r"><code>fig, ax = plt.subplots(figsize=(6, 6))
+ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
+for i in range(confusion_matrix.shape[0]):
+    for j in range(confusion_matrix.shape[1]):
+        ax.text(x=j, y=i,s=confusion_matrix[i, j], va=&#39;center&#39;, ha=&#39;center&#39;, size=&#39;xx-large&#39;)
+ 
+plt.xlabel(&#39;Predictions&#39;, fontsize=18)
+plt.ylabel(&#39;Actuals&#39;, fontsize=18)
+plt.title(&#39;Confusion Matrix&#39;, fontsize=18)
 plt.show()</code></pre>
 <p><img src="/post/2019-10-31-introduction-to-logistic-regression_files/p24p20.png" /></p>
 <p>But what does the confusion matrix tell us?
