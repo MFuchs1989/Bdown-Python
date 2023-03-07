@@ -11,55 +11,54 @@ output:
     toc_depth: 5
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">1 Introduction</a></li>
-<li><a href="#import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
-<li><a href="#gensim---word2vec">3 Gensim - Word2Vec</a>
+<li><a href="#introduction" id="toc-introduction">1 Introduction</a></li>
+<li><a href="#import-the-libraries-and-the-data" id="toc-import-the-libraries-and-the-data">2 Import the Libraries and the Data</a></li>
+<li><a href="#gensim---word2vec" id="toc-gensim---word2vec">3 Gensim - Word2Vec</a>
 <ul>
-<li><a href="#instantiation">3.1 Instantiation</a></li>
-<li><a href="#exploration-of-the-calculated-values">3.2 Exploration of the calculated Values</a></li>
-<li><a href="#generation-of-aggregated-sentence-vectors">3.3 Generation of aggregated Sentence Vectors</a></li>
-<li><a href="#generation-of-averaged-sentence-vectors">3.4 Generation of averaged Sentence Vectors</a></li>
-<li><a href="#model-training">3.5 Model Training</a></li>
-<li><a href="#processing-of-new-input">3.6 Processing of new Input</a>
+<li><a href="#instantiation" id="toc-instantiation">3.1 Instantiation</a></li>
+<li><a href="#exploration-of-the-calculated-values" id="toc-exploration-of-the-calculated-values">3.2 Exploration of the calculated Values</a></li>
+<li><a href="#generation-of-aggregated-sentence-vectors" id="toc-generation-of-aggregated-sentence-vectors">3.3 Generation of aggregated Sentence Vectors</a></li>
+<li><a href="#generation-of-averaged-sentence-vectors" id="toc-generation-of-averaged-sentence-vectors">3.4 Generation of averaged Sentence Vectors</a></li>
+<li><a href="#model-training" id="toc-model-training">3.5 Model Training</a></li>
+<li><a href="#processing-of-new-input" id="toc-processing-of-new-input">3.6 Processing of new Input</a>
 <ul>
-<li><a href="#load-the-word2vec-model">3.6.1 Load the Word2Vec Model</a></li>
-<li><a href="#load-the-new-input">3.6.2 Load the new Input</a></li>
-<li><a href="#pre-processing-of-the-new-input">3.6.3 Pre-Processing of the new Input</a></li>
-<li><a href="#model-predictions">3.6.4 Model Predictions</a></li>
+<li><a href="#load-the-word2vec-model" id="toc-load-the-word2vec-model">3.6.1 Load the Word2Vec Model</a></li>
+<li><a href="#load-the-new-input" id="toc-load-the-new-input">3.6.2 Load the new Input</a></li>
+<li><a href="#pre-processing-of-the-new-input" id="toc-pre-processing-of-the-new-input">3.6.3 Pre-Processing of the new Input</a></li>
+<li><a href="#model-predictions" id="toc-model-predictions">3.6.4 Model Predictions</a></li>
 </ul></li>
-<li><a href="#updating-the-word2vec-model">3.7 Updating the Word2Vec Model</a>
+<li><a href="#updating-the-word2vec-model" id="toc-updating-the-word2vec-model">3.7 Updating the Word2Vec Model</a>
 <ul>
-<li><a href="#updating-the-weights">3.7.1 Updating the Weights</a></li>
-<li><a href="#updating-the-weights-and-the-vocabulary">3.7.2 Updating the Weights and the Vocabulary</a></li>
+<li><a href="#updating-the-weights" id="toc-updating-the-weights">3.7.1 Updating the Weights</a></li>
+<li><a href="#updating-the-weights-and-the-vocabulary" id="toc-updating-the-weights-and-the-vocabulary">3.7.2 Updating the Weights and the Vocabulary</a></li>
 </ul></li>
-<li><a href="#final-saving-of-the-word2vec-model">3.8 Final saving of the Word2Vec Model</a>
+<li><a href="#final-saving-of-the-word2vec-model" id="toc-final-saving-of-the-word2vec-model">3.8 Final saving of the Word2Vec Model</a>
 <ul>
-<li><a href="#saving-the-entire-model">3.8.1 Saving the entire Model</a></li>
-<li><a href="#saving-the-keyedvectors">3.8.2 Saving the KeyedVectors</a></li>
+<li><a href="#saving-the-entire-model" id="toc-saving-the-entire-model">3.8.1 Saving the entire Model</a></li>
+<li><a href="#saving-the-keyedvectors" id="toc-saving-the-keyedvectors">3.8.2 Saving the KeyedVectors</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#gensim---doc2vec">4 Gensim - Doc2Vec</a>
+<li><a href="#gensim---doc2vec" id="toc-gensim---doc2vec">4 Gensim - Doc2Vec</a>
 <ul>
-<li><a href="#instantiation-1">4.1 Instantiation</a></li>
-<li><a href="#updating-the-doc2vec-model">4.2 Updating the Doc2Vec Model</a></li>
-<li><a href="#generation-of-aggregated-sentence-vectors-1">4.3 Generation of aggregated Sentence Vectors</a></li>
-<li><a href="#generation-of-averaged-sentence-vectors-1">4.4 Generation of averaged Sentence Vectors</a></li>
-<li><a href="#final-saving-of-the-doc2vec-model">4.5 Final saving of the Doc2Vec Model</a></li>
+<li><a href="#instantiation-1" id="toc-instantiation-1">4.1 Instantiation</a></li>
+<li><a href="#updating-the-doc2vec-model" id="toc-updating-the-doc2vec-model">4.2 Updating the Doc2Vec Model</a></li>
+<li><a href="#generation-of-aggregated-sentence-vectors-1" id="toc-generation-of-aggregated-sentence-vectors-1">4.3 Generation of aggregated Sentence Vectors</a></li>
+<li><a href="#generation-of-averaged-sentence-vectors-1" id="toc-generation-of-averaged-sentence-vectors-1">4.4 Generation of averaged Sentence Vectors</a></li>
+<li><a href="#final-saving-of-the-doc2vec-model" id="toc-final-saving-of-the-doc2vec-model">4.5 Final saving of the Doc2Vec Model</a></li>
 </ul></li>
-<li><a href="#gensim---fasttext">5 Gensim - FastText</a></li>
-<li><a href="#phrases-phraser">6 Phrases &amp; Phraser</a>
+<li><a href="#gensim---fasttext" id="toc-gensim---fasttext">5 Gensim - FastText</a></li>
+<li><a href="#phrases-phraser" id="toc-phrases-phraser">6 Phrases &amp; Phraser</a>
 <ul>
-<li><a href="#detecting-phrases">6.1 Detecting Phrases</a></li>
-<li><a href="#updating-the-phrases-model">6.2 Updating the Phrases Model</a></li>
-<li><a href="#safe-load">6.3 Safe &amp; Load</a></li>
-<li><a href="#creation-of-the-final-dataframe">6.4 Creation of the final dataframe</a></li>
+<li><a href="#detecting-phrases" id="toc-detecting-phrases">6.1 Detecting Phrases</a></li>
+<li><a href="#updating-the-phrases-model" id="toc-updating-the-phrases-model">6.2 Updating the Phrases Model</a></li>
+<li><a href="#safe-load" id="toc-safe-load">6.3 Safe &amp; Load</a></li>
+<li><a href="#creation-of-the-final-dataframe" id="toc-creation-of-the-final-dataframe">6.4 Creation of the final dataframe</a></li>
 </ul></li>
-<li><a href="#use-pre-trained-models">7 Use Pre-Trained Models</a></li>
-<li><a href="#conclusion">8 Conclusion</a></li>
+<li><a href="#use-pre-trained-models" id="toc-use-pre-trained-models">7 Use Pre-Trained Models</a></li>
+<li><a href="#conclusion" id="toc-conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
@@ -244,13 +243,13 @@ manually_calculated_mean_values_df</code></pre>
 </div>
 <div id="generation-of-averaged-sentence-vectors" class="section level2">
 <h2>3.4 Generation of averaged Sentence Vectors</h2>
-<p>As described above, I will now generate sentence vectors based on the averaging of the word vectors for the words contained in the sentence. If you can remember I assigned the vector size to a separate variable (‘vector_size_n’) during instantiation. This is needed again in the else statement of the following for-loop.</p>
+<p>As described above, I will now generate sentence vectors based on the averaging of the word vectors for the words contained in the sentence. If you can remember I assigned the vector size to a separate variable (‘vector_size_n_w2v’) during instantiation. This is needed again in the else statement of the following for-loop.</p>
 <pre class="r"><code>text_vect_avg = []
 for v in df[&#39;Text_vect&#39;]:
     if v.size:
         text_vect_avg.append(v.mean(axis=0))
     else:
-        text_vect_avg.append(np.zeros(vector_size_n, dtype=float)) # the same vector size must be used here as for model training
+        text_vect_avg.append(np.zeros(vector_size_n_w2v, dtype=float)) # the same vector size must be used here as for model training
         
         
 df[&#39;Text_vect_avg&#39;] = text_vect_avg

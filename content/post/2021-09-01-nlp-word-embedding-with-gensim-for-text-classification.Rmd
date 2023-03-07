@@ -324,7 +324,7 @@ Since I don't want to do this manual calculation for each record separately (a v
 
 ## 3.4  Generation of averaged Sentence Vectors
 
-As described above, I will now generate sentence vectors based on the averaging of the word vectors for the words contained in the sentence. If you can remember I assigned the vector size to a separate variable ('vector_size_n') during instantiation. This is needed again in the else statement of the following for-loop.
+As described above, I will now generate sentence vectors based on the averaging of the word vectors for the words contained in the sentence. If you can remember I assigned the vector size to a separate variable ('vector_size_n_w2v') during instantiation. This is needed again in the else statement of the following for-loop.
 
 
 ```{r, eval=F, echo=T}
@@ -333,7 +333,7 @@ for v in df['Text_vect']:
     if v.size:
         text_vect_avg.append(v.mean(axis=0))
     else:
-        text_vect_avg.append(np.zeros(vector_size_n, dtype=float)) # the same vector size must be used here as for model training
+        text_vect_avg.append(np.zeros(vector_size_n_w2v, dtype=float)) # the same vector size must be used here as for model training
         
         
 df['Text_vect_avg'] = text_vect_avg
