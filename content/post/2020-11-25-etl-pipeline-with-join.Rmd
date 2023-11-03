@@ -99,7 +99,7 @@ new_df
 
 ![](/post/2020-11-25-etl-pipeline-with-join_files/p88p6.png)
 
-
+Hi there ...
 
 ## 3.3 Load
 
