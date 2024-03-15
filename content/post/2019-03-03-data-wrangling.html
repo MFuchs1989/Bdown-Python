@@ -25,6 +25,11 @@ output:
 <ul>
 <li><a href="#easy-selection" id="toc-easy-selection">5.1 Easy Selection</a></li>
 <li><a href="#conditional-selection" id="toc-conditional-selection">5.2 Conditional Selection</a></li>
+<li><a href="#set-option" id="toc-set-option">5.3 Set option</a></li>
+</ul></li>
+<li><a href="#dropping-values" id="toc-dropping-values">6 Dropping Values</a>
+<ul>
+<li><a href="#dropping-columns" id="toc-dropping-columns">6.1 Dropping Columns</a></li>
 </ul></li>
 </ul>
 </div>
@@ -105,7 +110,33 @@ flight.loc[:,&#39;Year&#39;:&#39;DayOfWeek&#39;].join(flight.loc[:,&#39;Tai_lNum
 </div>
 <div id="conditional-selection" class="section level2">
 <h2>5.2 Conditional Selection</h2>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000) &amp; (flight[&quot;DayOfWeek&quot;] == 1) &amp; (flight[&quot;Flight_Date&quot;] == &#39;11/07/2016&#39;)]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p20.png" /></p>
+<pre class="r"><code>flight[(flight.Origin_Airport == &#39;ATL&#39;) | (flight.Origin_Airport == &#39;BOS&#39;)][&#39;Origin_Airport&#39;]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p21.png" /></p>
+<pre class="r"><code># If you want to see how many cases are affected use Shape[0]
+
+flight[(flight[&quot;Distance&quot;] &gt;= 3000)].shape[0] </code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p22.png" /></p>
+</div>
+<div id="set-option" class="section level2">
+<h2>5.3 Set option</h2>
+<p>With the set option function one can determine, how many lines and columns should be issued.</p>
+<pre class="r"><code>flight.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p23.png" /></p>
+<pre class="r"><code>pd.set_option(&#39;display.max_rows&#39;, 2)
+pd.set_option(&#39;display.max_columns&#39;, 2)
+flight.head(200)</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p24.png" /></p>
+<pre class="r"><code># Don&#39;t forget to reset the set options if they are no longer required.
+
+pd.reset_option(&#39;all&#39;)</code></pre>
+</div>
+</div>
+<div id="dropping-values" class="section level1">
+<h1>6 Dropping Values</h1>
+<div id="dropping-columns" class="section level2">
+<h2>6.1 Dropping Columns</h2>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 </div>

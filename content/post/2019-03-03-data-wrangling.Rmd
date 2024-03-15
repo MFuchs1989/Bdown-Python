@@ -202,32 +202,63 @@ flight.loc[:,'Year':'DayOfWeek'].join(flight.loc[:,'Tai_lNum':'Origin_Airport'])
 
 
 ```{r, eval=F, echo=T}
-
+flight[(flight["Distance"] >= 3000) & (flight["DayOfWeek"] == 1) & (flight["Flight_Date"] == '11/07/2016')]
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p20.png)
 
 
 
+```{r, eval=F, echo=T}
+flight[(flight.Origin_Airport == 'ATL') | (flight.Origin_Airport == 'BOS')]['Origin_Airport']
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p21.png)
 
 
 
+```{r, eval=F, echo=T}
+# If you want to see how many cases are affected use Shape[0]
+
+flight[(flight["Distance"] >= 3000)].shape[0] 
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p22.png)
+
+
+## 5.3 Set option
+
+With the set option function one can determine, how many lines and columns should be issued.
+
+
+```{r, eval=F, echo=T}
+flight.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p23.png)
 
 
 
+```{r, eval=F, echo=T}
+pd.set_option('display.max_rows', 2)
+pd.set_option('display.max_columns', 2)
+flight.head(200)
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p24.png)
+
+
+```{r, eval=F, echo=T}
+# Don't forget to reset the set options if they are no longer required.
+
+pd.reset_option('all')
+```
 
 
 
+# 6 Dropping Values 
 
-
-
-
-
-
-
-
-
-
+## 6.1 Dropping Columns
 
 
 
