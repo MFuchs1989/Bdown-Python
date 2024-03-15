@@ -114,47 +114,91 @@ for feature in flight_subset.columns[:]:
 
 # 4 Get some statistics
 
+```{r, eval=F, echo=T}
+flight.describe()
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p10.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+flight['Dep_Delay'].agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p11.png)
+
+
+```{r, eval=F, echo=T}
+flight[['Origin_Airport', 'Departure_Time', 'Dep_Delay', 'Carrier_Delay']].groupby('Origin_Airport').mean().head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p12.png)
+
+
+# 5 Select data
+
+## 5.1  Easy Selection
+
+
+```{r, eval=F, echo=T}
+flight[['Year']].head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p13.png)
 
 
 
+```{r, eval=F, echo=T}
+flight[['Year', 'WeatherDelay']].head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p14.png)
 
 
 
+```{r, eval=F, echo=T}
+# Select specific rows
+flight[1:4]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p15.png)
+
+
+```{r, eval=F, echo=T}
+# Select specific rows & columns
+flight.loc[1:4, ['Year', 'WeatherDelay', 'Flight_Date']]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p16.png)
 
 
 
+```{r, eval=F, echo=T}
+# Select all columns from Col_X to Col_Y
+flight.loc[:,'Year':'DayOfWeek'].head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p17.png)
 
 
+```{r, eval=F, echo=T}
+# Select all columns from Col_X to Col_Y and Col_Z
+flight.loc[:,'Year':'DayOfWeek'].join(flight.loc[:,'Tai_lNum']).head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p18.png)
 
 
+```{r, eval=F, echo=T}
+# Select all columns from Col_X to Col_Y and from Col_Z to Col_*
+flight.loc[:,'Year':'DayOfWeek'].join(flight.loc[:,'Tai_lNum':'Origin_Airport']).head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p19.png)
 
 
-
-
-
-
-
+## 5.2 Conditional Selection
 
 
 ```{r, eval=F, echo=T}
