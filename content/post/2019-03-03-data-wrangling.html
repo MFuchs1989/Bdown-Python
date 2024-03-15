@@ -30,6 +30,17 @@ output:
 <li><a href="#dropping-values" id="toc-dropping-values">6 Dropping Values</a>
 <ul>
 <li><a href="#dropping-columns" id="toc-dropping-columns">6.1 Dropping Columns</a></li>
+<li><a href="#dropping-nan-values" id="toc-dropping-nan-values">6.2 Dropping NaN Values</a></li>
+<li><a href="#nan-values-vs.-null-values" id="toc-nan-values-vs.-null-values">6.3 NaN Values vs. Null Values</a></li>
+</ul></li>
+<li><a href="#filtering-values" id="toc-filtering-values">7 Filtering Values</a>
+<ul>
+<li><a href="#filter-with-lists" id="toc-filter-with-lists">7.1 Filter with Lists</a></li>
+<li><a href="#exclude-certain-values" id="toc-exclude-certain-values">7.2 Exclude certain values</a></li>
+</ul></li>
+<li><a href="#working-with-lists" id="toc-working-with-lists">8 Working with Lists</a>
+<ul>
+<li><a href="#creation-of-lists" id="toc-creation-of-lists">8.1 Creation of Lists</a></li>
 </ul></li>
 </ul>
 </div>
@@ -137,6 +148,96 @@ pd.reset_option(&#39;all&#39;)</code></pre>
 <h1>6 Dropping Values</h1>
 <div id="dropping-columns" class="section level2">
 <h2>6.1 Dropping Columns</h2>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Anton&#39;, &#39;Moni&#39;, np.NaN, &#39;Renate&#39;, &#39;Justus&#39;],
+                   &#39;Age&#39;: [32,22,62,np.NaN,18],
+                   &#39;Salary&#39;: [np.NaN, np.NaN,4500,2500,3800],
+                   &#39;Job&#39;: [&#39;Student&#39;, np.NaN, &#39;Manager&#39;, &#39;Teacher&#39;, &#39;Student&#39;]})
+df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p25.png" /></p>
+<pre class="r"><code>reduced_df = df.drop([&#39;Job&#39;], axis=1)
+reduced_df.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p26.png" /></p>
+<pre class="r"><code>reduced_df2 = df.drop([&#39;Salary&#39;, &#39;Job&#39;], axis=1)
+reduced_df2.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
+<pre class="r"><code># You can also use a list to excluede columns
+col_to_exclude = [&#39;Salary&#39;, &#39;Job&#39;]
+
+reduced_df_with_list = df.drop(col_to_exclude, axis=1)
+reduced_df_with_list.head()</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p28.png" /></p>
+</div>
+<div id="dropping-nan-values" class="section level2">
+<h2>6.2 Dropping NaN Values</h2>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p29.png" /></p>
+<pre class="r"><code>#Dropping all NaN values from column &#39;Name&#39;
+df.dropna(subset=[&#39;Name&#39;])</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p30.png" /></p>
+<pre class="r"><code>#Dropping all NaN values from the columns &#39;Salary&#39; and &#39;Job&#39; if there is min. 1
+df.dropna(subset=[&#39;Salary&#39;, &#39;Job&#39;])</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p31.png" /></p>
+</div>
+<div id="nan-values-vs.-null-values" class="section level2">
+<h2>6.3 NaN Values vs. Null Values</h2>
+<p>NaN values and zero values are not the same thing.
+This becomes clear from the examples below, so that you do not mistakenly follow a false assumption.</p>
+<pre class="r"><code>df_NaN_vs_Null = pd.DataFrame({&#39;AIRLINE&#39;: [&#39;AS&#39;, &#39;LH&#39;, &#39;KE&#39;],
+                               &#39;VALUE&#39;: [1, 0, np.NAN]})
+df_NaN_vs_Null</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p32.png" /></p>
+<pre class="r"><code># The isna() function does its job well
+df_NaN_vs_Null[df_NaN_vs_Null[&#39;VALUE&#39;].isna()]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p33.png" /></p>
+<pre class="r"><code># The isnull() function also looks for NaN values not for NULL values!
+df_NaN_vs_Null[df_NaN_vs_Null[&#39;VALUE&#39;].isnull()]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p34.png" /></p>
+<pre class="r"><code># For Null values you have to select the respective column like this:
+df_NaN_vs_Null[(df_NaN_vs_Null[&quot;VALUE&quot;] == 0)]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p35.png" /></p>
+<pre class="r"><code># If you are looking for both (NaN and Null Values) use this method:
+df_NaN_vs_Null[(df_NaN_vs_Null[&quot;VALUE&quot;] == 0) | (df_NaN_vs_Null[&quot;VALUE&quot;].isnull())]</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p36.png" /></p>
+</div>
+</div>
+<div id="filtering-values" class="section level1">
+<h1>7 Filtering Values</h1>
+<p>Let’s use this dummy dataset:</p>
+<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;, &#39;Mike&#39;, &#39;Sarah&#39;, 
+                            &#39;Sven&#39;, &#39;Mel&#39;, &#39;Alex&#39;, &#39;John&#39;, &#39;Marlene&#39;],
+                   &#39;Favorite_Fruit&#39;: [&#39;Banana&#39;, &#39;Apple&#39;, &#39;Melon&#39;, &#39;Peach&#39;, &#39;Grape&#39;, 
+                                      &#39;Melon&#39;, &#39;Orange&#39;, &#39;Banana&#39;, &#39;Melon&#39;, &#39;Apple&#39;]})
+df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p37.png" /></p>
+<div id="filter-with-lists" class="section level2">
+<h2>7.1 Filter with Lists</h2>
+<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
+
+boolean_value_list = df[&#39;Favorite_Fruit&#39;].isin(value_list)
+filtered_df = df[boolean_value_list]
+filtered_df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p38.png" /></p>
+</div>
+<div id="exclude-certain-values" class="section level2">
+<h2>7.2 Exclude certain values</h2>
+<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
+
+inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
+inverse_filtered_df = df[inverse_boolean_value_list]
+inverse_filtered_df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p39.png" /></p>
+</div>
+</div>
+<div id="working-with-lists" class="section level1">
+<h1>8 Working with Lists</h1>
+<div id="creation-of-lists" class="section level2">
+<h2>8.1 Creation of Lists</h2>
+<pre class="r"><code>df</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p40.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 </div>

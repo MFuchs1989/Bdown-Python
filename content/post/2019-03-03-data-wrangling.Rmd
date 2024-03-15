@@ -263,14 +263,171 @@ pd.reset_option('all')
 
 
 ```{r, eval=F, echo=T}
-
+df = pd.DataFrame({'Name': ['Anton', 'Moni', np.NaN, 'Renate', 'Justus'],
+                   'Age': [32,22,62,np.NaN,18],
+                   'Salary': [np.NaN, np.NaN,4500,2500,3800],
+                   'Job': ['Student', np.NaN, 'Manager', 'Teacher', 'Student']})
+df
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p25.png)
+
+
+```{r, eval=F, echo=T}
+reduced_df = df.drop(['Job'], axis=1)
+reduced_df.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p26.png)
+
+
+
+```{r, eval=F, echo=T}
+reduced_df2 = df.drop(['Salary', 'Job'], axis=1)
+reduced_df2.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p27.png)
+
+
+
+```{r, eval=F, echo=T}
+# You can also use a list to excluede columns
+col_to_exclude = ['Salary', 'Job']
+
+reduced_df_with_list = df.drop(col_to_exclude, axis=1)
+reduced_df_with_list.head()
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p28.png)
+
+
+## 6.2 Dropping NaN Values
+
+
+```{r, eval=F, echo=T}
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p29.png)
+
+```{r, eval=F, echo=T}
+#Dropping all NaN values from column 'Name'
+df.dropna(subset=['Name'])
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p30.png)
+
+
+```{r, eval=F, echo=T}
+#Dropping all NaN values from the columns 'Salary' and 'Job' if there is min. 1
+df.dropna(subset=['Salary', 'Job'])
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p31.png)
+
+
+## 6.3 NaN Values vs. Null Values
+
+NaN values and zero values are not the same thing. 
+This becomes clear from the examples below, so that you do not mistakenly follow a false assumption. 
 
 
 
 
+```{r, eval=F, echo=T}
+df_NaN_vs_Null = pd.DataFrame({'AIRLINE': ['AS', 'LH', 'KE'],
+                               'VALUE': [1, 0, np.NAN]})
+df_NaN_vs_Null
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p32.png)
+
+```{r, eval=F, echo=T}
+# The isna() function does its job well
+df_NaN_vs_Null[df_NaN_vs_Null['VALUE'].isna()]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p33.png)
+
+
+```{r, eval=F, echo=T}
+# The isnull() function also looks for NaN values not for NULL values!
+df_NaN_vs_Null[df_NaN_vs_Null['VALUE'].isnull()]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p34.png)
+
+
+```{r, eval=F, echo=T}
+# For Null values you have to select the respective column like this:
+df_NaN_vs_Null[(df_NaN_vs_Null["VALUE"] == 0)]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p35.png)
+
+
+```{r, eval=F, echo=T}
+# If you are looking for both (NaN and Null Values) use this method:
+df_NaN_vs_Null[(df_NaN_vs_Null["VALUE"] == 0) | (df_NaN_vs_Null["VALUE"].isnull())]
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p36.png)
+
+
+# 7 Filtering Values
+
+Let's use this dummy dataset:
+
+
+```{r, eval=F, echo=T}
+df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia', 'Mike', 'Sarah', 
+                            'Sven', 'Mel', 'Alex', 'John', 'Marlene'],
+                   'Favorite_Fruit': ['Banana', 'Apple', 'Melon', 'Peach', 'Grape', 
+                                      'Melon', 'Orange', 'Banana', 'Melon', 'Apple']})
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p37.png)
+
+
+## 7.1 Filter with Lists
+
+```{r, eval=F, echo=T}
+value_list = ["Apple", "Melon"]
+
+boolean_value_list = df['Favorite_Fruit'].isin(value_list)
+filtered_df = df[boolean_value_list]
+filtered_df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p38.png)
+
+
+## 7.2 Exclude certain values
+
+
+```{r, eval=F, echo=T}
+value_list = ["Apple", "Melon"]
+
+inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
+inverse_filtered_df = df[inverse_boolean_value_list]
+inverse_filtered_df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p39.png)
+
+
+
+# 8 Working with Lists
+
+## 8.1 Creation of Lists
+
+```{r, eval=F, echo=T}
+df
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p40.png)
 
 
 
@@ -291,5 +448,99 @@ pd.reset_option('all')
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=F, echo=T}
+
+```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
 
 
