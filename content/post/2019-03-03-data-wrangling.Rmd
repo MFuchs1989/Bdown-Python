@@ -430,116 +430,86 @@ df
 ![](/post/2019-03-03-data-wrangling_files/p1p40.png)
 
 
+```{r, eval=F, echo=T}
+# Getting a list of unique values from a specific column
 
+unique_list = df['Favorite_Fruit'].unique().tolist()
+unique_list
+```
 
-
-
-
-
-
-
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p41.png)
 
 
 
 ```{r, eval=F, echo=T}
+# If you would like to get a list of the columns within a df use the to_list() function
 
+column_list = df.columns.to_list()
+column_list
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p42.png)
+
+## 8.2 Comparing Lists
 
 
+```{r, eval=F, echo=T}
+list_A = ['A', 
+          'B', 'C', 'D']
 
-
-
-
-
-
-
-
-
-
+list_B = ['B', 'C', 'D', 
+          'E']
+```
 
 
 
 ```{r, eval=F, echo=T}
-
+# Elements in A not in B
+filtered_list = list(set(list_A) - set(list_B))
+filtered_list
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
-
-
-
-
-
-
-
-
-
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p43.png)
 
 
 
 ```{r, eval=F, echo=T}
-
+# Elements in B not in A
+filtered_list = list(set(list_B) - set(list_A))
+filtered_list
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
-
-
-
-
-
-
-
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p44.png)
 
 
 
 ```{r, eval=F, echo=T}
+# Elements that occur in both lists (common elements)
+filtered_list = list(set(list_A).intersection(list_B))
+# Also works: filtered_list = list(set(list_B).intersection(list_A))
 
+filtered_list
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
-
-
-
-
-
-
-
-
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p45.png)
 
 
 ```{r, eval=F, echo=T}
-
+# Elements that just occur in one of both lists (not common elements)
+filtered_list = list(set(list_A) ^ set(list_B))
+filtered_list
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+![](/post/2019-03-03-data-wrangling_files/p1p46.png)
 
 
 
 
 
+# 9 Conclusion
 
-
-
-
-
-
-
-
-
-```{r, eval=F, echo=T}
-
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p.png)
+Data wrangling is one of the most important disciplines in the field of data science. 
+This was just a small sample of what is possible. 
 
 
 

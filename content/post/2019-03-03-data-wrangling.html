@@ -41,7 +41,9 @@ output:
 <li><a href="#working-with-lists" id="toc-working-with-lists">8 Working with Lists</a>
 <ul>
 <li><a href="#creation-of-lists" id="toc-creation-of-lists">8.1 Creation of Lists</a></li>
+<li><a href="#comparing-lists" id="toc-comparing-lists">8.2 Comparing Lists</a></li>
 </ul></li>
+<li><a href="#conclusion" id="toc-conclusion">9 Conclusion</a></li>
 </ul>
 </div>
 
@@ -234,11 +236,46 @@ inverse_filtered_df</code></pre>
 <h2>8.1 Creation of Lists</h2>
 <pre class="r"><code>df</code></pre>
 <p><img src="/post/2019-03-03-data-wrangling_files/p1p40.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<pre class="r"><code># Getting a list of unique values from a specific column
+
+unique_list = df[&#39;Favorite_Fruit&#39;].unique().tolist()
+unique_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p41.png" /></p>
+<pre class="r"><code># If you would like to get a list of the columns within a df use the to_list() function
+
+column_list = df.columns.to_list()
+column_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p42.png" /></p>
 </div>
+<div id="comparing-lists" class="section level2">
+<h2>8.2 Comparing Lists</h2>
+<pre class="r"><code>list_A = [&#39;A&#39;, 
+          &#39;B&#39;, &#39;C&#39;, &#39;D&#39;]
+
+list_B = [&#39;B&#39;, &#39;C&#39;, &#39;D&#39;, 
+          &#39;E&#39;]</code></pre>
+<pre class="r"><code># Elements in A not in B
+filtered_list = list(set(list_A) - set(list_B))
+filtered_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p43.png" /></p>
+<pre class="r"><code># Elements in B not in A
+filtered_list = list(set(list_B) - set(list_A))
+filtered_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p44.png" /></p>
+<pre class="r"><code># Elements that occur in both lists (common elements)
+filtered_list = list(set(list_A).intersection(list_B))
+# Also works: filtered_list = list(set(list_B).intersection(list_A))
+
+filtered_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p45.png" /></p>
+<pre class="r"><code># Elements that just occur in one of both lists (not common elements)
+filtered_list = list(set(list_A) ^ set(list_B))
+filtered_list</code></pre>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p46.png" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>9 Conclusion</h1>
+<p>Data wrangling is one of the most important disciplines in the field of data science.
+This was just a small sample of what is possible.</p>
 </div>
