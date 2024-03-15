@@ -21,36 +21,21 @@ output:
 <li><a href="#loading-the-libraries-and-the-data" id="toc-loading-the-libraries-and-the-data">2 Loading the libraries and the data</a></li>
 <li><a href="#overview-of-the-data" id="toc-overview-of-the-data">3 Overview of the data</a></li>
 <li><a href="#get-some-statistics" id="toc-get-some-statistics">4 Get some statistics</a></li>
-<li><a href="#select-data" id="toc-select-data">5 Select data</a>
-<ul>
-<li><a href="#easy-selection" id="toc-easy-selection">5.1 Easy selection</a></li>
-<li><a href="#conditional-selection" id="toc-conditional-selection">5.2 Conditional selection</a></li>
-<li><a href="#set-option" id="toc-set-option">5.3 Set option</a></li>
-<li><a href="#exclude-some-columns-with-a-defined-list" id="toc-exclude-some-columns-with-a-defined-list">4.4 Exclude some columns with a defined list</a></li>
-</ul></li>
-<li><a href="#filter" id="toc-filter">6 Filter</a>
-<ul>
-<li><a href="#normal-filter" id="toc-normal-filter">6.1 Normal filter</a></li>
-<li><a href="#filter-with-a-defined-list" id="toc-filter-with-a-defined-list">6.2 Filter with a defined list</a></li>
-<li><a href="#exclude-some-rows-with-a-defined-list" id="toc-exclude-some-rows-with-a-defined-list">6.3 Exclude some rows with a defined list</a></li>
-</ul></li>
-<li><a href="#pandas-query" id="toc-pandas-query">7 Panda’s query</a></li>
-<li><a href="#conclusion" id="toc-conclusion">8 Conclusion</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>1 Introduction</h1>
-<p>Test
-Never stop learning !</p>
+<p>Never stop learning !</p>
 <p>The entry into the field of data science with <a href="https://michael-fuchs.netlify.com/">“R / R-Studio”</a> was a smart matter. Now it’s time and for each Data Scientist advisable to learn another scripting language.</p>
 <p>Let’s start with Python!</p>
 <p>For this post the dataset <em>flight</em> from the statistic platform <a href="https://www.kaggle.com">“Kaggle”</a> was used. You can download it from my <a href="https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets">GitHub Repository</a>.</p>
 </div>
 <div id="loading-the-libraries-and-the-data" class="section level1">
 <h1>2 Loading the libraries and the data</h1>
-<pre class="r"><code>import pandas as pd</code></pre>
-<pre class="r"><code>flight = pd.read_csv(&quot;path/to/file/flight.csv&quot;)</code></pre>
+<pre class="r"><code>import pandas as pd
+import numpy as np</code></pre>
+<pre class="r"><code>flight = pd.read_csv(&quot;flight.csv&quot;)</code></pre>
 </div>
 <div id="overview-of-the-data" class="section level1">
 <h1>3 Overview of the data</h1>
@@ -70,184 +55,20 @@ Never stop learning !</p>
 <p>We can also output the unique values of a column.</p>
 <pre class="r"><code>#List unique values in the flight[&#39;Origin_Airport&#39;] column
 flight.Origin_Airport.unique()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z1.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p7.png" /></p>
 <p>Now let’s take a look at the unique values of several columns. For this purpose, I will select 4 categorical columns from the data set as an example:</p>
 <pre class="r"><code>flight_subset = flight[[&#39;UniqueCarrier&#39;,&#39;Tai_lNum&#39;,&#39;Origin_Airport&#39;,&#39;Origin_City_Name&#39;]]
 flight_subset</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z5.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p8.png" /></p>
 <p>Now I can use a for loop to display the number of contained labels:</p>
 <pre class="r"><code>for feature in flight_subset.columns[:]:
     print(feature, &#39;:&#39;, len(flight_subset[feature].unique()), &#39;labels&#39;)</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z6.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p9.png" /></p>
 </div>
 <div id="get-some-statistics" class="section level1">
 <h1>4 Get some statistics</h1>
-<pre class="r"><code>flight.describe()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p7.png" /></p>
-<pre class="r"><code>flight[&#39;Dep_Delay&#39;].agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;]).reset_index()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p8.png" /></p>
-<pre class="r"><code>flight[[&#39;Origin_Airport&#39;, &#39;Departure_Time&#39;, &#39;Dep_Delay&#39;, &#39;Carrier_Delay&#39;]].groupby(&#39;Origin_Airport&#39;).mean().head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p9.png" /></p>
-</div>
-<div id="select-data" class="section level1">
-<h1>5 Select data</h1>
-<div id="easy-selection" class="section level2">
-<h2>5.1 Easy selection</h2>
-<pre class="r"><code>flight[[&#39;Year&#39;]].head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p10.png" /></p>
-<pre class="r"><code>flight[[&#39;Year&#39;, &#39;WeatherDelay&#39;]].head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p11.png" /></p>
-<pre class="r"><code>flight[1:4]</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p12.png" /></p>
-<pre class="r"><code>flight.loc[1:4, [&#39;Year&#39;, &#39;WeatherDelay&#39;, &#39;Flight_Date&#39;]]</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p13.png" /></p>
-<pre class="r"><code>flight.iloc[:,1:5].head()     #iloc = index</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p14.png" /></p>
-<pre class="r"><code>flight.iloc[1:4,[1,3,5]]</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p15.png" /></p>
-<p>You can also try these one:</p>
-<pre class="r"><code># Select all columns from Col_1 to Col_5
-df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;]</code></pre>
-<pre class="r"><code># Select all columns from Col_1 to Col_5 and Col_9
-df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;].join(df.loc[:,&#39;Col_9&#39;])</code></pre>
-<pre class="r"><code># Select all columns from Col_1 to Col_5 and from Col_9 to Col_13
-df.loc[:,&#39;Col_1&#39;:&#39;Col_5&#39;].join(df.loc[:,&#39;Col_9&#39;:&#39;Col_13&#39;])</code></pre>
-</div>
-<div id="conditional-selection" class="section level2">
-<h2>5.2 Conditional selection</h2>
-<p>Var.1 (here I see how many cases are affected)</p>
-<pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000)].shape[0]        </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p16.png" /></p>
-<p>Var.2 (here I see how many cases are affected)</p>
-<pre class="r"><code>flight[flight.Distance &gt;= 3000].shape[0]           </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p17.png" /></p>
-<p>Var. 1</p>
-<pre class="r"><code>flight[(flight[&quot;Distance&quot;] &gt;= 3000) &amp; (flight[&quot;DayOfWeek&quot;] == 1) &amp; (flight[&quot;Flight_Date&quot;] == &#39;11/07/2016&#39;)]    </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p18.png" /></p>
-<p>Var.2</p>
-<pre class="r"><code>flight[(flight.Distance &gt;= 3000) &amp; (flight.DayOfWeek == 1) &amp; (flight.Flight_Date == &#39;11/07/2016&#39;)]    </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p19.png" /></p>
-<pre class="r"><code>flight[(flight.Origin_Airport == &#39;ATL&#39;) | (flight.Origin_Airport == &#39;BOS&#39;)][&#39;Origin_Airport&#39;].value_counts()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p20.png" /></p>
-<pre class="r"><code># slow method:
-# flight[(flight.Origin_Airport == &#39;ATL&#39;) | (flight.Origin_Airport == &#39;BOS&#39;) | (flight.Origin_Airport == &#39;JFK&#39;)]
-
-# fast method:
-filter_list = [&#39;ATL&#39;, &#39;BOS&#39;, &#39;JFK&#39;]
-flight[flight.Origin_Airport.isin(filter_list)][&#39;Origin_Airport&#39;].value_counts()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p21.png" /></p>
-</div>
-<div id="set-option" class="section level2">
-<h2>5.3 Set option</h2>
-<p>With the set option function one can determine, how many lines and columns should be issued.</p>
-<pre class="r"><code>flight.head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p22.png" /></p>
-<pre class="r"><code>pd.set_option(&#39;display.max_rows&#39;, 2)
-pd.set_option(&#39;display.max_columns&#39;, 2)
-flight.head(200)</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p23.png" /></p>
-</div>
-<div id="exclude-some-columns-with-a-defined-list" class="section level2">
-<h2>4.4 Exclude some columns with a defined list</h2>
-<pre class="r"><code>df = flight[[&#39;Year&#39;, &#39;Month&#39;, &#39;Day&#39;, &#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]]
-df.head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z1.png" /></p>
-<pre class="r"><code>col_to_exclude = [&#39;DayOfWeek&#39;, &#39;Flight_Date&#39;]
-
-reduced_df = df.drop(col_to_exclude, axis=1)
-reduced_df.head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p27z2.png" /></p>
-</div>
-</div>
-<div id="filter" class="section level1">
-<h1>6 Filter</h1>
-<div id="normal-filter" class="section level2">
-<h2>6.1 Normal filter</h2>
-<p>Select columns containing ‘Delay’</p>
-<pre class="r"><code>flight.filter(like=&#39;Delay&#39;, axis=1).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p23z.png" /></p>
-</div>
-<div id="filter-with-a-defined-list" class="section level2">
-<h2>6.2 Filter with a defined list</h2>
-<p>Here we creat a list (top 4 airports with max. delay)</p>
-<pre class="r"><code>df = (                              
-    flight
-    [[&#39;Origin_Airport&#39;, &#39;Dep_Delay&#39;]]
-    .groupby([&#39;Origin_Airport&#39;])
-    .sum()
-    .sort_values(by=&#39;Dep_Delay&#39;, ascending=False)
-    .reset_index()
-    .head(4)
-)
-
-df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p24.png" /></p>
-<p>Here we define and apply the defined list</p>
-<pre class="r"><code>mylist = df[&#39;Origin_Airport&#39;].tolist()
-mylist</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p25.png" /></p>
-<pre class="r"><code>df = flight[(flight[&#39;Origin_Airport&#39;].isin(mylist)) &amp; (flight[&#39;DayOfWeek&#39;]&gt;5)]       
-df = df[[&#39;Origin_Airport&#39;, &#39;Distance&#39;]]
-df = df.groupby([&#39;Origin_Airport&#39;]).agg([&#39;mean&#39;, &#39;median&#39;, &#39;std&#39;, &#39;min&#39;, &#39;max&#39;])
-df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p26.png" /></p>
-<p>Now we have some statistical values of the variable distance for the top 4 airports with max. delay.</p>
-<p>For a better view:</p>
-<pre class="r"><code>df.columns = df.columns.droplevel()
-df = df.reset_index()
-df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p27.png" /></p>
-</div>
-<div id="exclude-some-rows-with-a-defined-list" class="section level2">
-<h2>6.3 Exclude some rows with a defined list</h2>
-<p>Have a look at this dataframe:</p>
-<pre class="r"><code>df = pd.DataFrame({&#39;Name&#39;: [&#39;Maria&#39;, &#39;Marc&#39;, &#39;Julia&#39;, &#39;Mike&#39;, &#39;Sarah&#39;, 
-                            &#39;Sven&#39;, &#39;Mel&#39;, &#39;Alex&#39;, &#39;John&#39;, &#39;Marlene&#39;],
-                   &#39;Favorite_Fruit&#39;: [&#39;Banana&#39;, &#39;Apple&#39;, &#39;Melon&#39;, &#39;Peach&#39;, &#39;Grape&#39;, 
-                                      &#39;Melon&#39;, &#39;Orange&#39;, &#39;Banana&#39;, &#39;Melon&#39;, &#39;Apple&#39;]})
-df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z2.png" /></p>
-<p>Previously, I showed how to select specific lines from a list of values. Now I would like to show how to exclude these specifically.</p>
-<p>Here I will demonstrate both ways again.</p>
-<p><strong>Select specific rows:</strong></p>
-<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
-
-boolean_value_list = df.Favorite_Fruit.isin(value_list)
-filtered_df = df[boolean_value_list]
-filtered_df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z3.png" /></p>
-<p><strong>Exclude specific rows:</strong></p>
-<pre class="r"><code>value_list = [&quot;Apple&quot;, &quot;Melon&quot;]
-
-inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
-inverse_filtered_df = df[inverse_boolean_value_list]
-inverse_filtered_df</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1z4.png" /></p>
-</div>
-</div>
-<div id="pandas-query" class="section level1">
-<h1>7 Panda’s query</h1>
-<p>Here are some expressions from the pandas <em>query function</em></p>
-<pre class="r"><code>flight.query(&quot;DayOfWeek &gt; 4&quot;).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p28.png" /></p>
-<pre class="r"><code>flight.query(&quot;DayOfWeek &gt; 4  &amp; Origin_Airport == &#39;BOS&#39;&quot;).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p29.png" /></p>
-<pre class="r"><code>df = flight.set_index([&#39;DayOfWeek&#39;])
-df.query(&quot;index &lt; Day&quot;).head()             
-#Alternative: df.query(&quot;DayOfWeek &lt; Day&quot;).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p30.png" /></p>
-<pre class="r"><code>df.query(&quot;index &lt; Day &amp; index &gt; 5&quot;).head()            
-#Alternative: df.query(&quot;DayOfWeek &lt; Day &amp; DayOfWeek &gt; 5&quot;).head()  </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p31.png" /></p>
-<pre class="r"><code>df = flight.set_index([&#39;DayOfWeek&#39;, &#39;Origin_Airport&#39;])
-df.query(&#39;DayOfWeek == &quot;6&quot; &amp;  Origin_Airport == &quot;JFK&quot;&#39;).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p32.png" /></p>
-<pre class="r"><code>df[[&#39;Scheduled_Arrival&#39;, &#39;Arrival_Time&#39;, &#39;Arrival_Delay&#39;]].query(&quot;Scheduled_Arrival &lt; Arrival_Time&quot;).head() </code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p33.png" /></p>
-<pre class="r"><code>df.query(&quot;Origin_Airport in [&#39;JFK&#39;, &#39;DFW&#39;] &amp; Day in [1, 2, 4]&quot;).head()</code></pre>
-<p><img src="/post/2019-03-03-data-wrangling_files/p1p34.png" /></p>
-</div>
-<div id="conclusion" class="section level1">
-<h1>8 Conclusion</h1>
-<p>This was a small insight into the topic Data Wrangling with Python.</p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
+<p><img src="/post/2019-03-03-data-wrangling_files/p1p.png" /></p>
 </div>

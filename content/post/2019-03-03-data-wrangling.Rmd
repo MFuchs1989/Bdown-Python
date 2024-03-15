@@ -14,10 +14,9 @@ output:
     toc_depth: 5
 ---
 
-
 # 1 Introduction
 
-Test
+
 Never stop learning !
 
 The entry into the field of data science with ["R / R-Studio"](https://michael-fuchs.netlify.com/) was a smart matter. Now it's time and for each Data Scientist advisable to learn another scripting language.
@@ -28,24 +27,24 @@ Let's start with Python!
 For this post the dataset *flight* from the statistic platform ["Kaggle"](https://www.kaggle.com) was used. You can download it from my [GitHub Repository](https://github.com/MFuchs1989/Datasets-and-Miscellaneous/tree/main/datasets).
 
 
-# 2 Loading the libraries and the data
 
+# 2 Loading the libraries and the data
 
 
 ```{r, eval=F, echo=T}
 import pandas as pd
+import numpy as np
 ```
-
 
 ```{r, eval=F, echo=T}
-flight = pd.read_csv("path/to/file/flight.csv")
+flight = pd.read_csv("flight.csv")
 ```
-
 
 
 # 3 Overview of the data
 
 With the following commands it is possible to get a quick overview of his available data. 
+
 
 ```{r, eval=F, echo=T}
 flight.head()
@@ -59,7 +58,6 @@ flight.tail()
 
 ![](/post/2019-03-03-data-wrangling_files/p1p2.png)
 
-
 ```{r, eval=F, echo=T}
 flight.shape
 ```
@@ -72,11 +70,13 @@ flight.columns
 
 ![](/post/2019-03-03-data-wrangling_files/p1p4.png)
 
+
 ```{r, eval=F, echo=T}
 flight['Origin_Airport'].value_counts().head().T
 ```
 
 ![](/post/2019-03-03-data-wrangling_files/p1p5.png)
+
 
 ```{r, eval=F, echo=T}
 flight.dtypes.head()
@@ -91,11 +91,9 @@ We can also output the unique values of a column.
 flight.Origin_Airport.unique()
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1z1.png)
-
+![](/post/2019-03-03-data-wrangling_files/p1p7.png)
 
 Now let's take a look at the unique values of several columns. For this purpose, I will select 4 categorical columns from the data set as an example:
-
 
 
 ```{r, eval=F, echo=T}
@@ -103,369 +101,120 @@ flight_subset = flight[['UniqueCarrier','Tai_lNum','Origin_Airport','Origin_City
 flight_subset
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1z5.png)
+![](/post/2019-03-03-data-wrangling_files/p1p8.png)
 
 Now I can use a for loop to display the number of contained labels:
-
 
 ```{r, eval=F, echo=T}
 for feature in flight_subset.columns[:]:
     print(feature, ':', len(flight_subset[feature].unique()), 'labels')
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1z6.png)
-
-
+![](/post/2019-03-03-data-wrangling_files/p1p9.png)
 
 # 4 Get some statistics
 
 
-```{r, eval=F, echo=T}
-flight.describe()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p7.png)
-
-```{r, eval=F, echo=T}
-flight['Dep_Delay'].agg(['mean', 'median', 'std', 'min', 'max']).reset_index()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p8.png)
-
-```{r, eval=F, echo=T}
-flight[['Origin_Airport', 'Departure_Time', 'Dep_Delay', 'Carrier_Delay']].groupby('Origin_Airport').mean().head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p9.png)
 
 
-# 5 Select data
-
-## 5.1  Easy selection
-
-```{r, eval=F, echo=T}
-flight[['Year']].head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p10.png)
-
-```{r, eval=F, echo=T}
-flight[['Year', 'WeatherDelay']].head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p11.png)
 
 
-```{r, eval=F, echo=T}
-flight[1:4]
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p12.png)
 
 
-```{r, eval=F, echo=T}
-flight.loc[1:4, ['Year', 'WeatherDelay', 'Flight_Date']]
-```
 
-![](/post/2019-03-03-data-wrangling_files/p1p13.png)
 
-```{r, eval=F, echo=T}
-flight.iloc[:,1:5].head()     #iloc = index
-```
 
-![](/post/2019-03-03-data-wrangling_files/p1p14.png)
 
-```{r, eval=F, echo=T}
-flight.iloc[1:4,[1,3,5]]
-```
 
-![](/post/2019-03-03-data-wrangling_files/p1p15.png)
 
-You can also try these one:
 
 
 
 ```{r, eval=F, echo=T}
-# Select all columns from Col_1 to Col_5
-df.loc[:,'Col_1':'Col_5']
+
 ```
+
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ```{r, eval=F, echo=T}
-# Select all columns from Col_1 to Col_5 and Col_9
-df.loc[:,'Col_1':'Col_5'].join(df.loc[:,'Col_9'])
+
 ```
 
-
-```{r, eval=F, echo=T}
-# Select all columns from Col_1 to Col_5 and from Col_9 to Col_13
-df.loc[:,'Col_1':'Col_5'].join(df.loc[:,'Col_9':'Col_13'])
-```
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
 
 
 
-## 5.2 Conditional selection
-
-Var.1 (here I see how many cases are affected)
-```{r, eval=F, echo=T}
-flight[(flight["Distance"] >= 3000)].shape[0]        
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p16.png)
-
-Var.2 (here I see how many cases are affected)
-```{r, eval=F, echo=T}
-flight[flight.Distance >= 3000].shape[0]           
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p17.png)
-
-Var. 1
-```{r, eval=F, echo=T}
-flight[(flight["Distance"] >= 3000) & (flight["DayOfWeek"] == 1) & (flight["Flight_Date"] == '11/07/2016')]    
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p18.png)
-
-Var.2
-```{r, eval=F, echo=T}
-flight[(flight.Distance >= 3000) & (flight.DayOfWeek == 1) & (flight.Flight_Date == '11/07/2016')]    
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p19.png)
 
 
-```{r, eval=F, echo=T}
-flight[(flight.Origin_Airport == 'ATL') | (flight.Origin_Airport == 'BOS')]['Origin_Airport'].value_counts()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p20.png)
 
 
-```{r, eval=F, echo=T}
-# slow method:
-# flight[(flight.Origin_Airport == 'ATL') | (flight.Origin_Airport == 'BOS') | (flight.Origin_Airport == 'JFK')]
-
-# fast method:
-filter_list = ['ATL', 'BOS', 'JFK']
-flight[flight.Origin_Airport.isin(filter_list)]['Origin_Airport'].value_counts()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p21.png)
-
- 
-## 5.3 Set option
-
-With the set option function one can determine, how many lines and columns should be issued.
-
-```{r, eval=F, echo=T}
-flight.head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p22.png)
-
-```{r, eval=F, echo=T}
-pd.set_option('display.max_rows', 2)
-pd.set_option('display.max_columns', 2)
-flight.head(200)
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p23.png)
 
 
-## 4.4 Exclude some columns with a defined list
 
-```{r, eval=F, echo=T}
-df = flight[['Year', 'Month', 'Day', 'DayOfWeek', 'Flight_Date']]
-df.head()
-```
 
-![](/post/2019-03-03-data-wrangling_files/p1p27z1.png)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 ```{r, eval=F, echo=T}
-col_to_exclude = ['DayOfWeek', 'Flight_Date']
 
-reduced_df = df.drop(col_to_exclude, axis=1)
-reduced_df.head()
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p27z2.png)
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
 
 
 
 
-# 6 Filter
-
-## 6.1 Normal filter
-
-Select columns containing 'Delay'
-```{r, eval=F, echo=T}
-flight.filter(like='Delay', axis=1).head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p23z.png)
 
 
-## 6.2 Filter with a defined list
-
-Here we creat a list (top 4 airports with max. delay)
-```{r, eval=F, echo=T}
-df = (                              
-    flight
-    [['Origin_Airport', 'Dep_Delay']]
-    .groupby(['Origin_Airport'])
-    .sum()
-    .sort_values(by='Dep_Delay', ascending=False)
-    .reset_index()
-    .head(4)
-)
-
-df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p24.png)
 
 
-Here we define and apply the defined list
-```{r, eval=F, echo=T}
-mylist = df['Origin_Airport'].tolist()
-mylist
-```
 
-![](/post/2019-03-03-data-wrangling_files/p1p25.png)
+
+
+
+
+
+
+
 
 
 
 ```{r, eval=F, echo=T}
-df = flight[(flight['Origin_Airport'].isin(mylist)) & (flight['DayOfWeek']>5)]       
-df = df[['Origin_Airport', 'Distance']]
-df = df.groupby(['Origin_Airport']).agg(['mean', 'median', 'std', 'min', 'max'])
-df
+
 ```
 
-![](/post/2019-03-03-data-wrangling_files/p1p26.png)
+![](/post/2019-03-03-data-wrangling_files/p1p.png)
 
-
-Now we have some statistical values of the variable distance for the top 4 airports with max. delay.
-
-For a better view:
-```{r, eval=F, echo=T}
-df.columns = df.columns.droplevel()
-df = df.reset_index()
-df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p27.png)
-
-
-## 6.3 Exclude some rows with a defined list
-
-
-Have a look at this dataframe:
-
-```{r, eval=F, echo=T}
-df = pd.DataFrame({'Name': ['Maria', 'Marc', 'Julia', 'Mike', 'Sarah', 
-                            'Sven', 'Mel', 'Alex', 'John', 'Marlene'],
-                   'Favorite_Fruit': ['Banana', 'Apple', 'Melon', 'Peach', 'Grape', 
-                                      'Melon', 'Orange', 'Banana', 'Melon', 'Apple']})
-df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1z2.png)
-
-Previously, I showed how to select specific lines from a list of values. Now I would like to show how to exclude these specifically. 
-
-Here I will demonstrate both ways again.
-
-
-**Select specific rows:**
-
-```{r, eval=F, echo=T}
-value_list = ["Apple", "Melon"]
-
-boolean_value_list = df.Favorite_Fruit.isin(value_list)
-filtered_df = df[boolean_value_list]
-filtered_df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1z3.png)
-
-
-**Exclude specific rows:**
-
-```{r, eval=F, echo=T}
-value_list = ["Apple", "Melon"]
-
-inverse_boolean_value_list = ~df.Favorite_Fruit.isin(value_list)
-inverse_filtered_df = df[inverse_boolean_value_list]
-inverse_filtered_df
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1z4.png)
-
-
-
-# 7 Panda's query
-
-Here are some expressions from the pandas *query function*
-
-
-```{r, eval=F, echo=T}
-flight.query("DayOfWeek > 4").head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p28.png)
-
-
-```{r, eval=F, echo=T}
-flight.query("DayOfWeek > 4  & Origin_Airport == 'BOS'").head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p29.png)
-
-
-```{r, eval=F, echo=T}
-df = flight.set_index(['DayOfWeek'])
-df.query("index < Day").head()             
-#Alternative: df.query("DayOfWeek < Day").head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p30.png)
-
-
-```{r, eval=F, echo=T}
-df.query("index < Day & index > 5").head()            
-#Alternative: df.query("DayOfWeek < Day & DayOfWeek > 5").head()  
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p31.png)
-
-
-```{r, eval=F, echo=T}
-df = flight.set_index(['DayOfWeek', 'Origin_Airport'])
-df.query('DayOfWeek == "6" &  Origin_Airport == "JFK"').head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p32.png)
-
-
-```{r, eval=F, echo=T}
-df[['Scheduled_Arrival', 'Arrival_Time', 'Arrival_Delay']].query("Scheduled_Arrival < Arrival_Time").head() 
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p33.png)
-
-
-```{r, eval=F, echo=T}
-df.query("Origin_Airport in ['JFK', 'DFW'] & Day in [1, 2, 4]").head()
-```
-
-![](/post/2019-03-03-data-wrangling_files/p1p34.png)
-
-# 8 Conclusion
-
-This was a small insight into the topic Data Wrangling with Python.
 
